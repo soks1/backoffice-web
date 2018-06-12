@@ -1,0 +1,72 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<div class="form-group">
+	<div class="col-md-2 control-label radio">
+		<label><input type="radio" name="bsis_mison_yn_temp" value="03" onchange="f_basicMissionChange(this.value)">특정지역방문</label>
+		<input type="hidden" id="03" name="bsis_mison_yn_list" data-array-always="true" value="N">
+	</div>
+	<div class="col-md-10">
+		<div class="form-group">
+			<div class="col-md-12">
+				<div>
+					<p class="alert alert-info">특정지역 방문 미션 상세 설정(행사 진행 지점 비콘 중 다른 행사에 연결되지 않은 비콘만 선택할 수 있습니다.)</p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="col-md-1 control-label ta-l">미션 수행채널</label>
+			<div class="col-md-2">
+				<select class="form-control" name="fulfill_chanel_cd_list" disabled="disabled" data-array-always="true">
+					<option value="OFFLINE" selected="selected" disabled="disabled">오프라인</option>
+				</select>
+			</div>
+			<label class="col-md-2 control-label">미션횟수(스탬프수)</label>
+			<div class="col-md-1 ta-l">
+				<input class="form-control ta-r" id="stamp_mison_base_cnt3" name="stamp_mison_base_cnt_list" type="text" data-array-always="true" data-valid-use="true" data-valid-num="true" data-valid-minnum="1" data-valid-maxnum="10" data-valid-title="미션횟수(스탬프수)">
+				<input type="hidden" name="stamp_apply_to_cd_list" value="ZONE" data-array-always="true">
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="col-md-1 control-label ta-l">대상 비콘</label>
+			<div class="col-md-10">
+				<a href="javascript:f_openZoneSelect();" id="zone_select" class="btn btn-primary btn-sm">ZONE선택</a>
+				<a href="javascript:cf_delTableRow('mission_zone_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+			</div>
+		</div>
+		
+		<div class="table-responsive" style="max-height:230px; overflow:auto;">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th class="ta-c" style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this)"></th>
+						<th class="ta-c">지점코드</th>
+						<th class="ta-c">지점명</th>
+						<th class="ta-c">ZONE ID</th>
+						<th class="ta-c">ZONE 명</th>
+						<th class="ta-c">비콘수</th>
+						<th class="ta-c">행사코너</th>
+					</tr>
+				</thead>
+				<tbody id="mission_zone_tbody" data-valid-title="대상비콘">
+					
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<script>
+
+function f_openZoneSelect() {
+	var term_start_dd = $("input[name=evt_term_start_dd]").cvtDateDefault();
+	var term_end_dd = $("input[name=evt_term_end_dd]").cvtDateDefault();
+	
+	if(term_start_dd.length == 8 && term_end_dd.length == 8) {
+		f_openZoneSD('mission_zone_tbody', term_start_dd, term_end_dd);
+	} else {
+		alert("행사기간이 올바르지 않습니다.");
+	}
+}
+
+</script>

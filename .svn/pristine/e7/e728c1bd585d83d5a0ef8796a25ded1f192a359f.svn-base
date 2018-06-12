@@ -1,0 +1,227 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회조건</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="searchProductSingle">
+							<input type="hidden" name="targetTbody" value="<%=LangUtil.replaceInjection(request.getParameter("targetTbody"))%>">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="prod_view_type" value="CATEGORY" onclick="f_searchType(this.value);" checked="checked">
+											분류별 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="prod_view_type" value="PRODUCT" onclick="f_searchType(this.value);">
+											상품별 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="prod_view_type" value="PARTNER" onclick="f_searchType(this.value);">
+											협력업체 </label>
+									</div>
+								</div>
+							</fieldset>
+
+							<fieldset id="prod_view_type_category">
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">대분류</label>
+									<div class="col-md-2">
+										<select class="form-control" id="cate_top" name="cate_top">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<label class="col-md-2 control-label">중분류</label>
+									<div class="col-md-2">
+										<select class="form-control" id="cate_middle" name="cate_middle">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<label class="col-md-2 control-label">거래형태</label>
+									<div class="col-md-2">
+										<select class="form-control" id="trd_type_divn_cd" name="trd_type_divn_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">소분류</label>
+									<div class="col-md-2">
+										<select class="form-control" id="cate_low" name="cate_low">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-2 control-label">세분류</label>
+									<div class="col-md-2">
+										<select class="form-control" id="cate_detail" name="cate_detail">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset id="prod_view_type_product" style="display:none;">
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">상품코드</label>
+									<div class="col-md-2">
+										<input class="form-control" type="text" name="prod_cd">
+									</div>
+									<label class="col-md-2 control-label">상품명</label>
+									<div class="col-md-2">
+										<input class="form-control" type="text" name="prod_nm">
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset id="prod_view_type_partner" style="display:none;">
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">협력업체 &reg; </label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="ven_cd">
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-6 text-danger ta-l">
+										<i class="fa fa-info-circle"></i> 협력업체는 본부상품 기준입니다.
+									</div>
+									<div class="col-md-6">
+										<a href="javascript:f_productList();" class="btn btn-primary">조회</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="productSingleLL">
+		
+	</div>
+</section>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 검색 조건 선택 이벤트
+/* --------------------------------------------------------------------------------------------
+/* - CATEGORY	: 분류별
+/* - PRODUCT	: 상품별
+/* - PARTNER	: 협력업체
+/* ============================================================================================ */
+function f_searchType(v) {
+	if(v == "CATEGORY") {
+		$('#prod_view_type_category').show();
+		$('#prod_view_type_product').hide();
+		$('#prod_view_type_partner').hide();
+	}
+	else if(v == "PRODUCT") {
+		$('#prod_view_type_category').hide();
+		$('#prod_view_type_product').show();
+		$('#prod_view_type_partner').hide();
+	}
+	else if(v == "PARTNER") {
+		$('#prod_view_type_category').hide();
+		$('#prod_view_type_product').hide();
+		$('#prod_view_type_partner').show();
+	}
+}
+
+
+/* ============================================================================================
+/* 상품 카테고리 선택 이벤트
+/* --------------------------------------------------------------------------------------------
+/* 대분류 - 중분류/소분류/세분류 리셋
+/* 중분류 - 소분류/세분류 리셋
+/* 소분류 - 세분류 리셋
+/* ============================================================================================ */
+$("#cate_top").change(function (e) {
+	$('#cate_low').resetSelectBox('SGRP');
+	$('#cate_detail').resetSelectBox('SUBGRP');
+	f_ajaxProductCategoryCode($('#cate_middle'), $(this).val(), 'MGRP');
+});
+
+$("#cate_middle").change(function (e) {
+	$('#cate_detail').resetSelectBox('SUBGRP');
+	f_ajaxProductCategoryCode($('#cate_low'), $(this).val(), 'SGRP');
+});
+
+$("#cate_low").change(function (e) {
+	f_ajaxProductCategoryCode($('#cate_detail'), $(this).val(), 'SUBGRP');
+});
+
+
+/* ============================================================================================
+/* 상품선택 리스트 조회
+/* --------------------------------------------------------------------------------------------
+/* 검색 데이터로 상품 검색 진행
+/* ============================================================================================ */
+function f_productList() {
+	
+	var prod_view_type = $('input[name=prod_view_type]:checked').val();
+	var search_target_id = 'prod_view_type_'+(prod_view_type.toLowerCase());
+	
+	if($('#'+search_target_id).searchValid() != true) {
+		alert('검색 조건을 입력해 주세요.');
+		return;
+	}
+	
+	// 검색 유형이 카테고리일 경우 추가 벨리데이션 진행
+	if(prod_view_type == 'CATEGORY') {
+		
+		var len_cate_top = $('#cate_top').getObjLength();
+		var len_cate_middle = $('#cate_middle').getObjLength();
+				
+		if(len_cate_top < 1 || len_cate_middle < 1) {
+			alert('대분류 중분류는 필수 선택 입니다.');
+			return;	
+		}
+	}
+	
+	var url = '/application/common/productSingleLL.do';
+	var method = 'POST';
+	cf_actionTarget(url, method, $('#'+search_target_id).serializeFormObject(), $('#productSingleLL'));
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	
+	// 상품 카테고리 대분류 데이터 로드
+	f_ajaxProductCategoryCode($('#cate_top'), '', 'TGRP');
+	
+	// 거래 형태
+	f_ajaxTrdTypeCode($('#trd_type_divn_cd'));
+
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+dialog_pagefunction();
+</script>

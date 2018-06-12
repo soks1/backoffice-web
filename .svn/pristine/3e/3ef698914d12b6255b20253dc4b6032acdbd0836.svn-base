@@ -1,0 +1,282 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2>캠페인 조회 조건</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmSearchCampaign">
+							<input type="hidden" id="campaign_id_tmp" >
+							<input type="hidden" id="campaign_nm_tmp" >
+							<input type="hidden" id="campaign_start_dy_tmp" >
+							<input type="hidden" id="campaign_end_dy_tmp" >
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">캠페인명</label>
+									<div class="col-md-4">
+										<input class="form-control" type="text" name="campaign_nm">
+									</div>
+									<label class="col-md-2 control-label">캠페인기간</label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="s_campaign_start_dy" name="s_campaign_start_dy" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'  placeholder="시작일" onclick="f_datepickerIndex();">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="e_campaign_start_dy" name="e_campaign_start_dy" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일" onclick="f_datepickerIndex();">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">고객군ID</label>
+									<div class="col-md-4">
+										<input class="form-control" type="text" name="lst_custgp_id">
+									</div>
+									<label class="col-md-2 control-label">고객군명</label>
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="custgp_nm">
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-6 text-danger ta-l">
+										<i class="fa fa-info-circle"></i> 캠페인기간 조회는 캠페인 시작일자 기준입니다.
+									</div>
+									<div class="col-md-6">
+										<a href="javascript:f_campaignList();" class="btn btn-primary">조회</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="campainLL">
+		<!-- 조회결과 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-3" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 캠페인 선택 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="table-responsive" style="max-height:417px; overflow: auto;">
+							<table class="table table-bordered table-striped" style="width: 483px;">
+								<thead>
+									<tr>
+										<th class="ta-c" style="width:30px">No.</th>
+										<th class="ta-c" style="width:120px">캠페인ID</th>
+										<th class="ta-c" style="width:150px">캠페인명</th>
+										<th class="ta-c" style="width:200px">캠페인기간</th>
+									</tr>
+								</thead>
+								<tbody id="campaign_tbody">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<!-- 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-4" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 고객군 선택 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body no-padding">
+						<div class="table-responsive" style="max-height:417px; overflow: auto;">
+							<table class="table table-bordered table-striped" style="width: 483px;">
+								<thead>
+									<tr>
+										<th class="ta-c" style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+										<th class="ta-c" style="width:30px">No.</th>
+										<th class="ta-c" style="width:150px">고객군ID</th>
+										<th class="ta-c" style="width:240px">고객군명</th>
+									</tr>
+								</thead>
+								<tbody id="custgroup_tbody">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#s_campaign_start_dy').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#e_campaign_start_dy').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#e_campaign_start_dy').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#s_campaign_start_dy').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+
+/**
+ * ==================================================================================
+ * 달력 : 달력 인덱스 조정
+ * ==================================================================================
+ */
+function f_datepickerIndex() {
+	$('#ui-datepicker-div').css('z-index','10000');
+}
+
+
+/**
+ * ==================================================================================
+ * 달력 : 캠페인 조회
+ * ==================================================================================
+ */
+function f_campaignList() {
+	
+	if($('#frmSearchCampaign').searchValid() != true) {
+		alert('검색 조건을 입력해 주세요.');
+		return;
+	}
+	
+	if( $('#s_campaign_start_dy').getObjLength() > 0 ) {
+		if( $('#e_campaign_start_dy').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_campaign_start_dy').getObjLength() > 0 ) {
+		if( $('#s_campaign_start_dy').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	var search_info = $("#frmSearchCampaign").serializeFormObject();
+	var data = {};
+	
+	data["search_info"] = search_info;
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["emp_str_cd"] = '${sessionScope.sessionStrCd}';
+	data["hq_base_yn"] = '${sessionScope.sessionHqBaseYn}';
+	data["_search"] = true;
+	data["rows"] = "2147483647";
+	data["page"] = 1;
+	data["sidx"] = "load_dd";
+	data["sord"] = "desc";
+	//data["list_all_yn"] = "Y";
+
+	$.ajax({
+	    url: api_url+"/backoffice/campaign/choice/list",
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$("#campaign_tbody").empty();
+	    	var campaign_list = obj.data.campaign_list;
+	    	$.each(campaign_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c">'+items.rnum+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.campaign_id+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.campaign_nm+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+cf_cvtDateFormat(items.campaign_start_dy,'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat(items.campaign_end_dy,'yyyy-MM-dd') +'</td>\n';
+	    		
+	    		var tag_tr = "<tr class='pointer' onclick=\"f_segmentList('"+items.campaign_id+"','"+items.campaign_nm+"','"+items.campaign_start_dy+"','"+items.campaign_end_dy+"')\">"+tag_td+"</tr>";
+	    		$("#campaign_tbody").append(tag_tr);
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+
+function f_segmentList(id, name, start_dy, end_dy) {
+	
+	var data = {
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			campaign_id : id
+	};
+	
+	$.ajax({
+	    url: api_url+'/backoffice/campaign/custgroup/list',
+	    type: 'GET', // GET or POST
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$("#custgroup_tbody").empty();
+	    	var custgp_list = obj.data.custgp_list;
+	    	$.each(custgp_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c"><input type="checkbox" value="'+items.lst_custgp_id+'"></td>';
+	    		tag_td += '<td class="ta-c">'+items.rnum+'</td>';
+	    		tag_td += '<td class="ta-c">'+items.lst_custgp_id+'</td>';
+	    		tag_td += '<td class="ta-c">'+items.custgp_nm+'</td>';
+	    		
+	    		var tag_tr = "<tr>"+tag_td+"</tr>";
+	    		$("#custgroup_tbody").append(tag_tr);
+	    	});
+	    	$("#campaign_id_tmp").val(id);
+	    	$("#campaign_nm_tmp").val(name);
+	    	$("#campaign_start_dy_tmp").val(start_dy);
+	    	$("#campaign_end_dy_tmp").val(end_dy);
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+</script>

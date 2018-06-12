@@ -1,0 +1,1261 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>PUSH 수정</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="searchProduct">
+
+							<fieldset>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">대상고객<sup>*</sup></label>
+									<div class="col-md-10">
+										<label class="control-label">
+											<span id="cust_grd_nm"></span>
+										</label>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목<sup>*</sup></label>
+									<div class="col-md-10"> 
+										<input class="form-control" type="text" value="(광고)롯데마트M쿠폰" name="crm_title" id="crm_title" data-valid-max="255" readonly="readonly" />										
+										<input type="hidden" id="empno" name="empno" value="${sessionScope.sessionEmpno}">
+										<input type="hidden" id="emp_str_cd" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+										<input type="hidden" id="hq_base_yn" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+										<input type="hidden" name="msg_id" id="msg_id" value="<%=request.getParameter("msg_info") %>"/>
+										<input type="hidden" name="scdl_id" id="scdl_id" value="<%=request.getParameter("scdl_info") %>"/>
+										<input type="hidden" name="campaign_id" id="campaign_id" value="<%=request.getParameter("campaignId") %>"/>
+										<input type="hidden" name="groupbuy_campaign_id" id="groupbuy_campaign_id" value="<%=request.getParameter("campaignId") %>"/>
+										<input type="hidden" name="lst_campaign_id" id="lst_campaign_id" value="<%=request.getParameter("campaignId") %>"/>
+										<input type="hidden" name="lst_custgp_id" id="lst_custgp_id" value="<%=request.getParameter("custgpId") %>"/>
+										<input type="hidden" name="groupbuy_custgp" id="groupbuy_custgp" value="<%=request.getParameter("custgpId") %>"/>
+										<input type="hidden" name="imgYn" id="imgYn" value="" />
+										<input type="hidden" name="aprv_sts_cd" id="aprv_sts_cd" />
+										
+										<input type="hidden" name="campaign_nm_val" id="campaign_nm_val" value="<%=request.getParameter("campaignnm") %>" />
+										<input type="hidden" name="campaign_start_dy" id="campaign_start_dy" value="<%=request.getParameter("campaignstartdd") %>" />
+										<input type="hidden" name="campaign_end_dy" id="campaign_end_dy" value="<%=request.getParameter("campaignenddd") %>" />
+										<input type="hidden" name="msgstsval" id="msgstsval" value="<%=request.getParameter("msgstsval") %>" />
+
+									</div>								
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">관리 제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text"name="view_title" id="view_title" data-valid-use="true" data-valid-symbol="true" data-valid-max="255" data-valid-title="관리 제목" /> 
+									</div>								
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">유형<sup>*</sup></label>
+									<div class="radio" style="margin-left: 10px;">
+<!-- 										<label> -->
+<!-- 											<input type="radio" class="radiobox style-0"  id="userYn1" name="userYn" value="Y" checked="checked" /> -->
+<!-- 											<span>텍스트</span>  -->
+<!-- 										</label> -->
+<!-- 										<label> -->
+<!-- 											<input type="radio" class="radiobox style-0" id="userYn2" name="userYn" value="N" /> -->
+<!-- 											<span>이미지</span>  -->
+<!-- 										</label> -->
+										<label>
+											<input type="radio" class="radiobox style-0" id="userYn3" name="userYn" value="Z" checked="checked" />
+											<span>이미지생성</span> 
+										</label>
+										<span id="img_cont" class="text-danger">안드로이드 PUSH는 이미지만 발송되며 아이폰은 텍스트만 PUSH로 발송 됩니다.</span> 
+									</div>											
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용<sup>*</sup></label>
+									<div class="col-md-10">
+										<textarea id="crm_desc" name="crm_desc" class="form-control" rows="4" data-valid-max="236"></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+<!-- 										<p class="text-danger"><i class="fa fa-info-circle"></i> 내용 처음에는 (광고)를 꼭 넣어야 합니다. (법적사항)</p> -->
+											<p class="text-danger"><i class="fa fa-info-circle"></i> 법적 유의 사항 안내</br>
+											1.  내용 처음에는 (광고)를 꼭 기입해야 합니다.</br>
+											2.  내용 끝에 '수신거부:설정'을 꼭 기입해야 합니다.</br>
+											3.  신선식품(농/축/수/조리)은 원산지, 중량을 표기해야 합니다.</p>
+									</div>
+								</div>
+
+								<div class="form-group" id="img">
+									<label class="col-md-2 control-label">템플릿<sup>*</sup></label>
+									<div class="col-md-2">										
+										<span id="btnTemplate">
+											<a href="javascript:f_openTemplateLD();" class="btn btn-primary btn-sm">템플릿 선택</a>
+										</span>
+										<span id="imgFileFind" class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" id="preview_uploadfile2" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div id="gen_template" class="col-md-8"></div>
+								</div>
+
+								<div id="btn_gen_preview" class="col-md-12" style="width:100%; text-align:right; align:right; display:none;">
+									<input type="hidden" id="gen_template_img_path" name="gen_template_img_path">
+									<input type="hidden" id="gen_img_reg_yn" name="gen_img_reg_yn">
+									<a href="javascript:f_openGenImgPreview();" class="btn btn-primary">미리보기</a>
+								</div>
+
+								<div class="form-group" id="img_cont_info">
+								<!-- 템플릿 사용시 필요 없음
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 이미지 사이즈: 1120px X 745px  /  파일종류: jpg, gif, png  / 최대파일용량: 300KB</p>
+									</div>
+								 -->
+								</div>
+
+								<div class="form-group">
+								<label class="col-md-2 control-label">링크사용</label>
+								  <div class="radio" style="margin-left: 10px;">
+										<label>
+											<input type="radio" class="radiobox style-0"  id="linkYn" name="linkYn" value="Y" checked="checked" >
+											<span>예</span> 
+										</label>
+										<label>
+											<input type="radio" class="radiobox style-0" id="linkYn2" name="linkYn" value="N">
+											<span>아니오</span> 
+										</label>
+									</div>											
+								</div>
+
+								<div class="form-group" id="link_hide" style="display:none;">
+									<label class="col-md-2 control-label">URL 선택</label>
+									<div class="col-md-2">
+										<div class="input-group">
+										<select class="form-control" id="link_url" name="link_url" data-valid-use="true">
+											<option value="">선택</option>
+											<option value="LIST">목록</option>
+											<option value="CPBOOK">쿠폰북</option>
+											<option value="STAMP">스탬프</option>
+											<option value="FCFS">달려라선착순</option>
+											<option value="OUTSIDE">외부링크</option>
+											<option value="BRANCH">지점혜택공지</option>
+										</select>
+										</div>
+									</div>
+									<div class="col-md-2" id="inside_url">
+										<select class="form-control" id="issue_cpbook" name="issue_cpbook" data-valid-use="true">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<div class="col-md-6" id="outside_url" style="display:none">
+										<input class="form-control" type="text" name="issue_cpbook" id="issue_cpbook" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">발송일</label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" data-dateformat='yy-mm-dd' data-date-format="yyyyMMdd" id="s_campaign_start_dy" name="s_campaign_start_dy"  placeholder="시작일" onclick="f_datepickerIndex();">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="evt_end_hour" name="evt_end_hour">
+											<option value="">시</option>
+										</select>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="evt_end_min" name="evt_end_min">
+											<option value="">분</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+								<label class="col-md-2 control-label">화면켜짐</label>
+								  <div class="radio" style="margin-left: 10px;">
+										<label>
+											<input type="radio" class="radiobox style-0"  id="expose1" name="expose" value="Y" checked="checked" >
+											<span>예</span> 
+										</label>
+										<label>
+											<input type="radio" class="radiobox style-0" id="expose2" name="expose" value="N">
+											<span>아니오</span> 
+										</label>
+									</div>											
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 발송일과 시각은 현재시각 1시간 이후 부터 가능합니다.</p>
+									</div>
+								</div>
+
+							</fieldset>							
+
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_mCouponList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_pushTimeChk(2)" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="beaconLL">
+		
+	</div>
+</section>
+
+
+<div id="templates_ld" style="display:none;"></div>
+<div id="gen_img_preview" style="display:none;"></div>
+
+<div style="display:none;">
+	<div id="gen_template1">
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content1" name="gen_content1" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용1'  title="행사안내">
+		<input class="form-control" type="text" id="gen_content2" name="gen_content2" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용2' title="행사제목">
+		<textarea class="form-control" id="gen_content3" name="gen_content3" rows="4" style="margin-top:2px; margin-bottom:2px;" data-valid-max="300" title="행사내용"></textarea>
+		<input class="form-control" type="text" id="gen_content4" name="gen_content4" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용3' title="기간">
+		<input class="form-control" type="text" id="gen_content5" name="gen_content5" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용4' title="영업상태">
+	</div>
+	<div id="gen_template2">
+		<div class="input-group" style="width:100%">
+			<div style="width:50%; float:right">
+				<input class="form-control" type="text" id="gen_content1" name="gen_content1" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용1' title="테마">
+			</div>
+		</div>
+		<div class="input-group" style="width:100%">
+			<div style="width:50%; float:left">
+				<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content2" name="gen_content2" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용2' title="행사안내">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-right:1px;" id="gen_content3" name="gen_content3" rows="1" data-valid-max="300"  title="행사제목"></textarea>
+				<textarea class="form-control" style="width:100%; height:100%; margin-top:2px; margin-bottom:2px; margin-right:1px;" id="gen_content4" name="gen_content4" rows="6" data-valid-max="300"  title="행사내용"></textarea>
+			</div>
+			<div style="width:50%; float:left">
+				<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content5" name="gen_content5" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용5' title="기간">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content6" name="gen_content6" rows="2" data-valid-max="300" title="혜택1"></textarea>
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content7" name="gen_content7" rows="2" data-valid-max="300" title="혜택2"></textarea>
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content8" name="gen_content8" rows="2" data-valid-max="300" title="혜택3"></textarea>
+			</div>
+		</div>
+		<input class="form-control" type="text" id="gen_content9" name="gen_content9" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용9' title="영업상태">
+	</div>
+	<div id="gen_template3">
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content1" name="gen_content1" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용1' title="기간">
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content2" name="gen_content2" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용2' title="행사안내">
+		<div class="input-group" style="width:100%">
+			<div style="width:34%; float:left">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-right:1px;" id="gen_content3" name="gen_content3" rows="5" data-valid-max="300" title="혜택1"></textarea>
+			</div>
+			<div style="width:33%; float:left">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content4" name="gen_content4" rows="5" data-valid-max="300" title="혜택2"></textarea>
+			</div>
+			<div style="width:33%; float:left">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content5" name="gen_content5" rows="5" data-valid-max="300" title="혜택3"></textarea>
+			</div>
+		</div>
+		<input class="form-control" type="text" id="gen_content6" name="gen_content6" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용6' title="영업상태">
+	</div>
+</div>
+
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+<input type="hidden" id="empno" name="empno" value="${sessionScope.sessionEmpno}">
+</form>
+
+
+
+<script type="text/javascript">
+
+
+
+/**
+ * ==================================================================================
+ * 템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_ld').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 템플릿 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=template_list]:checked");
+
+			var v_nm = chk_obj.attr('img_view_nm');
+			var img_path = chk_obj.attr('img_path');
+			var thum_path = chk_obj.attr('thum_path');			
+			
+			
+			// 생성 이미지
+			$('#preview_uploadfile').find('img').attr('src',img_path);			
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_gen_uploadfile');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateGenFileDelete()").text('파일삭제');						
+
+			
+			
+// 			var input_file_divn_cd = $('<input>')
+// 			.attr('type', 'hidden')
+// 			.attr('name', 'file_divn_cd')
+// 			.val("IMG_PUSH");
+		
+			var input_local_file_name = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'img_local_nm')
+						.val(v_nm);
+			
+			var input_atch_file_nm = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'img_view_nm')
+						.val(v_nm);
+			
+// 			span.append(input_file_divn_cd);
+			span.append(input_local_file_name);
+			span.append(input_atch_file_nm);
+
+			$('#gen_template_img_path').val(img_path);
+			
+			var template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			var btn_div = $("#uploadfile").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+
+			// 템플릿ID에 맞는 입력폼 출력
+			if(template_id.val() == "000000000000001") {
+				$('#gen_template').html($('#gen_template1').html());
+			}
+			else if(template_id.val() == "000000000000002") {
+				$('#gen_template').html($('#gen_template2').html());
+			}
+			else if(template_id.val() == "000000000000003") {
+				$('#gen_template').html($('#gen_template3').html());
+			}
+
+			// 생성이미지 미리보기 버튼 보이기
+			$("#btn_gen_preview").show();
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#templates_ld').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+
+
+$('#gen_img_preview').dialog({
+	autoOpen : false,
+ 	width : 1120+28,
+ 	minHeight: 745,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 미리보기 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+
+
+			// 이미지생성파일 Temp 업로드
+			var data = {
+							 empno : "${sessionScope.sessionEmpno}"
+							,emp_str_cd : "${sessionScope.sessionStrCd}"
+							,hq_base_yn : "${sessionScope.sessionHqBaseYn}"
+							,gen_img_data : $('#gen_img_data').val()
+							,gen_img_view_nm : $('#gen_img_view_nm').val()
+							,gen_img_path : $('#gen_img_path').val()
+							,gen_content_type : $('#gen_content_type').val()
+							,gen_img_ext : $('#gen_img_ext').val()
+							,file_divn_cd : 'IMG_PUSH'
+						};
+			// ---------------- 서버 전송 데이터 세팅 종료--------------------------//
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/common/canvas/file/upload',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(resultData){
+			    	
+			    	var data = resultData.data;
+
+					$('#preview_uploadfile').find('img').attr('src',data.prvw_url);	
+					var btn_div = $("#uploadfile").parent().parent();
+					var template_id_obj = btn_div.find("input[name=template_id]");
+					var template_id = template_id_obj.val();
+
+					var span = template_id_obj.parent();
+					
+					var input_local_file_name = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_strge_file_nm')
+								.val(data.local_file_nm);
+					
+					var input_atch_file_nm = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_orgin_file_nm')
+								.val(data.atch_file_nm);
+					
+					var input_edit_check = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'edit_check_uploadfile')
+								.val(data.local_file_nm);
+
+					span.find('input[name=img_strge_file_nm]').remove();
+		            span.find('input[name=img_orgin_file_nm]').remove();
+		            span.find('input[name=edit_check_uploadfile]').remove();
+					
+					span.append(input_local_file_name);
+					span.append(input_atch_file_nm);
+					span.append(input_edit_check);
+
+					btn_div.append(span);
+			    
+					$('#gen_img_reg_yn').val("Y"); // 생성이미지 등록여부 Y
+			    },
+			    error: function(resultData) {
+			    	var serverObj = resultData["responseJSON"];
+			    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+			    	return;
+			    }
+			});			
+
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#gen_img_preview').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 이미지생성 미리보기 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openGenImgPreview() {
+
+	var gen_content1 = $('#gen_content1').val() == undefined ? "" : $('#gen_content1').val();
+	var gen_content2 = $('#gen_content2').val() == undefined ? "" : $('#gen_content2').val();
+	var gen_content3 = $('#gen_content3').val() == undefined ? "" : $('#gen_content3').val();
+	var gen_content4 = $('#gen_content4').val() == undefined ? "" : $('#gen_content4').val();
+	var gen_content5 = $('#gen_content5').val() == undefined ? "" : $('#gen_content5').val();
+	var gen_content6 = $('#gen_content6').val() == undefined ? "" : $('#gen_content6').val();
+	var gen_content7 = $('#gen_content7').val() == undefined ? "" : $('#gen_content7').val();
+	var gen_content8 = $('#gen_content8').val() == undefined ? "" : $('#gen_content8').val();
+	var gen_content9 = $('#gen_content9').val() == undefined ? "" : $('#gen_content9').val();
+	var gen_content10 = $('#gen_content10').val() == undefined ? "" : $('#gen_content10').val();
+	
+// 	var img_path = $('#preview_uploadfile').find('img').attr('src');
+	var img_path = $('#gen_template_img_path').val();
+ 	var img_view_nm = $('#preview_uploadfile').parent().find('p').text();
+ 	var template_id = $("#uploadfile").parent().parent().find("input[name=template_id]").val();
+
+	var data = {
+					img_path:img_path
+					,img_view_nm:img_view_nm
+					,template_id:template_id
+					,gen_content1:gen_content1
+					,gen_content2:gen_content2
+					,gen_content3:gen_content3
+					,gen_content4:gen_content4
+					,gen_content5:gen_content5
+					,gen_content6:gen_content6
+					,gen_content7:gen_content7
+					,gen_content8:gen_content8
+					,gen_content9:gen_content9
+					,gen_content10:gen_content10
+				};
+
+	$.ajax({
+		url: "/application/push/crm/crmGenImg.do",
+		type: 'POST',
+		async: true,
+		cache: false,
+ 		data: data,
+		success: function(data) {
+			var $target = $('#gen_img_preview');
+			$target.html(data);
+		}
+	});
+	$('#gen_img_preview').dialog('open');
+}
+
+
+
+
+var pagefunction = function() {
+
+	f_setTimeStr();
+	
+	// 링크사용 Default값 설정	
+    $('#link_hide').hide();
+
+	$('input[name="linkYn"]').change(function(){
+		if($(this).val() == "N") {
+	        $("#link_url").val("").attr("selected","selected");
+		}
+	    else {
+	        $("#link_url").val("BRANCH").attr("selected","selected");
+	    }
+		$('#link_hide').hide();
+	});
+
+	
+	$('select[name=issue_cpbook]')
+		.on('change', function() {
+			
+		})
+		.bind('getData', function(evt, key) {
+			var self = this;
+			var $option = $(self).children(':selected');
+			return $option.data('item')[key || '_'] || '';
+		})
+		.bind('init', function(evt) {
+			var self = this;
+			var _options = $(self).data();
+			$(self).empty().append( $('<option></option>').data('item', {}).val('').text('선택') );
+			
+			$.each(_options['items'] || [], function() {
+				$('<option></option>').data('item', this).val(this[_options['key']]).text(this[_options['label']]).appendTo( $(self) );
+			});
+
+			if (_options['_select'] && $.isFunction(_options['_select'])) {
+				_options['_select'].apply(self);
+			}
+			else if (_options['defaultValue']){
+				$(self).val(_options['defaultValue'] || '');
+			}
+		});
+	
+		var send_data = {
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				msgId : $("#msg_id").val(),
+				scdlId : $("#scdl_id").val()
+		};
+		
+		
+		$.ajax({
+		    url: api_url+"/backoffice/push/crm/show", 
+			type: 'GET',
+			async: true,
+			cache: true,
+			datatype: 'json',
+			data: encodeURI("params="+JSON.stringify(send_data)),
+			success: function(data) {
+
+				$("#crm_title").val(data.data.push_list[0].msgtitle);
+				$("#view_title").val(data.data.push_list[0].view_title);
+				$("#crm_desc").val(data.data.push_list[0].msgcontent);
+				var date_val = data.data.push_list[0].scdltm;
+				var date = date_val.substring(0,10);
+				var time = date_val.substring(11,13);
+				var minut = date_val.substring(14,16);
+				var msgType = data.data.push_list[0].msgtype;
+				var urlType = data.data.push_list[0].urltype;
+				var custgpId = data.data.push_list[0].custgpid;
+				var msgUrl = data.data.push_list[0].msgurl;
+				var expose = data.data.push_list[0].expose;
+				$("#aprv_sts_cd").val(data.data.push_list[0].aprv_sts_cd); // 승인상태코드
+				
+				$("#s_campaign_start_dy").val(date);				
+				$("#evt_end_hour").val(time);
+				$("#evt_end_min").val(minut);
+				
+ 				var strnm = data.data.push_list[0].strnm;
+ 				var cust_grd_nm_list = data.data.push_list[0].cust_grd_nm_list;
+ 				$("#cust_grd_nm").html("[" + strnm + "] 등급(" + cust_grd_nm_list + ")");
+
+ 				
+				var template_id = data.data.push_list[0].template_id;
+				if(template_id != "") {
+					var input_template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id').val(template_id);
+					var span = $('<span>').addClass('btn_del_gen_uploadfile');
+					span.append(input_template_id);
+					var btn_div = $("#uploadfile").parent().parent();
+					btn_div.append(span);
+				}
+
+				
+				if(expose =="Y") {
+					$("#expose1").attr("checked", true);
+					$("#expose2").attr("checked", false);
+				}else{
+					$("#expose1").attr("checked", false);
+					$("#expose2").attr("checked", true);
+				}
+				
+				
+				if(msgType == "1"){ // link 없는 text
+					$('input:radio[name=userYn]:input[value=Y]').attr("checked", true);
+					$('#img').hide();
+					$('#preview_uploadfile').hide();
+					$('#img_cont').hide();
+					$('#img_cont_info').hide();
+					$("#imgYn").val("N");
+					$('input:radio[name=linkYn]:input[value=N]').attr("checked", true);
+					$("#link_hide").hide();
+					
+				}else if(msgType == "2"){ // link 없는 img
+					if(template_id != "") {
+						$('input:radio[name=userYn]:input[value=Z]').attr("checked", true);
+				    	// 파일선택 숨기기
+				    	$('#imgFileFind').hide();
+
+						// 템플릿ID에 맞는 입력폼 출력
+						if(template_id == "000000000000001") {
+							$('#gen_template').html($('#gen_template1').html());
+						}
+						else if(template_id == "000000000000002") {
+							$('#gen_template').html($('#gen_template2').html());
+						}
+						else if(template_id == "000000000000003") {
+							$('#gen_template').html($('#gen_template3').html());
+						}
+
+						// 템플릿ID에 맞는 템플릿 이미지 경로
+				    	$('#gen_template_img_path').val(data.data.push_list[0].gen_template_img_path);
+
+						// 생성이미지 미리보기 버튼 보이기
+						$("#btn_gen_preview").show();
+
+						$('#gen_img_reg_yn').val("Y"); // 생성이미지 등록여부 Y
+					}
+					else {
+						$('input:radio[name=userYn]:input[value=N]').attr("checked", true);
+				    	// 템플릿선택 숨기기
+				    	$('#btnTemplate').hide();
+					}
+
+					$('#img').show();
+			    	$('#preview_uploadfile').show();
+			    	$('#img_cont').show();
+			    	$('#img_cont_info').show();
+			    	
+			    	var string = data.data.push_list[0].msgurl;
+					var strArray = string.split('|');
+					var imgArray = strArray[1];
+					var cutLen =imgArray.lastIndexOf("/lmscp");
+
+					var imgPathArr = string.split('/');
+					var imgPath = imgPathArr[imgPathArr.length-1];
+					
+// 					var imgPath = "/scpimg_nas"+imgArray.substring(cutLen);
+					 $("#imgPath").val(imgPath);
+//					 $('#preview_uploadfile2').attr('src', string.substring(57));
+					 $("#imgYn").val("Y");
+					 $('input:radio[name=linkYn]:input[value=N]').attr("checked", true);
+					 $("#link_hide").hide(); 
+
+					 var imgViewNm = data.data.push_list[0].imgviewnm;
+				
+					//-------------------------
+					// 이미지 변경처리 Start
+					//-------------------------
+					var preview = $('#preview_uploadfile');
+					preview.find('img').attr('src',imgArray);
+				
+					var fName = '<p class="alert alert-info bd0">'+imgViewNm+'</p>';
+					preview.parent().append(fName); 
+				
+					var span = $('<span>').addClass('btn_del_uploadfile');
+					var aTag = $('<a>')
+								.addClass('btn btn-danger btn-sm')
+								.attr('href','javascript:cf_fileDelete(\'uploadfile\')')
+								.text('파일삭제');
+					if(template_id != "") {
+						span = $('<span>').addClass('btn_del_gen_uploadfile');
+						aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateGenFileDelete()").text('파일삭제');						
+					}
+				
+					var input_file_divn_cd = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'file_divn_cd')
+						.val("IMG_PUSH");
+				
+					var input_local_file_name = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_strge_file_nm')
+								.val(imgPath);
+				
+					var input_atch_file_nm = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_orgin_file_nm')
+								.val(imgViewNm);
+				
+					var input_edit_check = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'edit_check_uploadfile')
+								.val(imgPath);
+				
+					span.append(aTag);
+					span.append(input_file_divn_cd);
+					span.append(input_local_file_name);
+					span.append(input_atch_file_nm);
+					span.append(input_edit_check);
+				
+					var btn_div = $("#uploadfile").parent().parent();
+					btn_div.find("a").attr("disabled", true);
+					btn_div.find("span").attr("disabled", true);
+					btn_div.append(span);
+					//-------------------------
+					// 이미지 변경처리 End
+					//-------------------------
+
+				
+				
+				}else if(msgType == "3") { // link 있는 text
+					$('input:radio[name=userYn]:input[value=Y]').attr("checked", true);
+					$('#img').hide();
+					$('#preview_uploadfile').hide();
+					$('#img_cont').hide();
+					$('#img_cont_info').hide();
+					$("#imgYn").val("N");
+					
+					$("#link_url").val(urlType);
+					var modData = {
+							empno: '${sessionScope.sessionEmpno}', 
+							emp_str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+					 		link_url : urlType,
+					 		lst_custgp_id_list : [custgpId]
+
+					};
+					$.ajax({
+						url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+						type: 'GET',
+						async: false,
+						cache: true,
+						datatype: 'json',
+						data: encodeURI('params='+JSON.stringify(modData)),
+						success: function(obj) {
+							var objData = obj['data'] || {};
+							if(objData['url_type'] == "CPBOOK") {
+								var _cpbook_id = ""; // msgUrl.substring(78,83);
+								var _cpzine_id = ""; // msgUrl.substring(78,83);
+								var _mapp_digit = ""; // msgUrl.substring(129, 133);
+								var _cp_type = "";
+								if(msgUrl.indexOf("cpzine_id") > -1) {
+									_cpbook_id = msgUrl.substring(82,97);
+									_cp_type = "CPZINE";
+								}else {
+									_cp_type = "CRM";
+									_mapp_digit = msgUrl.substring(129, 133);
+									_cpbook_id = msgUrl.substring(78,83);
+								}
+								$('select[name=issue_cpbook]')
+									.data({
+										'items': objData['result_list'], 'key': 'cpbook_id', 'label': 'cpbook_nm', '_select': function() {
+											var self = this;
+											
+											$(self).children()
+														.filter(function() {
+															if(_cp_type =="CRM") {
+																return $(this).data('item')['cpbook_id'] == _cpbook_id
+																		&& $(this).data('item')['cpbook_mapp_digit'] == _mapp_digit;
+															}else {
+																return $(this).data('item')['cpbook_id'] == _cpbook_id;
+																
+															}
+														}).prop('selected', 'selected');
+										}
+									})
+									.triggerHandler('init');
+								
+							}else if(objData['url_type'] == "STAMP") {
+								var _stamp_id = msgUrl.substring(77);
+								$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'stamp_id', 'label': 'evt_title', '_select': function() { $(this).val(_stamp_id);}}).triggerHandler('init');
+
+							}else if(objData['url_type'] == "FCFS") {
+								var _fcfs_id = msgUrl.substring(73);
+								$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'fcfs_evnt_id', 'label': 'evt_title', '_select': function() { $(this).val(_fcfs_id);}}).triggerHandler('init');
+								
+							}else if(urlType == "LIST"){
+								var target = $('select[name=issue_cpbook]');
+								var options = "";
+								
+								options +="<option value=cpbook_list>쿠폰북목록</option>";
+								options +="<option value=stamp_list>스탬프목록</option>";
+								options +="<option value=fcfs_list>달려라선착순목록</option>";
+								options +="<option value=poll_list>POLL목록</option>";
+								
+								target.html(options);
+								if(msgUrl.indexOf("couponMainLN") > -1) {
+									$('#issue_cpbook').val("cpbook_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("stampMainLN") > -1) {
+									$('#issue_cpbook').val("stamp_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("withMainLN") > -1) {
+									$('#issue_cpbook').val("fcfs_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("pollMainLN") > -1) {
+									$('#issue_cpbook').val("poll_list").attr('selected', 'selected');
+								}
+							}else if(urlType == "OUTSIDE"){
+								$("#inside_url").hide();
+								$("#outside_url").show();
+								$("#outside_url").find("input[name=issue_cpbook]").val(msgUrl.substring(msgUrl.indexOf("=")+1));
+// 								$("#issue_cpbook").val(msgUrl.substring(msgUrl.indexOf("=")+1)); // http://m.coupond.lottemart.com/ 기준
+							}
+						}	
+					});
+				}else if(msgType == "4"){ // link 있는 img
+					if(template_id != "") {
+						$('input:radio[name=userYn]:input[value=Z]').attr("checked", true);
+				    	// 파일선택 숨기기
+				    	$('#imgFileFind').hide();
+
+						// 템플릿ID에 맞는 입력폼 출력
+						if(template_id == "000000000000001") {
+							$('#gen_template').html($('#gen_template1').html());
+						}
+						else if(template_id == "000000000000002") {
+							$('#gen_template').html($('#gen_template2').html());
+						}
+						else if(template_id == "000000000000003") {
+							$('#gen_template').html($('#gen_template3').html());
+						}
+
+						// 템플릿ID에 맞는 템플릿 이미지 경로
+				    	$('#gen_template_img_path').val(data.data.push_list[0].gen_template_img_path);
+
+						// 생성이미지 미리보기 버튼 보이기
+						$("#btn_gen_preview").show();
+
+						$('#gen_img_reg_yn').val("Y"); // 생성이미지 등록여부 Y
+					}
+					else {
+						$('input:radio[name=userYn]:input[value=N]').attr("checked", true);
+				    	// 템플릿선택 숨기기
+				    	$('#btnTemplate').hide();
+					}
+
+					$('#img').show();
+			    	$('#preview_uploadfile').show();
+			    	$('#img_cont').show();
+			    	$('#img_cont_info').show();
+			    	
+			    	var string = data.data.push_list[0].msgurl;
+					var strArray = string.split('|');
+					var imgArray = strArray[1];
+					var cutLen =imgArray.lastIndexOf("/lmscp");
+
+					var imgPathArr = string.split('/');
+					var imgPath = imgPathArr[imgPathArr.length-1];
+					
+//					var imgPath = "/scpimg_nas"+imgArray.substring(cutLen);
+					 $("#imgPath").val(imgPath);
+//					 $('#preview_uploadfile2').attr('src', string.substring(32));
+					 $("#imgYn").val("Y");
+					 $("#link_url").val(urlType);
+
+					var imgViewNm = data.data.push_list[0].imgviewnm;
+
+
+					//-------------------------
+					// 이미지 변경처리 Start
+					//-------------------------
+					var preview = $('#preview_uploadfile');
+					preview.find('img').attr('src',imgArray);
+				
+					var fName = '<p class="alert alert-info bd0">'+imgViewNm+'</p>';
+					preview.parent().append(fName); 
+				
+					var span = $('<span>').addClass('btn_del_uploadfile');
+					var aTag = $('<a>')
+								.addClass('btn btn-danger btn-sm')
+								.attr('href','javascript:cf_fileDelete(\'uploadfile\')')
+								.text('파일삭제');
+					if(template_id != "") {
+						span = $('<span>').addClass('btn_del_gen_uploadfile');
+						aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateGenFileDelete()").text('파일삭제');						
+					}
+				
+					var input_file_divn_cd = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'file_divn_cd')
+						.val("IMG_PUSH");
+				
+					var input_local_file_name = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_strge_file_nm')
+								.val(imgPath);
+				
+					var input_atch_file_nm = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_orgin_file_nm')
+								.val(imgViewNm);
+				
+					var input_edit_check = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'edit_check_uploadfile')
+								.val(imgPath);
+				
+					span.append(aTag);
+					span.append(input_file_divn_cd);
+					span.append(input_local_file_name);
+					span.append(input_atch_file_nm);
+					span.append(input_edit_check);
+				
+					var btn_div = $("#uploadfile").parent().parent();
+					btn_div.find("a").attr("disabled", true);
+					btn_div.find("span").attr("disabled", true);
+					btn_div.append(span);
+					//-------------------------
+					// 이미지 변경처리 End
+					//-------------------------
+					 
+					
+					
+					
+					var modData = {
+							empno: '${sessionScope.sessionEmpno}', 
+							emp_str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+					 		link_url : urlType,
+					 		lst_custgp_id_list : [custgpId]
+
+					};
+
+					
+					$.ajax({
+						url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+						type: 'GET',
+						async: false,
+						cache: true,
+						datatype: 'json',
+						data: encodeURI('params='+JSON.stringify(modData)),
+						success: function(obj) {
+							var objData = obj['data'] || {};
+							
+							if(objData['url_type'] == "CPBOOK") {
+								var _cpbook_id = ""; // msgUrl.substring(78,83);
+								var _cpzine_id = ""; // msgUrl.substring(78,83);
+								var _mapp_digit = ""; // msgUrl.substring(129, 133);
+								var _cp_type = "";
+								if(msgUrl.indexOf("cpzine_id") > -1) {
+// 									$('#preview_uploadfile2').attr('src', string.substring(98));
+									_cpbook_id = msgUrl.substring(82,97);
+									_cp_type = "CPZINE";
+								}else {
+// 									$('#preview_uploadfile2').attr('src', string.substring(134));
+									_cp_type = "CRM";
+									_mapp_digit = msgUrl.substring(129, 133);
+									_cpbook_id = msgUrl.substring(78,83);
+								}
+								$('select[name=issue_cpbook]')
+									.data({
+										'items': objData['result_list'], 'key': 'cpbook_id', 'label': 'cpbook_nm', '_select': function() {
+											var self = this;
+											
+											$(self).children()
+														.filter(function() {
+															if(_cp_type =="CRM") {
+																return $(this).data('item')['cpbook_id'] == _cpbook_id
+																		&& $(this).data('item')['cpbook_mapp_digit'] == _mapp_digit;
+															}else {
+																return $(this).data('item')['cpbook_id'] == _cpbook_id;
+																
+															}
+														}).prop('selected', 'selected');
+										}
+									})
+									.triggerHandler('init');
+							}else if(objData['url_type'] == "STAMP") {
+// 								 $('#preview_uploadfile2').attr('src', string.substring(93));
+								var _stamp_id = msgUrl.substring(77, 92);
+								$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'stamp_id', 'label': 'evt_title', '_select': function() { $(this).val(_stamp_id);}}).triggerHandler('init');
+
+							}else if(objData['url_type'] == "FCFS") {
+// 								 $('#preview_uploadfile2').attr('src', string.substring(89));
+								var _fcfs_id = msgUrl.substring(73, 88);
+								$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'fcfs_evnt_id', 'label': 'evt_title', '_select': function() { $(this).val(_fcfs_id);}}).triggerHandler('init');
+								
+							}else if(urlType == "LIST" || urlType == "LIST"){
+								var target = $('select[name=issue_cpbook]');
+								var options = "";
+
+								options +="<option value=cpbook_list>쿠폰북목록</option>";
+								options +="<option value=stamp_list>스탬프목록</option>";
+								options +="<option value=fcfs_list>달려라선착순목록</option>";
+								options +="<option value=poll_list>POLL목록</option>";
+								
+								target.html(options);
+								if(msgUrl.indexOf("couponMainLN") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(68));
+									$('#issue_cpbook').val("cpbook_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("stampMainLN") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(66));
+									$('#issue_cpbook').val("stamp_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("withMainLN") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(64));
+									$('#issue_cpbook').val("fcfs_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("pollMainLN") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(64));
+									$('#issue_cpbook').val("poll_list").attr('selected', 'selected');
+								}
+							}else if(urlType == "OUTSIDE"){
+								$('#preview_uploadfile2').attr('src', string.substring(string.indexOf("|")+1));
+								$("#inside_url").hide();
+								$("#outside_url").show();
+								$("#outside_url").find("input[name=issue_cpbook]").val(msgUrl.substring(msgUrl.indexOf("=")+1, msgUrl.indexOf("|")));
+								//$("#issue_cpbook").val(msgUrl.substring(31)); // http://m.coupond.lottemart.com/ 기준
+							}
+						}	
+					});
+				}
+
+				$('#gen_template').find('[id=gen_content1]').val(data.data.push_list[0].gen_content1);
+				$('#gen_template').find('[id=gen_content2]').val(data.data.push_list[0].gen_content2);
+				$('#gen_template').find('[id=gen_content3]').val(data.data.push_list[0].gen_content3);
+				$('#gen_template').find('[id=gen_content4]').val(data.data.push_list[0].gen_content4);
+				$('#gen_template').find('[id=gen_content5]').val(data.data.push_list[0].gen_content5);
+				$('#gen_template').find('[id=gen_content6]').val(data.data.push_list[0].gen_content6);
+				$('#gen_template').find('[id=gen_content7]').val(data.data.push_list[0].gen_content7);
+				$('#gen_template').find('[id=gen_content8]').val(data.data.push_list[0].gen_content8);
+				$('#gen_template').find('[id=gen_content9]').val(data.data.push_list[0].gen_content9);
+				$('#gen_template').find('[id=gen_content10]').val(data.data.push_list[0].gen_content10);
+				
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData["responseJSON"];
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+			
+		});
+		
+		$('input[name="userYn"]').change(function(){
+			    if($(this).val() == "N") {
+			        $('#img').show();
+			    	$('#preview_uploadfile').show();
+			    	$('#img_cont').show();
+			    	$('#img_cont_info').show();
+
+			    	// 파일선택 보이기
+			    	$('#imgFileFind').show();
+			    	// 템플릿선택 숨기기
+			    	$('#btnTemplate').hide();
+			    	// 템플릿폼 삭제
+			    	f_templateGenFileDelete();
+				}
+			    else if($(this).val() == "Y") {
+			    	if ($("#imgYn").val()=="Y"){    //확인
+			    		if(confirm("기존의 이미지 파일은 삭제 됩니다.\n 진행 하시겠습니까?")==true){
+				    		$("#imgPath").val("");
+				    		$("#imgYn").val("N");
+				    		
+			    		} else{   //취소
+						return;
+			    		}
+			    	}
+			    	$('#img').hide();
+			    	$('#preview_uploadfile').hide();
+			    	$('#img_cont').hide();
+			    	$('#img_cont_info').hide();
+
+			    	// 파일선택 숨기기
+			    	$('#imgFileFind').hide();
+			    	// 템플릿선택 숨기기
+			    	$('#btnTemplate').hide();
+			    	// 템플릿폼 삭제
+			    	f_templateGenFileDelete();
+			    	// 파일삭제
+			    	cf_fileDelete('uploadfile');
+			    }
+			    else if($(this).val() == "Z") {
+			        $('#img').show();
+			    	$('#preview_uploadfile').show();
+			    	$('#img_cont').show();
+			    	$('#img_cont_info').show();
+			    
+			    	// 파일선택 숨기기
+			    	$('#imgFileFind').hide();
+			    	// 템플릿선택 보이기
+			    	$('#btnTemplate').show();
+			    	// 템플릿폼 삭제
+			    	cf_fileDelete('uploadfile');
+			    }
+			});
+	
+};
+
+
+/*
+$('#link_url').change(function(){
+	var _link_url = $('#link_url option:selected').val();
+	$("#outside_url").find("input[name=issue_cpbook]").val("");
+	if(_link_url != "LIST" && _link_url != "OUTSIDE") {
+		$("#outside_url").hide();
+		$("#inside_url").show();
+		var data = {
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+		 		link_url : _link_url,//$('#link_url option:selected').val(),
+		 		lst_custgp_id_list : [$("input[name=lst_custgp_id]").val()]
+	
+		};
+		$("#url_lst_custgp_id").val($("input[name=lst_custgp_id]").val());
+		$.ajax({
+			url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+			type: 'GET',
+			async: false,
+			cache: true,
+			datatype: 'json',
+			data: encodeURI('params='+JSON.stringify(data)),
+			success: function(obj) {
+	// 			var obj = obj.data;
+	// 			var target = $('select[name=issue_cpbook]');
+	// 			var options = "<option value=''>선택</option>";
+	// 			if(obj.url_type=="cpbook") {
+	// 				$.each(obj.result_list, function(i, item) {
+	// 					console.log(item.cpbook_type_cd);
+	// 					options += "<option value='"+item.cpbook_id+"'data-mapp-digit='"+item.cpbook_mapp_digit+"'data-cpbook-cd='"+item.ctype+"'data-cpbook-id='"+item.cpbook_id+"'data-cpbook-cd='"+item.ctype+"'data-cpbook-type-cd='"+item.cpbook_type_cd+"'>"+item.cpbook_nm+"</option>";
+	// 				});
+	// 				$("#send_url").val();
+	// 			}else if(obj.url_type=="stamp") {
+	// 				$.each(obj.result_list, function(i, item) {
+	// 					options += "<option value='"+item.stamp_id+"'>"+item.evt_title+"</option>";
+	// 				});
+	// 				$("#send_url").val("");
+	// 			}else if(obj.url_type=="fcfs") {
+	// 				$.each(obj.result_list, function(i, item) {
+	// 					options += "<option value='"+item.fcfs_evnt_id+"'>"+item.evt_title+"</option>";
+	// 				});
+	// 				$("#send_url").val();
+	// 			}
+	// 			target.html(options);
+	
+				var objData = obj['data'] || {};
+				if(objData.result_list == 0){
+					alert("해당 고객군에 발행된 쿠폰북이 없습니다.");
+				}else if(objData.result_list == 1){
+					alert("해당 고객군에 진행중인 달려라 선착순이 없습니다.");
+				}else if(objData.result_list == 2){
+					alert("해당 고객군에 진행중인 스탬프가 없습니다.");
+					
+				}
+				if(objData['url_type'] == "CPBOOK") {
+					$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'cpbook_id', 'label': 'cpbook_nm', '': function() {}}).triggerHandler('init');
+				}else if(objData['url_type'] == "STAMP") {
+					$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'stamp_id', 'label': 'evt_title', '': function() { }}).triggerHandler('init');
+	
+				}else if(objData['url_type'] == "FCFS") {
+					 
+					$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'fcfs_evnt_id', 'label': 'evt_title', '': function() { }}).triggerHandler('init');
+					
+				}
+			}	
+		});
+	}else if(_link_url == "LIST"){
+		var target = $('select[name=issue_cpbook]');
+		var options = "<option value=''>선택</option>";
+		
+		options +="<option value=cpbook_list>쿠폰북목록</option>";
+		options +="<option value=stamp_list>스탬프목록</option>";
+		options +="<option value=fcfs_list>달려라선착순목록</option>";
+		options +="<option value=poll_list>POLL목록</option>";
+		
+		target.html(options);
+	}else {
+		$("#inside_url").hide();
+		$("#outside_url").show();
+	}
+});
+*/
+
+
+
+/**
+ * ==================================================================================
+ * 달력 : 달력 인덱스 조정
+ * ==================================================================================
+ */
+function f_datepickerIndex() {
+	$('#ui-datepicker-div').css('z-index','10000');
+}
+
+/**
+* ==================================================================================
+* PUSH CRM 이미지 추가
+* --------------------------------------------------------------------------------------------
+* 이미지 등록/변경시 호출되는 이벤트
+* ============================================================================================ 
+*/
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this), "IMG_PUSH");
+});
+
+
+
+
+
+	pageSetUp();
+	pagefunction();
+</script>

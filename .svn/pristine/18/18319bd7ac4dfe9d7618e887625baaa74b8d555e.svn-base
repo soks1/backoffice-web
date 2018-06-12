@@ -1,0 +1,1109 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>걷기 이벤트 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<input type="hidden" id="saved_end_hhmm" name="saved_end_hhmm">
+							<input type="hidden" id="pedometer_evnt_id">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">승인일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">진행상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="prgs_sts_cd_name"></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 번호 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="evnt_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">게시구분 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rserv_ntce"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인 ID : </label>
+									<div class="col-md-5">
+										<div class="row">
+											<div class="col-sm-12">
+												<span class="form-control cs-css-03" id="campaign_id"></span>
+											</div>
+										</div>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">캠페인기간 : </label>
+									<div class="col-md-5">
+										<div class="row">
+											<div class="col-sm-12">
+												<span class="form-control cs-css-03" id="campaign_day"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+									<div class="col-md-5">
+										<div class="row">
+											<div class="col-sm-12">
+												<span class="form-control cs-css-03" id="campaign_nm"></span>
+											</div>
+										</div>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+									<div class="col-md-5">
+										<div class="row">
+											<div class="col-sm-12">
+												<span class="form-control cs-css-03" id="custgp_nm"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="evnt_title"></span>
+									</div>
+								</div>
+								
+<!-- 								<div class="form-group"> -->
+<!-- 									<label class="col-md-1 control-label cs-css-05">이벤트 혜택 : </label> -->
+<!-- 									<div class="col-md-11"> -->
+<!-- 										<span class="form-control cs-css-03" id="evnt_desc"></span> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 기간 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="start_datetime"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">이벤트 구분 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="evnt_type_name"></span>
+									</div>
+								</div>
+								
+								<!-- 측정시간 -->
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">측정시간 : </label>
+									<div class="col-md-3">
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="limit_time_yn" value="N" data-check-only="true" disabled="disabled" checked="checked"> 24시간 </label>
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="limit_time_yn" value="Y" data-check-only="true" disabled="disabled"> 특정시간대 </label>
+									</div>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="limit_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">일제한 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="limit_step_per_day"></span>
+									</div>
+								</div>
+								
+								<!-- 부스터 -->
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">부스터 : </label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+                                            <input type="radio" name="booster_yn" value="N" data-check-only="true" disabled="disabled" checked="checked"> 사용안함 </label>
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="booster_yn" value="Y" data-check-only="true" disabled="disabled"> 사용 </label>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">특정시간 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="boost_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">배수 : </label>
+									<div class="col-md-1">
+										<span class="form-control cs-css-03" id="boost_ratio"></span>
+									</div>
+								</div>
+								
+								<!-- 다중보상 -->
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">다중보상 : </label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+                                            <input type="radio" name="multi_target_yn" value="N" data-check-only="true" disabled="disabled" checked="checked"> 사용안함 </label>
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="multi_target_yn" value="Y" data-check-only="true" disabled="disabled"> 사용 </label>
+									</div>
+								</div>
+								
+								<!-- 1차 보상 -->
+								<div class="form-group" name="divCpbookIssueType">
+									<label class="col-md-1 control-label cs-css-05">쿠폰발행유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="coupon_issue_type_nm1"></span>
+									</div>
+									
+									<label class="col-md-2 control-label cs-css-05">쿠폰북 유효기간 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="coupon_vali_term_day1"></span>
+									</div>
+								</div>
+								
+								<div class="form-group" name="divTargetInfo" hidden></div>
+								
+								<div class="form-group" name="divCpbookInfo">
+									<label class="col-md-1 control-label cs-css-05">판매조건 및 쿠폰북</label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class='ta-c'>쿠폰북 번호</th>
+														<th class='ta-c'>쿠폰북명</th>
+														<th class='ta-c'>쿠폰북유형</th>
+														<th class='ta-c'>쿠폰수</th>
+														<th class='ta-c'>APP노출지점</th>
+													</tr>
+												</thead>
+												<tbody id="cpbook_list1">
+												
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								
+								<!-- 2차 보상 -->
+								<div class="form-group" name="divCpbookIssueType" hidden>
+									<label class="col-md-1 control-label cs-css-05">2차 쿠폰발행유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="coupon_issue_type_nm2"></span>
+									</div>
+									
+									<label class="col-md-2 control-label cs-css-05">2차 쿠폰북 유효기간 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="coupon_vali_term_day2"></span>
+									</div>
+								</div>
+								
+								<div class="form-group" name="divTargetInfo" hidden></div>
+								
+								<div class="form-group" name="divCpbookInfo" hidden>
+									<label class="col-md-1 control-label cs-css-05">2차 판매조건 및 쿠폰북</label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class='ta-c'>쿠폰북 번호</th>
+														<th class='ta-c'>쿠폰북명</th>
+														<th class='ta-c'>쿠폰북유형</th>
+														<th class='ta-c'>쿠폰수</th>
+														<th class='ta-c'>APP노출지점</th>
+													</tr>
+												</thead>
+												<tbody id="cpbook_list2">
+												
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								
+								<!--  3차 보상 -->
+								<div class="form-group" name="divCpbookIssueType" hidden>
+									<label class="col-md-1 control-label cs-css-05">3차 쿠폰발행유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="coupon_issue_type_nm3"></span>
+									</div>
+									
+									<label class="col-md-2 control-label cs-css-05">3차 쿠폰북 유효기간 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="coupon_vali_term_day3"></span>
+									</div>
+								</div>
+								
+								<div class="form-group" name="divTargetInfo" hidden></div>
+								
+								<div class="form-group" name="divCpbookInfo" hidden>
+									<label class="col-md-1 control-label cs-css-05">3차 판매조건 및 쿠폰북</label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class='ta-c'>쿠폰북 번호</th>
+														<th class='ta-c'>쿠폰북명</th>
+														<th class='ta-c'>쿠폰북유형</th>
+														<th class='ta-c'>쿠폰수</th>
+														<th class='ta-c'>APP노출지점</th>
+													</tr>
+												</thead>
+												<tbody id="cpbook_list3">
+												
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								
+								<legend></legend>
+<!-- 								<div class="form-group"> -->
+<!-- 									<label class="col-md-1 control-label cs-css-05">메인 이미지 : </label> -->
+<!-- 									<div class="col-md-2" id="preview_uploadfileM"> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">리스트 이미지 : </label>
+									<div class="col-md-2" id="preview_uploadfileL">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">상세 이미지 : </label>
+									<div class="col-md-2" id="preview_uploadfileD">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">부가 이미지 : </label>
+									<div class="col-md-2" id="preview_uploadfileS">
+									</div>
+								</div>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">안내문구</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-04" id="note"></span>
+									</div>
+								</div>
+
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+<!-- 										<a href="" class="btn btn-success btn_time_ext" id="btn_time_extension">시간연장</a> -->
+										<a href="javascript:f_forceComplete();" class="btn btn-danger btn_force_complete">강제종료</a>
+										<a href="javascript:f_reject();" class="btn btn-danger btn_auth_approve">반려</a>
+										<a href="javascript:f_approve_ask();" class="btn btn-info btn_auth_create">승인요청</a>
+										<a href="javascript:f_approve();" class="btn btn-primary btn_auth_approve">승인</a>
+ 										<!-- <a href='javascript:f_openRequestCheckSD($("#pedometer_evnt_id").val(),"${sessionScope.sessionEmpno}","1");' id="btn_approve" class="btn btn-primary btn_auth_approve">승인</a> -->
+										<!-- <a href='javascript:f_openRequestCheckSD($("#pedometer_evnt_id").val(),"${sessionScope.sessionEmpno}","0");' id="btn_ask" class="btn btn-info btn_auth_create">승인요청</a> -->
+			
+										<!-- 상품중복방지 체크 필요 Object Start -->
+										<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+										<!-- common_dialog_script.js 해당 화면에 공통 다이얼로그가 선언되어있는지 확인 필요 -->
+										<div id="request_check" style="display:none;"></div>
+										<input type="hidden" id="dupCheck" name="dupCheck" value="0">
+										<!-- Callback 함수 -->
+										<script>
+										 function f_approve_proc(gbn){
+											 if(gbn == "0"){
+												 // 사용하는 승인요청 메소드로 교체
+												 f_approve_ask();
+											 }else if(gbn == "1"){
+												 f_approve();
+											 }
+										 }
+										</script>
+										<!-- 상품중복방지 체크 필요 Object End -->
+										
+										
+										
+										<a href="javascript:f_pedometerEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_pedometerDel();" class="btn btn-danger btn_auth_delete">삭제</a>
+										<a href="javascript:f_pedometerList();" class="btn btn-default">목록</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="joint_area"> <!-- style="display: none;" -->
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 참가자 이력 (<span id="joint_count">0</span>)</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					
+					<div id="divJoinCntInfo" style="height:50px;">
+						<div style="display: inline;">
+							<span id="btnShowRank" onclick="javascript:f_openJoinUserRankRD()" class="btn btn-success" style="position: relative; left: 50px;">
+							    <span>랭킹보기</span>
+							</span>
+							<!-- <span id="btnDownloadExcel" class="btn btn-sm btn-warning" style="position: relative; left: 50px;">
+							    <span>엑셀다운</span>
+							</span> -->
+						</div>
+						<div style="display: inline; position: absolute; right: 10px;">
+							<span>검색 </span>
+							<input type="text" name="search_word" size="20">
+							<span id="btnSearchJoinList" class="btn btn-success">
+							    <span>검색</span>
+							</span>
+						</div>
+					</div>
+					
+					<div id="target_pedometer_his_grid" class="widget-body no-padding">
+						<table id="pedometer_his_grid"></table>
+						<div id="pedometer_his_grid_page"></div>
+					</div>
+					<div id="no_history_area">
+						<div class="row">
+							<div class="col-md-12">
+								<p>참가자 이력이 없습니다.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="time_extension_rd" style="display:none;"></div>
+<div id="coupon_book_rd" style="display:none;"></div>
+<div id="join_user_rank_rd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+	/**
+	 * ==================================================================================
+	 * 상세 : 시간연장 다이얼로그 화면 구문
+	 * ==================================================================================
+	 */
+	$('#time_extension_rd').dialog({
+		autoOpen : false,
+		width : 400,
+		minHeight: 300,
+		resizable : false,
+		modal : true,
+		title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 시간 연장 </h6></div>",
+		buttons : [{
+			html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+			"class" : "btn btn-default",
+			click : function() {
+				$(this).dialog("close");
+			}
+		},{
+			html : "<i class='fa fa-times'></i>&nbsp; 저장",
+			"class" : "btn btn-primary",
+			click : function() {
+				
+				var new_evnt_end_hour = $("#frmTimeExtension").find('#evnt_end_hour').val();
+				var new_evnt_end_min = $("#frmTimeExtension").find('#evnt_end_min').val();
+				
+				if(parseInt($('#saved_end_hhmm').val()) >= parseInt(new_evnt_end_hour+new_evnt_end_min) ) {
+					alert("종료시간은 연장만 가능합니다.");
+					return;
+				}
+				
+				if(confirm("종료시간 연장을 하시겠습니까?")) {
+					var action_data = {
+							empno: '${sessionScope.sessionEmpno}', 
+							emp_str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+							evnt_id: $("#frmKeepData").find("input[name=evnt_id]").val(),
+							hour: new_evnt_end_hour,
+							min: new_evnt_end_min
+					};
+					
+					$.ajax({
+						url: api_url + "/backoffice/event/jointpurchase/time/extend",
+					    type: "POST", // GET or POST
+					    async: false,
+					    cache: true,
+					    contentType: "application/json;charset=utf-8", // POST 일때만 사용
+					    data: JSON.stringify(action_data),
+					    success: function(obj){
+					    	alert(obj.message);
+					    	
+					    	var url = "/application/pedometer/pedometerEventRN.do";
+							var method = "POST";
+							cf_action(url, method, $("#frmKeepData").serialize());
+					    },
+					    error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+					    	return;
+					    }
+					});
+					$(this).dialog("close");
+				}
+			}
+		}]
+	});
+	
+	/* ==================================================================================
+	/* 상세 화면 : 쿠폰북 상세 다이얼로그
+	/* ================================================================================== */
+	$('#coupon_book_rd').dialog({
+		autoOpen : false,
+		bgiframe: true,
+		width : 1024,
+		minHeight: 768,
+		resizable : false,
+		modal : true,
+		disable: true,
+		title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 상세 </h6></div>",
+		buttons : [{
+			html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+			"class" : "btn btn-default",
+			click : function() {
+				$(this).dialog("close");
+			}
+		}]
+	});
+	
+	/* ==================================================================================
+	/* 상세 화면 : 랭킹보기 다이얼로그
+	/* ================================================================================== */
+	$('#join_user_rank_rd').dialog({
+		autoOpen : false,
+		bgiframe: true,
+		width : 724,
+		resizable : false,
+		modal : true,
+		disable: true,
+		position :  ['center',10],
+		title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 랭킹보기 </h6></div>"//,
+	});
+	
+	/**
+	 * ==================================================================================
+	 * 상세 : 시간연장 다이얼로그 호출
+	 * ==================================================================================
+	 */
+	function f_openTimeExtensionRD(endTime) {
+		$.ajax({
+			url: "/application/gpedometertimeExtensionRD.do",
+			type: 'GET',
+			async: true,
+			cache: false,
+			data: {end_time : endTime},
+			success: function(data) {
+				var $target = $('#time_extension_rd');
+				$target.html(data);
+			}	
+		});
+		$('#time_extension_rd').dialog('open');
+	}
+	
+	/* ============================================================================================
+	/* 페이지 정보 설정
+	/* --------------------------------------------------------------------------------------------
+	/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+	/* ============================================================================================ */
+	var pagefunction = function() {
+		// 버튼 권한별 설정
+		if('${sessionScope.menuAuth.U}' != 'Y') {
+			$('.btn_auth_update').remove();
+		}
+		if('${sessionScope.menuAuth.D}' != 'Y') {
+			$('.btn_auth_delete').remove();
+		}
+		if('${sessionScope.menuAuth.A}' != 'Y') {
+			$('.btn_auth_approve').remove();
+		}
+		
+		// 참가자 이력 검색
+	    $("#btnSearchJoinList").click(function(){
+	    	var searchData = {};
+	    	searchData.search_word = $("input[name=search_word]").val();
+	    	
+	    	// 첫 페이지 셋팅
+	    	$("#pedometer_his_grid").jqGrid('setGridParam', {page: 1});
+	    	
+	    	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	    	$("#pedometer_his_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	    });
+
+		/**
+		 * 엑셀 다운로드 버튼 클릭
+		 **/
+		$('#btnDownloadExcel').click(function () {
+
+			var data = {
+				evnt_id: $("#frmKeepData").find("input[name=evnt_id]").val(),
+				search_info: {search_word: $("input[name=search_word]").val()},
+				empno: '${sessionScope.sessionEmpno}',
+				str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			};
+
+			var params = encodeURI('params=' + JSON.stringify(data));
+			var url = api_url + "/backoffice/event/pedometer/excel/userHistory?" + params;
+
+			$.fileDownload(url);
+		});
+		
+		/**
+		 * 엑셀 다운로드 버튼 클릭
+		 **/
+		$('#btnDownloadExcel').click(function () {
+
+			var data = {
+				evnt_id: $("#frmKeepData").find("input[name=evnt_id]").val(),
+				search_info: {search_word: $("input[name=search_word]").val()},
+				empno: '${sessionScope.sessionEmpno}',
+				str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			};
+
+			var params = encodeURI('params=' + JSON.stringify(data));
+			var url = api_url + "/backoffice/event/pedometer/excel/userHistory?" + params;
+
+			$.fileDownload(url);
+		});
+
+		// 만보기 이벤트 상세 데이터 추출
+		f_pedometerDetail();
+		
+		loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+	
+		function run_jqgrid_function() {
+			var pageWidth = $("#pedometer_his_grid").parent().width() - 100;
+	
+			jQuery("#pedometer_his_grid").jqGrid({
+				url : api_url+"/backoffice/event/pedometer/participant/list",
+				mtype: 'GET',
+				datatype : "json",
+				colNames : ['No.', '참가자 (별칭)', '회원번호', '달성현황', '업로드 일시', '발행상태', '참여일자', '사용자 참조 아이디'],
+				colModel : [
+					{ name : 'rnum', 			index : 'rnum',			align : "center",		sortable : false, 	width : (pageWidth*(3/100)) 		},
+					{ name : 'user_nick', 		index : 'user_nick', 		align : "center",		sortable : false, 	width : (pageWidth*(10/100))	}, 
+					{ name : 'user_rep_id', 	index : 'user_rep_id', 	align : "center",		sortable : false, 	width : (pageWidth*(10/100))	},
+					{ name : 'total_step', 		index : 'total_step', 	align : "center", 	sortable : false, 	width : (pageWidth*(10/100)),
+						formatter: function(cellvalue, options, rowObject) {
+							switch( rowObject.type_cd ){
+								case "A" :
+									if( cellvalue != '-' ){
+										cellvalue += " 회";
+										
+										if( rowObject.target_id > 0 ) {
+											if( rowObject.multi_target_yn == 'Y' ){
+												cellvalue += " (" + rowObject.target_id + "차 완료)";
+											} else {
+												cellvalue += " (달성)";
+											}
+										}
+									}
+									break;
+								case "T" :
+								case "F" :
+									if( cellvalue != '0' && cellvalue != "-"){
+// 										cellvalue += " 걸음";
+										cellvalue = cf_setComma( cellvalue );
+										
+										if( rowObject.target_id > 0 ) {
+											if( rowObject.multi_target_yn == 'Y' ){
+												cellvalue += " (" + rowObject.target_id + "차 혜택)";
+											} else {
+												cellvalue += " (달성/혜택)";
+											}
+										}
+									}
+									break;
+							}
+							return cellvalue;
+						}	
+					},
+					{ name : 'upload_date', 				index : 'upload_date', 				align : "center", 	sortable : false, 	width : (pageWidth*(10/100))	},
+					{ name : 'cpbook_issued_yn_nm', 	index : 'cpbook_issued_yn_nm',	align : "center", 	sortable : false, 	width : (pageWidth*(5/100))		},
+					{ name : 'join_date', 					index : 'join_date', 					align : "center", 	sortable : false, 	width : (pageWidth*(10/100))	},
+					{ name : 'user_rep_id', 				index : 'user_rep_id', 				hidden : true }
+				],
+				jsonReader: {
+					repeatitems 	: false,
+					id 				: "user_rep_id",
+					root 			: function(obj){ return obj.data.pedometer_ptc_info_list; },	// 루트가 될 데이터 셋 명칭
+					records 		: function(obj){ return obj.data.page_info.records; },			// 총 레코드 수
+					page 			: function(obj){ return obj.data.page_info.page; }, 				// 현재 보여지는 페이지
+					total 			: function(obj){ return obj.data.page_info.total; }				// 페이지 블럭수
+				},
+				serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+				serializeGridData: function(postData) { return encodeURI("params="+JSON.stringify(postData)); },
+				postData:{ 
+					search_info 	: { "search_word" : $("input[name=search_word]").val() }, 
+					empno 		: '${sessionScope.sessionEmpno}', 
+					emp_str_cd 	: '${sessionScope.sessionStrCd}',
+					hq_base_yn 	: '${sessionScope.sessionHqBaseYn}',
+					evnt_id 		: $("#frmKeepData").find("input[name=evnt_id]").val()
+				},
+				rowNum : 10,
+				rowList : [10, 20, 30],
+				pager : '#pedometer_his_grid_page',
+				sortname : 'upload_date',
+				sortorder : "desc",
+				multiselect : false,
+				multiboxonly: true,
+				viewrecords : true,
+				shrinkToFit : true,
+				autowidth : true,
+				height : 'auto',
+				recordpos : "left",
+				onCellSelect: function(rowid, index, contents, event) {
+				   if(index == 3) {
+				   }
+				},
+				loadComplete: function(obj) {
+					// 참가자 수, 달성자 수 호출
+					callJoinUserListCnt( obj.data.pedometer_ptc_info_cnt );
+				},
+				gridComplete: function() {
+					var ids = jQuery("#pedometer_his_grid").jqGrid('getDataIDs');
+					
+					if(ids.length < 1) {
+						$('#target_pedometer_his_grid').hide();
+						$('#no_history_area').show();
+					} else {
+						$('#target_pedometer_his_grid').show();
+						$('#no_history_area').hide();
+					}
+					
+					$('#joint_count').text(ids.length);
+				}
+			});
+			jQuery("#pedometer_his_grid").jqGrid('navGrid', "#pedometer_his_grid_page", {
+				edit : false, add : false, del : false, search : false, refresh : false, view : false, position: 'right'
+			});
+			
+			$("#pedometer_his_grid").gridCss();
+		  	$("#pedometer_his_grid_cb").css("border-left-width","0");
+		  	$("#pedometer_his_grid_cb").css("padding-left","4px");
+		  	$("#jqgh_pedometer_his_grid_cb").css("padding","7px 0");
+		  	$("#pedometer_his_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+		  			  
+		    // auto resize grid
+		    $(window).on('resize.jqGrid', function () {
+				jQuery("#pedometer_his_grid").jqGrid( 'setGridWidth', $("#target_pedometer_his_grid").width() );
+			});
+		} 
+		// end function
+	};
+	
+	/**
+	 * ==================================================================================
+	 * 상세 화면 : 상세 데이터 처리
+	 * ----------------------------------------------------------------------------------
+	 * 상세 화면의 데이터 처리
+	 * ==================================================================================
+	 */
+	function f_pedometerDetail() {
+		$.ajax({
+		    url: api_url+'/backoffice/event/pedometer/show', //this is the submit URL
+		    type: 'GET', // GET or POST
+		    async: true,
+		    cache: true,
+		    datatype: 'json',
+		    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+		    beforeSend : function() {},
+		    success: function(obj){
+// 		    	console.log(obj);
+		    	
+		    	var mainObj = obj.data.main;
+		    	
+		    	// 게시물 상태 변경
+		    	aprv_stat_init(mainObj.aprv_sts_cd, mainObj.prgs_sts_cd);
+		    	
+		    	$('#aprv_sts_cd').val(mainObj.aprv_sts_cd);
+		    	$('#reg_date').html(mainObj.reg_date);
+		    	$('#reg_id_name').html(mainObj.reg_id_name);
+		    	$('#mod_date').html(mainObj.mod_date);
+		    	$('#mod_id_name').html(mainObj.mod_id_name);
+		    	//$('#aprv_date').html(cf_cvtDateFormat(mainObj.aprv_date,'yyyy-MM-dd'));
+		    	$("#aprv_date").html(mainObj.aprv_date);
+		    	$('#aprv_name').html(mainObj.aprv_name);
+		    	$('#aprv_sts_cd_name').html(mainObj.aprv_sts_cd_name);
+		    	$('#prgs_sts_cd_name').html(mainObj.prgs_sts_cd_name);
+		    	$('#evnt_id').html(mainObj.evnt_id); 										// 행사번호
+		    	$('#pedometer_evnt_id').val(mainObj.evnt_id); 										// 행사번호
+		    	$('#evnt_title').html(mainObj.evnt_title);									// 이벤트 제목
+		    	$('#evnt_desc').html(mainObj.evnt_desc);								// 이벤트 혜택
+		    	
+		    	// 이벤트 유형
+		    	var strHtml = "";
+		    	strHtml += mainObj.evnt_type_name;
+		    	
+		    	var evntTypeCd 			= mainObj.evnt_type_cd;
+		    	
+		    	var tgtListObj				= obj.data.tgt_list;
+		    	var totalStep 				= tgtListObj[tgtListObj.length-1].step;
+		    	var stepPerDay 				= tgtListObj[tgtListObj.length-1].step_per_day;
+		    	var stepPerDayAcpCnt 	= tgtListObj[tgtListObj.length-1].step_per_day_acp_count;
+		    	var rewardQty 				= tgtListObj[tgtListObj.length-1].reward_qty;
+		    	
+		    	if(evntTypeCd == "A") {				// 달성횟수형
+			    	strHtml += " (일 " + cf_setComma(stepPerDay) + "걸음 / " +cf_setComma(stepPerDayAcpCnt) + "회 달성)";
+		    	} else if(evntTypeCd == "T") {		// 전체목표형
+		    		strHtml += " (총 " + cf_setComma(totalStep) + "걸음)";
+		    	} else if(evntTypeCd == "F") {		// 선착순형
+		    		strHtml += " (총 " + cf_setComma(totalStep) + "걸음 / 선착순" + cf_setComma(rewardQty) + "명)";
+		    	} else {
+		    		//
+		    	}
+		    	$('#evnt_type_name').html(strHtml);					
+		    	
+		    	// 게시구분
+		    	if(mainObj.rserv_ntce_yn == 'Y') {
+		    		$('#rserv_ntce').html('예약게시('+cf_cvtDateFormat(mainObj.rserv_ntce_dd, 'yyyy-MM-dd')+')');
+		    	} else {
+		    		$('#rserv_ntce').html('즉시게시');
+		    	}
+		    	
+		    	// 이벤트 기간
+		    	$('#start_datetime').html(
+		    			cf_cvtDateFormat(mainObj.evnt_start_dd,'yyyy-MM-dd')
+		    			+ ' '
+		    			+ mainObj.evnt_start_hhmi.substring(0,2) + ':' + mainObj.evnt_start_hhmi.substring(2,4)
+		    			+ ' ~ ' 
+		    			+ cf_cvtDateFormat(mainObj.evnt_end_dd,'yyyy-MM-dd')
+		    			+ ' '
+		    			+ mainObj.evnt_end_hhmi.substring(0,2) + ':' + mainObj.evnt_end_hhmi.substring(2,4)
+		    		);
+		    	
+		    	$('#saved_end_hhmm').val(mainObj.end_hhmi);
+		    	$('#btn_time_extension').attr("href","javascript:f_openTimeExtensionRD('" + mainObj.end_hhmi + "');");
+		    	
+		    	// 캠페인 정보
+		    	$("#campaign_id").html(mainObj.campaign_id);
+	    		$("#campaign_day").html(cf_cvtDateFormat(mainObj.campaign_start_dy,'yyyy-MM-dd')+" ~ "+cf_cvtDateFormat(mainObj.campaign_end_dy,'yyyy-MM-dd') );
+	    		$("#campaign_nm").html(mainObj.campaign_nm);
+	    		$("#custgp_nm").html(mainObj.lst_custgp_id + " - " + mainObj.custgp_nm);
+		    	
+		    	$('#tgt_qty').html(mainObj.tgt_qty);                							// 선착순 목표수량	
+		    	$('#note').html((mainObj.note).replaceAll('\\n','<br/>'));					// 안내문구
+		    	
+	    		// 측정시간 정보
+	    		if(mainObj.limit_time_yn == "Y"){
+	    			$("input[name=limit_time_yn]:eq(1)").attr("checked", "checked");
+
+	    			var limit_start_hour 	= mainObj.limit_start_time.substr(0, 2);
+	    			var limit_start_min 		= mainObj.limit_start_time.substr(2, 4);
+	    			var limit_end_hour 		= mainObj.limit_end_time.substr(0, 2);
+	    			var limit_end_min 		= mainObj.limit_end_time.substr(2, 4);
+	    			
+	    			var strHtml = limit_start_hour + ":" + limit_start_min + "~" + limit_end_hour + ":" + limit_end_min;
+	    			
+	    			$("#limit_date").text( strHtml );
+	    		}
+		    	
+	        	$("span#limit_step_per_day").text( "설정 / " + cf_setComma(mainObj.limit_step_per_day) + "걸음" );
+	    		
+	    		// 부스터 정보
+	    		if(mainObj.booster_yn == "Y"){
+	    			$("input[name=booster_yn]:eq(1)").attr("checked", "checked");
+	    			
+	    			$("span#boost_date").text(mainObj.boost_date);
+	        		$("span#boost_ratio").text(cf_setComma(mainObj.boost_ratio) + "배");
+	    		}
+	    		
+	    		// 다중보상 정보
+	    		var multiTargetYn = mainObj.multi_target_yn;
+	    		if(multiTargetYn == "Y"){
+	    			$("input[name=multi_target_yn]:eq(1)").attr("checked", "checked");
+	    			
+	    			$("div[name=divCpbookIssueType]:eq(0) label:eq(0)").html("1차 쿠폰발행유형");
+	    			$("div[name=divCpbookIssueType]:eq(0) label:eq(1)").html("1차 쿠폰북 유효기간");
+	    			$("div[name=divCpbookInfo]:eq(0) label:eq(0)").html("1차 판매조건 및 쿠폰북");
+	    		}
+	    		
+	    		// 다중보상 정보 호출
+	    		callMultiTargetList(obj.data.tgt_list, evntTypeCd, multiTargetYn);
+	
+	    		// 이미지 호출
+		    	callImageList(obj.data.img_list);
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+	
+	function callJoinUserListCnt(listObj) {
+		var strHtml 	= "<span>참가자 : 0명, 달성자 : 0명 (0%)</span>";
+		    	
+		$(listObj).each(function(idx, obj) {
+			if(obj.multi_target_yn == "Y") {
+				strHtml = '<span>참가자 : ' + obj.tot_cnt + '명';
+				
+				for(var i=1; i <= obj.max_target_id; i++)
+					strHtml += ', ' + i + '차달성자 : ' + obj["complete_cnt" + i] + '명';
+				
+// 				strHtml += ' (' + obj.complete_pct + '%)';
+				strHtml += '</span>';
+			} else if(obj.multi_target_yn == "N") {
+				strHtml = '<span>참가자 : ' + obj.tot_cnt + '명, 달성자 : ' + obj.complete_tot_cnt + '명 (' + obj.complete_pct + '%)</span>';
+			}
+
+			$("#btnShowRank").prev().remove();
+			$("#btnShowRank").before(strHtml);
+		});
+	}
+	
+	function aprv_stat_init(aprv_sts_cd, prgs_sts_cd) {
+		// 게시물 상태 :  승인완료
+		if(aprv_sts_cd == 'APPROVE') {
+			$('.btn_auth_approve').remove();
+			$('.btn_auth_create').remove();
+			$('.btn_auth_update').remove();
+			$('.btn_auth_delete').remove();
+		}
+		// 게시물 상태 : 승인대기중
+		else if(aprv_sts_cd == 'STANDBY') {
+			$('.btn_auth_create').remove();
+			$('.btn_auth_update').remove();
+			$('.btn_time_ext').remove();
+			$('.btn_auth_delete').remove();
+			$('#joint_area').hide();
+		}
+		// 게시물 상태 : 승인 요청전
+		else if(aprv_sts_cd == 'REQUEST') {
+			$('.btn_auth_approve').remove();
+			$('.btn_time_ext').remove();
+			$('#joint_area').hide();
+		}
+		// 게시물 상태 : 반려
+		else if(aprv_sts_cd == 'REJECT') {
+			$('.btn_auth_approve').remove();
+			$('.btn_auth_create').remove();
+			$('.btn_time_ext').remove();
+			$('#joint_area').hide();
+		}
+		
+		// 종료 상태인 경우 시간연장 버튼 숨김
+// 		if(prgs_sts_cd == 'END' || prgs_sts_cd == 'CPSNEND') {
+		if(prgs_sts_cd == 'C') {
+			$('.btn_time_ext').remove();
+		}
+
+		// 강제종료버튼 출력
+// 		if (prgs_sts_cd == 'PROGRES' || prgs_sts_cd == 'END') {
+// 		if (prgs_sts_cd == 'O' || prgs_sts_cd == 'C') {
+		if (prgs_sts_cd == 'O') {
+			// show
+		} else {
+			// hide
+			$('.btn_force_complete').remove();
+		}
+	}
+	
+	function callMultiTargetList(listObj, evntTypeCd, multiTargetYn) {
+		$(listObj).each(function(idx, obj) {
+			if(multiTargetYn == "Y"){
+				// 달성횟수, 달성목표 세팅
+				var strHtml = "";
+				
+				switch( evntTypeCd ){
+			   		case "A" : 
+			   			strHtml += '<label class="col-md-1 control-label cs-css-05">' + (idx+1) + '차 달성횟수</label>';
+			   			strHtml += '<div class="col-md-1"><span class="form-control cs-css-03">' + obj.step_per_day_acp_count + '</span></div>';
+			   			strHtml += '<label class="col-md-1 control-label"> 회</label>';
+			   			break;
+			   		case "T" : 
+			   			strHtml += '<label class="col-md-1 control-label cs-css-05">' + (idx+1) + '차 달성목표</label>';
+			   			strHtml += '<div class="col-md-1"><span class="form-control cs-css-03">' + obj.step + '</span></div>';
+			   			strHtml += '<label class="col-md-1 control-label"> 걸음</label>';
+			   			break;
+			   		case "F" : 
+			   			strHtml += '<label class="col-md-1 control-label cs-css-05">' + (idx+1) + '차 달성목표</label>';
+			   			strHtml += '<div class="col-md-1"><span class="form-control cs-css-03">' + obj.step + '</span></div>';
+			   			strHtml += '<label class="col-md-1 control-label"> 걸음</label>';
+			   			strHtml += '<label class="col-md-1 control-label cs-css-05">혜택자수</label>';
+			   			strHtml += '<div class="col-md-1"><span class="form-control cs-css-03">' + obj.reward_qty + '</span></div>';
+			   			strHtml += '<label class="col-md-1 control-label"> 명</label>';
+			   			break;
+				}
+			
+				$("div[name=divTargetInfo]:eq(" + idx + ")").html(strHtml).show();
+			}
+			/////////////////////////////////////////////////////////////////////
+			
+			$('#coupon_issue_type_nm' + (idx+1)).html(obj.coupon_issue_type_nm);	// 쿠폰발행유형
+			$('#coupon_vali_term_day' + (idx+1)).html(										// 쿠폰북 유효기간
+				cf_cvtDateFormat(obj.vali_term_start_dd,'yyyy-MM-dd') + " ~ " + cf_cvtDateFormat(obj.vali_term_end_dd,'yyyy-MM-dd')
+			);
+			
+			var tag_td = '';
+			var app_exposure_branch = '';
+			tag_td += '<td class="ta-c">' + obj.cpbook_id + '</td>';
+			tag_td += '<td class="ta-c"><a href="javascript:f_openCouponBookRD(\''+obj.cpbook_id+'\');">'+obj.cpbook_nm+'</a></td>\n';
+			tag_td += '<td class="ta-c">' + obj.cpbook_type_nm + '</td>';
+			tag_td += '<td class="ta-c">' + obj.coupon_cnt + '</td>';
+			
+			if(obj.use_psbt_brnch_yn === 'Y') {
+				app_exposure_branch = "사용가능지점";
+			} else {
+				app_exposure_branch = "사용제외지점";
+			}
+			
+			tag_td += "<td class='ta-c'>"+ app_exposure_branch + " : " + obj.app_view_str_nm +"</td>\n";
+			$('#cpbook_list' + (idx+1)).append('<tr>' + tag_td + '</tr>');
+
+			$("div[name=divCpbookIssueType]:eq(" + idx + ")").show();
+			$("div[name=divCpbookInfo]:eq(" + idx + ")").show();
+		});
+	}
+	
+	function callImageList(listObj){
+		if(listObj.length == 0){
+			var tag_img = $('<img>').attr('src', noImgPath).attr('alt', '').addClass('img-responsive');
+			
+			$('#preview_uploadfileL').append( $(tag_img).clone() );
+			$('#preview_uploadfileD').append( $(tag_img).clone() );
+			$('#preview_uploadfileS').append( $(tag_img).clone() );
+		} else {
+			$(listObj).each(function(idx, obj){
+				var tag_img = $('<img>').attr('src', obj.prvw_url).attr('alt', obj.img_orgin_file_nm).addClass('img-responsive');
+				
+				if(obj.type == "M") {
+					$('#preview_uploadfileM').append(tag_img);
+				} else if(obj.type == "L") {
+					$('#preview_uploadfileL').append(tag_img);
+				} else if(obj.type == "D") {
+					$('#preview_uploadfileD').append(tag_img);
+				} else if(obj.type == "S") {
+					$('#preview_uploadfileS').append(tag_img);
+				} else {
+					// 
+				}
+			});
+			
+			// 상세이미지가 복수일 경우
+			if( $("#preview_uploadfileD img").length > 1 ){
+				$('#preview_uploadfileD img').each(function(idx, obj){
+					var divHtml = $('<div class="col-md-2"></div>');
+					$(obj).parent().append( divHtml );
+					$(divHtml).append( $(obj) );
+				});
+				
+				$("#preview_uploadfileD").removeClass("col-md-2");
+			}
+		}
+	}
+	
+	/* ==================================================================================
+	/* 상세 화면 : 쿠폰북 상세 다이얼로그 호출
+	/* ================================================================================== */
+	function f_openCouponBookRD(id) {
+		$.ajax({
+			url: '/application/coupon/campaign/couponBookRD.do',
+			type: 'GET',
+			async: false,
+			cache: true,
+			data: {cpbook_id:id},
+			success: function(data) {
+				var $target = $('#coupon_book_rd');
+				$target.empty();
+				$target.html(data);
+			},
+			complete: function() {
+				$('#coupon_book_rd').dialog('open');
+			}
+		});
+	}
+	
+	/* ==================================================================================
+	/* 상세 화면 : 랭킹보기 상세 다이얼로그 호출
+	/* ================================================================================== */
+	function f_openJoinUserRankRD() {
+		var evnt_id 			= $("input[name=evnt_id]").val();
+		var yesterDay		= new Date( (new Date().getTime()) - (24 * 60 * 60 * 1000) );
+		var record_date 	= yesterDay.getFullYear() + ( (yesterDay.getMonth()+1) < 10 ? "0" + (yesterDay.getMonth()+1) : (yesterDay.getMonth()+1) ) + ( yesterDay.getDate() < 10 ? "0" + yesterDay.getDate() : yesterDay.getDate() ); 
+
+		$.ajax({
+			url: '/application/event/pedometer/pedometerUserRankRD.do',
+			type: 'GET',
+			async: false,
+			cache: true,
+			data: {"evnt_id" : evnt_id, "record_date" : record_date},
+			success: function(data) {
+				var $target = $('#join_user_rank_rd');
+				$target.empty();
+				$target.html(data);
+			},
+			complete: function() {
+				$('#join_user_rank_rd').dialog('open');
+			}
+		});
+	}
+
+	/* ============================================================================================
+	/* 페이지 셋업 (Don't remove!!!)
+	/* --------------------------------------------------------------------------------------------
+	/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+	/* ============================================================================================ */
+	pageSetUp();
+	
+	/* ============================================================================================
+	/* 페이지 정보 설정 로드
+	/* --------------------------------------------------------------------------------------------
+	/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+	/* ============================================================================================ */
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

@@ -1,0 +1,291 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>쿠폰 사용 통계</h2>
+				</header>
+				<div class="jarviswidget-editbox"></div>
+				<div class="widget-body">
+					<form class="form-horizontal" method="post" id="frmLifekok" name="frmLifekok">
+						<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+						<input type="hidden" id="today_month" value="">
+						<fieldset>
+							<div class="form-group">
+								<div class="col-md-12">
+									<label class="col-md-2 control-label" style="width:80px;">등록지점</label>
+									<div class="col-md-6">
+										<select class="form-control" id="_str_cd" name="_str_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-12">
+									<label class="col-md-2 control-label" style="width:80px;">가맹점</label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" id="_tenant_nm" name="_tenant_nm" data-valid-title="가맹점" placeholder = " 전체">
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-12">
+									<label class="col-md-2 control-label" style="width:80px;">기간</label>
+									<div class="col-md-6">
+										<select class="form-control" id="select_md" name="select_md">
+											<option value="">선택</option>
+											<option value="M">월별</option>
+											<option value="D">일별</option>
+										</select>
+									</div>
+								</div>
+							</div>
+							
+							<div id="term_month" style="display:none">
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-2 control-label" style="width:80px;"></label>
+										<div class="col-md-4" style="width:150px">
+											<select class="form-control md_control_" id="_md_st_year" name="_md_st_year">
+												<option value="">연도</option>
+											</select>
+										</div>
+										<div class="col-md-4" style="width:150px">
+											<select class="form-control md_control_" id="_md_st_month" name="_md_st_month">
+												<option value="">월</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div id="term_day" style="display:none">
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-2 control-label" style="width:80px;"></label>
+										<div class="col-md-4" style="width:150px">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" style="z-index:1200;" type="text" id="st_date_from" name="st_date_from" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-md-4" style="width:150px">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" style="z-index:1200;" type="text" id="st_date_to" name="st_date_to" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_cooperateServiceExcelDownSD_download();" class="btn btn-primary">다운로드</a>
+										<a href="javascript:f_cooperateServiceExcelDownSD_close();" class="btn btn-default">취소</a>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+/* ============================================================================================
+/* 기간 설정 select
+/* ============================================================================================ */
+$('select[name=select_md]').change(function(){
+	if($('select[name=select_md]').val() == "M"){
+		$('#term_month').show();
+		$('#term_day').hide();
+		$('input[name=st_date_from]').val("");
+		$('input[name=st_date_to]').val("");
+	}else if($('select[name=select_md]').val() == "D"){
+		$('#term_day').show();
+		$('#term_month').hide();
+		$('select[name=_md_st_year]').val("");
+		$('select[name=_md_st_month]').val("");
+	}else{
+		$('#term_day').hide();
+		$('#term_month').hide();
+		$('input[name=st_date_from]').val("");
+		$('input[name=st_date_to]').val("");
+		$('select[name=_md_st_year]').val("");
+		$('select[name=_md_st_month]').val("");
+	}
+});
+
+/* ============================================================================================
+/* 일별 달력 컨트롤
+/* ============================================================================================ */
+$('#st_date_to').datepicker(
+    $.extend({
+		maxDate : 0,    	
+    	onSelect: function(selected) {
+            $("#st_date_from").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+$('#st_date_from').datepicker(
+    $.extend({
+		maxDate : 0,    	
+    	onSelect: function(selected) {
+            $("#st_date_to").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function(){
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCode("_str_cd");	
+	
+	// 연도 셀렉트박스 - 기간설정(올해부터 몇년 전까지 보여줄 것인가)
+	var YEAR_TERM = 10;
+	
+// 	오늘날짜 
+	var Now = new Date();
+	var NowTime = Now.getFullYear();
+	if((Now.getMonth() + 1) < 10){
+		NowTime += "0"+""+ (Now.getMonth() + 1);
+	}else{
+		NowTime += (Now.getMonth() + 1);
+	}
+	if(Now.getDate() < 10){
+		NowTime += "0"+""+ Now.getDate();
+	}else{
+		NowTime += Now.getDate();
+	}
+	$('#today_month').val(NowTime);
+	
+	var NowYear = Now.getFullYear();
+	var append_year = "";
+	var append_month = "";
+	
+//	Year옵션 : 올해부터 이전 YEAR_TERM년까지	
+	for(var i=0 ; i < YEAR_TERM ; i++){
+		append_year = "";
+		append_year = "<option value='"+NowYear+"'>"+NowYear+"년</option>";
+		$('#_md_st_year').append(append_year);
+		NowYear -= 1;
+	}
+	var _month = 0;
+	for(var j = 0 ; j < 12 ; j++){
+		_month++;
+		if(_month < 10){
+			_month = "0"+""+_month;
+		}
+		append_month = "<option value='"+_month+"'>"+_month+"월</option>"; 
+		$('#_md_st_month').append(append_month);
+	}
+};
+
+
+//input 에서 엔터키 입력시 반응하지 않도록 
+$('#cooperateServiceExcelDownSD').find('input').keypress(function(e) {
+	if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+		$(this).parent().parent().parent().parent().find('.ui-dialog-buttonpane').find('button:first').click(); /* Assuming the first one is the action button */
+		return false;
+	}
+});	
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_cooperateServiceExcelDownSD_download() {
+	
+	var val_cnt = 0;
+	var _term_type = "";
+	if($('#select_md').val() == ""){
+		val_cnt++;
+	}
+	else if($('#select_md').val() == "M" && ( $('#_md_st_year').val() == "" || $('#_md_st_month').val() == "" ) ){
+		val_cnt++;
+	}
+	else if($('#select_md').val() == "D" && ( $('#st_date_from').val() == "" || $('#st_date_to').val() == "" ) ){
+		_term_type = "day";
+		val_cnt++;
+	}
+	if(val_cnt > 0){
+		alert('기간을 설정해 주세요.');
+		return;
+	}
+	
+	if($('#select_md').val() == "M"){
+		_term_type = "one_month";
+		if($('#_md_st_year').val()+""+$('#_md_st_month').val() > $('#today_month').val().substring(0,6)){
+			alert($('#today_month').val().substring(0,4)+"년 "+$('#today_month').val().substring(4,6)+"월까지의 통계를 다운로드 할 수 있습니다.");
+			return;
+		}
+	}
+	
+	if($('#select_md').val() == "D"){_term_type = "day";}
+	
+	var data = {
+			empno			: $('#empno').val(),
+			str_cd			: $('#_str_cd').val(),
+			tenant_nm		: $('#_tenant_nm').val(),
+			xls_dwld_type	: 'BO_STAT_DAY_LIST',
+			system_type 	: 'BACKOFFICE',
+			terms_type		: _term_type,
+			one_month		: $('#_md_st_year').val()+""+$('#_md_st_month').val(),
+			date_from  	 	: $('#st_date_from').val().replace(/-/gi,''),
+			date_to     	: $('#st_date_to').val().replace(/-/gi,'')
+	}
+	
+	var url = api_lifekok_url+"/lifekok/common/excel/download?";
+	var params = encodeURI('params='+JSON.stringify(data));
+	$.fileDownload(url + params);
+		
+}
+
+function f_cooperateServiceExcelDownSD_close(){
+	$('#cooperateServiceExcelDownSD').dialog("close");
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+</script>

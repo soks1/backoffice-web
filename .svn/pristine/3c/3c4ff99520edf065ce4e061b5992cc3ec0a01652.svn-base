@@ -1,0 +1,498 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>
+					<span class="title_mclub_name"></span>
+					&nbsp;선물&nbsp;통계
+					</h2>
+				</header>
+				<div class="jarviswidget-editbox"></div>
+				<div>
+					<div class="widget-body">
+						<form id="frmStatsSearch" class="form-horizontal">
+							<div class="form-group">
+								<label class="col-md-1 control-label">조회 일자</label>
+								<div class="col-md-3half">
+									<div class="input-group">
+										<input class="form-control datepicker pr12 tac" type="text" id="stats_start_dd" name="stats_start_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+								<div class="col-md-3half">
+									<div class="input-group">
+										<input class="form-control datepicker pr12 tac" type="text" id="stats_end_dd" name="stats_end_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+										<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-1">
+										<a href="javascript:void(0)" id="btn_stats_search" onclick="f_stats_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+						<div id="target_data_stats_grid" class="widget-body no-padding">
+							<div class="col-sm-12 col-md-12 col-lg-12 mt10">
+								<div class="well"
+									 style="padding:10px;background:rgba(198,218,255,.6);border: 4px solid #5985FF;">
+									<div class="row">
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">선물한 쿠폰 수</p>
+												<p class="cs-css-01" id="send_gift_cp_cnt"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">선물한 고객 수</p>
+												<p class="cs-css-01" id="send_gift_user_cnt"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">선물받은 쿠폰 수</p>
+												<p class="cs-css-01" id="recv_gift_cp_cnt"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">선물받은 고객 수</p>
+												<p class="cs-css-01" id="recv_gift_user_cnt"></p>
+											</div>
+										</div>
+									</div>
+									<br />
+									<div class="row">
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">사용한 선물 쿠폰 수</p>
+												<p class="cs-css-01" id="use_cp_cnt"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">선물 쿠폰 사용 고객 수</p>
+												<p class="cs-css-01" id="use_user_cnt"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">회수한 쿠폰 수</p>
+												<p class="cs-css-01" id="recovery_cp_cnt"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">회수한 고객 수</p>
+												<p class="cs-css-01" id="recovery_user_cnt"></p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+			  	</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">멤버스 고객번호</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="user_rep_id" />
+									</div>
+									<label class="col-md-1 control-label">조회 일자</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="start_dd" name="start_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="end_dd" name="end_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 회원별 선물 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_gift_grid" class="widget-body no-padding">
+						<table id="gift_grid"></table>
+						<div id="gift_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="gift_detail_sd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+function f_stats_search() {
+	// 통계 데이터 조회
+	var data = $('#frmStatsSearch').serializeFormObject();
+	data.empno = '${sessionScope.sessionEmpno}';
+	$.ajax({
+		url : api_url + "/backoffice/gift/stat/show",
+		type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var objData = obj['data'];
+	    	$("#send_gift_cp_cnt").text(objData['send_gift_cp_cnt']);
+	    	$("#send_gift_user_cnt").text(objData['send_gift_user_cnt']);
+	    	$("#recv_gift_cp_cnt").text(objData['recv_gift_cp_cnt']);
+	    	$("#recv_gift_user_cnt").text(objData['recv_gift_user_cnt']);
+	    	$("#use_cp_cnt").text(objData['use_cp_cnt']);
+	    	$("#use_user_cnt").text(objData['use_user_cnt']);
+	    	$("#recovery_cp_cnt").text(objData['recovery_cp_cnt']);
+	    	$("#recovery_user_cnt").text(objData['recovery_user_cnt']);
+	    }
+	});
+}
+/**
+ * ==================================================================================
+ * 통계 조회 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#stats_start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#stats_end_dd').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#stats_end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#stats_start_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/**
+ * ==================================================================================
+ * 통계 조회 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#end_dd').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#start_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/**
+* ==================================================================================
+* 선물관리 회원별 선물 상세내역 다이얼 로그 문구
+* ==================================================================================
+*/
+$('#gift_detail_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 선물 상세 정보 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+/**
+* ==================================================================================
+* 선물관리 회원별 선물 상세내역 다이얼 로그 호출
+* ==================================================================================
+*/
+function f_openGiftDetailSD(post_data) {
+	$.ajax({
+		url: "/application/gift/giftRN.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data:post_data,
+// 		data:{targetTbody : "gift_detail_sd"},
+		success: function(data) {
+			var $target = $('#gift_detail_sd');
+			$target.empty();
+			$target.html(data);
+		}	
+	});
+	$('#gift_detail_sd').dialog('open');
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 통계 날짜 셋팅 (조회일자는 이번달 1 ~ 어제)
+	var now = new Date();
+	
+	var date = new Date(); 
+	var lastDay = ( new Date( date.getFullYear(), date.getMonth(), 0) ).getDate();
+	var year = date.getFullYear(); 
+	var month = new String(date.getMonth()+1); 
+	var day = new String(date.getDate() -1); 
+	var day2 = "";
+	// 한자리수일 경우 0을 채워준다. 
+	if(month.length == 1){ 
+	  month = "0" + month; 
+	} 
+	if(day.length == 1){ 
+	  day = "0" + day; 
+	  day2 = "0" + day-1; 
+	} 
+
+	var _start_date = year + "-" + month + "-" + "01"; 
+	var _end_date = year + "-" + month + "-" + day; 
+	$("#stats_start_dd").val(_start_date);
+	$("#stats_end_dd").val(_end_date);
+	
+	// 통계 데이터 조회
+	var data = $('#frmStatsSearch').serializeFormObject();
+	data.empno = '${sessionScope.sessionEmpno}';
+	$.ajax({
+		url : api_url + "/backoffice/gift/stat/show",
+		type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var objData = obj['data'];
+	    	$("#send_gift_cp_cnt").text(objData['send_gift_cp_cnt']);
+	    	$("#send_gift_user_cnt").text(objData['send_gift_user_cnt']);
+	    	$("#recv_gift_cp_cnt").text(objData['recv_gift_cp_cnt']);
+	    	$("#recv_gift_user_cnt").text(objData['recv_gift_user_cnt']);
+	    	$("#use_cp_cnt").text(objData['use_cp_cnt']);
+	    	$("#use_user_cnt").text(objData['use_user_cnt']);
+	    	$("#recovery_cp_cnt").text(objData['recovery_cp_cnt']);
+	    	$("#recovery_user_cnt").text(objData['recovery_user_cnt']);
+	    }
+	});
+		
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+
+		jQuery("#gift_grid").jqGrid({
+			url : api_url+"/backoffice/gift/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '선물 발신자', '선물 수신자', '선물 쿠폰북ID', '선물 쿠폰 수', '선물 수신 상태', '선물 발신 일자', '선물 수신 일자', '선물 수신 상태 코드', '수신쿠폰북ID', '선물맵디짓', '수신맵디짓'],
+			colModel : [
+				{ name : 'rnum', 						index : 'rnum',		 				align : "center",	sortable : false },
+				{ name : 'send_user_rep_id', 	index : 'send_user_rep_id', 	align : "center",	sortable : false  },
+				{ name : 'recv_user_rep_id', 		index : 'recv_user_rep_id', 	align : "center",	sortable : false },
+				{ name : 'send_cpbook_id', 		index : 'send_cpbook_id', 	align : "center",	sortable : false }, 
+				{ name : 'gift_cp_cnt', 				index : 'gift_cp_cnt', 			align : "center", 	sortable : false, classes:'pointer' }, 
+				{ name : 'recv_sts_cd_nm', 		index : 'recv_sts_cd_nm', 		align : "center",	sortable : false }, 	
+				{ name : 'send_date', 				index : 'send_date', 				align : "center", 	sortable : false },
+				{ name : 'recv_date', 				index : 'recv_date', 				align : "center", 	sortable : false  }, 
+				{ name : 'recv_sts_cd', 				index : 'recv_sts_cd', 				hidden:true  },
+				{ name : 'recv_cpbook_id', 		index : 'recv_cpbook_id', 		hidden:true  }, 
+				{ name : 'send_cpbook_mapp_digit', 		index : 'send_cpbook_mapp_digit', 		hidden:true  }, 
+				{ name : 'recv_cpbook_mapp_digit', 		index : 'recv_cpbook_mapp_digit', 		hidden:true  }
+
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "gift_id",
+				root : 		function(obj){ return obj.data.gift_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},	            
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 부분 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();	// 검색 폼 데이터 추출
+					postData._search = true;
+					$("#gift_grid").jqGrid('setGridParam', {search: true});
+					$("#gift_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#gift_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#gift_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+				
+				return encodeURI("params="+JSON.stringify(postData));
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_l_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			},
+			search : false,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#gift_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			recordpos : "left",
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){ },
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 5) {
+// 					$("#gift_grid").jqGrid('setGridParam', {'postData' : {'gift_id':rowid} });
+					$("#gift_grid").jqGrid('setGridParam', {'postData' : $('#gift_grid').getRowData(rowid) });
+					var postData = $('#gift_grid').jqGrid("getGridParam", "postData");
+					f_openGiftDetailSD(postData);
+			   }
+			},
+			gridComplete: function() {
+				var postData = $('#gift_grid').jqGrid("getGridParam", "postData");
+				$('#gift_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#gift_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			},
+			onSortCol: function(columnName, columnIndex, sortOrder) {
+				//$('.s-ico').find("span[sort='asc']").addClass('ui-state-disabled');
+				//$('.s-ico').find("span[sort='desc']").addClass('ui-state-disabled');
+			}
+		});
+		jQuery("#gift_grid").jqGrid('navGrid', "#gift_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+
+	  	$("#gift_grid").gridCss();
+	  	$("#gift_grid_cb").css("border-left-width","0");
+	  	$("#gift_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_gift_grid_cb").css("padding","7px 0");
+	  	$("#gift_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  			  
+	    /* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#gift_grid").jqGrid( 'setGridWidth', $("#target_gift_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

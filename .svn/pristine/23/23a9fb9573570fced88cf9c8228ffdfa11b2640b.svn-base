@@ -1,0 +1,397 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">게시기간</label>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="ntce_start_dd" name="ntce_start_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="ntce_end_dd" name="ntce_end_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<label class="col-md-1 control-label">게시상태</label>
+									<div class="col-md-3half">
+										<select class="form-control" id="status" name="status">
+											<option value="">전체</option>
+										</select> 
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">키워드</label>
+									<div class="col-md-4half">
+										<select class="form-control" id="stype" name="stype">
+											<option value="">전체</option>
+											<option value="title">제목</option>
+											<option value="s_reg_id">등록자</option>
+										</select> 
+									</div>
+									<div class="col-md-4">
+										<input class="form-control" type="text" id="sword" name="sword">
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 비콘팝업 목록 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_beacon_pop_grid" class="widget-body no-padding">
+						<table id="beacon_pop_grid"></table>
+						<div id="beacon_pop_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+ 
+// $('#ntce_start_dd').datepicker(
+//     $.extend({
+//         onSelect: function(selected) {
+//             $('#ntce_end_dd').datepicker('option','minDate', selected);
+//         }
+//     }, date_opts)
+// );
+// $('#ntce_end_dd').datepicker(
+//     $.extend({
+//         onSelect: function(selected) {
+//             $('#ntce_start_dd').datepicker('option','maxDate', selected);
+//         }
+//     }, date_opts)
+// );
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxNoticeStatusCode($('#status'));
+	
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $('#beacon_pop_grid').parent().width() - 100;
+
+		jQuery('#beacon_pop_grid').jqGrid({
+			url : api_url+'/backoffice/system/device/zone/beacon/popup/list',
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['No.', '제목', '게시시작일', '게시종료일', '게시상태', '등록자', '등록일자', '비콘팝업ID'],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 		align : 'center',	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'title', 			index : 'title', 			align : 'center',	sortable : false, 	width : (pageWidth*(30/100)),	classes:'pointer'},
+				{ name : 'ntce_start_dd', 	index : 'ntce_start_dd', 	align : 'center',	sortable : false, 	width : (pageWidth*(15/100))	}, 
+				{ name : 'ntce_end_dd', 	index : 'ntce_end_dd',	 	align : 'center', 	sortable : false, 	width : (pageWidth*(15/100))	}, 
+				{ name : 'status', 			index : 'status', 			align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'reg_id_name', 	index : 'reg_id_name', 		align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'reg_date', 		index : 'reg_date', 		align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'noticbd_id', 		index : 'noticbd_id', 		hidden : true 	}
+				
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : 'noticbd_id',
+				root : 		function(obj){ return obj.data.beacon_popup_list; },	// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI('params='+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				// 기존 검색 조건 유지 부분
+				var _search = $('#frmKeepData').find('input[name=_search]');
+				var page = $('#frmKeepData').find('input[name=page]');
+				var rows = $('#frmKeepData').find('input[name=rows]');
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				// 기존에 검색 조건이 있었을 경우
+				if(_search.val() == 'true') {
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($('#frmKeepData'),$('#frmSearch'));
+										
+					var searchData = $('#frmSearch').serializeFormObject();	// 검색 폼 데이터 추출
+					postData._search = true;
+					$("#beacon_pop_grid").jqGrid('setGridParam', {search: true});
+					$('#beacon_pop_grid').jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				// 기존에 페이지 정보가 있을 경우
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				// 기존 아이템 로우 정보가 있을 경우
+				if(rows.val() != undefined) {
+					$('#beacon_pop_grid_page_center').find('.ui-pg-selbox').val(rows.val()).attr('selected', 'selected');
+					postData.rows = parseInt(rows.val());
+					$('#beacon_pop_grid').jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				// 기존 Keep Data 삭제
+				$('#frmKeepData').empty();
+				
+				return 'params='+encodeURI(JSON.stringify(postData)); 
+			},
+			postData:{ 
+				search_info: '', 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}' 
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#beacon_pop_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : 'left',
+			onCellSelect: function(rowid, index, contents, event) {
+				if(index == 2) {
+					$('#beacon_pop_grid').jqGrid('setGridParam', {'postData' : {'noticbd_id':rowid} });
+					var postData = $('#beacon_pop_grid').jqGrid('getGridParam', 'postData');
+					
+					var url = '/application/coupon/campaign/couponCampaignRN.do';
+					var method = 'POST';
+					cf_action(url, method, postData);
+			   }
+			},
+			gridComplete: function() {
+				var postData = $('#beacon_pop_grid').jqGrid("getGridParam", "postData");
+				$('#beacon_pop_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#beacon_pop_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			}
+		});
+		jQuery('#beacon_pop_grid').jqGrid('navGrid', '#beacon_pop_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		if('${sessionScope.menuAuth.S}' == 'Y') { 
+			jQuery('#beacon_pop_grid').jqGrid('navButtonAdd','#beacon_pop_grid_page',{
+				caption: '발행배치',
+				id: 'run_button',
+				buttonicon: 'ui-icon-check',
+				onClickButton: function(){
+					var data = {
+							"empno" : "${sessionScope.sessionEmpno}", 
+							"emp_str_cd" : "${sessionScope.sessionStrCd}",
+							"hq_base_yn" : "${sessionScope.sessionHqBaseYn}" 
+						};
+					$.ajax({
+						url: api_url + "/backoffice/coupon/cpbook/issue",
+						type: "post",
+						dataType: 'json',
+						contentType: "application/json;charset=utf-8", // POST 일때만 사용
+						data: JSON.stringify(data),
+						success: function(obj) {
+							alert(obj.message);
+							f_campainList();
+						},
+						error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+					    	return;
+					    }
+					});
+				}
+			});
+		}
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery('#beacon_pop_grid').jqGrid('navButtonAdd','#beacon_pop_grid_page',{
+				caption: '삭제',
+				id: 'delete_button',
+				buttonicon: 'ui-icon-trash',
+				onClickButton: function(){ 
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					var aprv_cnt = 0;
+					var dy_cnt = 0;
+					
+					for(var i = 0; i < select_ids.length; i++) {
+						
+						var aprv_sts_cd = $('#beacon_pop_grid').jqGrid('getCell', select_ids[i], 'aprv_sts_cd');
+						var campaign_end_dy = $('#beacon_pop_grid').jqGrid('getCell', select_ids[i], 'campaign_end_dy');
+						
+						if(aprv_sts_cd == 'APPROVE') {
+							aprv_cnt++;	
+						}
+						
+						var now_date = cf_cvtDateFormat(cf_toDate(),'yyyyMMdd');
+						var compare_date = campaign_end_dy.replace(/\-/g,'');
+						
+						if(parseInt(compare_date) < parseInt(now_date)) {
+							dy_cnt++;
+						}
+					}
+					if(aprv_cnt > 0) {
+						alert('승인상태의 고객군별 쿠폰북은 삭제가 불가능합니다.');
+						return;
+					}
+					
+					if(dy_cnt > 0) {
+						alert('게시가 종료된 고객군별 쿠폰북은 삭제가 불가능 합니다.');
+						return;
+					}
+					
+					// 삭제 진행
+					if(confirm('정말 삭제하시겠습니까?')) {
+						
+						var data = {
+							noticbd_id_list : select_ids,
+							empno: '${sessionScope.sessionEmpno}', 
+							emp_str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+						};
+						$.ajax({
+							url: api_url + '/backoffice/campaign/couponbook/delete',
+							type: 'POST',
+							contentType: 'application/json;charset=utf-8', // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$('#beacon_pop_grid').trigger('reloadGrid');
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+						    	return;
+						    }
+						});
+					}
+				}
+			});
+		}
+		
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery('#beacon_pop_grid').jqGrid('navButtonAdd','#beacon_pop_grid_page',{
+				caption: '등록',
+				id: 'add_button',
+				buttonicon: 'ui-icon-plus',
+				onClickButton: function(){
+					var url = '/application/beacon/popup/beaconPopWN.do';
+					var method = 'POST';
+					var postData = $('#beacon_pop_grid').jqGrid('getGridParam', 'postData'); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});
+		}
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+					
+		$('#beacon_pop_grid').gridCss();
+	  	$('#beacon_pop_grid_cb').css('border-left-width','0');
+	  	$('#beacon_pop_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_beacon_pop_grid_cb').css('padding','7px 0');
+	  	$('#beacon_pop_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery('#beacon_pop_grid').jqGrid( 'setGridWidth', $('#target_beacon_pop_grid').width() );
+		});
+	} 
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+
+</script>

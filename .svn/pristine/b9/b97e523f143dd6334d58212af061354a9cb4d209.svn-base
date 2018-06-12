@@ -1,0 +1,325 @@
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style>
+
+img { max-width:100%; }
+
+/* Container */
+.container-fluid {
+    background: #FFFFFF;
+    margin: 40px auto 10px;
+    padding: 20px 40px 0;
+    max-width: 960px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Carousel Control */
+.control-box {
+    text-align: right;
+    width: 100%;
+    }
+    .carousel-control{
+        background: #666;
+        border: 0px;
+        border-radius: 0px;
+        display: inline-block;
+        font-size: 34px;
+        font-weight: 200;
+        line-height: 18px;
+        opacity: 0.5;
+        padding: 4px 10px 0px;
+        position: static;
+        height: 30px;
+        width: 30px;
+        }
+
+.item{
+	padding-top: 10px;
+}
+
+.carousel-inner{
+	height:700px;
+}
+
+.thumbnail {
+	margin-bottom:5px;
+}
+</style>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="carousel slide" id="myCarousel">
+				<div class="carousel-inner"></div>
+		        <div class="control-box" style="display:none; vertical-align:bottom;">
+		            <a data-slide="prev" href="#myCarousel" class="carousel-control left">‹</a>
+		            <a data-slide="next" href="#myCarousel" class="carousel-control right">›</a>
+		        </div>
+		    </div>
+		</article>
+	</div>
+</section>
+<div id="img_upload_sd" style="display:none;"></div>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 이미지 업로드 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#img_upload_sd').dialog({
+	autoOpen : false,
+	width : 500,
+	minHeight: 300,
+	position : [1300,100],
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 이미지 업로드 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		class : "btn btn-primary",
+		click : function() {
+			f_saveImgFileList();
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		class : "btn btn-default",
+		click : function() {
+			$('#img_upload_sd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 초기 화면 세팅
+ * ==================================================================================
+ */
+var image_dialog_pagefunction = function() {
+    // 이미지 리스트 조회
+    f_selectImgList();
+};
+
+/**
+ * ==================================================================================
+ * 이미지 HTML 생성
+ * ==================================================================================
+ */
+function f_pollImgItem(itemData, i) {
+	var div_img = $('<div>').addClass('thumbnail');
+	var tag_img = $('<img>').attr('src', itemData.pre_view_img_url)
+							.attr('alt', itemData.atch_file_nm)
+							.addClass('img-responsive')
+							.attr('style', 'width:auto; height:150px;');
+	div_img.append(tag_img);
+	
+	var div_checkbox = $('<div>').addClass('ta-c').attr('style', 'word-break:break-all;');
+	
+	var inputType = 'radio';
+	if($('#frmKeepData').find('input[name=img_pop_type]').val() == 'M') {
+		inputType = 'checkbox';
+	}
+	
+	var input = $('<input>').attr('type', inputType);
+	input.attr('name'			 , 'img_list');
+	input.attr('img_file_seq'	 , itemData.img_file_seq);
+	input.attr('atch_file_nm'	 , itemData.atch_file_nm);
+	input.attr('local_file_nm'	 , itemData.local_file_nm);
+	input.attr('atch_file_path'	 , itemData.atch_file_path);
+	input.attr('pre_view_img_url', itemData.pre_view_img_url);
+	input.val(itemData.img_file_seq);
+	
+	var label = $('<label>').addClass('radio radio-inline').append(input);
+	label.append(input);
+	label.append('&nbsp;&nbsp;&nbsp;' + itemData.atch_file_nm);
+	div_checkbox.append(label);
+	
+	var item = $('<div>').addClass('col-md-3');
+	item.append(div_img);
+	item.append(div_checkbox);
+	
+    return item;
+}
+
+/**
+ * ==================================================================================
+ * 이미지 리스트 조회
+ * ==================================================================================
+ */
+function f_selectImgList() {
+	var data = {
+		empno		: $('#frmKeepData').find("input[name=empno]").val(),
+		poll_id		: $('#frmKeepData').find("input[name=poll_id]").val(),
+		_search		: false,
+		search_info : '',
+		rows		: '10',
+		page		: 1,
+		sidx		: 'reg_date',
+		sord		: 'desc',
+		list_all_yn	: 'Y'
+	};
+
+	$.ajax({
+	    url: api_url+"/backoffice/poll/img/list",
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(data)),
+	    success: function(obj){
+	    	var target = $(".carousel-inner");
+	    	var per_4obj;
+	    	var per_8obj;
+	    	
+	    	target.empty();
+	    	
+	    	if(obj.data.poll_img_list.length < 13) {
+	    		$('#myCarousel .control-box').hide();
+	    	}
+	    	else {
+	    		$('#myCarousel .control-box').show();
+	    	}
+	    	
+	    	$.each(obj.data.poll_img_list, function(i, item) {
+	    		if( (i%12) == 0 ) {
+	    			if(i == 0) {
+	    				per_8obj = $("<div>").addClass("item active");
+	    			}
+	    			else {
+	    				per_8obj = $("<div>").addClass("item");
+	    			}
+	    			target.append(per_8obj);
+	    		}
+	    		
+	    		if( (i%4) == 0 ) {
+	    			per_4obj = $("<div>").addClass("row pb30");
+	    			per_8obj.append(per_4obj); 
+	    		}
+	    		
+	    		per_4obj.append(f_pollImgItem(this, i));
+	    		
+	    		if(i > 0 && (i%12) == 0 ) {
+	    			target.append(per_8obj);
+	    		}
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    },
+	    complete: function() {
+	    	$('.carousel').carousel({
+				interval : false,
+				cycle : false
+			});
+	    }
+	});
+}
+
+/**
+ * ==================================================================================
+ * 이미지 파일 등록
+ * ==================================================================================
+ */
+function f_saveImgFileList() {
+	var data = $('#frmImgFileUpload').serializeFormObject();
+	
+	if($('#frmImgFileUpload').find('input[name=img_strge_file_nm_poll_img_uploadfile1]').length == 0 &&
+			$('#frmImgFileUpload').find('input[name=img_strge_file_nm_poll_img_uploadfile2]').length == 0 &&
+			$('#frmImgFileUpload').find('input[name=img_strge_file_nm_poll_img_uploadfile3]').length == 0) {
+		alert("이미지를 선택하세요");
+		return;
+	}
+	
+	if(confirm("이미지를 저장 하시겠습니까?")) {
+		data['empno']   = $('#frmKeepData').find('input[name=empno]').val();
+		data['poll_id'] = $('#frmKeepData').find('input[name=poll_id]').val();
+	
+		$.ajax({
+			url: api_url+'/backoffice/poll/img/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+				
+		    	f_selectImgList();
+		    	
+		    	$('#img_upload_sd').dialog("close");
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 이미지 파일 삭제
+ * ==================================================================================
+ */
+function f_deleteImgFileList() {
+	var imgInfoList = [];
+	
+	$('#myCarousel input[type=checkbox]').each(function() {
+		if($(this).is(':checked')) {
+			var imgInfo = {
+				img_file_seq   : $(this).val(),
+				atch_file_nm   : $(this).attr('atch_file_nm'),
+				local_file_nm  : $(this).attr('local_file_nm'),
+				atch_file_path : $(this).attr('atch_file_path')
+			};
+			
+			imgInfoList.push(imgInfo);
+		}
+	});
+	
+	if(imgInfoList.length < 1) {
+		alert('삭제 할 이미지를 선택하세요');
+		return;
+	}
+	
+	if(confirm("선택한 이미지를 삭제 하시겠습니까?")) {
+		var data = {
+			empno   	  : $('#frmKeepData').find('input[name=empno]').val(),
+			poll_id 	  : $('#frmKeepData').find('input[name=poll_id]').val(),
+			img_info_list : imgInfoList
+		}
+		
+		$.ajax({
+			url: api_url+'/backoffice/poll/img/delete',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	
+		    	$(".carousel-inner").empty();
+				
+		    	f_selectImgList();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+pageSetUp();
+
+image_dialog_pagefunction();
+
+</script>

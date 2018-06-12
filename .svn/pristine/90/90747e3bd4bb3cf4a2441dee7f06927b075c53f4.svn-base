@@ -1,0 +1,256 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page import="com.penta.backoffice.web.common.controller.CommonController"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+							
+								<div class="form-group">
+									<label class="col-md-1 control-label">가입일</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="s_join_date" name="s_join_date" type="text" placeholder="시작일" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="e_join_date" name="e_join_date" type="text" placeholder="종료일" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<label class="col-md-1 control-label">키워드</label>
+									<div class="col-md-2">
+										<select class="form-control" name="stype">
+											<option value="">선택</option>
+											<!-- 
+											<option value="membs_card_no" selected="selected">APP CARD NO.</option>
+											<option value="login_id">아이디</option>
+											 -->
+											<option value="user_rep_id" selected="selected">멤버스 고객번호</option>
+										</select> 
+									</div>
+									
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="sword" >
+									</div>
+								</div>
+								
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false" style="display: none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 회원 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_terms_grid" class="widget-body no-padding">
+						<table id="terms_grid"></table>
+						<div id="terms_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// -------------------- 초기데이터 설정 : 달력 시작 -------------------- //
+	//$('input[name=s_join_date]').val(cf_termDate(-30));
+	//$('input[name=e_join_date]').val(cf_toDate());
+	
+	$('#s_join_date').datepicker();
+	$('#s_join_date').datepicker("option", "maxDate", $("#e_join_date").val());
+	$('#s_join_date').datepicker("option", "onClose", function ( selectedDate ) {
+		$("#e_join_date").datepicker( "option", "minDate", selectedDate );
+	});
+	
+	$('#e_join_date').datepicker();
+	$('#e_join_date').datepicker("option", "minDate", $("#s_join_date").val());
+	$('#e_join_date').datepicker("option", "onClose", function ( selectedDate ) {
+		$("#s_join_date").datepicker( "option", "maxDate", selectedDate );
+	});
+	
+	// -------------------- 초기데이터 설정 : 달력 종료 -------------------- //
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		var valFormat = "";
+		var valIdx = 0;
+		var pageWidth = $("#terms_grid").parent().width() - 100;
+
+		jQuery("#terms_grid").jqGrid({
+			url : api_url + "/backoffice/terms/member/agreement/list",
+			mtype: 'GET',
+			datatype : "json",
+			//colNames : ['No.', 'APP CARD NO.', '아이디', '멤버스고객번호', '가입일'],
+			colNames : ['No.', '멤버스고객번호', '가입일'],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 		align : "center",	sortable : false, 	width : (pageWidth*(5/100))			},  
+				//{ name : 'membs_card_no', 	index : 'membs_card_no',	align : "center", 	sortable : false, 	width : (pageWidth*(30/100))	}, 
+				//{ name : 'login_id', 		index : 'login_id',			align : "center", 	sortable : false, 	width : (pageWidth*(30/100))			}, 
+				{ name : 'user_rep_id', 	index : 'user_rep_id',		align : "center", 	sortable : false, 	width : (pageWidth*(25/100)) 			}, 				
+				{ name : 'join_date_name', 	index : 'join_date_name', 	align : "center", 	sortable : true, 	width : (pageWidth*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "membs_card_no",
+				root : 		function(obj){ return obj.data.member_list; 		},	// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; 	},	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; 		}, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; 	}	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				// 기존 검색 조건 유지 부분
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					var s_join_date = $("#frmSearch").find('input[name=s_join_date]').val();
+					var e_join_date = $("#frmSearch").find('input[name=e_join_date]').val();
+					// 시작일
+					$("input[name=s_join_date]").val(cf_cvtDateFormat(s_join_date, "yyyy-MM-dd"));
+					// 종료일
+					$("input[name=e_join_date]").val(cf_cvtDateFormat(e_join_date, "yyyy-MM-dd"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();	// 검색 폼 데이터 추출
+					postData._search = true;
+					$("#terms_grid").jqGrid('setGridParam', {search: true});
+					$("#terms_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#terms_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#terms_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				// 기존 Keep Data 삭제
+				$("#frmKeepData").empty();
+				
+				return "params="+encodeURI(JSON.stringify(postData)); 
+			},
+			postData:{
+				/* search_info: {
+					s_join_date : $('#s_join_date').cvtDateDefault(),
+					e_join_date : $('#e_join_date').cvtDateDefault()
+				}, */
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			},
+			search:false,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#terms_grid_page',
+			sortname : 'join_date_name',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : false,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+		});
+		jQuery("#terms_grid").jqGrid('navGrid', "#terms_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+
+	  	$("#terms_grid").gridCss();
+	  	$("#terms_grid_cb").css("border-left-width","0");
+	  	$("#terms_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_terms_grid_cb").css("padding","7px 0");
+	  	$("#terms_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#terms_grid").jqGrid( 'setGridWidth', $("#target_terms_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+
+</script>

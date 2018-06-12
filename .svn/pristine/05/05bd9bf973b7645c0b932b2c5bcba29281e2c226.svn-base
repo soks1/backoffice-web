@@ -1,0 +1,401 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>정보 수정</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmLifekok" name="frmLifekok">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="templ_kind_cd" value="">
+							<input type="hidden" name="templ_kind_cd_nm" value="">
+							<input type="hidden" name="file_divn_cd" value="LKOKTEMPL">
+							<input type="hidden" name="strge_nm" value="">
+							<input type="hidden" name="templ_id" value="">
+							<input type="hidden" name="orgin_nm" value="" data-valid-use="true" data-valid-title="내용 이미지">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">구분 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="templ_kind_cd_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05" style="width:120px !important">제목 : </label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" name="templ_title" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="제목" />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05" style="width:120px !important" >설명 : </label>
+									<div class="col-md-6">
+										<textarea class="form-control" id="templ_desc" rows="5" data-valid-use="true" data-valid-symbol="false" data-valid-max="500" data-valid-title="템플릿설명"></textarea>
+									</div>
+								</div>
+
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05" style="width:120px !important">내용이미지 : </label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p id="t_img_msg" style="display:none;"><i class="fa fa-info-circle"></i> '가맹점' 이미지 등록시, 사이즈: 720px X 260px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+										<p id="c_img_msg" style="display:none;"><i class="fa fa-info-circle"></i> '쿠폰' 이미지 등록시, 사이즈: 214px X 214px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important" >등록자 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="reg_id_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important" >등록일 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+								</div>
+								
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantTImgRN()" class="btn btn-default">취소</a>
+										<a href="javascript:f_tenantTImgENsubmit()" class="btn btn-default">수정</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_tenantTImgENsubmit() {
+		
+	if($('#frmLifekok').formValid() ){
+		
+		var data = $('#frmLifekok').serializeFormObject();
+		data['templ_desc'] = $('textarea[id=templ_desc]').val();
+		
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_lifekok_url+'/backoffice/lifekok/tenant/templ/img/modify',
+// 		    url: api_lifekok_img_url+'/backoffice/lifekok/tenant/templ/img/modify',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_tenantList();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});	
+	} else {
+		return;
+	}
+}
+
+
+/* ============================================================================================
+/* 파일 업로드
+/* --------------------------------------------------------------------------------------------
+/* 파일 업로드 이벤트 핸들러
+/* ============================================================================================ */
+$('input[name*=uploadfile]').change(function (e) {
+	
+	var limitWidth = 0,
+		limitHeight = 0;
+		limitSize = 150;
+	
+	if($('input[name="templ_kind_cd"]').val() == "TENANTIMG"){
+		limitWidth = 720;
+		limitHeight = 260;
+	}else if($('input[name="templ_kind_cd"]').val() == "LKOKCOUPONIMG"){
+		limitWidth = 214;
+		limitHeight = 214;
+	}
+	
+	var intpuFile = $(this);
+	var file = this.files[0];
+    var reader = new FileReader();
+    var image  = new Image();
+	var boolFile = true;
+ 
+	reader.readAsDataURL(file);  
+    
+	reader.onload = function(_file) {
+        image.src    = _file.target.result;              // url.createObjectURL(file);
+        image.onload = function() {
+            var w = this.width,
+                h = this.height,
+                t = file.type,                           // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size/1024);
+//                 s = ~~(file.size/1024) +'KB';
+            
+            if(w > limitWidth || h > limitHeight){
+            	alert("제한 사이즈를 초과하셨습니다.( "+limitWidth+" * "+limitHeight+" )\n너비 : " + w + " 높이 : " + h);
+            }else if(s > limitSize){
+            	alert("제한 파일용량을 초과하셨습니다.("+limitSize+"KB )\n파일용량 : "+s+"KB");
+            }else{
+            	f_lifekok_fileUpload(intpuFile, "LKOKTEMPL");
+            }
+        };
+        image.onerror= function() {
+        	alert("유효한 파일타입이 아닙니다. 이미지 파일을 등록해 주세요");
+//             alert('Invalid file type: '+ file.type);
+        };
+    };
+});    
+
+// $('input[name*=uploadfile]').change(function (e) {
+	
+// 	f_lifekok_tenantTImgEN_fileUpload($(this), 'LKOKTEMPL');
+// });
+//---------------------------------------------------------------------------------------------------------------------------------------------------//
+/**
+ * 파일 업로드 - 생활콕
+ * @param inputFile
+ * @param divnCd
+ */
+function f_lifekok_tenantTImgEN_fileUpload(inputFile, divnCd, inputSuffix) {
+	
+	if (inputSuffix == null) { 
+		inputSuffix = ""; 
+	}
+	
+	var fileData = inputFile.get(0).files[0];
+	var formData = new FormData();
+
+	var preview = $('#preview_'+inputFile.attr('id'));
+	
+	if(preview.find('img').attr('src') != noImgPath) {
+		alert('기존 파일을 삭제하고 업로드 하시기 바랍니다.');
+		return;
+	}
+	
+	formData.append('file', fileData, encodeURI(fileData.name));
+	formData.append('file_divn_cd', divnCd);
+	formData.append('empno', $('#frmKeepData').find('input[name=empno]').val() );
+	
+	$.ajax({
+
+		//로컬
+// 		url: api_lifekok_img_url+"/lifekok/common/file/upload",
+		
+		//개발
+		url: api_lifekok_url+"/lifekok/common/file/upload",
+		
+		type: 'POST',
+		data: formData,
+        preprocessData: false,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(obj) {
+			
+			var _prvw_url = obj.data.prvw_url;
+			$('input[name=strge_nm]').val(obj.data.strge_nm);
+			$('input[name=file_divn_cd]').val(obj.data.file_divn_cd);
+			$('input[name=orgin_nm]').val(fileData.name);
+			
+			//로컬
+// 			var _delivery_prvw_url = _prvw_url.replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+			
+			//개발
+			var _delivery_prvw_url = _prvw_url;
+			
+			preview.find('img').attr('src',_delivery_prvw_url);
+			
+			var fName = '<p class="alert alert-info bd0">'+fileData.name+'</p>';
+			preview.parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_'+inputFile.attr('id'));
+			var aTag = $('<a>')
+						.addClass('btn btn-danger btn-sm')
+						.attr('href','javascript:f_lifekok_tenantTImgEN_fileDelete(\''+inputFile.attr('id')+'\')')
+						.text('파일삭제');
+			
+			span.append(aTag);
+			// TODO: 추 후 필요한 정보는 더 추가 하여 입력 한다.
+			
+			
+			var btn_div = inputFile.parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;       
+		}
+	});
+}
+/**
+ * 파일 삭제
+ * @param name
+ */
+function f_lifekok_tenantTImgEN_fileDelete(name) {
+	
+	$('input[name=strge_nm]').val("");
+	$('input[name=orgin_nm]').val("");
+	$('input[name=templ_yn]').val('N');
+	var preview = $('#preview_'+name);
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_'+name).parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_'+name).remove();
+}
+//---------------------------------------------------------------------------------------------------------------------------------------------------//
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	
+	$.ajax({
+	    //개발
+	    url: api_lifekok_url+'/backoffice/lifekok/tenant/templ/img/show', //this is the submit URL
+// 		url: api_url+'/backoffice/lifekok/tenant/templ/img/show', //this is the submit URL
+	    //로컬
+// 	    url: api_lifekok_img_url+'/backoffice/lifekok/tenant/templ/img/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	
+	    	$("#templ_kind_cd_nm").html(detailData['templ_kind_cd_nm']);
+	    	$("input[name=templ_title]").val(detailData['templ_title']);
+	    	$("textarea[id=templ_desc]").val(detailData['templ_desc']);
+	    	$("#templ_desc").val(detailData['templ_desc']);
+	    	$("#reg_id_nm").html(detailData['reg_id_nm']);
+	    	$("#reg_date").html(detailData['reg_date']);
+	    	
+	    	$("input[name=templ_kind_cd_nm]").val(detailData['templ_kind_cd_nm']);
+	    	$("input[name=templ_kind_cd]").val(detailData['templ_kind_cd']);
+	    	
+	    	if(detailData['templ_kind_cd']=="TENANTIMG"){
+	    		$('#t_img_msg').show();
+	    	}else if(detailData['templ_kind_cd']=="LKOKCOUPONIMG"){
+	    		$('#c_img_msg').show();
+	    	}
+	    	
+	    	// ------------- 이미지 영역 ------------- //
+	    	$("input[name=templ_id]").val(detailData['templ_id']);
+	    	$("input[name=orgin_nm]").val(detailData['orgin_nm']);
+	    	$("input[name=strge_nm]").val(detailData['strge_nm']);
+	    	
+	    	// 일반 업로드
+	    	if(detailData['url'] != "") {
+	    		
+	    		//로컬 서버
+// 	    		var _url = detailData['url'].replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+
+	    		//개발 서버
+	    		var _url = detailData['url'];
+	    		
+	    		var preview = $('#preview_uploadfile');
+				preview.find('img').attr('src', _url);
+					
+					var fName = '<p class="alert alert-info bd0">'+detailData.orgin_nm+'</p>';
+					preview.parent().append(fName); 
+					
+					var span = $('<span>').addClass('btn_del_uploadfile');
+					var aTag = $('<a>')
+								.addClass('btn btn-danger btn-sm')
+								.attr('href','javascript:f_lifekok_tenantTImgEN_fileDelete(\'uploadfile\')')
+								.text('파일삭제');
+						
+					span.append(aTag);
+						
+					var btn_div = $("#uploadfile").parent().parent();
+					btn_div.find("a").attr("disabled", true);
+					btn_div.find("span").attr("disabled", true);
+					btn_div.append(span);
+    		}
+	    }
+	});
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

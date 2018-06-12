@@ -1,0 +1,279 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/**
+ * ==================================================================================
+ * 공지사항 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_noticeList() {
+	var url = "/application/merchant/notice/noticeLN.do";
+	var method = "GET";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공지사항 : 상세 화면 가기
+ * ==================================================================================
+ */
+function f_noticeInfo() {
+	var url = "/application/merchant/notice/noticeRN.do";
+	var method = "GET";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공지사항 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_noticeEdit() {
+	var url = "/application/merchant/notice/noticeEN.do";
+	var method = "GET";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	var selectCheckFlag = false;
+	$.each($('#noti_type_chk').find('input[type=checkbox]'), function(idx, data) {
+		if($(this).is(':checked')) {
+			selectCheckFlag = true;
+		}
+	});
+	
+	if(!selectCheckFlag) {
+		if(!$("#frmSearch").searchValid()) {
+			alert("검색 조건을 입력해 주세요.");
+			return;
+		}
+	}
+	
+	if ($('#s_reg_date').val() != "" || $('#e_reg_date').val() != "") {
+		if ($('#s_reg_date').val() == "" || $('#e_reg_date').val() == "") {
+			alert('날짜 조건 조회 시 시작일과 종료일을 모두 입력해야 합니다.');
+			return;
+		}
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 사용 중으로 변경
+	$("#notice_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#notice_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#notice_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	 
+	$("#div-coupon-type-cd").show();
+	$("#div-exch-goods").hide();
+	
+	$("#notice_grid").jqGrid('setGridParam', {search: false});
+	$("#notice_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#notice_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+}
+
+/**
+ * ==================================================================================
+ * 목록 화면 : 가맹점 상세조회 화면 이동
+ * ==================================================================================
+ */
+function f_unreadMcht(obj) {
+	var mcht_id = $(obj).attr('data-mcht-id');
+	f_openMenu('/application/merchant/merchant/merchantPN.do' , '?p=R&mcht_id=' + mcht_id)
+}
+
+/**
+ * ==================================================================================
+ * 목록 화면 : 가맹점 상세조회 Left 메뉴 오픈
+ * ==================================================================================
+ */
+/** 메뉴 이동 */
+function f_openMenu(path, params) {
+
+	$('nav li.active').removeClass('active');
+	
+	$('nav li.open').has('ul').not(':has(a[href="' + path + '"])').each(function() {
+		$(this).children('ul').slideUp(200);
+		$(this).find('a b').html('<em class="fa fa-plus-square-o"></em>');
+		$(this).removeClass('open');
+	});
+	
+	var targetMenu = $('nav li a[href="' + path + '"]');
+	
+	targetMenu.parents('li').has('ul').addClass('active');
+	targetMenu.parents('li').has('ul').find('a b').html('<em class="fa fa-minus-square-o"></em>');
+	targetMenu.parent().addClass('active');
+	
+	targetMenu.parents('li').has('ul').each(function() {
+		if(!$(this).hasClass('open')) {
+			$(this).addClass('open'); 
+			$(this).children('ul').slideDown(200);
+		}
+	});
+
+	f_loadPage(path, params);
+
+}
+
+/**
+ * ==================================================================================
+ * 목록 화면 : 가맹점 상세조회 화면 출력
+ * ==================================================================================
+ */
+function f_loadPage(path, params) {	
+	
+	window.location.hash = path + params;
+	var url = location.href.split('#').splice(1).join('#');
+	if (!url) {
+		try {
+			var documentUrl = window.document.URL;
+			if (documentUrl) {
+				if (documentUrl.indexOf('#', 0) > 0 && documentUrl.indexOf('#', 0) < (documentUrl.length + 1)) {
+					url = documentUrl.substring(documentUrl.indexOf('#', 0) + 1);
+				}
+			}
+		} catch (err) {}
+	}
+	container = $('#content');
+	
+	var title = ($('nav a[href="' + url + '"]').attr('title'));
+	document.title = (title || document.title);
+	
+	$.ajax({
+		type : "GET",
+		url : url + location.search,
+		dataType : 'html',
+		async : true,
+		cache : true,
+		success : function(data) {
+			container.css({
+				opacity : '0.0'
+			}).html(data).delay(50).animate({
+				opacity : '1.0'
+			}, 300);
+			data = null;
+			container = null;
+		},
+		error : function(xhr, status, thrownError, error) {
+			container.html('<h4 class="ajax-loading-error"><i class="fa fa-warning txt-color-orangeDark"></i>'+
+					'Error requesting <span class="txt-color-red">' + url + '</span>: ' + xhr.status + ' <span style="text-transform: capitalize;">'  + thrownError + '</span></h4>');
+		},
+		complete: function() {
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 목록 화면 : 첨부파일 다운로드
+ * ==================================================================================
+ */
+function f_atchDownload(id) {
+	var url = api_url+"/bo/notice/npmt_bo_02205?";
+	var data = {
+			noti_id: id,
+			access_token: localStorage.getItem('access_token')
+		};
+	var params = encodeURI('params='+JSON.stringify(data));
+	
+	$.fileDownload(url + params);
+}
+
+/**
+ * ==================================================================================
+ * 팝업 화면 : 가맹점 목록 조회 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openMchtListLL() {
+	$.ajax({
+		url: '/application/common/merchantLL.do',
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#mchtSearchRD');
+			$target.html(data);
+		}
+	});
+	
+	$('#mchtSearchRD').dialog('open');
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 가맹기관 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openMchtListCD() {
+	$.ajax({
+		url: '/application/merchant/notice/popup/merchantCD.do',
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#mcht_list_cd');
+			$target.html(data);
+		}
+	});
+	
+	$('#mcht_list_cd').dialog('open');
+}

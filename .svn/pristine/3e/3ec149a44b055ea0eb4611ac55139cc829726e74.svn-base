@@ -1,0 +1,1336 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script type="text/javascript">
+/* ============================================================================================
+/* M클럽 : 클럽 고객군
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxCustgpStatusCode(target, type) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "LST_CUSTGP_ID",
+			type: type,
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/mclub/custgroup/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.custgp_list, function(i, item) {
+				options += "<option value='"+item.lst_temp_custgp_id+"'>"+item.lst_temp_custgp_id+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 쿠폰리스트 : 쿠폰노출타입
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxCouponSizeCode(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "COUPON_SIZE_TYPE_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 쿠폰북리스트 : 쿠폰북노출타입
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxCpbookSizeCode(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "CPBOOK_SIZE_TYPE_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* M클럽 : 클럽 상태
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxClubStatusCode(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "MCLUB_APRV_STS_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* M클럽 : 쿠폰북 노출위치
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxCouponlocation(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "VIEW_LOCATION_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* M클럽 : M클럽 리스트
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxMclubList(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/mclub/proc/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.proc_club_list, function(i, item) {
+				options += "<option value='"+item.mclub_id+"'club_custgp_id='"+item.lst_custgp_id+"'>"+item.mclub_name+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* M클럽 : 운영중인 mclub 리스트
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxClublist(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "MCLUB_APRV_STS_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 쿠폰 : 쿠폰 유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 적용대상 유형에 따른 쿠폰 유형 변경 스크립트
+/* LAYER - L : 리스트 화면 사용 
+/* LAYER - W : 등록 화면 사용
+/* TYPE	- PRICE		: 정률할인/정액할인/정률적립/정액할인
+/* TYPE	- PRODUCT 	: 정률할인/정액할인/정률적립/정액할인/정액할인(포인트쿠폰)
+/* ============================================================================================ */
+function f_ajaxEventTypeCode(target, layer) {
+	var data = {
+			
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			cd_divn_id: "FCFS_EVNT_TYPE_CD",
+			mst_cd : ""
+	}; 
+		
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+/* ============================================================================================
+/* 쿠폰 : 적용대상 유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰 적용 대상 유형 : 상품형/금액형 (PRICE/PRODUCT)
+/* ============================================================================================ */
+function f_ajaxApplyToTypeCode(target) {
+	
+	var data = {
+			
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+// 			cd_divn_id: "APPLY_TO_TYPE_CD",
+			cd_divn_id: "COUPON_CLS_CD",
+			mst_cd : ""
+	}; 
+		
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 쿠폰 : 쿠폰 유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 적용대상 유형에 따른 쿠폰 유형 변경 스크립트
+/* LAYER - L : 리스트 화면 사용 
+/* LAYER - W : 등록 화면 사용
+/* TYPE	- PRICE		: 정률할인/정액할인/정률적립/정액할인
+/* TYPE	- PRODUCT 	: 정률할인/정액할인/정률적립/정액할인/정액할인(포인트쿠폰)
+/* ============================================================================================ */
+function f_ajaxCouponTypeCode(target, layer, type) {
+	if(typeof type == "undefined" || type == null || type == "") {
+		type = "A";
+	}
+
+	var data = {
+			
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			cd_divn_id: "COUPON_TYPE_CD",
+			mst_cd : type
+	}; 
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			if(layer == 'L') {
+				options += "<option value=''>전체</option>";
+			} else if(layer == 'W'){
+				options += "<option value=''>선택</option>";
+			}
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.html(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }	
+	});
+}
+
+/* ============================================================================================
+/* 쿠폰북 : 쿠폰북유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 유형 : 일반쿠폰/스마트콤보쿠폰/신규가입쿠폰
+/* ============================================================================================ */
+function f_ajaxCPbookTypeCode(target, reqType) {
+	
+	var rType = "";
+	if(typeof reqType != "undefined" || reqType != null || reqType != "") {
+		rType = reqType;
+	}
+	
+	var data = {
+			
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "CPBOOK_TYPE_CD",
+			mst_cd : "",
+			req_type: rType,
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 쿠폰북 : 온라인몰, 매장 조회
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 발행 채널 : 온라인/오프라인/온_오프라인
+/* ============================================================================================ */
+function f_ajaxPublerCode(target) {
+	
+	var data = {
+			
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "ISSUE_CHANEL_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 스탬프 : 스탬프 유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 스탬프유형 : 그룹/개인.
+/* ============================================================================================ */
+function f_ajaxIssueDivnCode(target) {
+	
+	var data = {
+			
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "ISSUE_DIVN_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 상품선택 : 거래 유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 상품유형 : 
+/* ============================================================================================ */
+function f_ajaxTrdTypeCode(target) {
+	
+	var data = {
+			
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "TRD_TYPE_DIVN_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 스탬프 : 스탬프 유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 스탬프유형 : 그룹/개인.
+/* ============================================================================================ */
+function f_ajaxStampTypeCode(target) {
+	
+	var data = {
+			
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "STAMP_DIVN_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* FAQ : FAQ 분류 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* FAQ 분류 : 쿠폰/스탬프/경매/공동구매/전자영수증
+/* LAYER - L : 리스트 화면 사용 
+/* LAYER - W : 등록 화면 사용
+/* ============================================================================================ */
+function f_ajaxFaqCatCode(target, layer) {
+		
+	var data = {
+			
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			cd_divn_id: "FAQ_CAT_CD",
+			mst_cd : ""
+	}; 
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			if(layer == 'L') {
+				options += "<option value=''>전체</option>";
+			} else if(layer == 'W'){
+				options += "<option value=''>선택</option>";
+			}
+			$.each(obj.data.cd_list, function(i, item) {
+				if(layer == 'W' && item.mst_cd == 'COUPON') {
+					options += "<option value='"+item.mst_cd+"' selected='selected'>"+item.mst_cd_nm+"</option>";
+				} else {
+					options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+				}
+				
+			});
+			target.html(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }	
+	});
+}
+
+/* ============================================================================================
+/* 공통 : 등록지점 조회
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxStrCdCode(target, type, ordType) {
+	
+	var svcType = "CPBOOK";
+	if(typeof type != "undefined" && type != null) {
+		svcType = type;
+	}
+	
+	if('${sessionScope.sessionHqBaseYn}' == 'Y') {
+		var data = {
+				
+				svc_type: svcType,
+				empno: "${sessionScope.sessionEmpno}", 
+				str_cd: "${sessionScope.sessionStrCd}",
+				hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+				use_type: "BRANCH",
+				mst_cd : "", 
+				ord_dype : ordType
+		};
+		
+		$.ajax({
+			url: api_url + "/backoffice/common/branch/list",
+			type: "GET",
+			async: false,
+			data: encodeURI('params='+JSON.stringify(data)),
+			success: function(obj) {
+				var options = "";
+				$.each(obj.data.brnch_list, function(i, item) {
+					options += "<option value='"+item.str_cd+"'>"+item.str_nm+"</option>";
+				});
+				target.append(options);
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+	} else {
+		target.html('<option value="${sessionScope.sessionStrCd}">${sessionScope.sessionStrNm}</option>');
+	}
+
+}
+
+
+
+/* ============================================================================================
+/* 공통 : 등록지점 조회
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰에서만 사용 함
+/* ============================================================================================ */
+function f_ajaxStrCdCpCode(target) {
+	
+	var data = {
+			
+			svc_type: "",
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			use_type: "",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/branch/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.brnch_list, function(i, item) {
+				options += "<option value='"+item.str_cd+"'>"+item.str_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 공통 : 승인상태 조회
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxApprovalStatusCode(target) {
+	
+	var data = {
+			
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "APRV_STS_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 공통 : 게시상태 조회
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxNoticeStatusCode(target, type) {
+	var data = {
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			cd_divn_id: "NTCE_STS_CD",
+			req_type: type,
+			mst_cd : ""
+	}; 
+		
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 공통 : 메인배너카테고리 조회
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxMainBannerCategoryCode(target, type) {
+	var data = {
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			cd_divn_id: "MBANNER_CAT_CD",
+			req_type: type,
+			mst_cd : ""
+	}; 
+		
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+/* ============================================================================================
+/* 공통 : 메인배너카테고리 조회
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxMainBannerSubCategoryCode(target, type) {
+	var data = {
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			cd_divn_id: "MBANNER_SUB_CAT_CD",
+			req_type: type,
+			mst_cd : ""
+	}; 
+		
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 공통 : 진행 상태
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxPrgsStatusCode(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "PRGS_STS_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 공통 : 상품 카테고리
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxProductCategoryCode(target, cateClass, type) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			up_category_cd: cateClass
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/common/product/category/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			
+			if(type == 'TGRP' || type == 'MGRP') {
+				options += "<option value=''>선택</option>";	
+			}
+			else {
+				options += "<option value=''>전체</option>";
+			}
+						
+			$.each(obj.data.prod_category_list, function(i, item) {
+				options += "<option value='"+item.category_cd+"'>"+item.category_nm+"</option>";
+			});
+			target.html(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 공통 : 판매상태 조회
+/* --------------------------------------------------------------------------------------------
+/* 
+/* ============================================================================================ */
+function f_ajaxSellStatusCode(target) {
+	
+	var data = {
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			cd_divn_id: "FCFS_SELL_STS_CD",
+			mst_cd : ""
+	}; 
+		
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}	
+/* ============================================================================================
+/* 비회원 쿠폰북 : 쿠폰진 분류 유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰진 분류 유형 조회 스크립트
+/* ============================================================================================ */
+function f_ajaxNomemCpzineCateCode(target) {
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+
+	$.ajax({
+	    url: api_url+"/backoffice/nomember/contents/cate/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(resultData) {
+			var options = "";
+			var couponZineContentClassify_list = resultData["data"]["cpzine_contents_cat_list"];
+			$.each(couponZineContentClassify_list, function(i, items) {
+				options += "<option value='"+items["cpzine_contents_cat_id"]+"'>"+items["cpzine_contents_cat_nm"]+"</option>";
+			});
+			target.html("<option value=''>전체</option>");
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj["responseJSON"];
+	    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+	    	return;
+	    }
+	});
+}
+/** 처리 상태 */
+function f_ajaxProcStatusCode(target) {
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		//contentType: "application/json;charset=utf-8",
+		async: false,
+		data: encodeURI('params={"key":"korea", "cd_divn_id":"PROC_STS_CD"}'),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.code_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 쿠폰진 : 쿠폰진 분류 유형 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰진 분류 유형 조회 스크립트
+/* ============================================================================================ */
+function f_ajaxCPClassifyCode(target) {
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+
+	$.ajax({
+	    url: api_url+"/backoffice/couponzine/contents/category/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(resultData) {
+			var options = "";
+			var couponZineContentClassify_list = resultData["data"]["cpzine_contents_cat_list"];
+			$.each(couponZineContentClassify_list, function(i, items) {
+				options += "<option value='"+items["cpzine_contents_cat_id"]+"'>"+items["cpzine_contents_cat_nm"]+"</option>";
+			});
+			target.html("<option value=''>전체</option>");
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj["responseJSON"];
+	    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 개인화 쿠폰북 : 명단 업로드 처리상태/발행상태 조회 스크립트.
+/* --------------------------------------------------------------------------------------------
+/* 명단 업로드 처리상태/발행상태 조회 스크립트.
+/* LAYER - L : 리스트 화면 사용 
+/* LAYER - W : 등록 화면 사용
+/* TYPE	- PROCESSING	: 처리중
+/* TYPE	- COMPLETED 	: 업로드완료
+/* TYPE	- ERROR 		: 업로드에러
+/* TYPE	- PUBLISHING 	: 쿠폰북발행중
+/* TYPE	- PUBLISHED 	: 쿠폰북발행완료
+/* ============================================================================================ */
+function f_ajaxPersonalUplodeTypeCode(target, layer) {
+	var data = {
+			
+			empno: '${sessionScope.sessionEmpno}', 
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			cd_divn_id: "UPLOAD_STATUS_CD",
+			mst_cd : ""
+	}; 
+		
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+/* ============================================================================================
+/* 공통코드 : 공통코드 조회 스크립트
+/* --------------------------------------------------------------------------------------------
+/* 공통코드 조회 스크립트
+/* extendData : data에 추가해야할 파라미터
+/* extendData 필수값 
+/* 	target : 데이터가 입력되어야 하는 대상 태그(codeId를 넘길경우 빈값가능)
+/* 	cd_divn_id : 공통코드값
+/* 	codeId: codeName 리턴을 원할경우에만 codeId를 입력
+/* 	fnSuccess : 기존 success function 이 아닌 사용자 임의로 만든 success function을 원할경우 입력
+/* ============================================================================================ */
+function f_ajaxCommonCode(extendData) {
+	if(extendData["cd_divn_id"].trim() == ""){
+		alert("공통코드를 입력해주세요");
+		return false;
+	}
+	
+	var codeName = "";
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+	};
+	$.extend(data, extendData);
+
+	$.ajax({
+		url: api_url + "/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function (resultData) {
+			if(data["codeId"]){
+				$.each(resultData["data"]["cd_list"], function(i, items) {
+					if(items["mst_cd"] == data["codeId"]){
+						codeName = items["mst_cd_nm"];
+						return true;
+					}
+				});
+			} else{
+				if(data["fnSuccess"] == undefined || data["fnSuccess"] == ""){
+					var options = "";
+					$.each(resultData.data.cd_list, function(i, item) {
+						options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+					});
+					$(data["target"]).append(options);
+				} else{
+					data["fnSuccess"](resultData);
+				}
+			}
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+	return codeName;
+}
+
+/* ============================================================================================
+/* 엘팟 : 지점 코드 가져오기
+/* --------------------------------------------------------------------------------------------
+/* 지점 코드 조회 스크립트
+/* ============================================================================================ */
+function f_ajaxLpotZoneStrNmCode(target) {
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+
+	$.ajax({
+	    url: api_url+"/backoffice/lpot/zone/str/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(resultData) {
+			var options = "";
+			var lpotZoneStrNm_list = resultData["data"]["l_str_list"];
+			$.each(lpotZoneStrNm_list, function(i, items) {
+// 				options += "<option value="+items["l_str_nm"]+">"+items["l_str_nm"]+"</option>";
+				options += "<option value='"+items["l_str_nm"]+"'>"+items["l_str_nm"]+"</option>";
+			});
+			target.html("<option value=''>전체</option>");
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj["responseJSON"];
+	    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 엘팟 : ZONE 상태 코드 가져오기
+/* --------------------------------------------------------------------------------------------
+/* 지점 코드 조회 스크립트
+/* ============================================================================================ */
+function f_ajaxLpotZoneUseYnCode(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "LPOT_ZONE_STS_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj["responseJSON"];
+	    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+	    	return;
+	    }
+	});
+}
+/* ============================================================================================
+/* 엘팟 : 이벤트 재수신 코드 가져오기
+/* --------------------------------------------------------------------------------------------
+/* 지점 코드 조회 스크립트
+/* ============================================================================================ */
+function f_ajaxLpotEventTypeCode(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "LPOT_EVENT_TYPE_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj["responseJSON"];
+	    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 엘팟 : 이벤트 재수신 코드 가져오기
+/* --------------------------------------------------------------------------------------------
+/* 지점 코드 조회 스크립트
+/* ============================================================================================ */
+function f_ajaxLpotZoneReceiveCode(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "LPOT_RECEIVE_TIME",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj["responseJSON"];
+	    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 엘팟 : 팝업 유형 코드 가져오기
+/* --------------------------------------------------------------------------------------------
+/* 지점 코드 조회 스크립트
+/* ============================================================================================ */
+function f_ajaxPopupDivnCode(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "POPUP_TYPE_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj["responseJSON"];
+	    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 쿠폰 : 자/타사 구분 코드 가져오기
+/* --------------------------------------------------------------------------------------------
+/* 자/타사 구분 코드 조회 스크립트
+/* ============================================================================================ */
+function f_ajaxCompanyType(target) {
+	var data = {
+			empno: "${sessionScope.sessionEmpno}", 
+			str_cd: "${sessionScope.sessionStrCd}",
+			hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+			cd_divn_id: "COMPANY_TYPE_CD",
+			mst_cd : ""
+	};
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/code/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj["responseJSON"];
+	    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+	    	return;
+	    }
+	});
+}
+
+$.getSessionData = function() {
+	return {
+		access_token: '${sessionScope.sessionEmpToken}',
+		empno		: '${sessionScope.sessionEmpno}',
+		str_cd		: '${sessionScope.sessionStrCd}',
+		hq_base_yn	: '${sessionScope.sessionHqBaseYn}'
+	};
+};
+
+</script>

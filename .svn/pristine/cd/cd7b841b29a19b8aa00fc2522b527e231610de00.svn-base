@@ -1,0 +1,396 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>비콘팝업 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmBconPop" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">제목 <sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="title" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="제목">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">게시기간 <sup>*</sup></label>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="ntce_start_dd" name="ntce_start_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' data-valid-use="true" data-valid-title="시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="ntce_end_dd" name="ntce_end_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' data-valid-use="true" data-valid-title="종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">행사지점 <sup>*</sup></label>
+									<div class="col-md-6">
+										<input type="hidden" id="use_brnch_info_list" name="use_brnch_info_list" value="">
+									</div>
+								</div>
+							</fieldset>
+							<fieldset id="applyTypeFieldSetB" >
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">행사 그룹 <sup>*</sup></label>
+									<div class="col-md-11">
+<!-- 										<p><a href="javascript:f_openCouponSelectSD();" class="btn btn-primary btn-sm">비콘그룹선택</a> -->
+										<p>
+											<a href="javascript:f_beaconGroupSD('beacon_group_tbody');" class="btn btn-primary btn-sm">비콘그룹 선택</a>
+										</p>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c">지점코드</th>
+														<th class="ta-c">지점명</th>
+														<th class="ta-c">비콘그룹 ID</th>
+														<th class="ta-c">비콘그룹 명</th>
+														<th class="ta-c">비콘수</th>
+														<th class="ta-c">삭제</th>
+													</tr>
+												</thead>
+												<tbody id="beacon_group_tbody" data-valid-title="대상비콘그룹">
+													
+												</tbody>
+											</table>
+										</div>
+										<input type="hidden" id="s_beacon_group_id" name="s_beacon_group_id" data-valid-use='true' data-valid-title='대상비콘그룹' />
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">내용 이미지</label>
+									<div class="col-md-3">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile" class="lmscp-uploader" accept="image/*" data-maxsize="300" data-file-divn-cd="IMG_MAINPOPUP" data-preview="#uploadFilePreview" />
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%" id="uploadFilePreview">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 직접등록 시, 사이즈: 1040px X 380px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB </p>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_couponBookList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="beacon_group_sd" style="display:none;"></div>
+<div id="templates_sd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#ntce_start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#ntce_end_dd').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#ntce_end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#ntce_start_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+//url : api_url+"/backoffice/system/device/group/list",
+/* ============================================================================================
+/* 사용지점 셀렉트 박스
+/* --------------------------------------------------------------------------------------------
+/* 미션수행지점 INPUT BOX 값으로 검색 결과 리스트 갱신
+/* ============================================================================================ */
+$('#use_brnch_info_list').select2({
+	placeholder: '사용 지점 검색',
+    width: '100%',
+    multiple: false,
+    ajax: {
+        url: api_url + '/backoffice/common/branch/list',
+        dataType: 'json',
+        cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            var data = {
+                sys_type : 'BACKOFFICE',
+                svc_type : 'CPBOOK',
+                empno: '${sessionScope.sessionEmpno}',
+                hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+                use_type : 'USE_BRANCH',
+                str_cd : '${sessionScope.sessionStrCd}',
+                str_nm: term
+            };
+            return encodeURI('params='+JSON.stringify(data));
+        },
+        results: function (obj, page) {
+            var results = [];
+            $.each(obj.data.brnch_list, function(index, item){
+                results.push({
+                    id: item.str_cd,
+                    text: item.str_nm
+				});
+            });
+            return {
+                results: results
+            };
+        }
+    }
+});
+
+function f_beaconGroupSD(target) {
+	var evt_start_dd = $("#ntce_start_dd").val();
+	var evt_end_dd = $("#ntce_end_dd").val();
+	
+	if(evt_start_dd == "" || evt_end_dd == "") {
+		alert("게시기간을 먼저 선택해 주세요.");
+		return;
+	}else {
+		
+		$.ajax({
+			url: "/application/common/bconGroupSD.do",
+			type: 'GET',
+			async: true,
+			cache: false,
+			data:{targetTbody : target},
+			success: function(data) {
+				var $target = $('#beacon_group_sd');
+				$target.empty();
+				$target.html(data);
+			}	
+		});
+		$('#beacon_group_sd').dialog('open');
+
+	}
+}
+
+//---------- 비콘그룹 선택 다이얼로그 화면 구문 ---------- //
+$('#beacon_group_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 비콘그룹 선택 </h6></div>",
+	buttons : [
+        {
+        	html : "<i class='fa fa-times'></i>&nbsp; 취소",
+			"class" : "btn btn-default",
+			click : function() {
+				$('#beacon_group_sd').html('');
+				$(this).dialog("close");
+			}
+		},{
+			html : "<i class='fa fa-save'></i>&nbsp; 적용",
+			"class" : "btn btn-primary",
+			click : function() {
+				var checkboxObj = $('#beacon_group_grid').find('input[type=checkbox]:checked');
+				
+				if(checkboxObj.length < 1) {
+					alert("행사 그룹은 하나만 선택할 수 있습니다.");
+					return;
+				}
+				
+				var selectTrObj = checkboxObj.parent().parent();
+				
+				$('#frmBconPop input[name=s_beacon_group_id]').val(selectTrObj.attr('id'));
+				
+				var bConTbodyObj = $("#beacon_group_tbody");
+				bConTbodyObj.empty();
+				
+				var tr 	  = $('<tr/>');
+				var td_01 = $('<td/>').addClass('ta-c');
+				var td_02 = $('<td/>').addClass('ta-c');
+				var td_03 = $('<td/>').addClass('ta-c');
+				var td_04 = $('<td/>').addClass('ta-c');
+				var td_05 = $('<td/>').addClass('ta-c');
+// 				var td_06 = "<td class='ta-c input-icon-right'><span id='del_group' class='btn btn-sm btn-danger'>선택삭제</td>";
+				var td_06 = "<td class='ta-c input-icon-right'><p><a href='javascript:cf_delTableRow();' class='btn btn-danger btn-sm'>선택삭제</a></p></td>";
+				
+				td_01.append(selectTrObj.find('td').eq(1).text());
+				td_02.append(selectTrObj.find('td').eq(2).text());
+				td_03.append(selectTrObj.find('td').eq(3).text());
+				td_04.append(selectTrObj.find('td').eq(4).text());
+				td_05.append(selectTrObj.find('td').eq(5).text());
+// 				td_06.append(selectTrObj.find('td').eq(6).text());
+				
+				tr.append(td_01, td_02, td_03, td_04, td_05, td_06);
+				bConTbodyObj.append(tr);
+				
+				$('#s_beacon_group_id').empty();
+// 				$('#s_beacon_group_id').val();
+				$(this).dialog("close");
+			}
+		}
+	]
+});
+// 비콘그룹 삭제
+function cf_delTableRow() {
+	$("#beacon_group_tbody").children().remove();
+	$("#s_beacon_group_id").val("");
+}
+
+// 저장.
+function f_submit() {
+	if($('#frmBconPop').formValid()) {
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		// 사용지점 전체 선택이 아닐때 지점 등록 확인
+		if( $('#use_brnch_info_list').select2('data') == null ) {
+			alert('사용 지점을 등록해 주세요.');
+			return;
+		}
+		var upFile = $("#uploadfile").data("local_file_nm");
+		if( upFile == "" || upFile == undefined){
+    		alert("비콘팝업 이미지를 등록해주세요.");
+    		return false;
+    	}
+		
+		var data = $('#frmBconPop').serializeFormObject();
+		data.zone_id_list = [$("#s_beacon_group_id").val()];
+		data.noticbd_img_list = {
+				img_strge_file_nm : $("#uploadfile").data("local_file_nm"),
+				thum_img_local_nm : $("#uploadfile").data("atch_file_nm"),
+				file_divn_cd : $("#uploadfile").data("fileDivnCd")
+		};
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+			// 실제 데이터 전송
+			$.ajax({
+			    url : api_url+"/backoffice/system/device/zone/beacon/popup/create",
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	f_beaconPopList();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		} else {
+			$("button[type=submit]").attr("disabled",false);
+		}
+	} else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	// 본사여부에 다른 사용 지점
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#use_brnch_info_all_yn').attr('disabled', true);
+		$('#use_brnch_info_list').select2('enable', false);
+		var info_data = [];
+		var items = {};
+		items["id"] = '${sessionScope.sessionStrCd}';
+		items["text"] = '${sessionScope.sessionStrNm}';
+		info_data[0] = items;
+		$('#use_brnch_info_list').select2("data",info_data);
+	}
+	$('.lmscp-uploader').uploader(
+	/* {
+		validator: function() {
+			
+		},
+		validator: {
+			'image/*': function() {
+				console.debug('image');
+				return true;
+			},
+			'video/*': function() {
+				console.debug('video');
+				return true;
+			}
+		}
+	} */		
+	);
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

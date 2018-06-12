@@ -1,0 +1,400 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/**
+ * ==================================================================================
+ * 공통 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_groupBuyList() {
+	var url = "/application/groupbuy/groupbuyLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_groupbuyEdit() {
+	var url = "/application/groupbuy/groupbuyEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 삭제
+ * ==================================================================================
+ */
+function f_groupbuyDel() {
+	
+	if($('#aprv_sts_cd').val() == 'APPROVE') {
+		alert("승인상태의 달려라! 선착순 이벤트는 삭제가 불가능합니다.");
+		return;
+	}
+	
+	if(confirm("정말 삭제하시겠습니까?")) {
+		var select_ids = [$("#frmKeepData").find("input[name=fcfs_evnt_id]").val()];
+		var data = {
+			empno: $("#frmKeepData").find("input[name=empno]").val(), 
+			emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+			fcfs_evnt_id_list : select_ids
+		};
+		
+		$.ajax({
+			url: api_url + "/backoffice/event/jointpurchase/delete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_groupBuyList();
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCampaignSD() {
+	$.ajax({
+		url: "/application/groupbuy/campaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#groupbuy_campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#groupbuy_campaign_sd').dialog('open');
+		}
+	});
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 승인 요청
+ * ----------------------------------------------------------------------------------
+ * 등록한 경매 승인 요청
+ * ==================================================================================
+ */
+function f_approve_ask() {
+	if(confirm("승인요청 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/jointpurchase/approval/ask",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/groupbuy/groupbuyRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 승인 처리
+ * ----------------------------------------------------------------------------------
+ * 등록한 경매 승인요청 건에 대한 승인
+ * ==================================================================================
+ */
+function f_approve() {
+	if(confirm("승인 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/jointpurchase/approve",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/groupbuy/groupbuyRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 반려
+ * ----------------------------------------------------------------------------------
+ * 등록한 경매 승인 요청에 대한 반려
+ * ==================================================================================
+ */
+function f_reject() {
+	if(confirm("반려 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/jointpurchase/reject",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/groupbuy/groupbuyRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+// 강제 달성 처리
+function f_forceComplete() {
+	if(confirm("참여자 모두에게 보상쿠폰이 발행되며 푸시가 발송됩니다.\n강제 달성 처리 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/jointpurchase/forcecomplete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/groupbuy/groupbuyRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 쿠폰별 쿠폰북 정보 다이얼로그 호출
+ * ==================================================================================
+ */
+
+function f_openCouponBookSD() {
+	$.ajax({
+		url: "/application/common/couponBookSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#groupbuy_couponbook_sd');
+			$target.html(data);
+		}	
+	});
+	$('#groupbuy_couponbook_sd').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#groupbuy_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#groupbuy_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#s_prgs_dd, #e_prgs_dd" ).datepicker( "option", {minDate: null, maxDate: null});
+	
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+	
+	$("#groupbuy_grid").jqGrid('setGridParam', {search: false});
+	$("#groupbuy_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search_info':$("#frmSearch").serializeFormObject()} }).trigger('reloadGrid');
+/*	
+	// 날짜 입력 폼 초기화
+	$('#s_prgs_dd').val(cf_toDate());
+	$('#e_prgs_dd').val(cf_toDate());
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	$("#groupbuy_grid").jqGrid('setGridParam', {search: true});
+	$("#groupbuy_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+*/	
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 화면 : 적용대상 상품 삭제
+ * ==================================================================================
+ */
+function f_selectProductDelete() {
+	$("#prod_sell_cd_list").find("input[type='checkbox']").each(function(i) {
+		if($(this).is(":checked")) {
+			var id = $(this).val();
+			$("#rep_prod_sell_cd").children("[value='"+id+"']").remove();
+		}
+	});
+	cf_delTableRow('prod_sell_cd_list');
+}
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#s_prgs_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#e_prgs_dd').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#e_prgs_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#s_prgs_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+
+/**
+ * ==================================================================================
+ * 시간 설정
+ * ==================================================================================
+ */
+function f_setTimeStr() {
+	for(var h=0; h<24; h++) {
+		var hour = h+"";
+		if(hour.length < 2) {
+			hour = "0" + hour;
+		}
+		
+		$('#evt_start_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		$('#evt_end_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		/*if(hour == '01') {
+			$('#evt_start_hour').append("<option selected='selected' value='"+hour+"'>"+hour+"</option>");
+			$('#evt_end_hour').append("<option selected='selected' value='"+hour+"'>"+hour+"</option>");
+		} else {
+			$('#evt_start_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+			$('#evt_end_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		}*/
+	}
+	
+	for(var m=0; m<60; m++) {
+		var min = m+"";
+		if(min.length < 2) {
+			min = "0" + min;
+		}
+		
+		$('#evt_start_min').append("<option value='"+min+"'>"+min+"</option>");
+		$('#evt_end_min').append("<option value='"+min+"'>"+min+"</option>");
+		/*if(min == '00') {
+			$('#evt_start_min').append("<option selected='selected' value='"+min+"'>"+min+"</option>");
+			$('#evt_end_min').append("<option selected='selected' value='"+min+"'>"+min+"</option>");
+		} else {
+			$('#evt_start_min').append("<option value='"+min+"'>"+min+"</option>");
+			$('#evt_end_min').append("<option value='"+min+"'>"+min+"</option>");
+		}*/
+	}
+}

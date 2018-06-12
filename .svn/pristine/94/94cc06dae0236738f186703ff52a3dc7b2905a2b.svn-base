@@ -1,0 +1,1032 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<div id="fieldset_product" style="display:none">
+	<div class="div_product_group" style="" data-fielset-product>
+		<div class="form-group">
+			<div class="col-md-1 control-label">
+				<label class="checkbox-inline" >
+					<input type="checkbox" class="checkbox style-2" name="cpzine_prod_grp_check"><span>제목</span>
+				</label>
+			</div>
+			<div class="col-md-11 control-label">
+				<input class="form-control" type="text" name="cpzine_prod_grp_title" data-valid-max="100" data-valid-title="쿠폰진 상품 제목">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-1 control-label" data-div-product="1">상품 1</label>
+			<div class="col-md-9 control-label">
+				<input class="form-control" type="text" name="prod_nm" data-valid-max="100" data-valid-title="상품명">
+			</div>
+<!-- 			<div class="col-md-2 control-label"> -->
+<!-- 				<div class="input-group"> -->
+<!-- 					<input class="form-control ta-r" type="text" name="dc_before_amt" onkeyup="this.value=f_typeComma(this);" data-valid-num="true" maxlength="8" data-valid-max="10" data-valid-title="할인전 금액"> -->
+<!-- 					<span class="input-group-addon"></span> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+<!-- 			<div class="col-md-2 control-label"> -->
+<!-- 				<div class="input-group"> -->
+<!-- 					<input class="form-control ta-r" type="text" name="dc_after_amt" onkeyup="this.value=f_typeComma(this);" data-valid-num="true" maxlength="8" data-valid-max="10" data-valid-title="할인후 금액"> -->
+<!-- 					<span class="input-group-addon"></span> -->
+<!-- 				</div> -->
+<!-- 			</div> -->
+			<div class="col-md-2 control-label text-left">
+				<a onclick="f_addProduct(this);" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
+				<a onclick="f_deleteProduct(this);" class="btn btn-danger"><i class="glyphicon glyphicon-minus"></i></a>
+			</div>
+		</div>
+		<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+	</div>
+</div>
+
+<div id="div_product" style="display:none">
+	<div class="form-group">
+		<label class="col-md-1 control-label" data-div-product="1">상품 1</label>
+		<div class="col-md-9 control-label">
+			<input class="form-control" type="text" name="prod_nm" data-valid-max="100" data-valid-title="상품명">
+		</div>
+<!-- 		<div class="col-md-2 control-label"> -->
+<!-- 			<div class="input-group"> -->
+<!-- 				<input class="form-control ta-r" type="text" name="dc_before_amt" onkeyup="this.value=f_typeComma(this);" data-valid-num="true" maxlength="8" data-valid-max="10" data-valid-title="할인전 금액"> -->
+<!-- 				<span class="input-group-addon"></span> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+<!-- 		<div class="col-md-2 control-label"> -->
+<!-- 			<div class="input-group"> -->
+<!-- 				<input class="form-control ta-r" type="text" name="dc_after_amt" onkeyup="this.value=f_typeComma(this);" data-valid-num="true" maxlength="8" data-valid-max="10" data-valid-title="할인후 금액"> -->
+<!-- 				<span class="input-group-addon"></span> -->
+<!-- 			</div> -->
+<!-- 		</div> -->
+		<div class="col-md-2 control-label text-left">
+			<a onclick="f_addProduct(this);" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
+			<a onclick="f_deleteProduct(this);" class="btn btn-danger"><i class="glyphicon glyphicon-minus"></i></a>
+		</div>
+	</div>
+</div>
+
+<div id="div_cooking_title" style="display:none">
+	<div class="form-group">
+		<label class="col-md-12 control-label"></label>
+	</div>
+	<div class="form-group">
+		<label class="col-md-1 control-label">조리법</label>
+		<div class="col-md-11">
+			<a onclick="f_addCookingGroup(this);" class="btn btn-primary btn-sm">단계추가</a>
+			<a onclick="f_deleteCookingGroup(this);" class="btn btn-danger btn-sm">선택삭제</a>
+		</div>
+	</div>
+	<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+	<div class="form-group">
+		<label class="col-md-1 control-label">제목</label>
+		<div class="col-md-11 text-left">
+			<input class="form-control" type="text" name="cpzine_template_title" data-valid-use="true" data-valid-max="100" data-valid-title="조리법 제목">
+		</div>
+	</div>
+</div>
+
+<div id="div_cooking_group" style="display:none">
+	<div class="form-group">
+		<div class="col-md-1 control-label">
+			<label class="checkbox-inline" >
+				<input type="checkbox" class="checkbox style-2" name="cooking_check" data-div-cooking><span></span>
+			</label>
+		</div>
+		<div class="col-md-2">
+			<div id="preview_cooking_uploadfile" class="files">
+				<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+			</div>
+		</div>
+		<div class="col-md-2">
+			<span class="btn btn-success fileinput-button">
+			    <i class="glyphicon glyphicon-plus"></i>
+			    <span>파일선택</span>
+			    <input type="file" id="cooking_uploadfile" name="cooking_uploadfile">
+			</span>
+		</div>
+		<div class="col-md-7">
+			<textarea class="form-control" name="desc" rows="9" data-valid-use="true" data-valid-max="500" data-valid-title='조리법 설명'></textarea>
+		</div>
+	</div>
+</div>
+
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>쿠폰진 컨텐츠 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmCouponZineContents" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<legend>기본 정보</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">제목 <sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="cpzine_contents_subject" data-valid-use="true" data-valid-max="100" data-valid-title="제목">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">비고</label>
+									<div class="col-md-11">
+										<textarea class="form-control" name="cpzine_contents_rmk" rows="5" data-valid-max="500" data-valid-title='비고'></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">템플릿 선택 <sup>*</sup></label>
+									<div class="col-md-2">
+										<select class="form-control" name="cpzine_template_kind_code" data-valid-use="true" data-valid-title="템플릿 유형">
+											<option value="0" selected="selected" >선택</option>
+										</select>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset>
+								<legend>타이틀영역 및 배경이미지 <small class="editable-empty"><i class="fa fa-info-circle"></i> 아래 입력 내용은 롯데마트 M쿠폰 앱에 출력됩니다.</small></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">컨텐츠 타이틀 <sup>*</sup></label>
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="cpzine_contents_title" data-valid-use="true" data-valid-max="100" data-valid-title="타이틀">
+									</div>
+									<label class="col-md-1 control-label">분류 <sup>*</sup></label>
+									<div class="col-md-4">
+										<select class="form-control" name="cpzine_contents_cat_id" data-valid-use="true" data-valid-title="컨텐츠 분류">
+											<option value="0" selected="selected" >선택</option>
+										</select>
+									</div>
+									<div class="col-md-1">
+										<a href="javascript:f_openCouponZineContentsClassifyLD();" class="btn btn-sm btn-success"><strong>분류관리</strong></a>
+									</div>
+								</div>
+								<div class="form-group ui-template ui-template-cook ui-template-lifestyle ui-template-image">
+									<label class="col-md-1 control-label">메인 이미지 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div id="preview_main_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="main_uploadfile" name="main_uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group ui-template ui-template-cook ui-template-lifestyle ui-template-image">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i>이미지 사이즈: 1080px / 파일종류: jpg, gif, png / 최대파일용량: 300KB</p>
+										<p>&nbsp;&nbsp;&nbsp;동영상 등록 시, 가로 350px 이상 / 파일종류: mp4 / 최대파일용량: 3MB</p>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset class="ui-template ui-template-cook ui-template-lifestyle">
+								<legend>내용작성</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">상단컨텐츠</label>
+								</div>
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+								<div class="form-group">
+									<label class="col-md-1 control-label">제목<sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="top_contents_title" data-valid-use="true" data-valid-max="100" data-valid-title="상단컨텐츠 제목">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">내용</label>
+									<div class="col-md-11">
+										<textarea class="form-control" name="top_contents_content" rows="5" data-valid-max="3500" data-valid-title='상단컨텐츠 내용'></textarea>
+									</div>
+								</div>
+								
+<!-- 								신규 -->
+								<div class="form-group">
+									<label class="col-md-1 control-label">상세링크문구</label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="dtl_img_link_nm" >
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label" >상세이미지</label>
+									<div class="col-md-2">
+										<div id="preview_detail_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="detail_uploadfile" name="detail_uploadfile">
+										</span>
+									</div>
+									<div class="col-md-2">
+										<label class="checkbox-inline">
+											<input type="checkbox" class="checkbox style-2" name="dtl_img_use_yn" value="Y"><span>출력안함</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1" ></label>
+									<div class="col-md-11">
+										<p><i class="fa fa-info-circle"></i>이미지 사이즈: 가로 1080px / 파일종류: jpg, gif, png / 최대파일용량: 300KB.</p>
+									</div>
+								</div>
+								
+								
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+								<div class="form-group">
+									<label class="col-md-12 control-label"></label>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">상품리스트</label>
+									<div class="col-md-11">
+										<a href="javascript:f_addProductGroup();" class="btn btn-primary btn-sm">그룹추가</a>
+						   				<a href="javascript:f_deleteProductGroup();" class="btn btn-danger btn-sm">선택삭제</a>
+					   				</div>
+								</div>
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+							</fieldset>
+							
+							<fieldset class="fieldset_product_group ui-template ui-template-cook ui-template-lifestyle">
+							</fieldset>
+
+							<div class="cooking_group ui-template ui-template-cook ui-template-lifestyle" style="display:none">
+								<fieldset class="fieldset_cooking_title">
+								</fieldset>
+								
+								<fieldset class="fieldset_cooking_group">
+								</fieldset>
+							</div>
+							
+							<fieldset class="cooking_group ui-template ui-template-cook ui-template-lifestyle" style="display:none">
+								<div class="form-group">
+									<label class="col-md-1" ></label>
+									<div class="col-md-11">
+										<p><i class="fa fa-info-circle"></i>이미지 사이즈: 302px X 302px / 파일종류: jpg, gif, png / 최대파일용량: 300KB.</p>
+									</div>
+								</div>
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+							</fieldset>
+							
+							<fieldset class="ui-template ui-template-cook ui-template-lifestyle">
+								<div class="form-group">
+									<label class="col-md-1 control-label" >외부배너1</label>
+									<div class="col-md-2">
+										<div id="preview_link_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="link_uploadfile" name="link_uploadfile">
+										</span>
+									</div>
+									<div class="col-md-2">
+										<label class="checkbox-inline">
+											<input type="checkbox" class="checkbox style-2" id="link_banner_use_yn" name="link_banner_use_yn" value="Y"><span>출력안함</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1" ></label>
+									<div class="col-md-11">
+										<p><i class="fa fa-info-circle"></i>이미지 사이즈: 345px X 100px / 파일종류: jpg, gif, png / 최대파일용량: 300KB.</p>
+									</div>
+								</div>
+								<div class="form-group" >
+									<label class="col-md-1" >URL</label>
+									<div class="col-md-9">
+										<input class="form-control" type="text" name="link_banner_url">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label" >외부배너2</label>
+									<div class="col-md-2">
+										<div id="preview_link_uploadfile2" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="link_uploadfile2" name="link_uploadfile2">
+										</span>
+									</div>
+									<div class="col-md-2">
+										<label class="checkbox-inline">
+											<input type="checkbox" class="checkbox style-2" id="link_banner_use_yn_2" name="link_banner_use_yn_2" value="Y"><span>출력안함</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1" ></label>
+									<div class="col-md-11">
+										<p><i class="fa fa-info-circle"></i>이미지 사이즈: 345px X 100px / 파일종류: jpg, gif, png / 최대파일용량: 300KB.</p>
+									</div>
+								</div>
+								<div class="form-group" >
+									<label class="col-md-1" >URL</label>
+									<div class="col-md-9">
+										<input class="form-control" type="text" name="link_banner_url_2">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label" >외부배너3</label>
+									<div class="col-md-2">
+										<div id="preview_link_uploadfile3" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="link_uploadfile3" name="link_uploadfile3">
+										</span>
+									</div>
+									<div class="col-md-2">
+										<label class="checkbox-inline">
+											<input type="checkbox" class="checkbox style-2" id="link_banner_use_yn_3" name="link_banner_use_yn_3" value="Y"><span>출력안함</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1" ></label>
+									<div class="col-md-11">
+										<p><i class="fa fa-info-circle"></i>이미지 사이즈: 345px X 100px / 파일종류: jpg, gif, png / 최대파일용량: 300KB.</p>
+									</div>
+								</div>
+								<div class="form-group" >
+									<label class="col-md-1" >URL</label>
+									<div class="col-md-9">
+										<input class="form-control" type="text" name="link_banner_url_3">
+									</div>
+								</div>
+								
+<!-- 								신규 -->
+
+								<div class="form-group">
+									<label class="col-md-1 control-label" >내부배너1</label>
+									<div class="col-md-2">
+										<div id="preview_link_uploadfile4" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="link_uploadfile4" name="link_uploadfile4">
+										</span>
+									</div>
+									<div class="col-md-2">
+										<label class="checkbox-inline">
+											<input type="checkbox" class="checkbox style-2" name="link_banner2_use_yn" value="Y"><span>출력안함</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1" ></label>
+									<div class="col-md-11">
+										<p><i class="fa fa-info-circle"></i>이미지 사이즈: 345px X 100px / 파일종류: jpg, gif, png / 최대파일용량: 300KB.</p>
+									</div>
+								</div>
+								
+								<div class="form-group" >
+									<label class="col-md-1" >내부링크선택</label>
+									<div class="col-md-3">
+										<select class="form-control" name="link_banner2_type">
+											<option value="">선택</option>
+											<option value="STAMP">M스탬프</option>
+											<option value="JOINTPURCHASE">달려라선착순</option>
+										</select> 
+									</div>
+									<div class="col-md-6">
+										<select class="form-control" name="link_banner2_type_id">
+											<option value="">선택</option>
+										</select> 
+									</div>
+								</div>
+								
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰리스트 제목</label>
+									<div class="col-md-11 control-label">
+										<input class="form-control" type="text" name="coupon_list_title" data-valid-max="100" data-valid-title="쿠폰리스트 제목">
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<!--  <a href="javascript:f_openCouponZinePreview()" class="btn btn-primary">미리보기</a> -->
+										<a href="javascript:f_couponZineContentsList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="coupon_zine_contents_classify_ld" style="display:none;"></div>
+<div id="coupon_zine_contents_classify_wd" style="display:none;"></div>
+<div id="coupon_zine_contents_preview_ld" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<%-- <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script> --%>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	$('.input-group-addon').html('원');
+	temp_fieldset_product_group = $("#fieldset_product").html(); 
+	temp_div_product_group = $("#div_product").html();
+	temp_div_cooking_title = $("#div_cooking_title").html();
+	temp_div_cooking_group = $("#div_cooking_group").html();
+	
+// 	f_addProductGroup();
+	// 초기데이터 로드 : 쿠폰진 분류코드
+	f_ajaxCPClassifyCode($('select[name=cpzine_contents_cat_id]'));
+	
+	//공통코드 조회 - 템플릿 선택
+	f_ajaxCommonCode({
+		target:"select[name=cpzine_template_kind_code]", 
+		cd_divn_id: "CPZINE_CONTENTS_TEMPLATE_CD",
+		codeId : "",
+		fnSuccess : ""
+	});
+
+	$.initialzineContentsEdit();
+};
+
+/* ============================================================================================
+/* 쿠폰 유형에 따른 콤마표기
+/* --------------------------------------------------------------------------------------------
+/* 	- 정률할인			: 콤마 미표기
+/* 	- 정액할인			: 콤마 표기
+/* 	- 정률적립			: 콤마 미표기
+/* 	- 정액할인 			: 콤마 표기
+/* 	- 정액할인(포인트쿠폰)	: 콤마 표기
+/* ============================================================================================ */
+function f_typeComma(obj) {
+	
+	var val = $('#coupon_type_cd option:selected').val();
+	
+	if(val == 'A' || val == 'F' || val == 'C' || val == 'H' || val == 'J' || val == 'L' 
+			|| val == 'N' || val == 'P' || val == 'T' || val == 'R' || val == 'V') {
+		return $(obj).val();
+	}
+	else {
+		return cf_fmtComma(obj);
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 쿠폰진 미리보기
+ * ==================================================================================
+ */
+ $('#coupon_zine_contents_preview_ld').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 520,
+	height: 700,
+	resizable : false,
+	modal : true,
+	disable: true,
+	position :  ['center',100],
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 미리보기 </h6></div>",
+	open : function(){
+		$('#coupon_zine_contents_preview_ld').css('overflow-x', 'hidden');
+	},
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+/**
+ * ==================================================================================
+ * 쿠폰진 분류관리 조회/삭제 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#coupon_zine_contents_classify_ld').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 520,
+	minHeight: 400,
+	resizable : false,
+	modal : true,
+	disable: true,
+	position :  [300,100],
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 분류관리 </h6></div>",
+	buttons : [{
+		html : "삭제",
+		"class" : "btn btn-danger",
+		click : function() {
+			f_couponZineContentClassifyDelete();
+		}
+	},{
+		html : "등록",
+		"class" : "btn btn-primary",
+		click : function() {
+			f_openCouponZineContentsClassifyWD("");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}],
+	close: function() {
+		$(this).dialog("close");
+	}
+});
+
+/**
+ * ==================================================================================
+ * 쿠폰진 분류관리 등록/수정 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#coupon_zine_contents_classify_wd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 520,
+	minHeight: 200,
+	resizable : false,
+	modal : true,
+	disable: true,
+	position :  [850,100],
+	close : function(){
+		f_ajaxCPClassifyCode($('select[name=cpzine_contents_cat_id]'));
+	},
+	open: function() {
+		if($(this).data('cpzine_contents_id').length != 0){
+			$("#wid-id-2 input[name='cpzine_contents_cat_id']").val($(this).data('cpzine_contents_id'));
+			f_cpzineCategoryDetail();	
+		}
+	},
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 등록 및 수정 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 등록",
+		"class" : "btn btn-primary",
+		click : function() {
+			var returnData = f_cpzineCategorySave();
+			if(returnData == "S0000"){
+				f_CouponZineContentsClassifyList();
+				$(this).dialog("close");
+			}
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 쿠폰진  파일 업로드
+ * ==================================================================================
+ */
+ $('#widget-grid').on("change", "input[name*=uploadfile]", function (e) {
+		var imgCodeType = "";
+		var callback = null;
+		
+	 	if($(this).attr("name").split("_")[0] == "main"){
+	 		if ($(this).get(0).files[0].type.indexOf('image/') > -1) {
+	 			imgCodeType = "IMG_COUPONZINE_CONTENTS";
+	 			$('#preview_main_uploadfile').find('img').show().andSelf().find('video').remove();
+	 		}
+	 		else if ($(this).get(0).files[0].type.indexOf('video/') > -1) {
+	 			imgCodeType = "DGT_COUPONZINE_CONTENTS";
+	 			$('#preview_main_uploadfile').find('img').hide();
+	 			callback = function(item) {
+	 				var preview = $('#preview_main_uploadfile');
+	 		    	
+		    		var tag_img = $('<video></video>', {'src': item["prvw_url"], 'alt': item['atch_file_nm'], 'controls': 'true'}).addClass('img-responsive');
+		    		preview.append( tag_img );
+		    		preview.find('img').hide();
+	 			}
+	 		}
+	 		else {
+	 			alert('메인 이미지는 이미지 또는 동영상 파일이어야 합니다.');
+	 			return false;
+	 		}
+	 			
+	 	}
+	 	else if($(this).attr("name").split("_")[0] == "detail"){
+	 		imgCodeType = "IMG_COUPONZINE_CONTENTS";
+	 	}
+	 	else if($(this).attr("name").split("_")[0] == "cooking"){
+	 		imgCodeType = "IMG_COUPONZINE_CONTENTS_IMAGE";
+	 	}
+	 	else if($(this).attr("name").split("_")[0] == "link"){
+	 		imgCodeType = "IMG_COUPONZINE_CONTENTS_BANNER";
+	 	}
+
+	 	cf_multiFileUpload($(this),imgCodeType, callback);
+	});
+ 
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 템플릿 선택
+ * ==================================================================================
+ */
+$("select[name=cpzine_template_kind_code]").change(function(){
+	$('.ui-template').hide();
+	
+	if($(this).val() === 'COOK') {
+		$('.ui-template.ui-template-cook').show();
+		
+		$("div.cooking_group").show();
+		$("fieldset.cooking_group").show();
+		$("fieldset.fieldset_cooking_title").append(temp_div_cooking_title);
+		$("fieldset.fieldset_cooking_group").append(temp_div_cooking_group);
+		f_reNameCooking();
+   	}
+	else if($(this).val() === 'CATEGORY') {
+		$('.ui-template.ui-template-category').show();
+	}
+	else if($(this).val() === 'IMAGE') {
+		$('.ui-template.ui-template-image').show();
+	}
+	else {
+		$('.ui-template.ui-template-lifestyle').show();
+		
+		$("div.cooking_group").hide();
+		$("fieldset.cooking_group").hide();
+		
+		$("fieldset.fieldset_cooking_title").empty();
+		$("fieldset.fieldset_cooking_group").empty();
+   	}
+});
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 상품리스트 그룹추가
+ * ==================================================================================
+ */
+function f_addProductGroup() {
+	$("fieldset.fieldset_product_group").append(temp_fieldset_product_group);
+	f_addProduct("last");
+}
+	
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 상품리스트 그룹삭제
+ * ==================================================================================
+ */
+function f_deleteProductGroup() {
+	if(	$("fieldset.fieldset_product_group input[name='cpzine_prod_grp_check']:checked").length == 0){
+		alert("삭제할 상품을 선택하세요");
+// 	} else if($("fieldset.fieldset_product_group input[name='cpzine_prod_grp_check']:checked").length == $("fieldset.fieldset_product_group input[name='cpzine_prod_grp_check']").length){
+// 		alert("상품 전체를  삭제하실수 없습니다.");
+	} else{
+		$.each($("fieldset.fieldset_product_group input[name='cpzine_prod_grp_check']:checked"), function(i,items){
+			$(items).parents("div.div_product_group").remove();
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 상품리스트 한건추가
+ * ==================================================================================
+ */
+function f_addProduct(positionCheck) {
+	var parentPosition = "";
+	if(positionCheck == "last"){
+		parentPosition = positionCheck;
+		$("fieldset.fieldset_product_group div.div_product_group:last div.form-group:last").after(temp_div_product_group);
+	} else{
+		parentPosition = $(positionCheck).parents("div.form-group");
+		parentPosition.after(temp_div_product_group);
+	}
+	
+	f_reNameProduct(parentPosition);
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 상품 한건삭제
+ * ==================================================================================
+ */
+function f_deleteProduct(positionCheck) {
+	var parentPosition = $(positionCheck).parents("div.div_product_group");
+	if(parentPosition.find("div.form-group [data-div-product]").length == 1){
+		alert("상품이 한건일 경우 삭제하실수 없습니다.\n선택삭제를 이용해주세요.");
+		return false;
+	}
+	
+	$(positionCheck).parents("div.form-group").remove();
+	f_reNameProduct(parentPosition);
+}
+ 
+ /**
+  * ==================================================================================
+  * 쿠폰진 내용작성 상품 추가 삭제에 따른이름변경
+  * ==================================================================================
+  */
+ function f_reNameProduct(positionCheck){
+	if(positionCheck == "last"){
+		$("fieldset.fieldset_product_group div.div_product_group:last label[data-div-product]:last").html("상품 2");
+		$("fieldset.fieldset_product_group div.div_product_group:last label[data-div-product]:last").attr("data-div-product",2);
+	} else{
+		if(positionCheck.parents("div.div_product_group").find("[data-div-product]").length == 0){
+			$.each(positionCheck.find("[data-div-product]"), function(i,item){
+				 $(item).html("상품 " + (i+1))
+				 $(item).attr("data-div-product", (i+1))
+			 });			
+		} else{
+			$.each(positionCheck.parents("div.div_product_group").find("[data-div-product]"), function(i,item){
+				$(item).html("상품 " + (i+1))
+				$(item).attr("data-div-product", (i+1))
+			});
+		}
+	 }
+ }
+  
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 조리법 단계추가
+ * ==================================================================================
+ */
+function f_addCookingGroup(positionCheck){
+	$("fieldset.fieldset_cooking_group div.form-group:last").after(temp_div_cooking_group);
+	f_reNameCooking();
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 조리법 단계삭제
+ * ==================================================================================
+ */
+function f_deleteCookingGroup(){
+	if($("div [data-div-cooking]:checked").length == $("div [data-div-cooking]:not([data-div-cooking=''])").length){
+		alert("조리법이 하나이상 남아있어야 합니다.");
+		return false;
+	} else{
+		$("div [data-div-cooking]:checked").parents("div.form-group").remove();
+	}
+	
+	f_reNameCooking();
+}
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 조리법 단계 추가 삭제에 따른이름변경
+ * ==================================================================================
+ */
+function f_reNameCooking(){
+	 $.each($("fieldset.fieldset_cooking_group div.form-group"), function(i,items){
+		 $(items).find("div [data-div-cooking]").attr("data-div-cooking", (i+1));
+		 $(items).find("div [data-div-cooking]").next().text((i+1));
+		 $(items).find("div#preview_cooking_uploadfile").attr("id", ($(items).find("div#preview_cooking_uploadfile").attr("id")+(i+1)))
+		 $(items).find("input#cooking_uploadfile").attr("name",($(items).find("input#cooking_uploadfile").attr("id")+(i+1)));
+		 $(items).find("input#cooking_uploadfile").attr("id",($(items).find("input#cooking_uploadfile").attr("id")+(i+1)));
+	 });
+}
+	  
+/**
+ * ==================================================================================
+ * 쿠폰진링크배너 사용여부 선택
+ * ==================================================================================
+ */
+ $("#link_banner_use_yn").change(function(){
+	 if($(this).is(":checked")){
+		 $(this).val("N");
+	 } else{
+		 $(this).val("Y");
+	 }
+ });
+
+/**
+ * ==================================================================================
+ * 쿠폰진링크배너2 사용여부 선택
+ * ==================================================================================
+ */
+ $("#link_banner_use_yn_2").change(function(){
+	 if($(this).is(":checked")){
+		 $(this).val("N");
+	 } else{
+		 $(this).val("Y");
+	 }
+ });
+
+/**
+ * ==================================================================================
+ * 쿠폰진링크배너3 사용여부 선택
+ * ==================================================================================
+ */
+ $("#link_banner_use_yn_3").change(function(){
+	 if($(this).is(":checked")){
+		 $(this).val("N");
+	 } else{
+		 $(this).val("Y");
+	 }
+ });
+ 
+/**
+ * ==================================================================================
+ * 쿠폰진내부링크배너 사용여부 선택
+ * ==================================================================================
+ */
+ $("#link_banner2_use_yn").change(function(){
+	 if($(this).is(":checked")){
+		 $(this).val("N");
+	 } else{
+		 $(this).val("Y");
+	 }
+ });
+ 
+ /* ============================================================================================
+ /* 벨리데이션 체크 및 폼 전송
+ /* --------------------------------------------------------------------------------------------
+ /* 벨리데이션 체크 
+ /* 	- true	: 폼전송
+ /* 	- false : 알림창 경고
+ /* ============================================================================================ */
+function f_submit() {
+	$('[data-valid-use]').each(function() {
+		$(this).attr('data-valid-use', $(this).is(':visible'));
+	});
+	
+ 	if($('#frmCouponZineContents').formValid()) {
+ 		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		if($("#preview_main_uploadfile").is(':visible') && !$("#preview_main_uploadfile:visible").next().hasClass("alert")){
+    		alert("메인 이미지를 등록해주세요.");
+    		return;
+    	}
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+
+		var data = $('#frmCouponZineContents').serializeFormObject();
+		
+		//메인이미지 설정
+		//실제파일이름
+		data.mai_img_view_nm = $("input[name=img_orgin_file_nm_main_uploadfile]").val();
+		//새로 생성된이름
+		data.mai_img_local_nm = $("input[name=img_strge_file_nm_main_uploadfile]").val();
+		data.mai_img_file_type = $("input[name=upload_file_type_main_uploadfile]").val();
+
+		// 상세이미지
+		$.extend(data, {
+			'dtl_img_view_nm': $("input[name=img_orgin_file_nm_detail_uploadfile]").val(),
+			'dtl_img_local_nm': $("input[name=img_strge_file_nm_detail_uploadfile]").val(),
+			'dtl_img_file_type': $("input[name=upload_file_type_detail_uploadfile]").val()
+		});
+		
+		//배너이미지 설정
+		//실제파일이름
+		data.link_banner_view_nm = $("input[name=img_orgin_file_nm_link_uploadfile]").val();
+		//새로 생성된이름
+		data.link_banner_local_nm = $("input[name=img_strge_file_nm_link_uploadfile]").val();
+		data.link_banner_file_type = $("input[name=upload_file_type_link_uploadfile]").val();
+
+		// 링크배너2
+		$.extend(data, {
+			'link_banner_view_nm_2': $("input[name=img_orgin_file_nm_link_uploadfile2]").val(),
+			'link_banner_local_nm_2': $("input[name=img_strge_file_nm_link_uploadfile2]").val(),
+			'link_banner_file_type_2': $("input[name=upload_file_type_link_uploadfile2]").val()
+		});
+		// 링크배너3
+		$.extend(data, {
+			'link_banner_view_nm_3': $("input[name=img_orgin_file_nm_link_uploadfile3]").val(),
+			'link_banner_local_nm_3': $("input[name=img_strge_file_nm_link_uploadfile3]").val(),
+			'link_banner_file_type_3': $("input[name=upload_file_type_link_uploadfile3]").val()
+		});
+		// 내부배너
+		$.extend(data, {
+			'link_banner2_view_nm': $("input[name=img_orgin_file_nm_link_uploadfile4]").val(),
+			'link_banner2_local_nm': $("input[name=img_strge_file_nm_link_uploadfile4]").val(),
+			'link_banner2_file_type': $("input[name=upload_file_type_link_uploadfile4]").val()
+		});
+
+		//쿠폰진 상품 그룹 리스트
+		var cpzine_prod_list = [];
+		var cpzine_prod_grp_list = [];
+		var cpzine_contents_img_list = [];
+		
+		$.each($("fieldset.fieldset_product_group div.div_product_group"), function(i,items){
+			$.each($(items).find("div.form-group"), function(j,items2){
+				if(j==0){
+					cpzine_prod_grp_list.push({
+						"cpzine_prod_grp_title": $(items2).find("input[name=cpzine_prod_grp_title]").val(),
+						"cpzine_prod_list" : ""
+					});
+				} else{
+					cpzine_prod_list.push({
+						"prod_nm" : $(items2).find("input[name=prod_nm]").val()
+						//쿠폰진컨텐츠 상품 필수값 삭제에 따른 주석
+// 						"dc_before_amt" : cf_setComma($(items2).find("input[name=dc_before_amt]").val()),
+// 						"dc_after_amt" : cf_setComma($(items2).find("input[name=dc_after_amt]").val()) 
+					})
+				}
+			});
+			cpzine_prod_grp_list[i]["cpzine_prod_list"] = cpzine_prod_list
+			cpzine_prod_list = [];
+		});
+		
+		//조리법 상품 그룹 리스트
+		$.each($("div.cooking_group:visible fieldset.fieldset_cooking_group div.form-group"), function(i,items){
+			cpzine_contents_img_list.push({
+				img_view_nm : $("input[name=img_orgin_file_nm_cooking_uploadfile"+(i+1)+"]").val(),
+				img_local_nm : $("input[name=img_strge_file_nm_cooking_uploadfile"+(i+1)+"]").val(),
+				img_file_type : $("input[name=upload_file_type_cooking_uploadfile"+(i+1)+"]").val() ,
+// 				prvw_url : $("#preview_cooking_uploadfile"+(i+1)+" img").attr("src") ,
+				desc : $(items).find("textarea[name=desc]").val()
+			})
+		});
+		
+		data['cpzine_prod_grp_list'] = cpzine_prod_grp_list
+		data['cpzine_contents_img_list'] = cpzine_contents_img_list
+
+		
+		if ((data['dtl_img_link_nm'] || '').trim() == '') data['dtl_img_use_yn'] = 'N';
+		for(var key in data) {
+			if (typeof data[key] == 'undefined') data[key] = '';
+		}
+		
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/couponzine/contents/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(resultData){
+		    	alert(resultData["message"]);
+		    	f_couponZineContentsList();
+		    },
+		    error: function(resultData) {
+		    	var serverObj = resultData['responseJSON'] || {};
+		    	alert('code:' + serverObj['code'] + '\n' + 'message:' + cf_msg(serverObj['message']));
+		    	return;
+		    }
+		});
+ 	} else {
+ 		return;
+ 	}
+}
+ 
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>

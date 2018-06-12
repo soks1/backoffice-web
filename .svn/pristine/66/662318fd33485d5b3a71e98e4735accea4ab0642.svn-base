@@ -1,0 +1,838 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<script type="text/javascript">
+</script>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>PUSH 등록</h2>
+				</header>
+				<!-- 등록 -->
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal"  method="post" id="searchProduct" name="searchProduct" enctype="multipart/form-data">
+							<input type="hidden" id="url_lst_custgp_id" name="url_lst_custgp_id" value="" />
+							<input type="hidden" id="empno" name="empno" value="${sessionScope.sessionEmpno}" />
+							<div style="display:none;">
+								<select class="form-control" id="str_cd" name="str_cd" />
+							</div>
+							<input type="hidden" id="groupbuy_campaign_id" name="groupbuy_campaign_id" />
+							<input type="hidden" id="groupbuy_campaign_nm" name="groupbuy_campaign_nm" />
+							<input type="hidden" id="groupbuy_campaign_term" name="groupbuy_campaign_term" />
+							<input type="hidden" id="groupbuy_custgp" name="groupbuy_custgp" />
+							
+
+							<fieldset>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">대상고객<sup>*</sup></label>
+									<div class="col-md-10" id="check_item">
+										<label class="checkbox-inline">
+											<span>[</span>
+											<span id="str_nm"></span>
+											<span>]</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="check_all" name="check_all" class="checkbox style-2">
+											  <span>전체</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="cust_grd_cd01" name="cust_grd_cd01" class="checkbox style-2" onClick="javascript:selectBoxCheck()">
+											  <span>VIP</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="cust_grd_cd02" name="cust_grd_cd02" class="checkbox style-2" onClick="javascript:selectBoxCheck()">
+											  <span>최우수</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="cust_grd_cd03" name="cust_grd_cd03" class="checkbox style-2" onClick="javascript:selectBoxCheck()">
+											  <span>우수</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="cust_grd_cd04" name="cust_grd_cd04" class="checkbox style-2" onClick="javascript:selectBoxCheck()">
+											  <span>일반</span>
+										</label>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" value="(광고)롯데마트M쿠폰" name="crm_title" data-valid-max="255" readonly="readonly" /> 
+									</div>								
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">관리 제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text"name="view_title" data-valid-use="true" data-valid-symbol="true" data-valid-max="255" data-valid-title="관리 제목" /> 
+									</div>								
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">유형<sup>*</sup></label>
+								  	<div class="radio" style="margin-left: 10px;">
+<!-- 										<label> -->
+<!-- 											<input type="radio" class="radiobox style-0"  id="userYn1" name="userYn" value="Y" checked="checked" /> -->
+<!-- 											<span>텍스트</span>  -->
+<!-- 										</label> -->
+<!-- 										<label> -->
+<!-- 											<input type="radio" class="radiobox style-0" id="userYn2" name="userYn" value="N" /> -->
+<!-- 											<span>이미지</span>  -->
+<!-- 										</label> -->
+										<label>
+											<input type="radio" class="radiobox style-0" id="userYn3" name="userYn" value="Z" checked="checked" />
+											<span>이미지생성</span> 
+										</label>
+										<span id="img_cont" class="text-danger">안드로이드 PUSH는 이미지만 발송되며 아이폰은 텍스트만 PUSH로 발송 됩니다.</span> 
+									</div>											
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용<sup>*</sup></label>
+									<div class="col-md-10">
+										<textarea id="crm_desc" name="crm_desc" class="form-control" rows="4" data-valid-use='true' data-valid-max="236" data-valid-title='푸쉬내용'></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+<!-- 										<p class="text-danger"><i class="fa fa-info-circle"></i> 내용 처음에는 (광고)를 꼭 넣어야 합니다. (법적사항)</p> -->
+											<p class="text-danger"><i class="fa fa-info-circle"></i> 법적 유의 사항 안내</br>
+											1.  내용 처음에는 (광고)를 꼭 기입해야 합니다.</br>
+											2.  내용 끝에 '수신거부:설정'을 꼭 기입해야 합니다.</br>
+											3.  신선식품(농/축/수/조리)은 원산지, 중량을 표기해야 합니다.</p>
+									</div>
+								</div>
+								<div class="form-group" id="img">
+									<label class="col-md-2 control-label">템플릿<sup>*</sup></label>
+									<div class="col-md-2">										
+										<span id="btnTemplate">
+											<a href="javascript:f_openTemplateLD();" class="btn btn-primary btn-sm">템플릿 선택</a>
+										</span>
+										<span id="imgFileFind" class="btn btn-success fileinput-button" >
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										    <input type="hidden" id="imgPath" name="imgPath">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div id="gen_template" class="col-md-8"></div>
+								</div>
+
+								<div id="btn_gen_preview" class="col-md-12" style="width:100%; text-align:right; align:right; display:none;">
+									<input type="hidden" id="gen_template_img_path" name="gen_template_img_path">
+									<input type="hidden" id="gen_img_reg_yn" name="gen_img_reg_yn">
+									<a href="javascript:f_openGenImgPreview();" class="btn btn-primary">미리보기</a>
+								</div>
+								<div class="form-group" id="img_cont_info">
+								<!-- 템플릿 사용시 필요 없음
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 이미지 사이즈: 1120px X 745px  /  파일종류: jpg, gif, png  / 최대파일용량: 300KB</p>
+									</div>
+								 -->
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">링크사용</label>
+								  	<div class="radio" style="margin-left: 10px;">
+										<label>
+											<input type="radio" class="radiobox style-0"  id="linkYn" name="linkYn" value="Y" checked="checked" >
+											<span>예</span> 
+										</label>
+										<label>
+											<input type="radio" class="radiobox style-0" id="linkYn2" name="linkYn" value="N">
+											<span>아니오</span> 
+										</label>
+									</div>											
+								</div>
+
+								<div class="form-group" id="link_hide">
+									<label class="col-md-2 control-label">URL 선택</label>
+									<div class="col-md-2">
+										<div class="input-group">
+										<select class="form-control" id="link_url" name="link_url" data-valid-use="true">
+											<option value="">선택</option>
+											<option value="LIST">목록</option>
+											<option value="CPBOOK">쿠폰북</option>
+											<option value="STAMP">스탬프</option>
+											<option value="FCFS">달려라선착순</option>
+											<option value="OUTSIDE">외부링크</option>
+											<option value="BRANCH">지점혜택공지</option>
+										</select>
+										</div>
+									</div>
+									<div class="col-md-2" id="inside_url">
+										<select class="form-control" id="issue_cpbook" name="issue_cpbook" data-valid-use="true">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<div class="col-md-6" id="outside_url" style="display:none">
+										<input class="form-control" type="text" name="issue_cpbook" id="issue_cpbook" />
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">발송일</label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" data-dateformat='yy-mm-dd' data-date-format="yyyyMMdd" id="s_campaign_start_dy" name="s_campaign_start_dy" placeholder="시작일" onclick="f_datepickerIndex();">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="evt_end_hour" name="evt_end_hour">
+											<option value="">시</option>
+										</select>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="evt_end_min" name="evt_end_min">
+											<option value="">분</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">화면켜짐</label>
+								  	<div class="radio" style="margin-left: 10px;">
+										<label>
+											<input type="radio" class="radiobox style-0"  id="expose1" name="expose" value="Y" checked="checked" >
+											<span>예</span> 
+										</label>
+										<label>
+											<input type="radio" class="radiobox style-0" id="expose2" name="expose" value="N">
+											<span>아니오</span> 
+										</label>
+									</div>											
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 발송일과 시각은 현재시각 1시간 이후 부터 가능합니다.</p>
+									</div>
+								</div>
+
+							</fieldset>							
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_mCouponList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_pushTimeChk(1)" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+
+	<div class="row" id="beaconLL">
+	</div>
+	
+</section>
+
+
+<div id="templates_ld" style="display:none;"></div>
+<div id="gen_img_preview" style="display:none;"></div>
+
+<div style="display:none;">
+	<div id="gen_template1">
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content1" name="gen_content1" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용1'  title="행사안내">
+		<input class="form-control" type="text" id="gen_content2" name="gen_content2" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용2' title="행사제목">
+		<textarea class="form-control" id="gen_content3" name="gen_content3" rows="4" style="margin-top:2px; margin-bottom:2px;" data-valid-max="300" title="행사내용"></textarea>
+		<input class="form-control" type="text" id="gen_content4" name="gen_content4" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용3' title="기간">
+		<input class="form-control" type="text" id="gen_content5" name="gen_content5" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용4' title="영업상태">
+	</div>
+	<div id="gen_template2">
+		<div class="input-group" style="width:100%">
+			<div style="width:50%; float:right">
+				<input class="form-control" type="text" id="gen_content1" name="gen_content1" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용1' title="테마">
+			</div>
+		</div>
+		<div class="input-group" style="width:100%">
+			<div style="width:50%; float:left">
+				<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content2" name="gen_content2" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용2' title="행사안내">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-right:1px;" id="gen_content3" name="gen_content3" rows="1" data-valid-max="300"  title="행사제목"></textarea>
+				<textarea class="form-control" style="width:100%; height:100%; margin-top:2px; margin-bottom:2px; margin-right:1px;" id="gen_content4" name="gen_content4" rows="6" data-valid-max="300"  title="행사내용"></textarea>
+			</div>
+			<div style="width:50%; float:left">
+				<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content5" name="gen_content5" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용5' title="기간">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content6" name="gen_content6" rows="2" data-valid-max="300" title="혜택1"></textarea>
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content7" name="gen_content7" rows="2" data-valid-max="300" title="혜택2"></textarea>
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content8" name="gen_content8" rows="2" data-valid-max="300" title="혜택3"></textarea>
+			</div>
+		</div>
+		<input class="form-control" type="text" id="gen_content9" name="gen_content9" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용9' title="영업상태">
+	</div>
+	<div id="gen_template3">
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content1" name="gen_content1" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용1' title="기간">
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content2" name="gen_content2" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용2' title="행사안내">
+		<div class="input-group" style="width:100%">
+			<div style="width:34%; float:left">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-right:1px;" id="gen_content3" name="gen_content3" rows="5" data-valid-max="300" title="혜택1"></textarea>
+			</div>
+			<div style="width:33%; float:left">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content4" name="gen_content4" rows="5" data-valid-max="300" title="혜택2"></textarea>
+			</div>
+			<div style="width:33%; float:left">
+				<textarea class="form-control" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content5" name="gen_content5" rows="5" data-valid-max="300" title="혜택3"></textarea>
+			</div>
+		</div>
+		<input class="form-control" type="text" id="gen_content6" name="gen_content6" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='내용6' title="영업상태">
+	</div>
+</div>
+
+ 
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+function f_datepickerIndex() {
+	$('#ui-datepicker-div').css('z-index','10000');
+}
+
+
+$(function () {
+	$("[name=check_all]").click(function () {
+		if (this.checked) {
+            $('#cust_grd_cd01').prop('checked', true);
+            $('#cust_grd_cd02').prop('checked', true);
+            $('#cust_grd_cd03').prop('checked', true);
+            $('#cust_grd_cd04').prop('checked', true);
+        } else {
+            $('#cust_grd_cd01').prop('checked', false);
+            $('#cust_grd_cd02').prop('checked', false);
+            $('#cust_grd_cd03').prop('checked', false);
+            $('#cust_grd_cd04').prop('checked', false);
+        }
+    });
+
+});
+
+function selectBoxCheck() {
+
+	if(
+			$('#cust_grd_cd01').prop('checked')
+			&& $('#cust_grd_cd02').prop('checked')
+			&& $('#cust_grd_cd03').prop('checked')
+			&& $('#cust_grd_cd04').prop('checked')
+	) {
+		$('#check_all').prop('checked', true);
+	}
+	
+	if(
+			!$('#cust_grd_cd01').prop('checked')
+			|| !$('#cust_grd_cd02').prop('checked')
+			|| !$('#cust_grd_cd03').prop('checked')
+			|| !$('#cust_grd_cd04').prop('checked')
+	) {
+		$('#check_all').prop('checked', false);
+	}
+
+}
+
+
+/*
+$('#link_url').change(function(){
+	if($('#groupbuy_campaign_id').val() == "") {
+		alert("캠페인/고객군을 먼저 선택해 주세요.");
+		$("#link_url").val("");
+		return;
+	}
+
+	var link_url = $('#link_url option:selected').val();
+	if(link_url != "LIST" && link_url != "OUTSIDE") {
+		$("#outside_url").hide();
+		$("#inside_url").show();
+		var data = {
+				empno: "${sessionScope.sessionEmpno}", 
+				emp_str_cd: "${sessionScope.sessionStrCd}",
+				hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+		 		link_url : link_url,
+		 		lst_custgp_id_list : [$("#groupbuy_custgp").val().split("-")[0].trim()]
+		 		
+		};
+		
+		$("#url_lst_custgp_id").val($("input[name=lst_custgp_id]").val());
+		$.ajax({
+			url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+			type: 'GET',
+			async: false,
+			cache: true,
+			data: encodeURI('params='+JSON.stringify(data)),
+			success: function(obj) {
+				var obj = obj.data;
+				if(obj.result_list == 0){
+					alert("해당 고객군에 발행된 쿠폰북이 없습니다.");
+				}else if(obj.result_list == 1){
+					alert("해당 고객군에 진행중인 달려라 선착순이 없습니다.");
+				}else if(obj.result_list == 2){
+					alert("해당 고객군에 진행중인 스탬프가 없습니다.");
+					
+				}
+				var target = $('select[name=issue_cpbook]');
+				var options = "<option value=''>선택</option>";
+				if(obj.url_type=="CPBOOK") {
+					$.each(obj.result_list, function(i, item) {
+						options += "<option value='"+item.cpbook_id+"'data-mapp-digit='"+item.cpbook_mapp_digit+"'data-cpbook-cd='"+item.ctype+"'data-cpbook-id='"+item.cpbook_id+"'data-cpbook-type-cd='"+item.cpbook_type_cd+"'>"+item.cpbook_nm+"</option>";
+					});
+					$("#send_url").val();
+				}else if(obj.url_type=="STAMP") {
+					$.each(obj.result_list, function(i, item) {
+						options += "<option value='"+item.stamp_id+"'>"+item.evt_title+"</option>";
+					});
+					$("#send_url").val("");
+				}else if(obj.url_type=="FCFS") {
+					$.each(obj.result_list, function(i, item) {
+						options += "<option value='"+item.fcfs_evnt_id+"'>"+item.evt_title+"</option>";
+					});
+					$("#send_url").val();
+				}
+				target.html(options);
+			}	
+		});
+	}else if(link_url == "LIST"){
+		$("#outside_url").hide();
+		$("#inside_url").show();
+		var target = $('select[name=issue_cpbook]');
+		var options = "<option value=''>선택</option>";
+		
+		options +="<option value=cpbook_list>쿠폰북목록</option>";
+		options +="<option value=stamp_list>스탬프목록</option>";
+		options +="<option value=fcfs_list>달려라선착순목록</option>";
+		options +="<option value=poll_list>POLL목록</option>";
+		
+		target.html(options);
+		
+	}else {
+		$("#inside_url").hide();
+		$("#outside_url").show();
+	}
+});
+*/
+
+
+
+
+
+/**
+ * ==================================================================================
+ * 템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_ld').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 템플릿 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=template_list]:checked");
+
+			var v_nm = chk_obj.attr('img_view_nm');
+			var img_path = chk_obj.attr('img_path');
+			var thum_path = chk_obj.attr('thum_path');			
+			
+			
+			// 생성 이미지
+			$('#preview_uploadfile').find('img').attr('src',img_path);			
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_gen_uploadfile');
+ 			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateGenFileDelete();").text('파일삭제');						
+
+			
+			
+// 			var input_file_divn_cd = $('<input>')
+// 			.attr('type', 'hidden')
+// 			.attr('name', 'file_divn_cd')
+// 			.val("IMG_PUSH");
+		
+			var input_local_file_name = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'img_local_nm')
+						.val(v_nm);
+			
+			var input_atch_file_nm = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'img_view_nm')
+						.val(v_nm);
+			
+// 			span.append(input_file_divn_cd);
+			span.append(input_local_file_name);
+			span.append(input_atch_file_nm);
+
+			$('#gen_template_img_path').val(img_path);
+			
+			var template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			var btn_div = $("#uploadfile").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+
+			// 템플릿ID에 맞는 입력폼 출력
+			if(template_id.val() == "000000000000001") {
+				$('#gen_template').html($('#gen_template1').html());
+			}
+			else if(template_id.val() == "000000000000002") {
+				$('#gen_template').html($('#gen_template2').html());
+			}
+			else if(template_id.val() == "000000000000003") {
+				$('#gen_template').html($('#gen_template3').html());
+			}
+
+			// 생성이미지 미리보기 버튼 보이기
+			$("#btn_gen_preview").show();
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#templates_ld').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+
+
+$('#gen_img_preview').dialog({
+	autoOpen : false,
+ 	width : 1120+28,
+ 	minHeight: 745,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 미리보기 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+
+
+			// 이미지생성파일 Temp 업로드
+			var data = {
+							 empno : "${sessionScope.sessionEmpno}"
+							,emp_str_cd : "${sessionScope.sessionStrCd}"
+							,hq_base_yn : "${sessionScope.sessionHqBaseYn}"
+							,gen_img_data : $('#gen_img_data').val()
+							,gen_img_view_nm : $('#gen_img_view_nm').val()
+							,gen_img_path : $('#gen_img_path').val()
+							,gen_content_type : $('#gen_content_type').val()
+							,gen_img_ext : $('#gen_img_ext').val()
+							,file_divn_cd : 'IMG_PUSH'
+						};
+			// ---------------- 서버 전송 데이터 세팅 종료--------------------------//
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/common/canvas/file/upload',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(resultData){
+			    	
+			    	var data = resultData.data;
+
+					$('#preview_uploadfile').find('img').attr('src',data.prvw_url);	
+					var btn_div = $("#uploadfile").parent().parent();
+					var template_id_obj = btn_div.find("input[name=template_id]");
+					var template_id = template_id_obj.val();
+
+					var span = template_id_obj.parent();
+					
+					var input_local_file_name = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_strge_file_nm')
+								.val(data.local_file_nm);
+					
+					var input_atch_file_nm = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_orgin_file_nm')
+								.val(data.atch_file_nm);
+					
+					var input_edit_check = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'edit_check_uploadfile')
+								.val(data.local_file_nm);
+
+					span.find('input[name=img_strge_file_nm]').remove();
+		            span.find('input[name=img_orgin_file_nm]').remove();
+		            span.find('input[name=edit_check_uploadfile]').remove();
+					
+					span.append(input_local_file_name);
+					span.append(input_atch_file_nm);
+					span.append(input_edit_check);
+
+					btn_div.append(span);
+
+					$('#gen_img_reg_yn').val("Y"); // 생성이미지 등록여부 Y
+			    },
+			    error: function(resultData) {
+			    	var serverObj = resultData["responseJSON"];
+			    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+			    	return;
+			    }
+			});			
+
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#gen_img_preview').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 이미지생성 미리보기 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openGenImgPreview() {
+
+	var gen_content1 = $('#gen_content1').val() == undefined ? "" : $('#gen_content1').val();
+	var gen_content2 = $('#gen_content2').val() == undefined ? "" : $('#gen_content2').val();
+	var gen_content3 = $('#gen_content3').val() == undefined ? "" : $('#gen_content3').val();
+	var gen_content4 = $('#gen_content4').val() == undefined ? "" : $('#gen_content4').val();
+	var gen_content5 = $('#gen_content5').val() == undefined ? "" : $('#gen_content5').val();
+	var gen_content6 = $('#gen_content6').val() == undefined ? "" : $('#gen_content6').val();
+	var gen_content7 = $('#gen_content7').val() == undefined ? "" : $('#gen_content7').val();
+	var gen_content8 = $('#gen_content8').val() == undefined ? "" : $('#gen_content8').val();
+	var gen_content9 = $('#gen_content9').val() == undefined ? "" : $('#gen_content9').val();
+	var gen_content10 = $('#gen_content10').val() == undefined ? "" : $('#gen_content10').val();
+	
+// 	var img_path = $('#preview_uploadfile').find('img').attr('src');
+	var img_path = $('#gen_template_img_path').val();
+ 	var img_view_nm = $('#preview_uploadfile').parent().find('p').text();
+ 	var template_id = $("#uploadfile").parent().parent().find("input[name=template_id]").val();
+
+	var data = {
+					img_path:img_path
+					,img_view_nm:img_view_nm
+					,template_id:template_id
+					,gen_content1:gen_content1
+					,gen_content2:gen_content2
+					,gen_content3:gen_content3
+					,gen_content4:gen_content4
+					,gen_content5:gen_content5
+					,gen_content6:gen_content6
+					,gen_content7:gen_content7
+					,gen_content8:gen_content8
+					,gen_content9:gen_content9
+					,gen_content10:gen_content10
+				};
+
+	$.ajax({
+		url: "/application/push/crm/crmGenImg.do",
+		type: 'POST',
+		async: true,
+		cache: false,
+ 		data: data,
+		success: function(data) {
+			var $target = $('#gen_img_preview');
+			$target.html(data);
+		}
+	});
+	$('#gen_img_preview').dialog('open');
+}
+
+
+
+
+
+
+
+
+
+var pagefunction = function() {
+	$("#crm_desc").val("(광고)");
+	// 지점일경우 캠페인ID, 고객군ID값을 전체고객군ID에 해당하는 값으로 설정함.
+	$('#groupbuy_campaign_id').val(_campaign_id); // 전체고객군 캠페인ID
+	$('#groupbuy_campaign_nm').val(_campaign_nm); // 전체고객군 캠페인명
+	$('#groupbuy_campaign_term').val(_campaign_term); // 전체고객군 캠페인 기간
+	$('#groupbuy_custgp').val(_lst_custgp); // 전체고객군 고객군ID 및 고객군명
+
+	
+	//공통코드 조회 : 지점목록
+	f_ajaxStrCdCode($('#str_cd'));
+	$('#str_cd').val('${sessionScope.sessionStrCd}'); // 지점 초기값 설정
+	$('#str_nm').text($('select[name=str_cd] option:selected').text());
+
+	// 링크사용 Default값 설정	
+    $('#link_hide').hide();
+    $("#link_url").val("BRANCH").attr("selected","selected");
+    
+	f_setTimeStr();
+	// 이미지 생성만 보이도록 수정.
+// 	$('#img').hide();
+// 	$('#preview_uploadfile').hide();
+	$('#img_cont').hide();
+	$('#img_cont_info').hide();
+// 	$('input[name="userYn"]').change(function(){
+// 	    if($(this).val() == "N") {
+// 	        $('#img').show();
+// 	    	$('#preview_uploadfile').show();
+// 	    	$('#img_cont').show();
+// 	    	$('#img_cont_info').show();
+
+// 	    	// 파일선택 보이기
+// 	    	$('#imgFileFind').show();
+// 	    	// 템플릿선택 숨기기
+// 	    	$('#btnTemplate').hide();
+// 	    	// 템플릿폼 삭제
+// 	    	f_templateGenFileDelete();
+// 		}
+// 	    else if($(this).val() == "Y") {
+// 	    	$('#img').hide();
+// 	    	$('#preview_uploadfile').hide();
+// 	    	$('#img_cont').hide();
+// 	    	$('#img_cont_info').hide();
+
+// 	    	// 파일선택 숨기기
+// 	    	$('#imgFileFind').hide();
+// 	    	// 템플릿선택 숨기기
+// 	    	$('#btnTemplate').hide();
+// 	    	// 템플릿폼 삭제
+// 	    	f_templateGenFileDelete();
+// 	    	// 파일삭제
+// 	    	cf_fileDelete('uploadfile');
+// 	    }
+// 	    else if($(this).val() == "Z") {
+	        $('#img').show();
+	    	$('#preview_uploadfile').show();
+	    	$('#img_cont').show();
+	    	$('#img_cont_info').show();
+	    	
+	    	// 파일선택 숨기기
+	    	$('#imgFileFind').hide();
+	    	// 템플릿선택 보이기
+	    	$('#btnTemplate').show();
+	    	// 파일삭제
+	    	cf_fileDelete('uploadfile');
+// 	    }
+
+// 	    // 템플릿ID 입력폼 삭제
+//     	$('#gen_template').html("");
+
+//     	// 생성이미지 미리보기 버튼 숨기기
+//     	$("#btn_gen_preview").hide();
+
+// 	});
+	$('input[name="linkYn"]').change(function(){
+		if($(this).val() == "N") {
+	        $("#link_url").val("").attr("selected","selected");
+		}
+	    else {
+	        $("#link_url").val("BRANCH").attr("selected","selected");
+	    }
+		$('#link_hide').hide();
+	});
+
+};
+
+
+
+
+/**
+* ==================================================================================
+* PUSH CRM 이미지 추가
+* --------------------------------------------------------------------------------------------
+* 이미지 등록/변경시 호출되는 이벤트
+* ============================================================================================ 
+*/
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this), "IMG_PUSH");
+});
+
+
+//$('#fileParamId').fileupload({
+//url : '/application/crm/pushImgReg.do', 
+//dataType: 'json',
+//method: "POST",
+////replaceFileInput: false,
+//add: function(e, data){
+//  var uploadFile = data.files[0];
+//  var isValid = true;
+//  if (!(/png|jpe?g|gif/i).test(uploadFile.name)) {
+//      alert('png, jpg, gif 만 가능합니다');
+//      isValid = false;
+//  } else if (uploadFile.size > 512000) { // 5mb
+//      alert('500KB 이상의 파일은 업로드 할 수 없습니다.');
+//      isValid = false;
+//  }
+//  if (isValid) {
+//      data.submit();              
+//  }
+//}, progressall: function(e,data) {
+//  var progress = parseInt(data.loaded / data.total * 100, 10);
+//  $('#progress .bar').css(
+//      'width',
+//      progress + '%'
+//  );
+//}, done: function (e, data) {
+//	
+//}, fail: function(e, data){
+//	alert("파일 업로드 실패."); 
+//  foo = data;
+//},success: function(data) {
+//	$("#imgPath").val(data.path);
+//	readURL(this);
+//}
+//});
+
+
+
+
+	pageSetUp();
+	pagefunction();
+</script>

@@ -1,0 +1,115 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<!-- 조회결과 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 카테고리 조회/삭제 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="table-responsive" style="max-height:400px; overflow-y: auto; overflow-x: hidden;">
+							<table class="table table-bordered table-striped" style="width: 100%;">
+								<thead>
+									<tr>
+										<th class="ta-c" style="width:25px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+										<th class="ta-c" style="width:25px">No.</th>
+										<th class="ta-c" style="width:100px">카테고리명</th>
+<!-- 										<th class="ta-c" style="width:100px">카테고리 설명</th> -->
+									</tr>
+								</thead>
+								<tbody id="coupon_category_tbody">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 쿠폰 카테고리 조회
+ * ==================================================================================
+ */
+function f_couponCategoryList() {
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["cd_divn_id"] = 'COUPON_CATE_CD';
+
+	$.ajax({
+	    url: api_url + "/backoffice/common/code/list",
+	    type: "GET", 
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	$("#coupon_category_tbody").empty();
+	    	var couponCateList = resultData.data.cd_list;
+	    	$.each(couponCateList, function(i, items) {
+	    		i=i+1;
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c" onclick="event.cancelBubble = true;"><input type="checkbox" value="'+items.mst_cd+'"></td>';
+	    		tag_td += '<td class="ta-c">'+i+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.mst_cd_nm+'</td>\n';
+// 	    		tag_td += '<td class="ta-c">'+items.desc+'</td>\n';
+	    		
+	    		var tag_tr = "<tr class='pointer' onclick=\"f_openCouponCategoryWD('"+items.mst_cd+"')\">"+tag_td+"</tr>";
+	    		$("#coupon_category_tbody").append(tag_tr);
+	    	});
+	    },
+	    error: function(resultData) {
+	    	var serverObj = resultData["responseJSON"] || {};
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    }
+	});
+}
+function f_couponCategoryDelete() {
+	var checkData = [];
+	$.each($("#coupon_category_tbody input[type='checkbox']:checked"), function(i,items){
+		checkData.push($(items).val());
+	});
+	
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["coupon_cate_cd_list"] = checkData;
+	data["cd_divn_id"] = "COUPON_CATE_CD";
+	console.log(JSON.stringify(data));
+	$.ajax({
+	    url: api_url + "/backoffice/common/code/delete",
+	    type: "POST", 
+	    contentType: "application/json;charset=utf-8", // POST 일때만 사용
+	    async: false,
+	    cache: true,
+	    data: JSON.stringify(data),
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	if(resultData["code"] == "S0000"){
+	    		alert("정상적으로 삭제되었습니다");
+	    	}
+	    	f_couponCategoryList();
+	    },
+	    error: function(resultData) {
+	    	var serverObj = resultData["responseJSON"] || {};
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    }
+	});
+	
+}
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+f_couponCategoryList();
+</script>

@@ -1,0 +1,448 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>내가 만드는 M쿠폰북 발행 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="groupby_reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="groupby_reg_id_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일자: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="groupby_mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="groupby_mod_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">승인일자: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="groupby_coupon_req_aprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인자: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="groupby_coupon_req_aprv_id_name"></span>
+									
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인상태: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="groupby_aprv_sts_cd_name"></span>
+										<input type="hidden" name="aprv_sts_cd" value="" />
+									</div>
+									<!-- 진행상태 - 유효기간 이전 - 진행예정, 유효기간내 - 진행중, 유효기간 종료 - 종료 -->
+									<label class="col-md-1 control-label cs-css-05">진행상태: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="groupby_prgs_sts_cd_name"></span>
+										<input type="hidden" name="prgs_sts_cd" value="" />
+									</div>									
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인ID: </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="groupby_campaign_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">캠페인기간: </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="groupby_campaign_term"></span>										                                                  
+									</div>									
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인명: </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="groupby_campaign_nm"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">고객군: </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="groupby_custgp_info"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="groupby_custgp_cl_cpbook_title"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">설명: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="groupby_custgp_cl_cpbook_desc"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북</br>유효기간: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="groupby_vali_term"></span>
+									</div>
+								</div>							
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">롯데마트몰: </label>
+									<div class="col-md-11" id="cpbook_img">
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">M쿠폰앱: </label>
+									<div class="col-md-11" id="cpbook_img2">
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">한도금액: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="groupby_lim_amt"></span>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_issueSelcpBook();" class="btn btn-success btn_auth_stop">수동배치</a>
+										<a href="javascript:f_openClosingDateRD();" class="btn btn-success btn_auth_stop">적용 종료일 변경</a>
+										<a href="javascript:f_approveProcess('reject');" class="btn btn-danger btn_auth_approve">반려</a>
+										<a href="javascript:f_approveProcess('aprv');" class="btn btn-primary btn_auth_approve">승인</a>
+										<a href="javascript:f_approveProcess('req');" class="btn btn-info btn_auth_create">승인요청</a>
+										<a href="javascript:f_selCpBookIssueList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_selCouponBookEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_selCouponBookDel();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="closing_date_rd" style="display: none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+function f_issueSelcpBook() {
+	if(confirm('정말 발행 하시겠습니까?')) {
+		var data = {
+			"empno" : "${sessionScope.sessionEmpno}", 
+			"emp_str_cd" : "${sessionScope.sessionStrCd}",
+			"hq_base_yn" : "${sessionScope.sessionHqBaseYn}", 
+			"custgp_cl_cpbook_id" : $("input[name=custgp_cl_cpbook_id]").val()
+		};
+		$.ajax({
+			url: api_url + "/backoffice/selectcoupon/issue/create",
+			type: "post",
+			dataType: 'json',
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_selCpBookIssueList();
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 쿠폰북 정보 다이얼로그 호출
+ * ==================================================================================
+ */
+$('#closing_date_rd').dialog({
+	autoOpen : false,
+	width : 400,
+	minHeight: 300,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 적용 종료일 변경 </h6></div>",
+	buttons : [{
+		html : "취소",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+			$('#closing_date_rd').empty();
+		}
+	},{
+		html : "저장",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			if( $('#frmCloseDate').formValid() ) {
+				$.ajax({
+					url: api_url + "/backoffice/selectcoupon/finishdate/update",
+					type: "POST",
+					contentType: "application/json;charset=utf-8", // POST 일때만 사용
+					async: false,
+					cache: true,
+					data: JSON.stringify($("#frmCloseDate").serializeFormObject()),
+					success: function(obj) {
+						alert(obj.message);
+						f_selCpBookIssueList();
+					},
+				    error: function(obj) {
+				    	var serverObj = obj.responseJSON;
+				    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+				    	return;
+				    }	
+				});
+				
+				$(this).dialog("close");
+			}
+		}
+	}]
+});
+
+
+function f_selCouponBookDel() {
+	var select_ids = [$("input[name=custgp_cl_cpbook_id]").val()];
+	var aprv_cnt = 0;
+	var dy_cnt = 0;
+	
+	//for(var i = 0; i < select_ids.length; i++) {
+		
+	var aprv_sts_cd = $("input[name=aprv_sts_cd]").val();
+	var campaign_end_dy = $.trim($("#groupby_campaign_term").text().split("~")[1]);
+	console.log("########### campaign_end_dy : " + campaign_end_dy);
+	if(aprv_sts_cd == 'APPROVE') {
+		aprv_cnt++;	
+	}
+	
+	var now_date = cf_cvtDateFormat(cf_toDate(),'yyyyMMdd');
+	var compare_date = campaign_end_dy.replace(/\-/g,'');
+	
+	if(parseInt(compare_date) < parseInt(now_date)) {
+		dy_cnt++;
+	}
+	//}
+	if(aprv_cnt > 0) {
+		alert('승인상태의 고객군별 쿠폰북은 삭제가 불가능합니다.');
+		return;
+	}
+	
+	if(dy_cnt > 0) {
+		alert('게시가 종료된 고객군별 쿠폰북은 삭제가 불가능 합니다.');
+		return;
+	}
+	
+	// 삭제 진행
+	if(confirm('정말 삭제하시겠습니까?')) {
+		
+		var data = {
+			custgp_cl_cpbook_id_list : select_ids,
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+		};
+		$.ajax({
+			url: api_url + '/backoffice/selectcoupon/delete',
+			type: 'POST',
+			contentType: 'application/json;charset=utf-8', // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_selCpBookIssueList();
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+/**
+ * ==================================================================================
+ * 등록/수정 : 쿠폰북 유형 선택 이벤트
+ * ==================================================================================
+ */
+/*function f_cpbookTypeCd(val) {
+	if(val == 'B') {
+   		$(".cooperation").show();
+   		$(".maxUseCoupon").hide();
+   	} else if(val == 'C') {
+   		$(".maxUseCoupon").show();
+   		$(".cooperation").hide();
+   	} else {
+   		$(".cooperation").hide();
+   		$(".maxUseCoupon").hide();
+   	}
+}*/
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+	
+	$.ajax({
+	    url: api_url+"/backoffice/selectcoupon/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	//alert(JSON.stringify(obj));
+	    	var searchData = Object.keys(obj.data);
+	    	for (var i = 0; i < searchData.length; i++) {
+	    		//alert(searchData[i]);
+	    		console.log(searchData[i]);
+	    		if ($("#groupby_" + searchData[i]).html() != undefined) {
+	    			console.log("************************* " + eval("obj.data." + searchData[i]));
+	    			if(searchData[i] == "lim_amt") {
+	    				console.log("************************* 한도 금액");
+	    				$("#groupby_" + searchData[i]).html(cf_setComma(obj.data.lim_amt) + "<span> 원</span>");
+	    			} else {
+	    				$("#groupby_" + searchData[i]).html(eval("obj.data." + searchData[i]));
+	    			}
+	    			
+	    		}
+	    	}
+	    	
+	    	// 내가만드는쿠폰북 설명
+	    	var descData = obj.data.custgp_cl_cpbook_desc;
+	    	var descRows = descData.split("\n");
+	    	var descHeight = parseInt($("#groupby_custgp_cl_cpbook_desc").css("height").replace("px", ""));
+	    	
+	    	if (descRows.length > 1) {
+	    		descHeight += ((descRows.length - 1) * 17) + 5;	    		
+	    		$("#groupby_custgp_cl_cpbook_desc").css("height", descHeight + "px");
+	    	}
+	    	
+	    	$("#groupby_custgp_cl_cpbook_desc").html((obj.data.custgp_cl_cpbook_desc).replaceAll("\\n", "<br />"));
+	    	console.log("obj.data.prvw_url : " + obj.data.prvw_url + ", obj.data.img_orgin_file_nm : " + obj.data.img_orgin_file_nm);
+	    	var tag_img = $("<img>").attr("src",obj.data.prvw_url).attr("alt",obj.data.img_orgin_file_nm).addClass('img-responsive');
+	    	$("#cpbook_img").append(tag_img);
+	    	console.log("obj.data.thum_url : " + obj.data.thum_url + ", obj.data.thum_orgin_file_nm : " + obj.data.thum_orgin_file_nm);
+	    	tag_img = $("<img>").attr("src",obj.data.thum_url).attr("alt",obj.data.thum_orgin_file_nm).addClass('img-responsive');
+	    	$("#cpbook_img2").append(tag_img); 
+	    	
+	    	// 승인상태, 진행상태
+	    	$("input[name=aprv_sts_cd]").val(obj.data.aprv_sts_cd);
+	    	$("input[name=prgs_sts_cd]").val(obj.data.prgs_sts_cd);
+	    	//버튼 컨트롤
+	    	var aprv_sts_cd = obj.data.aprv_sts_cd;
+	    	var issue_yn = obj.data.issue_yn;
+	    	console.log("################### 발행여부 : " + issue_yn);
+	    	var prgs_sts_cd = obj.data.prgs_sts_cd;
+	    	switch(aprv_sts_cd) {
+	    	case "REQUEST" : // 승인요청전
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_stop').remove();		    		
+	    		break;
+	    		
+	    	case "STANDBY" :
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_stop').remove();
+	    		$('.btn_auth_delete').remove();
+	    		
+	    		break;
+	    		
+	    	case "APPROVE" :
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    		if (issue_yn == 'Y' || prgs_sts_cd != "PROGRES") {
+	    			$(".btn_auth_stop")[0].remove(); // 수동발행
+	    		}    		
+	    		 
+	    		/*if(obj.data.prgs_sts_cd != 'PROGRES') {
+	    			$('.btn_auth_stop').remove();
+	    		}*/
+	    		break;
+	    	
+			case "REJECT" :
+				$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_stop').remove();
+	    		break;
+	    		
+	    	default :
+	    		
+	    	}
+	    	
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;	    	
+	    }
+	});
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

@@ -1,0 +1,400 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>M클럽 설정</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmMclubData">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" id="mclub_id" name="mclub_id">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+				                  <label class="col-md-1 control-label cs-css-05">승인자 : </label>
+				                  <div class="col-md-2">
+				                      <span class="form-control cs-css-03" id="aprv_name"></span>
+				                  </div>
+									<label class="col-md-1 control-label cs-css-05">승인일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">ISR 클럽 유형코드: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mclub_type"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">클럽명 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mclub_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03">
+											<span id="campaign_id"></span>&nbsp;/&nbsp;<span id="campaign_nm"></span>
+										</span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03">
+											<span id="lst_custgp_id"></span>&nbsp;/&nbsp;<span id="custgp_nm"></span>
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">클럽설명 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="mclub_desc"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">메인 이미지: </label>
+									<div class="col-md-11" id="mclub_img2">
+									</div>
+								</div>
+								<fieldset id="area_upload_image">
+									<legend></legend>
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">클럽 이미지 : </label>
+										<div class="col-md-10" id="mclub_img">
+										</div>
+									</div>
+								</fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">클럽 상세 설명 : </label>
+									<div class="col-md-11">
+										<style scoped>
+											#terms {
+												height: initial;
+												max-height: 200px !important;
+												overflow-y: auto;
+											}
+										</style>
+										<span class="form-control cs-css-04" id="mclub_detail_desc"></span>
+									</div>
+								</div>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이용약관 : </label>
+									<div class="col-md-11">
+										<style scoped>
+											#terms {
+												height: initial;
+												max-height: 200px !important;
+												overflow-y: auto;
+											}
+										</style>
+										<span class="form-control cs-css-04" id="terms"></span>
+									</div>
+								</div>
+								<legend></legend>
+								<fieldset class="col-md-12 fieldset-survey-join">
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">가입설문 : </label>
+									</div>
+								</fieldset>
+              					<legend></legend>
+								<fieldset class="col-md-12 fieldset-survey-leave">
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">탈퇴설문 : </label>
+									</div>
+								</fieldset>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_openClosingMclubRD();" class="btn btn-success btn_auth_delete">클럽폐쇄</a>
+										<a onclick="f_approve(MCLUB_APPROVAL_STATUS_CODE.REJECT, this.innerHTML);" class="btn btn-danger btn_auth_approve">반려</a>
+										<a onclick="f_approve(MCLUB_APPROVAL_STATUS_CODE.APPROVE, this.innerHTML);" class="btn btn-primary btn_auth_approve">승인</a>
+										<a onclick="f_approve(MCLUB_APPROVAL_STATUS_CODE.STANDBY, this.innerHTML);" class="btn btn-info btn_auth_create">승인요청</a>
+										<a href="javascript:f_mclubList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_mclubEdit();"
+										   class="btn btn-warning btn_auth_update">수정</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="closing_mclub_rd" style="display: none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 클럽폐쇄 다이얼로그 호출
+ * ==================================================================================
+ */
+$('#closing_mclub_rd').dialog({
+	autoOpen : false,
+	width : 'auto',
+	minHeight: 'auto',
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i>&nbsp;클럽폐쇄</h6></div>",
+	open: function () {
+		var dialog = $(this);
+		$(document).on("keypress", '#frmCloseDate', function (event) {
+			if (event.keyCode === 13) {
+				dialog.parent().find('.btn-primary').trigger('click');
+				return false;
+			}
+		});
+	},
+	buttons : [{
+		html : "취소",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+			$('#closing_mclub_rd').empty();
+		}
+	},{
+		html : "저장",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			if(!$('#frmCloseDate').formValid() ) {
+				return;
+			}
+				
+			if($('#close').val() !== '클럽폐쇄') {
+				alert('클럽폐쇄라고 입력해주세요');
+				return;
+			}
+
+			f_approve(MCLUB_APPROVAL_STATUS_CODE.CLOSED, "폐쇄");
+
+			$(this).dialog("close");
+		}
+	}]
+});
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	var fieldset_survey_join = $('.fieldset-survey-join');
+	var fieldset_survey_leave = $('.fieldset-survey-leave');
+	
+	var btn_auth_create = $('.btn_auth_create');
+	var btn_auth_delete = $('.btn_auth_delete');
+	var btn_auth_approve = $('.btn_auth_approve');
+	var btn_auth_update = $('.btn_auth_update');
+
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		btn_auth_update.remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		btn_auth_delete.remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		btn_auth_approve.remove();
+	}
+
+	$.ajax({
+		url: api_url + "/backoffice/mclub/show",
+		type: "GET",
+		async: false,
+		cache: true,
+		datatype: 'json',
+		data: encodeURI("params=" + JSON.stringify($("#frmKeepData").serializeFormObject())),
+		success: function (obj) {
+			var data = obj.data;
+			var dataFormat = 'yyyy-MM-dd';
+			var aprv_sts_cd = data.aprv_sts_cd;
+			var use_yn = data.use_yn;
+
+			$('#mclub_id').val(data.mclub_id);
+			$("#aprv_sts_cd").val(aprv_sts_cd);
+
+			$("#reg_date").html(cf_cvtDateFormat(data.reg_date, dataFormat));
+			$("#reg_id_name").html(data.reg_id_name);
+			$("#mod_date").html(cf_cvtDateFormat(data.mod_date, dataFormat));
+			$("#mod_id_name").html(data.mod_id_name);
+			
+			$("#aprv_name").html(data.aprv_name);
+			$("#aprv_sts_cd_name").html(data.aprv_sts_cd_name);
+			$("#aprv_date").html(cf_cvtDateFormat(data.aprv_date, dataFormat));
+
+			$('#mclub_type').html(data.mclub_type);
+			$('#mclub_name').html(data.mclub_name);
+			$("#campaign_id").html(data.campaign_id);
+			$("#campaign_nm").html(data.campaign_nm);
+			$("#lst_custgp_id").html(data.lst_custgp_id);
+			$("#custgp_nm").html(data.custgp_nm);
+			$("#mclub_desc").html(data.mclub_desc);
+			
+			$("#mclub_detail_desc").html((data.mclub_detail_desc).replaceAll("\\n","<br/>").replaceAll("&gt;", ">").replaceAll("&lt;", "<"));
+			$("#terms").html(data.terms.replace(/\n/g, '<br>'));
+
+			var question_template = '<div class="form-group">'
+					+ '<div class="form-group question_list">'
+					+ '<label class="col-md-1 control-label cs-css-05 question-num">{0}</label>'
+					+ '<div class="col-md-8">'
+					+ '<span class="form-control cs-css-03">{1}</span>'
+					+ '</div>'
+					+ '<label class="col-md-1 control-label cs-css-05">유형</label>'
+					+ '<div class="col-md-2">'
+					+ '<span class="form-control cs-css-03">{2}</span>'
+					+ '</div>'
+					+ '</div>'
+					+ '<div class="form-group option_template">{3}</div>'
+					+ '</div>';
+
+			var option_template = '<div class="form-group">'
+					+ '<label class="col-md-2 control-label cs-css-05 option-num">{0}</label>'
+					+ '<div class="col-md-8">'
+					+ '<span class="form-control cs-css-03">{1}</span>'
+					+ '</div>'
+					+ '</div>';
+
+			$.each(data.question_list, function (i, question) {
+
+				var survey_type = question.survey_type;
+				var question_num = '질문' + question.order_no;
+				var question_id = question.question_id;
+				var question_text = question.question_text;
+				var question_type = question.question_type;
+				var question_type_name = QUESTION_TYPE.getNameByCode(question_type);
+
+				var options_html = '';
+
+				if (question_type === QUESTION_TYPE.MULTIPLE_CHOICE.code) {
+					$.each(data.option_list, function (j, question_option) {
+						if (survey_type === question_option.survey_type
+								&& question_id === question_option.question_id) {
+							var option_num = 'ㄴ보기' + question_option.order_no;
+							options_html += option_template.getFormatted(option_num, question_option.option_text);
+						}
+					});
+				}
+
+				var qa_html = question_template.getFormatted(question_num, question_text, question_type_name, options_html);
+
+				if (question.survey_type === SURVEY_TYPE.JOIN) {
+					fieldset_survey_join.append(qa_html);
+				} else if (question.survey_type === SURVEY_TYPE.LEAVE) {
+					fieldset_survey_leave.append(qa_html);
+				}
+			});
+
+			if (aprv_sts_cd === MCLUB_APPROVAL_STATUS_CODE.CLOSED) {
+				btn_auth_approve.remove();
+				btn_auth_create.remove();
+				btn_auth_delete.remove();
+				btn_auth_update.remove();
+			} else if (aprv_sts_cd === MCLUB_APPROVAL_STATUS_CODE.APPROVE) {
+				// 게시물 상태 :  승인완료
+				btn_auth_approve.remove();
+				btn_auth_create.remove();
+			} else if (aprv_sts_cd === MCLUB_APPROVAL_STATUS_CODE.STANDBY) {
+				// 게시물 상태 : 승인대기중
+				btn_auth_create.remove();
+			} else if (aprv_sts_cd === MCLUB_APPROVAL_STATUS_CODE.REQUEST) {
+				// 게시물 상태 : 승인 요청전
+				btn_auth_approve.remove();
+			} else if (aprv_sts_cd == MCLUB_APPROVAL_STATUS_CODE.REJECT) {
+				// 게시물 상태 : 반려
+				btn_auth_approve.remove();
+				btn_auth_create.remove();
+			}
+	    	
+			// 클럽
+			if( obj.data.img_list[0] != "" && obj.data.img_list[0] != undefined ) {
+				if(obj.data.img_list[0].img_type == "C") {
+					var landing_img = $("<img>").attr("src",obj.data.img_list[0].img_url).attr("alt",obj.data.img_list[0].img_view_nm).addClass('img-responsive');
+			    	$("#mclub_img").append(landing_img);
+				}else {
+					var mclub_img = $("<img>").attr("src",obj.data.img_list[0].img_url).attr("alt",obj.data.img_list[0].img_view_nm).addClass('img-responsive');
+			    	$("#mclub_img2").append(mclub_img);
+				}
+			}
+			
+			//메인
+			if( obj.data.img_list[1] != "" && obj.data.img_list[1] != undefined) {
+				if(obj.data.img_list[1].img_type == "C") {
+					var landing_img = $("<img>").attr("src",obj.data.img_list[1].img_url).attr("alt",obj.data.img_list[1].img_view_nm).addClass('img-responsive');
+					$("#mclub_img").append(landing_img);
+				}else {
+					var mclub_img = $("<img>").attr("src",obj.data.img_list[1].img_url).attr("alt",obj.data.img_list[1].img_view_nm).addClass('img-responsive');
+			    	$("#mclub_img2").append(mclub_img);
+				}
+			}
+			
+		},
+		error: function (obj) {
+			var serverObj = obj.responseJSON;
+			alert('code:' + serverObj.code + '\n' + 'message:' + cf_msg(serverObj.message) + '\n');
+		}
+	}); 
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

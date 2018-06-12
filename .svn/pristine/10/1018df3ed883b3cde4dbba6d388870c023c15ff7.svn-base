@@ -1,0 +1,228 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmPreview" class="form-horizontal" method="post">
+							<input type="hidden" name="empno" 	  value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="qstn_type" value="<%=request.getParameter("qstn_type")%>" />
+							<input type="hidden" name="qstn_id"   value="<%=request.getParameter("qstn_id")%>"   />
+							
+							<div id="introDiv" style="display:none;">
+								<fieldset>
+									<legend>
+										<span id="poll_title" style="font-weight:bold; font-size:14px;"></span>
+										<p id="term_txt" style="font-size:12px;">
+											기간 : 설문 적용기간이 출력됩니다.
+										</p>
+									</legend>
+									<legend id="intro_msg"></legend>
+									<legend>
+										<span style="font-weight:bold; font-size:12px;">
+											설문정보 제공동의
+										</span>
+										<p id="agree_sbjt" style="font-size:14px;"></p>
+									</legend>
+									<div class="form-group col-md-12" style="padding:0; margin:0; text-align:right;">
+										동의합니다. <input type="checkbox" name="agree_yn" />
+									</div>
+								</fieldset>
+							</div>
+							
+							<div id="qstnDiv" style="display:none;">
+								<fieldset>
+									<legend id="qstn_title"></legend>
+									<div class="form-group col-md-12" style="padding:0; margin:0;">
+										<img id="show_card_img_url" src="" style="width:100%;"/>
+									</div>
+								</fieldset>
+								<fieldset>
+									<legend></legend>
+									<div id="show_list"></div>
+								</fieldset>
+							</div>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0);" class="btn btn-danger" style="width:100%;">다음</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅, 질문 목록 조회
+/* ============================================================================================ */
+var preview_dialog_pagefunction = function() {
+	var qstnType = $('#frmPreview input[name=qstn_type]').val();
+
+	var params = {
+		empno : $('#frmKeepData input[name=empno]').val()
+		, poll_id : $('#frmKeepData input[name=poll_id]').val()
+		, qstn_id : $('#frmPreview input[name=qstn_id]').val()
+	};
+	
+	if(qstnType == 'I') {
+		$.ajax({
+		    url: api_url+"/backoffice/poll/show",
+		    type: "GET",
+		    async: true,
+		    cache: true,
+		    datatype: 'json',
+		    data: encodeURI("params="+JSON.stringify(params)),
+		    beforeSend : function() {},
+		    success: function(obj){
+		    	f_renderIntroInfo(obj.data);
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+	}
+	else {
+		$.ajax({
+		    url: api_url+"/backoffice/poll/qstn/preview/show",
+		    type: "GET",
+		    async: true,
+		    cache: true,
+		    datatype: 'json',
+		    data: encodeURI("params="+JSON.stringify(params)),
+		    beforeSend : function() {},
+		    success: function(obj){
+		    	f_renderQstnInfo(obj.data);
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+	}
+};
+
+function f_renderIntroInfo(data) {
+	$('#introDiv #poll_title').html(data.poll_title);
+	$('#introDiv #intro_msg').html(data.intro_msg);
+	$('#introDiv #agree_sbjt').html(data.agree_sbjt);
+	
+	$('#introDiv').show();
+}
+
+function f_renderQstnInfo(data) {
+	var qstnInfo = data.qstn_info;
+	var showList = data.show_list;
+	
+	$('#qstnDiv #qstn_title').html('Q' + qstnInfo.qstn_prto + '. ' + qstnInfo.qstn_title);	// 질문 명
+	
+	// 보기유형 이미지가 있을 경우
+	if(qstnInfo.show_card_img_url != '') {
+		$('#qstnDiv #show_card_img_url').attr('src', qstnInfo.show_card_img_url);
+	}
+	else {
+		$('#qstnDiv #show_card_img_url').attr('src', '/resources/img/noPreview.png');
+	}
+	
+	var showTypeCd = qstnInfo.show_type_cd;
+	
+	var showListObj = $('#show_list');
+	
+	$.each(showList, function(i, items) {
+		var show_info_div = $('<div/>').addClass('col-md-12').attr('style', 'height:55px;');
+		
+		if(showTypeCd == 'TEXT') {
+			show_info_div.removeAttr('style');
+			
+			var show_div  = $('<div/>').addClass('col-md-12');
+			var show_span = $('<span/>').html('아래 입력란에 자유형식으로 입력하세요.');
+			var show_textarea = $('<textarea/>').attr('style', 'width:100%; height:100px;').attr('row', '10');
+			
+			show_info_div.append(show_div, show_span, '<br/><br/>', show_textarea);
+		}
+		else {
+			var show_div_01 = $('<div/>').attr('style', 'text-align:left;');
+			var show_div_02 = $('<div/>');
+			var show_div_03 = $('<div/>');
+			var show_img	= $('<img/>').attr('src', '/resources/img/noPreview.png').attr('style', 'width:50px; height:50px;');
+			var show_inp_01 = $('<input/>').attr('type', 'radio').attr('style', 'margin-top:17px;').attr('name', 'show_radio_first');
+			var show_inp_02 = $('<input/>').attr('type', 'radio').attr('style', 'margin-top:17px;').attr('name', 'show_radio_second');
+			
+			if(showTypeCd == 'MESR' || showTypeCd == 'ATT') {
+				show_info_div.attr('style', 'height:40px;');
+				show_div_01.html(items.show_content);
+				show_inp_01.attr('style', 'margin-top:3px;');
+				show_inp_02.attr('style', 'margin-top:3px;');
+				
+				if(showTypeCd == 'ATT' && items.show_prto == 0) {
+					show_div_01.attr('style', 'text-align:left; font-weight:bold; padding-left:0px;');
+				}
+			}
+			else {
+				if(items.show_img_url != '') {
+					show_img.attr('src', items.show_img_url);
+				}
+				
+				show_div_01.append(show_img).append('&nbsp;&nbsp;' + items.show_content);
+			}
+			
+			if(showTypeCd == 'PLUR') {
+				show_inp_01.attr('type', 'checkbox');
+			}
+			
+			if(showTypeCd == 'ODR') {
+				show_div_01.addClass('col-md-10');
+				show_div_02.addClass('col-md-1').append(show_inp_01);
+				show_div_03.addClass('col-md-1').append(show_inp_02);
+				
+				show_info_div.append(show_div_01, show_div_02, show_div_03);
+			}
+			else {
+				show_div_01.addClass('col-md-11');
+				show_div_02.addClass('col-md-1');
+				
+				if(items.show_prto != 0) {
+					show_div_02.append(show_inp_01);
+				}
+				
+				show_info_div.append(show_div_01, show_div_02);
+			}
+		}
+		
+		showListObj.append(show_info_div);
+	});
+	
+	$('#qstnDiv').show();
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+preview_dialog_pagefunction();
+
+</script>

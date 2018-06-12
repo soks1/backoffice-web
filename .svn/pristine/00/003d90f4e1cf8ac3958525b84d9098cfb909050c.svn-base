@@ -1,0 +1,21 @@
+# ===================================================
+# Console System Setting
+# ===================================================
+# profile product
+
+## Back Office Home Url
+lottemart.backoffice.web = http://lmscpadmin.lottemart.com
+
+## Session Time Out Value (seconds)
+lottemart.backoffice.session.time = 900
+
+lottemart.backoffice.dummy = a2lsbGVy
+
+## Use Prevent Dupicate Login
+lottemart.backoffice.prevent.duplicate.login = N
+
+## redirect url
+lottemart.midas.url = http://home.lottemart.com
+
+## api url
+lottemart.api.url = http://10.52.21.117:9170

@@ -1,0 +1,299 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록지점</label>
+									<div class="col-md-3">
+										<select class="form-control" id="str_cd" name="str_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									
+									<label class="col-md-1 control-label">승인상태</label>
+									<div class="col-md-3">
+										<select class="form-control" id="s2" name="s2">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									
+									<label class="col-md-1 control-label">진행상태</label>
+									<div class="col-md-3">
+										<select class="form-control" id="prgs_sts_cd" name="prgs_sts_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">행사번호</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="s4" placeholder="행사번호를 입력해 주세요.">
+									</div>
+									
+									<label class="col-md-1 control-label">행사제목</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="s5" placeholder="행사제목을 입력해 주세요.">
+									</div>
+									
+									<label class="col-md-1 control-label">행사진행일</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">판매상태</label>
+									<div class="col-md-3">
+										<select class="form-control" id="sell_sts_cd" name="sell_sts_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>								
+								</div>								
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 조회 결과 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_groupbuy_grid" class="widget-body no-padding">
+						<table id="groupbuy_grid"></table>
+						<div id="groupbuy_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<!-- end widget grid -->
+
+<script type="text/javascript">
+
+	function f_search() {
+		
+		// TODO : 검색 조건에 대한 밸리데이션 체크!
+		
+		$("#btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+		$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+		var searchData = $("#frmSearch").serializeObject();	// 검색 폼 데이터 추출
+		$("#groupbuy_grid").jqGrid('setGridParam', {search: true});	// 검색 사용 중으로 변경
+		$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search':searchData} }).trigger('reloadGrid');	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	}
+	
+	function f_cancel() {
+		
+		// TODO : 검색 폼 데이터 리셋 해야함!
+		
+		$("#btn_cancel").remove();	// 검색 초기화 버튼 삭제
+		$("#groupbuy_grid").jqGrid('setGridParam', {search: false});	// 검색 사용 중으로 변경
+		$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search':''} }).trigger('reloadGrid');	// 검색 데이터 초기화 후 그리드 리로드
+	}
+
+	pageSetUp();
+	/* ============================================================================================
+	/* 페이지 정보 설정
+	/* --------------------------------------------------------------------------------------------
+	/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+	/* ============================================================================================ */	
+	var pagefunction = function() {
+
+		// 초기데이터 로드 : 등록지점
+		f_ajaxStrCdCode($("#str_cd"));
+		// 초기데이터 로드 : 승인상태	
+		f_ajaxApprovalStatusCode($("#s2"));
+		// 초기데이터 로드 : 진행상태
+		f_ajaxPrgsStatusCode($("#prgs_sts_cd"));
+	
+		f_ajaxSellStatusCode($("#sell_sts_cd"));
+	
+		loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+		function run_jqgrid_function() {
+			
+			var pageWidth = $("#groupbuy_grid").parent().width() - 100;
+
+			jQuery("#groupbuy_grid").jqGrid({
+				url : api_url+"/backoffice/jointpurchase/list",
+				mtype: 'GET',
+				datatype : "json",
+				colNames : ['No.', '등록지점', '행사번호', '행사제목', '행사진행일', '행사지점', '승인상태', '진행상태', '판매상태', '수정일' ],
+				colModel : [
+					{ name : 'idx', 				index : 'idx',		 			align : "center",	sortable : true, 	width : (pageWidth*(5/100))		},
+					{ name : 'couponId', 			index : 'couponId', 			align : "center",	sortable : true, 	width : (pageWidth*(5/100)),	classes:'pointer' }, 
+					{ name : 'joint_pur_id', 		index : 'joint_pur_id', 		align : "center",	sortable : true, 	width : (pageWidth*(25/100))	}, 
+					{ name : 'evt_title', 			index : 'evt_title', 			align : "center", 	sortable : false, 	width : (pageWidth*(5/100)) 	}, 
+					{ name : 'evt_term_start_dd', 	index : 'evt_term_start_dd', 	align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	}, 
+					{ name : 'str_cd_name', 		index : 'str_cd_name', 			align : "center", 	sortable : false, 	width : (pageWidth*(5/100)) 	},
+					{ name : 'aprv_sts_cd_name', 	index : 'aprv_sts_cd_name',	 	align : "center", 	sortable : false, 	width : (pageWidth*(5/100)) 	},
+					{ name : 'prgs_sts_cd', 		index : 'prgs_sts_cd', 			align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+					{ name : '', 					index : '', 					align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+					{ name : 'mod_date', 			index : 'mod_date', 			align : "center", 	sortable : false, 	width : (pageWidth*(5/100)) 	}
+				],
+				jsonReader: {
+					repeatitems : false,
+					id : "joint_pur_id",
+					root :		function(obj){ return obj.data.coupon_list; },			// 루트가 될 데이터 셋 명칭
+					records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+					page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+					total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+				},
+				ajaxGridOptions : { contentType: "application/json" },
+	            ajaxRowOptions : { contentType: "application/json", type: "POST" },
+				serializeRowData: function (postData) { return "params="+JSON.stringify(postData); },
+				serializeGridData: function(postData) { return "params="+JSON.stringify(postData); },
+				postData:{ search: "" },
+				rowNum : 10,
+				rowList : [10, 20, 30],
+				pager : '#groupbuy_grid_page',
+				sortname : 'joint_pur_id',
+				sortorder : "asc",
+				toolbarfilter: true,
+				viewrecords : true,
+				recordpos : "left",
+				multiselect : true,
+				multiboxonly: true,
+				autowidth : true,
+				height : 'auto',
+				shrinkToFit : true,
+				gridComplete: function(){ },
+				// ID click event(row data view)
+				onCellSelect: function(rowid, index, contents, event) {
+				   if(index == 2) {
+						//var cm = $("#groupbuy_grid").jqGrid('getGridParam','colModel');
+						//alert(cm[index].name +"|"+rowid);
+						
+						var input = "<input type=\"hidden\" name=\"couponId\" value=\""+rowid+"\" >";
+					  	$("#frmSearch").append(input);
+					  	
+						var searchData = $("#frmSearch").serializeObject();
+						$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search':searchData} });
+						var postData = $('#groupbuy_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+						
+						var url = "/application/groupbuy/groupbuyRN.do";
+						var method = "POST";
+						cf_action(url, method, postData);
+				   }
+				}
+			});
+			jQuery("#groupbuy_grid").jqGrid('navGrid', "#groupbuy_grid_page", {
+				edit : false, add : false, del : false, 
+				search : false, refresh : false, view:false, position: 'right'
+			});
+						
+			// btn_delete
+			jQuery("#groupbuy_grid").jqGrid('navButtonAdd','#groupbuy_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){ 
+					alert("function : delete row data");
+				}
+			});
+						
+			// btn_add
+			jQuery("#groupbuy_grid").jqGrid('navButtonAdd','#groupbuy_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/groupbuy/groupbuyWN.do";
+					var method = "POST";
+					var postData = $('#groupbuy_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+
+			/* Add tooltips */
+			$('.navtable .ui-pg-button').tooltip({
+				container : 'body'
+			});
+			
+			// remove classes
+			$(".ui-jqgrid").removeClass("ui-widget ui-widget-content");
+		    $(".ui-jqgrid-view").children().removeClass("ui-widget-header ui-state-default");
+		    $(".ui-jqgrid-labels, .ui-search-toolbar").children().removeClass("ui-state-default ui-th-column ui-th-ltr");
+		    $(".ui-jqgrid-pager").removeClass("ui-state-default");
+		    $(".ui-jqgrid").removeClass("ui-widget-content");
+		    
+		    // add classes
+		    $(".ui-jqgrid-htable").addClass("table table-bordered table-hover");
+		    $(".ui-jqgrid-btable").addClass("table table-bordered table-striped");
+
+		    $(".ui-pg-div").removeClass().addClass("btn btn-sm btn-primary");
+		    
+		    $(".ui-icon.ui-icon-plus").removeClass();
+		    $(".ui-icon.ui-icon-trash").removeClass().parent(".btn-primary").removeClass("btn-primary").addClass("btn-danger");
+		    $(".ui-icon.ui-icon-check").removeClass().parent(".btn-primary").removeClass("btn-primary").addClass("btn-success");
+
+			$(".ui-icon.ui-icon-seek-prev").wrap( "<div class='btn btn-sm btn-default'></div>" );
+			$(".ui-icon.ui-icon-seek-prev").removeClass().addClass("fa fa-backward");
+			$(".ui-icon.ui-icon-seek-first").wrap( "<div class='btn btn-sm btn-default'></div>" );
+		  	$(".ui-icon.ui-icon-seek-first").removeClass().addClass("fa fa-fast-backward");		  	
+		  	$(".ui-icon.ui-icon-seek-next").wrap( "<div class='btn btn-sm btn-default'></div>" );
+		  	$(".ui-icon.ui-icon-seek-next").removeClass().addClass("fa fa-forward");
+		  	$(".ui-icon.ui-icon-seek-end").wrap( "<div class='btn btn-sm btn-default'></div>" );
+		  	$(".ui-icon.ui-icon-seek-end").removeClass().addClass("fa fa-fast-forward");
+		  	
+		  	
+		  	$("#groupbuy_grid_cb").css("border-left-width","0");
+		  	$("#groupbuy_grid_cb").css("padding-left","4px");
+		  	$("#jqgh_groupbuy_grid_cb").css("padding","7px 0");
+		  	$(".ui-jqgrid-sortable").css("padding","7px 0");
+		  	$(".ui-jqgrid-labels th").css("text-align","center");
+		  	$(".ui-jqgrid-sortable").css("padding","7px 0");
+		  	
+		  	$("#groupbuy_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+		  			  
+		    // auto resize grid
+		    $(window).on('resize.jqGrid', function () {
+				jQuery("#groupbuy_grid").jqGrid( 'setGridWidth', $("#target_groupbuy_grid").width() );
+			});
+		} 
+		// end function
+	};
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

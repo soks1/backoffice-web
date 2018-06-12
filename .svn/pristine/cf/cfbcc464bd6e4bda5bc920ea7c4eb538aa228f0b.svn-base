@@ -1,0 +1,341 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>스마트영수증 이벤트 등록</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmReceipts">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">행사 제목 <sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="evt_title" data-valid-use="true" data-valid-symbol='true' data-valid-max="108" data-valid-title="행사 제목">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">행사 설명 <sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="evt_desc" data-valid-use="true" data-valid-symbol='true' data-valid-max="108" data-valid-title="행사 설명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">행사 기간 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="evt_start_dd" name="evt_start_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="헹사기간 시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="evt_end_dd" name="evt_end_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="헹사기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 유효기간 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_start_dd" name="vali_term_start_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="쿠폰 유효기간 시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_end_dd" name="vali_term_end_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="쿠폰 유효기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<!-- 쿠폰북 선택 영역 -->
+							<fieldset>
+								<legend></legend>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<p><a href="javascript:f_openCouponBookSD();" class="btn btn-primary btn-sm">쿠폰북 선택</a>
+										   <a href="javascript:cf_delTableRow('cpbook_tbody');" class="btn btn-danger btn-sm">선택삭제</a></p>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c" style="width:20px;"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c" style="width:30%;">대상범위(결제금액)</th>
+														<th class="ta-c">쿠폰북 번호</th>
+														<th class="ta-c">쿠폰북명</th>
+														<th class="ta-c">쿠폰북유형</th>
+														<th class="ta-c">쿠폰수</th>
+													</tr>
+												</thead>
+												<tbody id="cpbook_tbody" data-valid-title="쿠폰북 선택">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_receiptsList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="coupon_book_sd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 등록/수정 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#evt_start_dd').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#evt_end_dd").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#evt_end_dd').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#evt_start_dd").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+$('#vali_term_start_dd').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#vali_term_end_dd").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#vali_term_end_dd').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#vali_term_start_dd").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰북 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#coupon_book_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			$("#to_tbody").find("tr").each(function(){
+				
+				var tag_td = "";
+				var key = "";
+				
+				// 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+				$(this).find("td").each(function(i) {
+					if(i < 6) {
+						// 각 셀 데이터 생성
+						if(i == 1) {
+							tag_td += 
+								"<td class='ta-c'><input type='text' class='ta-r' name='min_amt_list' data-valid-use='true' data-valid-num='true' data-array-always='true' onkeyup='this.value=cf_fmtComma(this);' data-valid-title='최소금액'/><span> 원 ~ </span>" + 
+								"<input type='text' class='ta-r' name='max_amt_list' data-valid-use='true' data-valid-num='true' data-array-always='true' onkeyup='this.value=cf_fmtComma(this);' data-valid-title='최소금액'><span> 원</span></td>\n";
+							
+						} else if(i == 2) {
+							key = $(this).text();
+							tag_td += "<input type='hidden' name='cpbook_id_list' data-array-always='true' value='"+key+"'>";
+							tag_td += "<td class='ta-c'>"+$(this).html()+"</td>\n";
+						} else {
+							tag_td += "<td class='ta-c'>"+$(this).html()+"</td>\n";
+						}
+					}
+				});
+				
+				var tag_tr = "<tr>"+tag_td+"</tr>";
+				
+				// 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+				var chk = 0;
+				$("#cpbook_tbody").find("tr > td").each(function(){
+					if($(this).text() == key) {
+						chk++;
+					}
+				});
+				
+				// 같은 데이터가 없을 경우에만 등록 시킨다.
+				if(chk == 0) {
+					$("#cpbook_tbody").append(tag_tr);
+				}
+			});
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+* ==================================================================================
+* 등록/수정 : 달력 validation
+* ==================================================================================
+*/
+function f_customOverDate() {
+	
+	var event_start_date = $('#evt_start_dd').cvtDateDefault();
+	var cpb_start_date = $('#vali_term_start_dd').cvtDateDefault();
+	var cpb_end_date = $('#vali_term_end_dd').cvtDateDefault();
+	
+	var max_cpb_end_date = cf_cvtDateFormat(cf_termDate(30, $('#evt_end_dd').val()), 'yyyyMMdd');
+	
+	if(parseInt(cpb_start_date) < parseInt(event_start_date)) {
+		alert('쿠폰북 유효기간의 시작일은 행사기간 시작일 이전으로 선택 불가능합니다.\n\n다시한번 확인해 주세요.');
+		$("#vali_term_start_dd").focus();
+		return false;
+	}
+	
+	if(parseInt(max_cpb_end_date) < parseInt(cpb_end_date) ) {
+		alert('쿠폰북 유효기간의 종료일은 행사종료일 기준 30일까지 선택 가능합니다.\n\n다시한번 확인해 주세요.');
+		$("#vali_term_end_dd").focus();
+		return false;
+	}
+	
+	return true;
+}
+
+
+/* ============================================================================================
+/* 캠페인 정보 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	if($('#frmReceipts').formValid() && $('#cpbook_tbody').tableRowValid() ) {
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		
+		if( f_customOverDate() != true) {
+			return;
+		}
+		
+		// 금액 확인
+		var amt_flag = true; 
+		$('#frmReceipts').find('input[name=min_amt_list]').each(function(i) {
+			var min_amt = $(this).unComma();
+			var max_obj = $('#frmReceipts').find('input[name=max_amt_list]').eq(i);
+			var max_amt = max_obj.unComma();
+			
+			if( parseInt(min_amt) > parseInt(max_amt) ) {
+				alert('최소 금액이 최대 금액을 넘을 수 없습니다.');
+				$(this).focus();
+				amt_flag = false;
+				return false;
+			}
+			
+			if(i > 0) {
+				prev_inx_max_amt = $('#frmReceipts').find('input[name=max_amt_list]').eq(i-1).unComma();
+				
+				if( parseInt(prev_inx_max_amt) >= parseInt(min_amt) ) {
+					alert('최소 금액은 ' + (parseInt(prev_inx_max_amt) + 1)+ '원 이상 이어야 합니다.');
+					$(this).focus();
+					amt_flag = false;
+					return false;
+				}
+			}
+		});
+		
+		if(amt_flag != true) {
+			return;
+		}
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/event/receipt/create',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify($('#frmReceipts').serializeFormObject()),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	f_receiptsList();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		} else {
+			$("button[type=submit]").attr("disabled",false);
+		}
+	} else {
+		return;
+	}
+}
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+	
+</script>

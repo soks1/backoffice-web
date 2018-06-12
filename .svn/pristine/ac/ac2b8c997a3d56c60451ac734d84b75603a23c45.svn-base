@@ -1,0 +1,490 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>쿠폰진 컨텐츠 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<input type="hidden" id="saved_end_hhmm" name="saved_end_hhmm">
+							<fieldset>
+								<legend class="cs-css-05">기본정보</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpzine_contents_subject"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">비고:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-04" id="cpzine_contents_rmk"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">템플릿:</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="cpzine_template_kind_code"></span>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend class="cs-css-05">타이틀영역 및 배경이미지</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05 ">컨텐츠타이틀:</label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="cpzine_contents_title"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">분류:</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="cpzine_contents_cat_id"></span>
+									</div>
+								</div>
+								<div class="form-group ui-template ui-cook ui-lifestyle">
+									<label class="col-md-1 control-label cs-css-05">메인이미지:</label>
+									<div class="col-md-11" id="mai_img_path">
+									</div>
+								</div>
+							</fieldset>
+								
+							<fieldset class="ui-template ui-cook ui-lifestyle">
+								<legend class="cs-css-05">내용</legend>
+								<div class="form-group">
+									<label class="col-md-12 control-label cs-css-05"></label>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">상단컨텐츠</label>
+								</div>
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="top_contents_title"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내용:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-04" id="top_contents_content"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">상세링크문구:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-04" id="dtl_img_link_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+                                    <label class="col-md-1 control-label cs-css-05">상세이미지:</label>
+                                    <div class="col-md-11" id="dtl_img_path" style="max">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-1 control-label cs-css-05">출력여부</label>
+                                    <div class="col-md-11 control-label text-left">
+                                        <span class="form-control cs-css-03" id="dtl_img_use_yn"></span>
+                                    </div>
+                                </div>
+
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+								<div class="form-group">
+									<label class="col-md-12 control-label cs-css-05"></label>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">상품리스트</label>
+								</div>
+
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+							</fieldset>
+							<fieldset class="fieldset_product_group ui-template ui-cook ui-lifestyle">
+							</fieldset>
+							<fieldset class="fieldset_cooking_title ui-template ui-cook ui-lifestyle" style="display:none;">
+								<div class="form-group">
+									<label class="col-md-12 control-label"></label>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">조리법</label>
+								</div>
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목:</label>
+									<div class="col-md-11 control-label text-left">
+										<span class="form-control cs-css-03" id="cpzine_template_title"></span>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset class="fieldset_cooking_group ui-template ui-cook ui-lifestyle" style="display:none">
+							</fieldset>
+
+							<fieldset class="ui-template ui-cook ui-lifestyle">
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">링크배너</label>
+									<div class="col-md-10" id="link_banner_path">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">출력여부</label>
+									<div class="col-md-11 control-label text-left">
+										<span class="form-control cs-css-03" id="link_banner_use_yn"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">URL:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="link_banner_url"></span>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset class="ui-template ui-cook ui-lifestyle">
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">링크배너2</label>
+									<div class="col-md-10" id="link_banner_path_2">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">출력여부</label>
+									<div class="col-md-11 control-label text-left">
+										<span class="form-control cs-css-03" id="link_banner_use_yn_2"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">URL:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="link_banner_url_2"></span>
+									</div>
+								</div>
+							</fieldset>
+
+							<fieldset class="ui-template ui-cook ui-lifestyle">
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">링크배너3</label>
+									<div class="col-md-10" id="link_banner_path_3">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">출력여부</label>
+									<div class="col-md-11 control-label text-left">
+										<span class="form-control cs-css-03" id="link_banner_use_yn_3"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">URL:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="link_banner_url_3"></span>
+									</div>
+								</div>
+							</fieldset>
+
+							<fieldset class="ui-template ui-cook ui-lifestyle">
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내부배너</label>
+									<div class="col-md-10" id="link_banner2_path">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내부링크:</label>
+									<div class="col-md-11">
+										<span class="cs-css-03" id="link_banner2_type"></span>
+										: <span class="cs-css-03" id="link_banner2_type_id"></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+                                    <label class="col-md-1 control-label cs-css-05">출력여부</label>
+                                    <div class="col-md-11 control-label text-left">
+                                        <span class="form-control cs-css-03" id="link_banner2_use_yn"></span>
+                                    </div>
+                                </div>
+							</fieldset>
+
+							<fieldset class="ui-template ui-cook ui-lifestyle">
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰리스트제목:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="coupon_list_title"></span>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12 authButtonContainer">
+										<a href="javascript:f_couponZineContentsList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_couponZineContentsEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_couponZineContentsDel();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>	
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="time_extension_rd" style="display:none;"></div>
+<div id="coupon_book_rd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+<input type="hidden" name="deletable" />
+</form>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+ 		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	
+	// 쿠폰진 컨텐츠 상세 데이터 추출
+	f_groupbuyDetail();
+};
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 상세 데이터 처리
+ * ----------------------------------------------------------------------------------
+ * 상세 화면의 데이터 처리
+ * ==================================================================================
+ */
+function f_groupbuyDetail() {
+	$.ajax({
+	    url: api_url+'/backoffice/couponzine/contents/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	detailData = resultData.data;
+	    	
+	    	$('.ui-template').hide();
+	    	if(detailData['cpzine_template_kind_code'] == 'COOK') $('.ui-template.ui-cook').show();
+	    	else if(detailData['cpzine_template_kind_code'] == 'CATEGORY') $('.ui-template.ui-category').show();
+	    	else $('.ui-template.ui-lifestyle').show();
+	    	
+	    	if(detailData["editable"] != "Y"){
+	    		if('${sessionScope.menuAuth.M}' == 'Y') {
+	    			$('<a></a>', {'href':'#'}).addClass('btn btn-warning btn_auth_modify')
+	    				.on('click', function() {
+	    					$('#frmKeepData').find('input[name=is_forced_modify]').remove().end().append( $('<input></input>', {'name': 'is_forced_modify'}).val('Y') );
+		    				if (typeof f_couponZineContentsEdit == 'function') f_couponZineContentsEdit();
+		    				return false;
+	    				})
+	    				.text('강제수정')
+	    				.insertAfter( $('.btn_auth_update') );
+	    		}
+	    		
+ 		    	$('.btn_auth_update').remove();
+	    	}
+	    	if(detailData["deletable"] == "N"){
+	    		$('.btn_auth_delete').remove();	
+	    	}
+	    	
+	    	$('.authButtonContainer').show();
+	
+	    	//기본정보
+	    	$("#cpzine_contents_subject").html(detailData["cpzine_contents_subject"]);
+	    	$("#cpzine_contents_rmk").html((detailData["cpzine_contents_rmk"]==undefined?"":detailData["cpzine_contents_rmk"]).replaceAll('\\n','<br/>'));
+	    	$("input[name=deletable]").val(detailData.deletable);
+
+	    	//타이틀영역 및 배경이미지
+	    	$("#cpzine_contents_title").html(detailData["cpzine_contents_title"]);
+	    	$("#cpzine_contents_cat_id").html(detailData["cpzine_contents_cat_nm"]);
+// 	    	detailData.mai_img_prvw_url = "http://imagecoupond.lottemart.com/lmscp/release/images/contents/jointpurchase/20150611/FE0000000000257/2015061117381525a056cb86c345a4ba3187d81252407a.jpg";
+
+			// 상세 이미지
+			$("#dtl_img_link_nm").html(detailData["dtl_img_link_nm"]);
+			$("#dtl_img_use_yn").text(detailData["dtl_img_use_yn"] == "Y" ? "출력" : "출력안함");
+
+			var tag_img = "";
+			if (detailData['mai_img_file_type'] && detailData['mai_img_file_type'].indexOf('video/') > -1) {
+				var tag_img = $('<video></video>', {'src': detailData["mai_img_prvw_url"], 'alt': detailData["mai_img_view_nm"], 'controls': 'true'}).addClass('img-responsive');
+			}
+			else {
+		    	var tag_img = $('<img>').attr('src',detailData["mai_img_prvw_url"]).attr('alt',detailData["mai_img_view_nm"]).addClass('img-responsive');
+		    	
+			}
+			$("#mai_img_path").append(tag_img);
+
+			$('<img/>', {'src': detailData['dtl_img_prvw_url'], 'alt': detailData['dtl_img_view_nm']}).addClass('img-responsive').appendTo( $('#dtl_img_path') );
+	    	
+	    	//내용
+	    	/*
+	    	$("#cpzine_template_kind_code").html(
+    			f_ajaxCommonCode({
+    				target : "", 
+    				cd_divn_id: "CPZINE_CONTENTS_TEMPLATE_CD", 
+    				codeId : detailData["cpzine_template_kind_code"]
+    			})
+   			);
+	    	*/
+	    	$("#cpzine_template_kind_code").html(detailData['cpzine_template_kind_label']);
+	    	
+	    	//상단컨텐츠
+	    	$("#top_contents_title").html(detailData["top_contents_title"]);
+	    	$("#top_contents_content").html((detailData["top_contents_content"]==undefined?"":detailData["top_contents_content"]).replaceAll('\\n','<br/>'));	    	    	
+	    	
+			//상품리스트
+			var cpzine_prod_grp_list = [];
+			$.each(detailData["cpzine_prod_grp_list"], function(i,items1){
+				cpzine_prod_grp_list.push('<div class="form-group">');
+				cpzine_prod_grp_list.push('	<label class="col-md-1 control-label cs-css-05">제목:</label>');
+				cpzine_prod_grp_list.push('	<div class="col-md-11">');
+				cpzine_prod_grp_list.push('		<span class="form-control cs-css-03" name="cpzine_prod_grp_title">'+items1["cpzine_prod_grp_title"]+'</span>');
+				cpzine_prod_grp_list.push('	</div>');
+				cpzine_prod_grp_list.push('</div>');
+				
+				$.each(items1["cpzine_prod_list"], function(j,items2){
+					cpzine_prod_grp_list.push('<div class="form-group">');
+					cpzine_prod_grp_list.push('	<label class="col-md-1 control-label cs-css-05">상품 '+(j+1)+':</label>');
+					if(items2["dc_before_amt"].length == 0){
+						cpzine_prod_grp_list.push('	<div class="col-md-11 control-label text-left">');
+						cpzine_prod_grp_list.push('		<span class="form-control cs-css-03" name="prod_nm">'+items2["prod_nm"]+'</span>');
+						cpzine_prod_grp_list.push('	</div>');	
+					} else{
+						cpzine_prod_grp_list.push('	<div class="col-md-4 control-label text-left">');
+						cpzine_prod_grp_list.push('		<span class="form-control cs-css-03" name="prod_nm">'+items2["prod_nm"]+'</span>');
+						cpzine_prod_grp_list.push('	</div>');
+						cpzine_prod_grp_list.push('	<div class="col-md-2 control-label">');
+						cpzine_prod_grp_list.push('		<span class="form-control cs-css-03" name="dc_before_amt">'+cf_setComma(items2["dc_before_amt"])+' 원</span>');
+						cpzine_prod_grp_list.push('	</div>');
+						cpzine_prod_grp_list.push('	<div class="col-md-2 control-label">');
+						cpzine_prod_grp_list.push('		<span class="form-control cs-css-03" name="dc_after_amt">'+cf_setComma(items2["dc_after_amt"])+' 원</span>');
+						cpzine_prod_grp_list.push('	</div>');	
+					}
+					
+					
+					cpzine_prod_grp_list.push('</div>');
+				});
+				cpzine_prod_grp_list.push('<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">');
+			});
+			$("fieldset.fieldset_product_group").html(cpzine_prod_grp_list.join(""));
+	    	
+	    	
+			var cpzine_contents_img_list = [];
+			$.each(detailData["cpzine_contents_img_list"], function(i,items){
+				if(i==0){
+					//조리법
+					$("fieldset.fieldset_cooking_title").show();
+					$("fieldset.fieldset_cooking_group").show();
+			    	$("#cpzine_template_title").html(detailData["cpzine_template_title"]);		
+				}
+				cpzine_contents_img_list.push('<div class="form-group">');
+				cpzine_contents_img_list.push('	<label class="col-md-1 control-label cs-css-05">'+(i+1)+'</label>');
+				cpzine_contents_img_list.push('	<div class="col-md-5" name="img_path">');
+				cpzine_contents_img_list.push('		<img src="'+items["prvw_url"]+'" class="img-responsive" alt="'+(items["img_view_nm"] =="" ? "noImage" : items["img_view_nm"]) +'">');
+				cpzine_contents_img_list.push('	</div>');
+				cpzine_contents_img_list.push('	<label class="col-md-1 control-label cs-css-05">설명:</label>');
+				cpzine_contents_img_list.push('	<div class="col-md-5">');
+				cpzine_contents_img_list.push('		<span class="form-control cs-css-04" id="desc">'+items["desc"]==undefined?"":(items["desc"]).replaceAll('\\n','<br/>')+'</span>');
+				cpzine_contents_img_list.push('	</div>');
+				cpzine_contents_img_list.push('</div>');
+			});
+			$.debug = cpzine_contents_img_list;
+			cpzine_contents_img_list.push('<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">');
+			$("fieldset.fieldset_cooking_group").html(cpzine_contents_img_list.join(""));
+			
+			//외부 배너 이미지
+			if (detailData["link_banner_prvw_url"]) {
+		    	tag_img = $('<img>').attr('src',detailData["link_banner_prvw_url"]).attr('alt',detailData["link_banner_view_nm"]).addClass('img-responsive');
+		    	$("#link_banner_path").append(tag_img);
+			}
+	    	$("#link_banner_url").html(detailData["link_banner_url"]);
+	    	$("#link_banner_use_yn").text(detailData["link_banner_use_yn"] == "Y" ? "출력" : "출력안함");
+
+	    	//외부 배너 이미지 2
+			if (detailData["link_banner_prvw_url_2"]) {
+		    	tag_img = $('<img>').attr('src',detailData["link_banner_prvw_url_2"]).attr('alt',detailData["link_banner_view_nm_2"]).addClass('img-responsive');
+		    	$("#link_banner_path_2").append(tag_img);
+			}
+	    	$("#link_banner_url_2").html(detailData["link_banner_url_2"]);
+            $("#link_banner_use_yn_2").text(detailData["link_banner_use_yn_2"] == "Y" ? "출력" : "출력안함");
+
+	    	//외부 배너 이미지 3
+			if (detailData["link_banner_prvw_url_3"]) {
+		    	tag_img = $('<img>').attr('src',detailData["link_banner_prvw_url_3"]).attr('alt',detailData["link_banner_view_nm_3"]).addClass('img-responsive');
+		    	$("#link_banner_path_3").append(tag_img);
+			}
+	    	$("#link_banner_url_3").html(detailData["link_banner_url_3"]);
+            $("#link_banner_use_yn_3").text(detailData["link_banner_use_yn_3"] == "Y" ? "출력" : "출력안함");
+
+	    	//내부 배너 이미지
+            if (detailData["link_banner2_prvw_url"]) {
+                tag_img = $('<img>').attr('src',detailData["link_banner2_prvw_url"]).attr('alt',detailData["link_banner2_view_nm"]).addClass('img-responsive');
+                $("#link_banner2_path").append(tag_img);
+            }
+
+            $("#link_banner2_use_yn").text(detailData["link_banner2_use_yn"] == "Y" ? "출력" : "출력안함");
+
+            var linkBannerType = {
+                'STAMP': 'M스탬프',
+                'JOINTPURCHASE': '달려라선착순'
+            };
+
+            $('#link_banner2_type').text( linkBannerType[detailData['link_banner2_type']] || '' );
+            $('#link_banner2_type_id').text( detailData['link_banner2_type_id_label'] );
+
+	    	
+	    	//쿠폰리스트 제목
+	    	$("#coupon_list_title").html(detailData["coupon_list_title"]);
+	    	
+		},
+	    error: function(resultData) {
+	    	var serverObj = resultData.responseJSON || {};
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    }	
+	});
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

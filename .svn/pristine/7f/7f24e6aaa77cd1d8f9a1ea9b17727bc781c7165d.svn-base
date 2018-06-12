@@ -1,0 +1,494 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">날짜</label>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="s_mod_date" name="s_mod_date" data-dateformat='yy-mm-dd' data-valid-date='true' data-valid-use='true' data-valid-title="시작일"  placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="e_mod_date" name="e_mod_date" data-dateformat='yy-mm-dd' data-valid-date='true' data-valid-use='true' data-valid-title="종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<!-- 
+									<label class="col-md-1 control-label">조회</label>
+									<div  class="col-md-2">
+										<a href="javascript:void(0);" id="cond_monthly" class="btn btn-sm bg-color-blue txt-color-white">월간</a>
+										<a href="javascript:void(0);" id="cond_daily" class="btn btn-sm bg-color-blueDark txt-color-white">일간</a>
+									</div>
+									 -->
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_searchUV();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="s_stts_mm" name="s_stts_mm">
+							<input type="hidden" id="s_stts_dd" name="s_stts_dd">
+							<input type="hidden" id="e_stts_dd" name="e_stts_dd">
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false" style="display: none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>쿠폰 사용 자수(일별)</h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_coupon_use_stats_grid" class="widget-body no-padding">
+						<table id="coupon_use_stats_grid"></table>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false" style="display: none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>쿠폰 사용 자수(월별)</h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_coupon_use_monthly_stats_grid" class="widget-body no-padding">
+						<table id="coupon_use_monthly_stats_grid"></table>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false" style="display: none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>쿠폰 사용 수 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_coupon_user_stats_grid" class="widget-body no-padding">
+						<table id="coupon_user_stats_grid"></table>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-4" data-widget-editbutton="false" data-widget-deletebutton="false" style="display: none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>UV 수(일별)</h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_uv_stats_grid" class="widget-body no-padding">
+						<table id="uv_stats_grid"></table>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-5" data-widget-editbutton="false" data-widget-deletebutton="false" style="display: none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>UV 수(월별)</h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_uv_monthly_stats_grid" class="widget-body no-padding">
+						<table id="uv_monthly_stats_grid"></table>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js"></script>
+<script type="text/javascript">
+
+// ============================================================================================
+var _data = function(){
+	$('#s_stts_dd').val($('#s_mod_date').cvtDateDefault());
+	$('#e_stts_dd').val($('#e_mod_date').cvtDateDefault());
+	$('#s_stts_mm').val($('#s_mod_date').cvtDateDefault().substr(0,6));
+	var searchData = $("#frmSearch").serializeFormObject();
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+		_search : true,
+		rows : 100,
+		page : 1,
+		sidx : 'dt',
+		sord : 'asc',
+		search_info : searchData
+	};
+	return data;
+};
+/* ============================================================================================
+/* 그리드 히든 처리
+/* ============================================================================================ */
+function f_uvGridHide() {
+	$('#wid-id-1').hide();
+	$('#wid-id-2').hide();
+	$('#wid-id-3').hide();
+	$('#wid-id-4').hide();
+	$('#wid-id-5').hide();
+}
+function f_uvGridShow() {
+	$('#wid-id-1').show();
+	$('#wid-id-2').show();
+	$('#wid-id-3').show();
+	$('#wid-id-4').show();
+	$('#wid-id-5').show();
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// ---- 초기데이터 설정 : 달력 시작---//	
+	f_setCalendar();	
+	// 서버 통신
+	f_ajaxSubmit();
+};
+
+/* ============================================================================================
+/* 달력 초기 데이터 설정
+/* ============================================================================================ */
+function f_setCalendar(){
+	// 달력 minDate, maxDate 값을 초기화 / default date setting
+	$( "#s_mod_date, #e_mod_date" ).datepicker( "option", {minDate: null, maxDate: null});
+	$('input[name=s_mod_date]').val(cf_termDate(-1));
+	$('input[name=e_mod_date]').val(cf_termDate(-1));
+
+	// 최대 조회기간 90일(3개월)
+	$('#s_mod_date').datepicker("option", "minDate", cf_termDate(-90));	
+	$('#s_mod_date').datepicker("option", "maxDate", $("#e_mod_date").val());
+	$('#e_mod_date').datepicker("option", "minDate", $("#s_mod_date").val());
+	$('#e_mod_date').datepicker("option", "maxDate", cf_termDate());
+}
+
+/* ============================================================================================
+/* Server와 통신 
+/* ============================================================================================ */
+function f_ajaxSubmit() {
+	
+	// 실제 데이터 전송
+	$.ajax({
+		url : api_url+"/backoffice/statistics/coupon/use/show",
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(_data())),
+	    success: function(obj){
+	    	var list = obj.data.coupon_stat_list;
+	    	var mList = obj.data.coupon_stat_monthly_list;
+	    	var userList = obj.data.coupon_user_stat_list;
+	    	var uvList = obj.data.uv_stat_list
+	    	var uvmList = obj.data.uv_stat_monthly_list;
+	    	// grid
+	    	run_jqgrid_function(list);
+	    	run_jqgrid_function2(mList);
+	    	run_jqgrid_function3(userList);
+	    	run_jqgrid_function4(uvList);
+	    	run_jqgrid_function5(uvmList);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+} 
+/* ============================================================================================
+/* Validation 처리
+/* --------------------------------------------------------------------------------------------
+/* 일간 조회시 30일을 초과 할수 없음
+/* ============================================================================================ */
+function checkValidation() {
+	var sdate = new Date($('#s_mod_date').val());
+	var edate = new Date($('#e_mod_date').val());
+
+	if(edate - sdate < 0){
+		alert("종료일이 시작을보다 앞일 수 없습니다.");
+		return false;
+	}
+	
+	// 일별 조회시 30일을 초과 할수 없음
+	/* 
+	if($('#view_type').val() == 'D' && f_intervalDate(sdate, edate) > 30){
+		alert("일별 조회는 30일을 초과할수 없습니다.");
+		return false;
+	}
+	// 월별 조회시 180일을 초과 할수 없음
+	if($('#view_type').val() == 'M' && f_intervalDate(sdate, edate) > 180){
+		alert("월별 조회는 180일을 초과할수 없습니다.");
+		return false;
+	}
+	 */
+	return true;
+}
+
+/* ============================================================================================
+/* Grid Data 생성
+/* ============================================================================================ */
+function run_jqgrid_function(jsonData) {
+	$('#coupon_use_stats_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#coupon_use_stats_grid").parent().width() - 100;
+	var addData = null;
+	jQuery("#coupon_use_stats_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['일자', '쿠폰 사용 수'],
+		colModel : [
+			{ name : 'dt',		index : 'dt',		align : "center",	sortable : false, 	width : (pageWidth*(30/100))},
+			{ name : 'cnt',		index : 'cnt', 		align : "center", 	sortable : true, 	width : (pageWidth*(35/100)),	formatter : function(cellvalue, options, rowObject) {return cf_setComma(cellvalue);}}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+		shrinkToFit : true,
+		loadComplete : function() {
+		},
+		gridComplete: function(data){}
+	});
+
+  	$("#coupon_use_stats_grid").gridCss();
+  	$("#coupon_use_stats_grid_cb").css("border-left-width","0");
+  	$("#coupon_use_stats_grid_cb").css("padding-left","4px");
+  	$("#jqgh_coupon_use_stats_grid_cb").css("padding","7px 0");
+  
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#coupon_use_stats_grid").jqGrid( 'setGridWidth', $("#target_coupon_use_stats_grid").width() );
+	});
+    
+    $("#coupon_use_stats_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');
+    
+}
+
+function run_jqgrid_function2(jsonData) {
+	$('#coupon_use_monthly_stats_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#coupon_use_monthly_stats_grid").parent().width() - 100;
+	var addData = null;
+	jQuery("#coupon_use_monthly_stats_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['일자', '쿠폰 사용 수'],
+		colModel : [
+			{ name : 'dt',		index : 'dt',		align : "center",	sortable : false, 	width : (pageWidth*(30/100))},
+			{ name : 'cnt',		index : 'cnt', 		align : "center", 	sortable : true, 	width : (pageWidth*(35/100)),	formatter : function(cellvalue, options, rowObject) {return cf_setComma(cellvalue);}}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+		shrinkToFit : true,
+		loadComplete : function() {
+			var colModel = $("#uv_stats_grid").jqGrid('getGridParam', 'colModel');
+		},
+		gridComplete: function(data){}
+	});
+
+  	$("#coupon_use_monthly_stats_grid").gridCss();
+  	$("#coupon_use_monthly_stats_grid_cb").css("border-left-width","0");
+  	$("#coupon_use_monthly_stats_grid_cb").css("padding-left","4px");
+  	$("#jqgh_coupon_use_monthly_stats_grid_cb").css("padding","7px 0");
+  
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#coupon_use_monthly_stats_grid").jqGrid( 'setGridWidth', $("#target_coupon_use_monthly_stats_grid").width() );
+	});
+    
+    $("#coupon_use_monthly_stats_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	
+}
+
+function run_jqgrid_function3(jsonData) {
+	$('#coupon_user_stats_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#coupon_use_stats_grid").parent().width() - 100;
+	var addData = null;
+	jQuery("#coupon_user_stats_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['일자', '쿠폰 사용자 수'],
+		colModel : [
+			{ name : 'dt',		index : 'dt',		align : "center",	sortable : false, 	width : (pageWidth*(30/100))},
+			{ name : 'cnt',		index : 'cnt', 		align : "center", 	sortable : true, 	width : (pageWidth*(35/100)),	formatter : function(cellvalue, options, rowObject) {return cf_setComma(cellvalue);}}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+		shrinkToFit : true,
+		onSortCol: function (index, columnIndex, sortOrder) {
+			addData = jQuery("#coupon_use_stats_grid").jqGrid('getRowData',1);
+			$("#coupon_user_stats_grid").jqGrid('delRowData', '1');
+		},
+		loadComplete : function() {
+			var colModel = $("#coupon_use_stats_grid").jqGrid('getGridParam', 'colModel');
+						
+			if(addData != null){
+				$("#coupon_user_stats_grid").jqGrid('addRowData', '1', addData, "first");
+			}	
+			
+			var rowData = $("#coupon_user_stats_grid").jqGrid('getRowData', 1);
+			for(var nCol=0; nCol < Object.keys(rowData).length; nCol++){
+                $('#coupon_userstats_grid').setCell(1,nCol,'',{'font-weight':'bold'});
+			}
+		},
+		gridComplete: function(data){}
+	});
+
+  	$("#coupon_user_stats_grid").gridCss();
+  	$("#coupon_user_stats_grid_cb").css("border-left-width","0");
+  	$("#coupon_user_stats_grid_cb").css("padding-left","4px");
+  	$("#jqgh_coupon_user_stats_grid_cb").css("padding","7px 0");
+  
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#coupon_user_stats_grid").jqGrid( 'setGridWidth', $("#target_coupon_user_stats_grid").width() );
+	});
+    
+    $("#coupon_user_stats_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	
+}
+
+function run_jqgrid_function4(jsonData) {
+	$('#uv_stats_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#uv_stats_grid").parent().width() - 100;
+	var addData = null;
+	jQuery("#uv_stats_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['일자', 'UV 수'],
+		colModel : [
+			{ name : 'dt',		index : 'dt',		align : "center",	sortable : false, 	width : (pageWidth*(30/100))},
+			{ name : 'cnt',		index : 'cnt', 		align : "center", 	sortable : true, 	width : (pageWidth*(35/100)),	formatter : function(cellvalue, options, rowObject) {return cf_setComma(cellvalue);}}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+		shrinkToFit : true,
+		loadComplete : function() {
+			var colModel = $("#uv_stats_grid").jqGrid('getGridParam', 'colModel');
+		},
+		gridComplete: function(data){}
+	});
+
+  	$("#uv_stats_grid").gridCss();
+  	$("#uv_stats_grid_cb").css("border-left-width","0");
+  	$("#uv_stats_grid_cb").css("padding-left","4px");
+  	$("#jqgh_uv_stats_grid_cb").css("padding","7px 0");
+  
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#uv_stats_grid").jqGrid( 'setGridWidth', $("#target_uv_stats_grid").width() );
+	});
+    
+    $("#uv_stats_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	
+}
+
+function run_jqgrid_function5(jsonData) {
+	$('#uv_monthly_stats_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#uv_monthly_stats_grid").parent().width() - 100;
+	var addData = null;
+	jQuery("#uv_monthly_stats_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['일자', 'UV 수'],
+		colModel : [
+			{ name : 'dt',		index : 'dt',		align : "center",	sortable : false, 	width : (pageWidth*(30/100))},
+			{ name : 'cnt',		index : 'cnt', 		align : "center", 	sortable : true, 	width : (pageWidth*(35/100)),	formatter : function(cellvalue, options, rowObject) {return cf_setComma(cellvalue);}}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+		shrinkToFit : true,
+		loadComplete : function() {
+			var colModel = $("#uv_monthly_stats_grid").jqGrid('getGridParam', 'colModel');
+		},
+		gridComplete: function(data){}
+	});
+
+  	$("#uv_monthly_stats_grid").gridCss();
+  	$("#uv_monthly_stats_grid_cb").css("border-left-width","0");
+  	$("#uv_monthly_stats_grid_cb").css("padding-left","4px");
+  	$("#jqgh_uv_monthly_stats_grid_cb").css("padding","7px 0");
+  
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#uv_monthly_stats_grid").jqGrid( 'setGridWidth', $("#target_uv_monthly_stats_grid").width() );
+	});
+    
+    $("#uv_monthly_stats_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

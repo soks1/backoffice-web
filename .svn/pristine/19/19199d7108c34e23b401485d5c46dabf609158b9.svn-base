@@ -1,0 +1,2037 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>걷기 이벤트 수정</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal"  id="frmPedometer" method="post">
+							<input type="hidden" name="empno" 					value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" 				value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" 				value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="evnt_id">
+							<input type="hidden" name="campaign_id" 				value="" id="campaign_id" data-valid-use="true" data-valid-title="캠페인/고객군" >
+							<input type="hidden" name="campaign_start_dy" 		value="">
+							<input type="hidden" name="campaign_end_dy" 		value="">
+							
+			                <input type="hidden" name="cpbook_id_arr" 					value="">
+			                <input type="hidden" name="vali_term_start_dd_arr" 			value="">
+			                <input type="hidden" name="vali_term_end_dd_arr" 			value="">
+			                <input type="hidden" name="coupon_issue_type_cd_arr" 		value="">
+			                <input type="hidden" name="cpbook_type_cd_arr" 			value="">
+			                <input type="hidden" name="step_per_day_acp_count_arr" 	value="">
+			                <input type="hidden" name="step_arr" 							value="">
+                            
+							<fieldset>
+								<div class="form-group" id="campaign_custgp">
+									<label class="col-md-2 control-label">캠페인/고객군<sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<a href="javascript:f_openCampaignSD();" id="btn_campaign" class="btn btn-primary btn-sm">선택</a>
+											<a href="javascript:f_delCampaign();" class="btn btn-danger btn-sm">삭제</a>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="pedometer_campaign_id"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="pedometer_campaign_term"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="pedometer_custgp_cnt"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="pedometer_campaign_nm"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-04" id="pedometer_custgp"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">이벤트 제목 <sup>*</sup></label>
+									<div class="col-md-10">
+                                        <input class="form-control" type="text" name="evnt_title" data-valid-use='true' data-valid-symbol='true' data-valid-max="108" data-valid-title='이벤트 제목'>
+									</div>
+								</div>
+<!-- 								<div class="form-group"> -->
+<!--                                     <label class="col-md-2 control-label">이벤트 혜택 <sup>*</sup></label> -->
+<!-- 									<div class="col-md-10"> -->
+<!-- 										<textarea class="form-control" name="evnt_desc" data-valid-max="108" data-valid-title='이벤트 혜택' rows="5"></textarea> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+								
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">이벤트 기간 <sup>*</sup></label>
+                                    <div class="col-md-3half">
+                                        <div class="input-group">
+                                            <input style="position: relative; z-index: 19;"
+                                                   class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="evnt_start_day" name="evnt_start_day" data-dateformat='yy-mm-dd'
+                                                   data-valid-use='true' data-valid-title="시작일 " data-valid-date='true'
+                                                   placeholder="시작일">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="evnt_start_hour" data-valid-use="true" data-valid-title="이벤트 시작 시간 ">
+                                            <option value="">시</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="evnt_start_min" data-valid-use="true" data-valid-title="이벤트 시작 분 ">
+                                            <option value="">분</option>
+                                        </select>
+                                    </div>
+
+                                    <label class="col-md-1 control-label ta-c">~</label>
+
+                                    <div class="col-md-3half">
+                                        <div class="input-group">
+                                            <input style="position: relative; z-index: 19;"
+                                                   class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="evnt_end_day" name="evnt_end_day" data-dateformat='yy-mm-dd'
+                                                   data-valid-use='true' data-valid-title="종료일 " data-valid-date='true'
+                                                   placeholder="종료일">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="evnt_end_hour" data-valid-use="true" data-valid-title="이벤트 종료 시간 ">
+                                            <option value="">시</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="evnt_end_min" data-valid-use="true" data-valid-title="이벤트 종료 분 ">
+                                            <option value="">분</option>
+                                        </select>
+                                        <input type="hidden" id="evnt_start_date" name="evnt_start_date"> <!-- 이벤트 시작일시 -->
+                                        <input type="hidden" id="evnt_end_date" name="evnt_end_date"> <!-- 이벤트 종료일시 -->
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group" id="div_evnt_type_cd">
+                                    <label class="col-md-2 control-label">이벤트 구분 <sup>*</sup></label>
+									<div class="col-md-2">
+                                        <select class="form-control" id="evnt_type_cd" name="evnt_type_cd" data-valid-use="true" data-valid-title="이벤트 구분">
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">게시 구분<sup>*</sup></label>
+                                    <div class="col-md-3">
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="rserv_ntce_yn" value="N" data-check-only="true" checked="checked"> 즉시게시 
+                                        </label>
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="rserv_ntce_yn" value="Y" data-check-only="true"> 예약게시 
+                                        </label>
+                                    </div>
+                                    <div class="col-md-3half">
+                                        <div class="input-group">
+                                            <input class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="rserv_ntce_dd" name="rserv_ntce_dd" data-dateformat="yy-mm-dd"
+                                                   placeholder="예약일" disabled="disabled">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+								
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">측정시간</label>
+                                    <div class="col-md-3">
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="limit_time_yn" value="N" data-check-only="true" checked="checked"> 24시간 </label>
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="limit_time_yn" value="Y" data-check-only="true"> 특정시간대 </label>
+                                    </div>
+                                    
+									<div class="col-md-1">
+                                        <select class="form-control" id="limit_start_hour" data-valid-title="측정 시작 시간">
+                                            <option value="">시</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="limit_start_min" data-valid-title="측정 시작 분">
+                                            <option value="">분</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <label class="col-md-1 control-label ta-c">~</label>
+                                    
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="limit_end_hour" data-valid-title="측정 종료 시간">
+                                            <option value="">시</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="limit_end_min" data-valid-title="측정 종료 분">
+                                            <option value="">분</option>
+                                        </select>
+                                        <input type="hidden" id="limit_start_time" name="limit_start_time"> <!-- 측정 시작 시기 -->
+                                        <input type="hidden" id="limit_end_time" name="limit_end_time"> <!-- 측정 종료 시기 -->
+                                    </div>
+                                </div>
+                                    
+                                <div class="form-group">
+                                	<label class="col-md-2 control-label">일제한</label>
+                                    <div class="col-md-2">
+                                        <input class="form-control" type="number" id="limit_step_per_day" name="limit_step_per_day" data-valid-symbol='true' data-valid-max="20" data-valid-title='일제한 걸음수'>
+                                    </div>
+                                    <label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 걸음</label>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">부스터</label>
+                                    <div class="col-md-2">
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="booster_yn" value="N" data-check-only="true" checked="checked"> 사용안함 
+										</label>
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="booster_yn" value="Y" data-check-only="true"> 사용 
+										</label>
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <select class="form-control" id="booster_random_yn" name="booster_random_yn" data-valid-title="부스터 배수" disabled="disabled">
+                                            <option value="N">특정시간</option>
+                                            <option value="Y">랜덤</option>
+                                        </select>
+                                    </div>
+								</div>
+
+								<div class="form-group" id="divBoostRndN">
+									<label class="col-md-2 control-label">부스터 적용일</label>
+									<div class="col-md-3half">
+                                        <div class="input-group">
+                                            <input style="position: relative; z-index: 19;"
+                                                   class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="boost_day" name="boost_day" data-dateformat='yy-mm-dd'
+                                                   data-valid-title="부스터 적용일" placeholder="부스터 적용일" disabled="disabled">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="boost_start_hour" data-valid-title="부스터 시작 시간">
+                                            <option value="">시</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="boost_start_min" data-valid-title="부스터 시작 분">
+                                            <option value="">분</option>
+                                        </select>
+                                    </div>
+
+                                    <label class="col-md-1 control-label ta-c">~</label>
+
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="boost_end_hour" data-valid-title="부스터 종료 시간">
+                                            <option value="">시</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="boost_end_min" data-valid-title="부스터 종료 분">
+                                            <option value="">분</option>
+                                        </select>
+                                        <input type="hidden" id="boost_start_date" name="boost_start_date"> <!-- 부스터 시작일시 -->
+                                        <input type="hidden" id="boost_end_date" name="boost_end_date"> <!-- 부스터 종료일시 -->
+                                    </div>
+                                    
+                                    <div class="col-md-2">
+                                        <select class="form-control" id="boost_ratio" name="boost_ratio" disabled="disabled">
+                                            <option value="">선택</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                	<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 배</label>
+                                </div>
+                                
+                                <div class="form-group" id="divBoostRndY" hidden>
+                                	<label class="col-md-2 control-label">부스터 적용일</label>
+									<div class="col-md-2">
+										<a href="return false;" id="btnBoostRndCreate" class="btn btn-primary btn-sm">생성</a>
+									</div>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="spnBoostRndInfo"></span>
+									</div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">다중보상</label>
+                                    <div class="col-md-2">
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="multi_target_yn" value="N" data-check-only="true" checked="checked"> 사용안함 
+                                        </label>
+                                        <label class="radio radio-inline">
+                                            <input type="radio" name="multi_target_yn" value="Y" data-check-only="true"> 사용 
+                                        </label>
+                                    </div>
+                                    <label class="col-md-2 control-label">보상차수</label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" id="multi_target_cnt" data-valid-use="true" data-valid-title="보상차수" disabled="disabled">
+                                            <option value="2">2차</option>
+                                            <option value="3">3차</option>
+                                        </select>
+                                </div>
+                                </div>
+                                
+								<!--  1차 보상 -->
+                                <div class="form-group" name="divCpbookIssueType">
+									<label class="col-md-2 control-label">쿠폰발행 유형 <sup>*</sup></label>
+									<div class="col-md-2">
+                                        <select class="form-control" id="coupon_issue_type_cd1" name="coupon_issue_type_cd" data-valid-use="true" data-valid-title="쿠폰발행 유형">
+											<option value="">선택</option>
+										</select>
+									</div>
+                                    
+                                    <label class="col-md-2 control-label">쿠폰북 유효기간 <sup>*</sup></label>
+                                    <div class="col-md-3half">
+                                        <div class="input-group">
+                                            <input style="position: relative; z-index: 20;"
+                                                   class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="vali_term_start_dd1" name="vali_term_start_dd"
+                                                   data-valid-use="true" data-date-format="yyyyMMdd"
+                                                   data-dateformat="yy-mm-dd" data-valid-title="쿠폰북 유효기간 시작일"
+                                                   placeholder="시작일">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+									</div>
+                                    <div class="col-md-3half">
+                                        <div class="input-group">
+                                            <input class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="vali_term_end_dd1" name="vali_term_end_dd" data-valid-use="true"
+                                                   data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd"
+                                                   data-valid-title="쿠폰북 유효기간 종료일" placeholder="종료일">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group" name="divTargetInfo" hidden></div>
+																
+                                <div class="form-group" name="divCpbookInfo">
+                                    <label class="col-md-2 control-label">쿠폰북<sup>*</sup></label>
+                                    <div class="col-md-10">
+										<div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:f_openCpBookSD('pedometer_cpb_tbody1');"
+												   id="btn_pedometer_cpb1" class="btn btn-primary btn-sm">쿠폰북 추가</a>
+												<a href="javascript:cf_delTableRow('pedometer_cpb_tbody1');"
+												   class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+
+                                        <div class="table-responsive" style="max-height:230px; overflow:auto;">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th class="ta-c" style="width:20px">
+                                                    	<input type="checkbox" onchange="cf_cboxAll(this);">
+                                                    </th>
+                                                    <th class="ta-c">쿠폰북 번호</th>
+                                                    <th class="ta-c">쿠폰북명</th>
+                                                    <th class="ta-c">쿠폰북유형</th>
+                                                    <th class="ta-c">쿠폰수</th>
+                                                    <th class="ta-c">APP노출지점</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="pedometer_cpb_tbody1" data-valid-title="쿠폰북">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!--  2차 보상 -->
+                                <div class="form-group" name="divCpbookIssueType" hidden>
+                                    <label class="col-md-2 control-label">2차 쿠폰발행 유형 <sup>*</sup></label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" id="coupon_issue_type_cd2" name="coupon_issue_type_cd" data-valid-title="쿠폰발행 유형">
+                                            <option value="">선택</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <label class="col-md-2 control-label">2차 쿠폰북 유효기간<sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+                                            <input style="position: relative; z-index: 20;"
+                                                   class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="vali_term_start_dd2" name="vali_term_start_dd"
+                                                   data-date-format="yyyyMMdd"
+                                                   data-dateformat="yy-mm-dd" data-valid-title="쿠폰북 유효기간 시작일"
+                                                   placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+                                            <input class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="vali_term_end_dd2" name="vali_term_end_dd" 
+                                                   data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd"
+                                                   data-valid-title="쿠폰북 유효기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group" name="divTargetInfo" hidden></div>
+								
+                                <div class="form-group" name="divCpbookInfo" hidden>
+                                    <label class="col-md-2 control-label">2차 쿠폰북<sup>*</sup></label>
+                                    <div class="col-md-10">
+								<div class="form-group">
+									<div class="col-md-10">
+                                                <a href="javascript:f_openCpBookSD('pedometer_cpb_tbody2');"
+                                                   id="btn_pedometer_cpb2" class="btn btn-primary btn-sm">쿠폰북 추가</a>
+                                                <a href="javascript:cf_delTableRow('pedometer_cpb_tbody2');"
+                                                   class="btn btn-danger btn-sm">선택삭제</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive" style="max-height:230px; overflow:auto;">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th class="ta-c" style="width:20px">
+                                                    	<input type="checkbox" onchange="cf_cboxAll(this);">
+                                                    </th>
+                                                    <th class="ta-c">쿠폰북 번호</th>
+                                                    <th class="ta-c">쿠폰북명</th>
+                                                    <th class="ta-c">쿠폰북유형</th>
+                                                    <th class="ta-c">쿠폰수</th>
+                                                    <th class="ta-c">APP노출지점</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="pedometer_cpb_tbody2" data-valid-title="쿠폰북">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!--  3차 보상 -->
+                                <div class="form-group" name="divCpbookIssueType" hidden>
+                                    <label class="col-md-2 control-label">3차 쿠폰발행 유형 <sup>*</sup></label>
+                                    <div class="col-md-2">
+                                        <select class="form-control" id="coupon_issue_type_cd3" name="coupon_issue_type_cd" data-valid-title="쿠폰발행 유형">
+                                            <option value="">선택</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <label class="col-md-2 control-label">3차 쿠폰북 유효기간<sup>*</sup></label>
+                                    <div class="col-md-3half">
+                                        <div class="input-group">
+                                            <input style="position: relative; z-index: 20;"
+                                                   class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="vali_term_start_dd3" name="vali_term_start_dd"
+                                                   data-date-format="yyyyMMdd"
+                                                   data-dateformat="yy-mm-dd" data-valid-title="쿠폰북 유효기간 시작일"
+                                                   placeholder="시작일">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3half">
+                                        <div class="input-group">
+                                            <input class="form-control datepicker pr12 ta-c" type="text"
+                                                   id="vali_term_end_dd3" name="vali_term_end_dd" 
+                                                   data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd"
+                                                   data-valid-title="쿠폰북 유효기간 종료일" placeholder="종료일">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                    </div>
+                          		</div>
+                          
+                          		<div class="form-group" name="divTargetInfo" hidden></div>
+
+                                <div class="form-group" name="divCpbookInfo" hidden>
+                                    <label class="col-md-2 control-label">3차 쿠폰북<sup>*</sup></label>
+                                    <div class="col-md-10">
+										<div class="form-group">
+											<div class="col-md-10">
+                                                <a href="javascript:f_openCpBookSD('pedometer_cpb_tbody3');"
+                                                   id="btn_pedometer_cpb3" class="btn btn-primary btn-sm">쿠폰북 추가</a>
+                                                <a href="javascript:cf_delTableRow('pedometer_cpb_tbody3');"
+                                                   class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+										
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+                                                    	<th class="ta-c" style="width:20px">
+                                                    		<input type="checkbox" onchange="cf_cboxAll(this);">
+                                                    	</th>
+														<th class="ta-c">쿠폰북 번호</th>
+														<th class="ta-c">쿠폰북명</th>
+														<th class="ta-c">쿠폰북유형</th>
+														<th class="ta-c">쿠폰수</th>
+														<th class="ta-c">APP노출지점</th>
+													</tr>
+												</thead>
+                                                <tbody id="pedometer_cpb_tbody3" data-valid-title="쿠폰북">
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">리스트 이미지 <sup>*</sup></label>
+                                </div>
+                                <div class="form-group" id="area_upload_represent_image">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-2">
+                                        <div id="preview_uploadfileL" class="files">
+                                            <img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfileL" name="uploadfileL" data-valid-title="리스트 이미지" accept="image/jpeg, image/gif, image/png">
+										    <%--<input type="file" id="uploadfileL" name="uploadfileL" data-valid-use="true" data-valid-title="리스트 이미지" accept="image/jpeg, image/gif, image/png">--%>
+										</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-md-10">
+                                        <p><i class="fa fa-info-circle"></i>사이즈: 1036 * 416px / 파일종류: jpg, gif, png / 최대파일용량: 150KB</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">상세 이미지 <sup>*</sup></label>
+                                </div>
+                                <div class="form-group" id="area_upload_represent_image">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-2">
+                                        <div id="preview_uploadfileD" class="files">
+                                            <img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfileD" name="uploadfileD" data-valid-title="상세 이미지" accept="image/jpeg, image/gif, image/png">
+										    <%--<input type="file" id="uploadfileD" name="uploadfileD" data-valid-use="true" data-valid-title="상세 이미지" accept="image/jpeg, image/gif, image/png">--%>
+										</span>
+                                    </div>
+                                    <div class="col-md-1">
+										<span class="btn btn-success" id="btnImgPlus">
+										    <i class="glyphicon glyphicon-plus"></i>
+										</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-md-10">
+                                        <p><i class="fa fa-info-circle"></i>사이즈: 1000 * 800px / 파일종류: jpg, gif, png / 최대파일용량: 150KB</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group" id="divUploadfileS">
+                                    <label class="col-md-2 control-label">부가 이미지</label>
+                                </div>
+                                <div class="form-group" id="area_upload_represent_image">
+                                    <label class="col-md-2 control-label"></label>
+                                    <div class="col-md-2">
+                                        <div id="preview_uploadfileS" class="files">
+                                            <img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfileS" name="uploadfileS" accept="image/jpeg, image/gif, image/png">
+										</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">&nbsp;</label>
+                                    <div class="col-md-10">
+                                        <p><i class="fa fa-info-circle"></i>사이즈: 가로: 1000px, 세로: 제한없음 /  파일종류: jpg, gif, png / 최대파일용량: 150KB</p>
+                                    </div>
+                                </div>
+								
+								<div class="form-group">
+                                    <label class="col-md-2 control-label">안내문구 <sup>*</sup></label>
+                                    <div class="col-md-10">
+										<textarea class="form-control" name="note" rows="7" data-valid-max="2000" data-valid-title='안내문구'></textarea>
+                                    </div>
+                                </div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_pedometerList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="pedometer_campaign_sd" style="display:none;"></div>
+<div id="cpbook_sd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+	/*
+	 * 발행구분에 따른 예약일 컨트롤러
+	 * @param value  'N'일 경우 즉시게시, 'Y'일 경우 예약게시
+	 * @param rserv_ntce_dd  예약일
+	 */
+	function f_publishType(value, rserv_ntce_dd) {
+		if(value == 'N') {
+			$("#rserv_ntce_dd").attr('disabled', 'disabled')
+				.removeAttr('data-valid-use')
+				.removeAttr('data-date-format')
+				.removeAttr('data-valid-title');
+			
+			$('input[name=rserv_ntce_dd]').val('');
+		} else {
+			$("#rserv_ntce_dd").removeAttr("disabled")
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '예약일');
+			
+			$("input[name=rserv_ntce_dd]").val(cf_cvtDateFormat(rserv_ntce_dd, 'yyyy-MM-dd'));
+		}
+	}
+
+	/**
+	 * ==================================================================================
+	 * 캠페인 ID 추가/삭제 시 버튼 텍스트 변경
+	 * @param campaign_id  캠페인 ID
+	 * ==================================================================================
+	 */
+	function changeCampaignId(campaign_id) {
+		if(campaign_id == '') {
+			$('#btn_campaign').text('선택');
+		} else {
+			$('#btn_campaign').text('수정');
+		}
+	}
+
+	/* ============================================================================================
+	/* 예약일 minDate 설정
+	/* ============================================================================================ */
+	$('#rserv_ntce_dd').datepicker(
+		$.extend({
+			minDate: cf_toDate()
+		}, date_opts)
+	);
+	
+	/* ============================================================================================
+	/* 만보기 이벤트 기간 입력박스 달력 컨트롤러
+	/* ============================================================================================ */
+    $('input[name=evnt_start_day]').datepicker(
+	    $.extend({
+	        onSelect: function(selected) {
+				$("input[name=evnt_end_day]").datepicker('option', 'minDate', selected);
+	        }
+	    }, date_opts)
+	);
+	
+    $('input[name=evnt_end_day]').datepicker(
+	    $.extend({
+	        onSelect: function(selected) {
+				$("input[name=evnt_start_day]").datepicker('option', 'maxDate', selected);
+	        }
+	    }, date_opts)
+	);
+
+	/* ============================================================================================
+	/* 쿠폰북 유효기간 입력박스 달력 컨트롤러
+	/* ============================================================================================ */
+    $('input[name=vali_term_start_dd]').datepicker(
+	    $.extend({
+	        onSelect: function(selected) {
+				$("input[name=vali_term_end_dd]").datepicker('option', 'minDate', selected);
+	        }
+	    }, date_opts)
+	);
+	
+    $('input[name=vali_term_end_dd]').datepicker(
+	    $.extend({
+	        onSelect: function(selected) {
+				$("input[name=vali_term_start_dd]").datepicker('option', 'maxDate', selected);
+	        }
+	    }, date_opts)
+	);
+
+	/**
+	 * ==================================================================================
+	 * 캠페인/고객군 삭제 버튼 클릭시 호출되는 메소드
+	 * ==================================================================================
+	 */
+	function f_delCampaign() {
+		$("input[name=campaign_id]").val('');
+		$("input[name=campaign_end_dy]").val('');
+		$("input[name=lst_custgp_id]").remove();
+		
+		$("#pedometer_campaign_id").text('');
+		$("#pedometer_campaign_term").text('');
+		$("#pedometer_custgp_cnt").text('');
+		$("#pedometer_campaign_nm").text('');
+		$("#pedometer_custgp").text('');
+		changeCampaignId($("input[name=campaign_id]").val());
+	}
+
+	/**
+	 * ==================================================================================
+	 * 캠페인 선택 다이얼로그 화면 구문
+	 * ==================================================================================
+	 */
+	$('#pedometer_campaign_sd').dialog({
+		autoOpen : false,
+		width : 1024,
+		minHeight: 768,
+		resizable : false,
+		modal : true,
+		title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인/고객군 선택 </h6></div>",
+		buttons : [{
+			html : "<i class='fa fa-times'></i>&nbsp; 취소",
+			"class" : "btn btn-default",
+			click : function() {
+				$(this).dialog("close");
+			}
+		},{
+			html : "<i class='fa fa-save'></i>&nbsp; 적용",
+			"class" : "btn btn-primary",
+			click : function() {
+				
+				var check_items_cnt = 0;
+				var custgroup_text = "";
+				var today_date = cf_toDate().replace(/\-/g,'');
+				
+				if(cf_getTrElementCount($("#custgroup_tbody")) < 1) {
+					alert("고객군 항목을 조회해 주십시오.");
+					return;
+				} else {
+					$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+						if($(this).is(":checked") == true) {
+							check_items_cnt++;
+						}
+					});
+				}
+				
+				if(check_items_cnt < 1) {
+					alert("고객군 항목을 선택해 주십시오.");
+					return;
+				} else {
+					$("input[name=lst_custgp_id]").remove();
+				}
+				
+				if(check_items_cnt > 1) {
+					alert("고객군 1개만 등록 가능 합니다.");
+					return;
+				}
+				
+				$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+					if($(this).is(":checked")) {
+						var row = $(this).parent().parent();
+						var key = "";
+						var tag_input = "";
+						
+						// 루프문을 돌면서 Append 할 Tag 생성, index가 2인 위치에서 Key가 될 값 추출
+						row.find("td").each(function(idx){
+							// 각 셀 데이터 생성
+							if(idx < 4) {
+								if(idx == 2) {
+									key = $(this).text();
+									tag_input += "<input type='hidden' name='lst_custgp_id' value='"+key+"'>";
+									custgroup_text += key;
+								}
+								if(idx == 3) {
+									custgroup_text += " - " + $(this).text() + "&nbsp;│&nbsp;";
+								}
+							}
+						});
+						
+						$('#campaign_custgp').append(tag_input);
+					}
+				});
+				
+				if( today_date > $("#campaign_end_dy_tmp").val() ) {
+					alert("선택한 캠페인의 캠페인기간이 행사기간으로 설정하기 부적합 합니다.\n\n다시한번 확인해 주세요.");
+					$("input[name=lst_custgp_id]").remove();
+					return;
+				}
+				
+				$("input[name=campaign_id]").val($("#campaign_id_tmp").val());
+				$("#pedometer_campaign_id").text($("#campaign_id_tmp").val());
+				$("#pedometer_campaign_term").text(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+				$("#pedometer_custgp_cnt").text($("input[name=lst_custgp_id]").length);
+				$("#pedometer_campaign_nm").text($("#campaign_nm_tmp").val());
+				custgroup_text = custgroup_text.substring(0, (custgroup_text.length-8));
+				$("#pedometer_custgp").html(custgroup_text);
+				
+				if( today_date > $("#campaign_start_dy_tmp").val() ) {
+					$('input[name=evnt_start_day]').val(cf_toDate());
+				} else {
+					$('input[name=evnt_start_day]').val(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd'));
+				}
+				
+				$("input[name=vali_term_start_dd]").val( cf_termDate(1) );
+				$("input[name=vali_term_end_dd]").val( cf_termDate(30) );
+	
+				$("input[name=campaign_start_dy]").val($("#campaign_start_dy_tmp").val());
+				$("input[name=campaign_end_dy]").val($("#campaign_end_dy_tmp").val());
+				
+				changeCampaignId($("input[name=campaign_id]").val());
+				$(this).dialog("close");
+			}
+		}]
+	});
+	
+	/**
+	 * ==================================================================================
+	 * 등록 화면 : 쿠폰북 선택 다이얼로그 화면 구문
+	 * ==================================================================================
+	 */
+	$('#cpbook_sd').dialog({
+		autoOpen : false,
+		width : 1024,
+		minHeight: 768,
+		resizable : false,
+		modal : true,
+		title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 선택 </h6></div>",
+		buttons : [{
+			html : "<i class='fa fa-save'></i>&nbsp; 적용",
+			"class" : "btn btn-primary",
+			click : function() {
+				
+				var targetTbody = $("#"+$(this).data('targetTbody'));
+				
+				if(cf_getTrElementCount(targetTbody) >= 1) {
+					alert("이미 등록하셨습니다.\n1건만 등록 가능 합니다.");
+					return;
+				}
+				if(cf_getTrElementCount($("#to_tbody")) > 1) {
+					alert("1건만 등록 가능 합니다.");
+					return;
+				}
+				
+				$("#to_tbody").find("tr").each(function(){
+					
+					var tag_td = "";
+					var key = "";
+					var app_exposure_branch = "";
+					
+					// 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+					
+					$(this).find("td").each(function(i){
+						// 각 셀 데이터 생성
+						if(i != 1 && i < 6) {
+							if(i == 2) {
+								key = $(this).text();
+								tag_td += "<input type='hidden' name='cpbook_id' value='"+key+"'>";
+							}
+							tag_td += "<td class='ta-c'>"+$(this).html()+"</td>\n";	
+						}
+					});
+					if($(this).find("input[name='use_psbt_brnch_yn']").val() == 'Y') {
+						app_exposure_branch = "사용가능지점";
+					} else {
+						app_exposure_branch = "사용제외지점";
+					}
+					
+					tag_td += "<td class='ta-c'>"+ app_exposure_branch + " : " + $(this).find("input[name='use_psbt_excp_brnch_content']").val() +"</td>\n";
+					
+					var tag_tr = "<tr>"+tag_td+"</tr>";
+					
+					// 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+					var chk = 0;
+					targetTbody.find("tr > td").each(function(){
+						if($(this).text() == key) {
+							chk++;
+						}
+					});
+					
+					// 같은 데이터가 없을 경우에만 등록 시킨다.
+					if(chk == 0) {
+						targetTbody.append(tag_tr);
+					}
+				});
+				pageSetUp();
+				$(this).dialog("close");
+			}
+		},{
+			html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+			"class" : "btn btn-default",
+			click : function() {
+				$(this).dialog("close");
+			}
+		}]
+	});
+	
+	/* ============================================================================================
+     /* 측정시간 제약여부에 따른 컨트롤러
+     /* --------------------------------------------------------------------------------------------
+     /* 측정시간 제약여부 값에 따라 특정시간대 입력란 및 일제한 걸음 수 입력란 활성여부.
+     /* 	- N : 24시간			(특정시간대 입력란 disable)
+     /* 	- Y	 : 특정시간대	(특정시간대 입력란 enable)
+     /* ============================================================================================ */
+    $('input[name=limit_time_yn]').on('change', function () {
+        var limit_time_yn_flag = ($(this).val() == 'Y');
+
+        if (limit_time_yn_flag) {
+            $("#limit_start_hour").removeAttr("disabled")
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '측정시간 시작 시간');
+            
+            $("#limit_start_min").removeAttr("disabled")
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '측정시간 시작 분');
+
+			$("#limit_end_hour").removeAttr("disabled")
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '측정시간 종료 시간');
+
+			$("#limit_end_min").removeAttr("disabled")
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '측정시간 종료 분');
+        } else {
+        	$("#limit_start_hour").val( "" ).attr("disabled", "disabled")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-date-format')
+				.removeAttr('data-valid-title');
+    
+		    $("#limit_start_min").val( "" ).attr("disabled", "disabled")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-date-format')
+				.removeAttr('data-valid-title');
+		
+			$("#limit_end_hour").val( "" ).attr("disabled", "disabled")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-date-format')
+				.removeAttr('data-valid-title');
+		
+			$("#limit_end_min").val( "" ).attr("disabled", "disabled")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-date-format')
+				.removeAttr('data-valid-title');
+			
+            $("#limit_start_time").val("");
+            $("#limit_end_time").val("");
+        }
+    });
+     
+    /* ============================================================================================
+    /* 부스터 사용 여부에 따른 컨트롤러
+    /* --------------------------------------------------------------------------------------------
+    /* 부스터 사용 여부 값에 따라 부스터 정보 입력란 활성여부.
+    /* 	- N : 사용안함	(부스터 정보 입력란 disable)
+    /* 	- Y	 : 사용		(부스터 정보 입력란 enable)
+    /* ============================================================================================ */
+   $('input[name=booster_yn]').on('change', function () {
+       var booster_yn_flag = ($(this).val() == 'Y');
+
+       if (booster_yn_flag) {
+    	   $("#booster_random_yn").removeAttr('disabled')
+				.attr('data-valid-use', 'true')
+				.attr('data-valid-title', '부스터 랜덤 사용여부');
+    	   
+           $("#boost_day").removeAttr('disabled')
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '부스터 적용일');
+      
+	      $("#boost_start_hour").removeAttr('disabled')
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '부스터 적용 시작 시간');
+	      
+	      $("#boost_start_min").removeAttr('disabled')
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '부스터 적용 시작 분');
+	      
+	      $("#boost_end_hour").removeAttr('disabled')
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '부스터 적용 종료 시간');
+	      
+	      $("#boost_end_min").removeAttr('disabled')
+				.attr('data-valid-use', 'true')
+				.attr('data-date-format', 'yyyyMMdd')
+				.attr('data-valid-title', '부스터 적용 종료 분');
+	      
+	      $("#boost_ratio").removeAttr('disabled')
+				.attr('data-valid-use', 'true')
+				.attr('data-valid-title', '부스터 배수');
+       } else {
+			$("#boost_start_date").val("");
+			$("#boost_end_date").val("");
+    	   
+			$("#booster_random_yn").attr('disabled', 'disabled')
+				.removeAttr('data-valid-use')
+				.removeAttr('data-valid-title')
+				.val("N")
+				.trigger("change");
+    	   
+			$("#boost_day").val( "" ).attr('disabled', 'disabled')
+				.removeAttr('data-valid-use')
+				.removeAttr('data-date-format')
+				.removeAttr('data-valid-title');
+           
+           $("#boost_start_hour").val( "" ).attr('disabled', 'disabled')
+	           .removeAttr('data-valid-use')
+	           .removeAttr('data-date-format')
+	           .removeAttr('data-valid-title');
+           
+           $("#boost_start_min").val( "" ).attr('disabled', 'disabled')
+	           .removeAttr('data-valid-use')
+	           .removeAttr('data-date-format')
+	           .removeAttr('data-valid-title');
+           
+           $("#boost_end_hour").val( "" ).attr('disabled', 'disabled')
+	           .removeAttr('data-valid-use')
+	           .removeAttr('data-date-format')
+	           .removeAttr('data-valid-title');
+           
+           $("#boost_end_min").val( "" ).attr('disabled', 'disabled')
+	           .removeAttr('data-valid-use')
+	           .removeAttr('data-date-format')
+	           .removeAttr('data-valid-title');
+           
+           $("#boost_ratio").val( "" ).attr('disabled', 'disabled')
+	           .removeAttr('data-valid-use')
+	           .removeAttr('data-valid-title');
+       }
+   });
+     
+    // 부스터 랜덤 사용여부
+	$("#booster_random_yn").change(function(){
+		var booster_random_yn_flag = ($("#booster_random_yn").val() == 'Y');
+
+		if (booster_random_yn_flag) {
+			$("#divBoostRndY").show();
+			$("#divBoostRndN").hide();
+		} else {
+			$("#divBoostRndY").hide();
+			$("#divBoostRndN").show();
+		}
+       
+		// 부스터 랜덤 생성 버튼 이벤트
+		$("#btnBoostRndCreate").off("click").click(function(e){
+			e.preventDefault();
+			
+			createRandomBoostInfo();
+		});
+   });
+    
+	// 랜덤 부스터 정보 생성함수
+	function createRandomBoostInfo() {
+		// 이벤트 기간 체크
+		var evnt_start_day 	= $("input[name=evnt_start_day]").val();
+		var evnt_end_day 	= $("input[name=evnt_end_day]").val();
+		
+		if(evnt_start_day == null || evnt_start_day == "" || evnt_end_day == null || evnt_end_day == ""){
+			alert("이벤트 기간을 설정해 주십시오.");
+			return false;
+		}
+		
+		var evnt_start_date 	= new Date(evnt_start_day);
+		var evnt_end_date 		= new Date(evnt_end_day);
+		
+		var calcOneDay			= 24 * 60 * 60 * 1000;
+		var diffDays 				= Math.abs( evnt_start_date.getTime() - evnt_end_date.getTime() ) / calcOneDay;
+
+		var randomBoostDay 	= Math.trunc( Math.random() * diffDays );
+		randomBoostDay		= new Date(evnt_start_date.getTime() + (randomBoostDay * calcOneDay));
+		randomBoostDay		= randomBoostDay.getFullYear() + "-" + (randomBoostDay.getMonth()+1 < 10 ? "0" + (randomBoostDay.getMonth()+1) : randomBoostDay.getMonth()+1) + "-" + randomBoostDay.getDate();
+		
+		var randomStartHour 	= Math.trunc( Math.random() * 16 ) + 6;
+		var randomEndHour 	= randomStartHour + 2;
+		
+		randomStartHour = randomStartHour < 10 ? "0" + randomStartHour : randomStartHour;
+		randomEndHour = randomEndHour < 10 ? "0" + randomEndHour : randomEndHour;
+		
+		$("#boost_day").val( randomBoostDay );
+		$("#boost_start_hour").val( randomStartHour );
+		$("#boost_start_min").val( "00" );
+		$("#boost_end_hour").val( randomEndHour );
+		$("#boost_end_min").val( "00" );
+		$("#boost_ratio").val( "2" );
+		
+		var strHtml = "( " + randomBoostDay + " " + randomStartHour + ":00~" + randomEndHour + ":00 2배 )";
+		
+		$("#spnBoostRndInfo").text( strHtml );
+	}
+    
+    /* ============================================================================================
+	/* 다중보상 사용 여부에 따른 컨트롤러
+	/* --------------------------------------------------------------------------------------------
+	/* 다중보상 사용 여부 값에 따라 다중보상 정보 입력란 활성여부.
+	/* 	- N : 사용안함	(다중보상 정보 입력란 disable)
+	/* 	- Y	 : 사용		(다중보상 정보 입력란 enable)
+	/* ============================================================================================ */
+	$('input[name=multi_target_yn]').on('change', function () {
+		var multi_target_yn_flag = ($(this).val() == 'Y');
+
+		if (multi_target_yn_flag) {
+			// 1차 보상 타이틀 변경
+			$("div[name=divCpbookIssueType]:eq(0) label:eq(0)").html("1차 쿠폰발행 유형 <sup>*</sup>");
+			$("div[name=divCpbookIssueType]:eq(0) label:eq(1)").html("1차 쿠폰북 유효기간 <sup>*</sup>");
+			$("div[name=divCpbookInfo]:eq(0) label:eq(0)").html("1차 쿠폰북 <sup>*</sup>");
+			
+			$("#multi_target_cnt").removeAttr('disabled');
+			
+			// 2차 보상 정보 표시
+			$("[name=divCpbookIssueType]:eq(1), [name=divCpbookInfo]:eq(1), [name=divTargetInfo]:eq(0), [name=divTargetInfo]:eq(1)").show();
+			
+			$("input[name=step_multi]:visible")
+				.attr('data-valid-use', 'true')
+				.attr('data-valid-title', '달성목표');
+			
+			$("input[name=step_per_day_acp_count_multi]:visible")
+				.attr('data-valid-use', 'true')
+				.attr('data-valid-title', '달성횟수');
+			
+			$("input[name=coupon_issue_type_cd]:visible")
+				.attr('data-valid-use', 'true')
+				.attr('data-valid-title', '쿠폰발행유형');
+			
+			$("input[name=vali_term_start_dd]:visible")
+				.attr('data-valid-use', 'true')
+				.attr('data-valid-title', '쿠폰북 유효기간 시작일');
+			
+			$("input[name=vali_term_end_dd]:visible")
+				.attr('data-valid-use', 'true')
+				.attr('data-valid-title', '쿠폰북 유효기간 종료일');
+			
+			// 다중차수 달성조건 초기화
+			$("input[name=step_per_day_acp_count_multi]:enabled").val( '' );
+			$("input[name=step_multi]:enabled").val('');
+			$("input[name=reward_qty_multi]:enabled").val('');
+			
+			$("#multi_target_cnt").trigger("change");
+		} else {
+			// 1차 보상 타이틀 변경
+			$("div[name=divCpbookIssueType]:eq(0) label:eq(0)").html("쿠폰발행 유형 <sup>*</sup>");
+			$("div[name=divCpbookIssueType]:eq(0) label:eq(1)").html("쿠폰북 유효기간 <sup>*</sup>");
+			$("div[name=divCpbookInfo]:eq(0) label:eq(0)").html("쿠폰북 <sup>*</sup>");
+			
+			$("#multi_target_cnt").attr('disabled', 'disabled').val("2");
+			
+			// 2차, 3차 보상 정보 숨김
+			$("div[name=divCpbookIssueType]:eq(1), [name=divCpbookInfo]:eq(1)").hide();
+			$("div[name=divCpbookIssueType]:eq(2), [name=divCpbookInfo]:eq(2)").hide();
+			$("div[name=divTargetInfo]").hide();
+			
+			$("input[name=step_multi]:hidden")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-valid-title');
+		
+			$("input[name=step_per_day_acp_count_multi]:hidden")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-valid-title');
+			
+			$("input[name=coupon_issue_type_cd]:hidden")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-valid-title');
+			
+			$("input[name=vali_term_start_dd]:hidden")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-valid-title');
+			
+			$("input[name=vali_term_end_dd]:hidden")
+				.removeAttr('data-valid-use')
+				.removeAttr('data-valid-title');
+		}
+	});
+	
+	// 다중보상 차수 변경 이벤트
+	$('#multi_target_cnt').on('change', function () {
+		var multi_target_cnt = $(this).val();
+		
+		switch(multi_target_cnt){
+			default :
+			case "2" :
+				$("[name=divCpbookIssueType]:eq(2), [name=divCpbookInfo]:eq(2), [name=divTargetInfo]:eq(2)").hide();
+				$("div[name=divTargetInfo]:eq(1) input").attr("disabled", "disabled");
+				break;
+			case "3" :
+				$("[name=divCpbookIssueType]:eq(2), [name=divCpbookInfo]:eq(2), [name=divTargetInfo]:eq(2)").show();
+				$("div[name=divTargetInfo]:eq(1) input").removeAttr("disabled");
+				$("div[name=divTargetInfo]:eq(2) input").attr("disabled", "disabled");
+				break;
+		}
+				
+		$("select[name=coupon_issue_type_cd]:visible")
+			.attr('data-valid-use', 'true')
+			.attr('data-valid-title', '쿠폰발행유형');
+			
+		$("input[name=vali_term_start_dd]:visible")
+			.attr('data-valid-use', 'true')
+			.attr('data-valid-title', '쿠폰북 유효기간 시작일');
+		
+		$("input[name=vali_term_end_dd]:visible")
+			.attr('data-valid-use', 'true')
+			.attr('data-valid-title', '쿠폰북 유효기간 종료일');
+			
+		$("select[name=coupon_issue_type_cd]:hidden, input[name=vali_term_start_dd]:hidden, input[name=vali_term_end_dd]:hidden")
+			.removeAttr('data-valid-use')
+			.removeAttr('data-valid-title');
+		
+		// 값 초기화
+		$("input[name=step_per_day_acp_count_multi]:enabled, input[name=step_multi]:enabled, input[name=reward_qty_multi]:enabled").val( '' );
+		
+		// 마지막 차수에 고정값 세팅
+		$("input[name=step_per_day_acp_count_multi]:disabled").val( $("input[name=step_per_day_acp_count").val() );
+		$("input[name=step_multi]:disabled").val( $("input[name=step").val() );
+		$("input[name=reward_qty_multi]:disabled").val( $("input[name=reward_qty").val() );
+	});
+     
+	/* ============================================================================================
+	/* 게시 구분에 따른 컨트롤러
+	/* --------------------------------------------------------------------------------------------
+	/* 게시 구분 값에 따라 예약일 입력란 활성여부.
+	/* 	- N	: 즉시게시	(예약일 입력란 disable)
+	/* 	- Y	: 예약게시	(예약일 입력란 enable)
+	/* ============================================================================================ */
+	$('input[name="rserv_ntce_yn"]').on('change', function() {
+		var rserv_ntce_yn_flag     = ($(this).val() == 'Y');
+		
+		if(rserv_ntce_yn_flag) {
+			$("#rserv_ntce_dd").removeAttr("disabled")
+							.attr('data-valid-use', 'true')
+							.attr('data-date-format', 'yyyyMMdd')
+							.attr('data-valid-title', '예약일');
+			// 예약일 default 설정(today+1) 
+			$('input[name=rserv_ntce_dd]').val(cf_termDate(1));
+		} else {
+			$("#rserv_ntce_dd").val("");
+			$("#rserv_ntce_dd").attr('disabled', 'disabled')
+							.removeAttr('data-valid-use')
+							.removeAttr('data-date-format')
+							.removeAttr('data-valid-title');
+			$('input[name=rserv_ntce_dd]').val('');
+		}
+	});
+
+	// 초기화 호출
+	function init_condition( flag ) {
+		if( flag ){
+			$("input[name=rserv_ntce_yn]").removeAttr("disabled");
+				
+			$("input[name=limit_time_yn]").removeAttr("disabled");
+			$("input[name=limit_step_per_day]").removeAttr("disabled");
+			
+			$("input[name=booster_yn]").removeAttr("disabled");
+			
+			$("input[name=multi_target_yn]").removeAttr("disabled");
+			
+			$("select[name=coupon_issue_type_cd]").removeAttr("disabled");
+			$("input[name=vali_term_start_dd]").removeAttr("disabled");
+			$("input[name=vali_term_end_dd]").removeAttr("disabled");
+		} else {
+			$("input[name=rserv_ntce_yn]:eq(0)").trigger("click");
+   			$("input[name=rserv_ntce_yn]").attr("disabled", "disabled");
+   		
+   			$("input[name=limit_time_yn]:eq(0)").trigger("click");
+	   		$("input[name=limit_time_yn]").attr("disabled", "disabled");
+	   		
+	   		$("select[name=limit_start_hour]").attr("disabled", "disabled");
+	   		$("select[name=limit_start_min]").attr("disabled", "disabled");
+	   		$("select[name=limit_end_hour]").attr("disabled", "disabled");
+	   		$("select[name=limit_end_min]").attr("disabled", "disabled");
+	   		
+	   		$("input[name=limit_step_per_day]").val( "" ).attr("disabled", "disabled");
+	   		
+	   		$("input[name=booster_yn]:eq(0)").trigger("click");
+	   		$("input[name=booster_yn]").attr("disabled", "disabled");
+	   		
+	   		$("#boost_start_hour").attr("disabled", "disabled");
+	   		$("#boost_start_min").attr("disabled", "disabled");
+	   		$("#boost_end_hour").attr("disabled", "disabled");
+	   		$("#boost_end_min").attr("disabled", "disabled");
+	   		$("#boost_ratio").attr("disabled", "disabled");
+	   		
+	   		$("input[name=multi_target_yn]:eq(0)").trigger("click");
+	   		$("input[name=multi_target_yn]").attr("disabled", "disabled");
+	   		
+	   		$("select[name=coupon_issue_type_cd]").val("").attr("disabled", "disabled");
+	   		$("input[name=vali_term_start_dd]").val("").attr("disabled", "disabled");
+	   		$("input[name=vali_term_end_dd]").val("").attr("disabled", "disabled");
+	   		
+	   		$("tbody[id*=pedometer_cpb_tbody]").empty();
+		}
+	}
+
+/* ============================================================================================
+    /* 이벤트 구분에 따른 컨트롤러
+    /* --------------------------------------------------------------------------------------------
+    /* ID: evnt_type_cd
+    /* 	- A: 달성횟수형		-> 
+    /* 	- T	: 전체목표형		-> 
+    /* 	- F	: 선착순형		-> 
+    /* ============================================================================================ */
+	$("#evnt_type_cd").on('change', function () {
+		var strHtml1 = "";				// 이벤트 구분 분기 html
+		var strHtml2 = "";				// 다중보상 분기 html
+		
+		while($("#evnt_type_cd").parent().siblings().length > 1)
+			$("#evnt_type_cd").parent().next().remove();
+		
+		switch( $(this).val() ){
+	   		case "A" : 
+	   			// 초기화 호출
+	   			init_condition(true);
+		   		
+	   			strHtml1 += '<label class="col-md-1 control-label">일목표</label>';
+	   			strHtml1 += '<div class="col-md-2"><input class="form-control" type="number" name="step_per_day" data-valid-use="true" data-valid-symbol="true" data-valid-max="20" data-valid-title="일목표"></div>';
+	   			strHtml1 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;">걸음</label>';
+	   			strHtml1 += '<label class="col-md-1 control-label">달성횟수</label>';
+	   			strHtml1 += '<div class="col-md-1"><input class="form-control" type="number" name="step_per_day_acp_count" data-valid-use="true" data-valid-symbol="true" data-valid-max="10" data-valid-title="달성횟수"></div>';
+	   			strHtml1 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 회</label>';
+	   			
+	   			strHtml2 += '<label class="col-md-2 control-label">달성횟수</label>';
+	   			strHtml2 += '<div class="col-md-1"><input class="form-control" type="number" name="step_per_day_acp_count_multi" data-valid-symbol="true" data-valid-max="10" data-valid-title="달성횟수"></div>';
+	   			strHtml2 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 회</label>';
+	   			
+	   			// 부스터 옵션 사용금지
+	   			$('input[name=booster_yn][value=N]').trigger("click");
+	   			$('input[name=booster_yn]').attr("disabled", "disabled");
+	   			break;
+	   		case "T" : 
+	   			// 초기화 호출
+	   			init_condition(true);
+		   		
+	   			strHtml1 += '<label class="col-md-1 control-label">전체목표</label>';
+	   			strHtml1 += '<div class="col-md-2"><input class="form-control" type="number" name="step" data-valid-use="true" data-valid-symbol="true" data-valid-max="20" data-valid-title="전체목표"></div>';
+	   			strHtml1 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 걸음</label>';
+	   			
+	   			strHtml2 += '<label class="col-md-2 control-label">달성목표</label>';
+	   			strHtml2 += '<div class="col-md-1"><input class="form-control" type="number" name="step_multi" data-valid-symbol="true" data-valid-max="10" data-valid-title="달성목표"></div>';
+	   			strHtml2 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 걸음</label>';
+	   			
+	   			// 부스터 옵션 사용가능
+	   			$('input[name=booster_yn]').removeAttr("disabled");
+	   			break;
+	   		case "F" : 
+	   			// 초기화 호출
+	   			init_condition(true);
+		   		
+	   			strHtml1 += '<label class="col-md-1 control-label">전체목표</label>';
+	   			strHtml1 += '<div class="col-md-2"><input class="form-control" type="number" name="step" data-valid-use="true" data-valid-symbol="true" data-valid-max="20" data-valid-title="전체목표"></div>';
+	   			strHtml1 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;">걸음</label>';
+	   			strHtml1 += '<label class="col-md-2 control-label">혜택자수(선착순)</label>';
+	   			strHtml1 += '<div class="col-md-1"><input class="form-control" type="number" name="reward_qty" data-valid-use="true" data-valid-symbol="true" data-valid-max="10" data-valid-title="혜택자수"></div>';
+	   			strHtml1 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 명</label>';
+	   			
+	   			strHtml2 += '<label class="col-md-2 control-label">달성목표</label>';
+	   			strHtml2 += '<div class="col-md-1"><input class="form-control" type="number" name="step_multi" data-valid-symbol="true" data-valid-max="10" data-valid-title="달성목표"></div>';
+	   			strHtml2 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 걸음</label>';
+	   			strHtml2 += '<label class="col-md-2 control-label">혜택자수</label>';
+	   			strHtml2 += '<div class="col-md-1"><input class="form-control" type="number" name="reward_qty_multi" data-valid-symbol="true" data-valid-max="10" data-valid-title="혜택자수"></div>';
+	   			strHtml2 += '<label class="col-md-1 control-label" style="text-align: left; margin-left: -15px;"> 명</label>';
+	   			
+	   			// 부스터 옵션 사용가능
+	   			$('input[name=booster_yn]').removeAttr("disabled");
+	   			break;
+	   		case "" :	// 이벤트 구분 값 선택 전에는 이하 disabled
+	   			// 초기화 호출
+	   			init_condition(false);
+		}
+		
+		// 달성조건 및 다중보상 달성조건 html 삽입
+		$("div#div_evnt_type_cd").append(strHtml1);
+		$("div[name=divTargetInfo]").html(strHtml2);
+		
+		// 다중보상 여부 초기화
+		$("input[name=multi_target_yn]:eq(0)").trigger("click");
+		$('#multi_target_cnt').val(2).attr("disabled", "disabled");
+		
+		// 일 목표 걸음 값 변경 시
+		$("input[name=step_per_day]").change(function(){
+			$("input[name=limit_step_per_day").val( $(this).val());
+		});
+		
+		// 일 달성 횟수 값 변경 시
+		$("input[name=step_per_day_acp_count]").change(function(){
+			$("input[name=step_per_day_acp_count_multi]:disabled").val( $("input[name=step_per_day_acp_count]").val());
+			$("input[name=step_per_day_acp_count_multi]:enabled").val( '' );
+		});
+		
+		// 전체 목표 걸음 값 변경 시
+		$("input[name=step]").change(function(){
+			$("input[name=limit_step_per_day").val( $(this).val());
+			
+			$("input[name=step_multi]:disabled").val( $(this).val());
+			$("input[name=step_multi]:enabled").val('');
+		});
+		
+		// 일 제한 걸음 값 변경 시
+		$("input[name=limit_step_per_day").change(function(){
+			var stepPerDayVal 	= $("input[name=step_per_day]").val();
+			stepPerDayVal		= parseInt( stepPerDayVal );
+			
+			var stepVal 			= $("input[name=step]").val();
+			stepVal				= parseInt( stepVal );
+			
+			var objVal			= parseInt( $(this).val() );
+			
+			if(objVal > stepPerDayVal || objVal > stepVal){
+				alert("목표 달성 걸음수보다 작아야 합니다.");
+				$(this).val( "" ).focus();
+				return false;
+			}
+		});
+		
+		// 선착순 인원 값 변경 시
+		$("input[name=reward_qty]").change(function(){
+			$("input[name=reward_qty_multi]:disabled").val( $(this).val());
+			$("input[name=reward_qty_multi]:enabled").val('');
+		});
+		
+		// 다중보상 - 달성횟수 validation 체크
+		$("input[name=step_per_day_acp_count_multi]:enabled").change(function(){
+			var maxVal 	= parseInt( $("input[name=step_per_day_acp_count_multi]:disabled").val() );
+
+			$("input[name=step_per_day_acp_count_multi]:visible:enabled").each(function(idx, obj){
+				var nextVal 	= $("input[name=step_per_day_acp_count_multi]:eq(" + (idx+1) + ")").val();
+				nextVal 		= parseInt( (nextVal != undefined && nextVal != "") ? nextVal : maxVal );
+				var objVal	= parseInt( $(obj).val() );
+				
+				if( objVal >= maxVal || objVal >= nextVal ){
+					alert("달성조건이 다음 차수보다 같거나 클 수 없습니다.");
+					$(obj).val( '' ).focus();
+					return false;
+				}
+			});
+		});
+		
+		// 다중보상 - 전체목표 validation 체크
+		$("input[name=step_multi]:enabled").change(function(){
+			var maxVal 	= parseInt( $("input[name=step_multi]:disabled").val() );
+
+			$("input[name=step_multi]:visible:enabled").each(function(idx, obj){
+				var nextVal 	= $("input[name=step_multi]:eq(" + (idx+1) + ")").val();
+				nextVal 		= parseInt( (nextVal != undefined && nextVal != "") ? nextVal : maxVal );
+				var objVal	= parseInt( $(obj).val() );
+				
+				if( objVal >= maxVal || objVal >= nextVal ){
+					alert("달성조건이 다음 차수보다 같거나 클 수 없습니다.");
+					$(obj).val( '' ).focus();
+					return false;
+				}
+			});
+		});
+		
+   });
+     
+    /* ============================================================================================
+	/* 이미지 파일 업로드
+	/* --------------------------------------------------------------------------------------------
+	/* 이미지 등록/변경시 호출되는 이벤트
+	/* ============================================================================================ */
+    $('input[type=file]').change(function (e) {
+    	var fileData = $(this).get(0).files[0];
+
+    	// 파일 타입 체크
+		switch( fileData.type ) {
+			case "image/jpeg":
+			case "image/gif":
+			case "image/png":
+				break;
+			default :
+				alert("업로드가 허용되지 않은 타입입니다.");
+				return;
+		}
+    	
+		// 파일 사이즈 체크
+		if(fileData.size > 153600 * 3) {
+			alert('450KB 이상의 파일은 업로드 할 수 없습니다.');
+			return;
+		}
+		
+		cf_fileUpload($(this), "IMG_PEDOMETER_LIST");
+	});
+
+    $("#btnImgPlus").click(function(){
+    	if( $("[id=btnImgMinus]").length > 3 ){
+    		alert("상세 부가 이미지를 더 이상 추가할 수 없습니다.");
+    		return false;
+    	}
+    	
+    	var strHtml = '<div class="form-group"><label class="col-md-2 control-label">상세 부가 이미지</label></div>';
+    	strHtml += '<div class="form-group" id="area_upload_represent_image">';
+    	strHtml += '<label class="col-md-2 control-label"></label>';
+    	strHtml += '<div class="col-md-2">';
+    	strHtml += '<div id="preview_uploadfileD' + ($("[id=btnImgMinus]").length+1) + '" class="files">';
+    	strHtml += '<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">';
+    	strHtml += '</div></div>';
+    	strHtml += '<div class="col-md-2">';
+    	strHtml += '<span class="btn btn-success fileinput-button">';
+    	strHtml += '<i class="glyphicon glyphicon-plus"></i>';
+    	strHtml += '<span>파일선택</span><input type="file" id="uploadfileD' + ($("[id=btnImgMinus]").length+1) + '" name="uploadfileD" accept="image/jpeg, image/gif, image/png"></span>';
+    	strHtml += '</div>';
+		strHtml += '<div class="col-md-1">';
+		strHtml += '<span class="btn btn-success" id="btnImgMinus"><i class="glyphicon glyphicon-minus"></i></span>';
+		strHtml += '</div></div>';
+		strHtml += '<div class="form-group">';
+		strHtml += '<label class="col-md-2 control-label">&nbsp;</label>';
+		strHtml += '<div class="col-md-10">';
+		strHtml += '<p><i class="fa fa-info-circle"></i>사이즈: 1000 * 800px / 파일종류: jpg, gif, png / 최대파일용량: 150KB</p>';
+		strHtml += '</div></div>';
+		
+		$("div#divUploadfileS").before(strHtml);
+		
+		$("[id=btnImgMinus]").off("click").click(function(){
+	    	$(this).parent().parent().prev().remove();
+	    	$(this).parent().parent().next().remove();
+	    	$(this).parent().parent().remove();
+	    });
+		
+		$('input[type=file]').off("change").change(function (e) {
+			var fileData = $(this).get(0).files[0];
+
+			// 파일 타입 체크
+			switch( fileData.type ) {
+				case "image/jpeg":
+				case "image/gif":
+				case "image/png":
+					break;
+				default :
+					alert("업로드가 허용되지 않은 타입입니다.");
+					return;
+			}
+			
+			// 파일 사이즈 체크
+			if(fileData.size > 153600 * 3) {
+				alert('450KB 이상의 파일은 업로드 할 수 없습니다.');
+				return;
+			}
+			
+	        cf_fileUpload($(this), "IMG_PEDOMETER_LIST");
+	    });
+    });
+
+	/**
+	* ==================================================================================
+	* 등록/수정 : 달력 validation
+	* ==================================================================================
+	*/
+	function f_customOverDate() {
+		
+		var event_start_day = $('#frmPedometer').find('input[name=evnt_start_day]').val().replace(/\-/g,'');
+		var event_reserve_day = $('#frmPedometer').find('input[name=rserv_ntce_dd]').val().replace(/\-/g,'');
+		
+		var event_start_time = $('#evnt_start_hour').val() + $('#evnt_start_min').val();
+		var event_end_time = $('#evnt_end_hour').val() + $('#evnt_end_min').val();
+		
+		var limit_end_date = cf_termDate(30, $('input[name=evnt_start_day]').val()).replace(/\-/g,'');
+		
+		var today_date = cf_toDate().replace(/\-/g,'');
+		
+		var makeStartDate = $('input[name=evnt_start_day]').cvtDateDefault() + $('#evnt_start_hour').val() + $('#evnt_start_min').val();
+		var makeEndDate = $('input[name=evnt_end_day]').cvtDateDefault() + $('#evnt_end_hour').val() + $('#evnt_end_min').val();
+		
+		if(parseInt(event_start_day) < parseInt(today_date)) {
+			alert('행사일은 금일 이전으로 선택 불가능합니다.\n\n다시한번 확인해 주세요.');
+			$("#evnt_start_day").focus();
+			return false;
+		}
+		
+		if(parseInt(event_start_day) > parseInt($("input[name=campaign_end_dy]").val())
+				|| parseInt(event_start_day) < parseInt($("input[name=campaign_start_dy]").val()) ) {
+			alert('행사일은 캠페인 기간 내에서만 설정할 수 있습니다.\n\n다시한번 확인해 주세요.');
+			$("#evnt_start_day").focus();
+			return false;
+		}
+		
+		if(parseInt(event_start_day) < parseInt(event_reserve_day) ) {
+			alert('예약일은 행사일 이후로 선택할 수 없습니다.\n\n다시한번 확인해 주세요.');
+			$("#rserv_ntce_dd").focus();
+			return false;
+		}
+		
+	// 	if(parseInt(event_start_time) >= parseInt(event_end_time)) {
+	// 		alert('진행 일시 설정이 올바르지 않습니다.\n\n다시한번 확인해 주세요.');
+	// 		$("#evnt_end_hour").focus();
+	// 		return false;
+	// 	}
+		if(parseInt(makeStartDate) >= parseInt(makeEndDate)) {
+			alert('진행 일시 종료일은 시작일 이전으로 선택할 수 없습니다.\n\n다시한번 확인해 주세요.');
+			$("#evnt_end_hour").focus();
+			return false;
+		}
+		
+		var cpb_date_length = $("[name=vali_term_start_dd]:visible").length;
+		
+		for(var i=0; i < cpb_date_length; i++){
+			var cpb_start_date = $("[name=vali_term_start_dd]:eq(" + i + ")").val().replace(/\-/g,'');
+			var cpb_end_date = $("[name=vali_term_end_dd]:eq(" + i + ")").val().replace(/\-/g,'');
+			
+			if(parseInt(cpb_start_date) < parseInt(event_start_day)) {
+				alert('쿠폰북의 시작일이 행사일 이전입니다.\n\n쿠폰북의 시작일은 행사일 이전으로 선택 불가능합니다.\n\n다시한번 확인해 주세요.');
+				$("#vali_term_start_dd").focus();
+				return false;
+			}
+			
+			if(parseInt(cpb_end_date) > parseInt(limit_end_date)) {
+				alert('쿠폰북의 종료일은 행사일 기준 30일까지 선택 가능합니다.\n\n다시한번 확인해 주세요.');
+				$("#vali_term_end_dd").focus();
+				return false;
+			}
+		}
+			
+		return true;
+	}
+	
+	/* ============================================================================================
+	/* 벨리데이션 체크 및 폼 전송
+	/* --------------------------------------------------------------------------------------------
+	/* 벨리데이션 체크 
+	/* 	- true	: 폼전송
+	/* 	- false : 알림창 경고
+	/* ============================================================================================ */
+	function f_submit() {
+		if($('#frmPedometer').formValid()) {
+			// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+			
+            var table_length_flag = false;
+	
+	            $("#frmPedometer tbody:visible").each(function (idx, obj) {
+	                var tbody_id = $(this).attr('id');
+
+	                if (tbody_id.indexOf('pedometer_cpb_tbody') == 0) {
+	                    if ($(obj).tableRowValid() != true) {
+	                        $("#btn_pedometer_cpb" + (idx+1)).focus();
+	                        table_length_flag = true;
+	                        return false;
+	                    }
+	                }
+	            });
+				
+	            if (table_length_flag) {
+	                $("button[type=submit]").attr("disabled", false);
+	                return;
+	            }
+	    	
+	            if (f_customOverDate() != true) {
+	                return;
+	            }
+	
+			// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+			
+			if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+				
+				// ---------------- 서버 전송 데이터 세팅 시작--------------------------//
+				// 행사 진행 일시 세팅
+				var makeStartDate = $('input[name=evnt_start_day]').cvtDateDefault() + $('#evnt_start_hour').val() + $('#evnt_start_min').val();
+				var makeEndDate = $('input[name=evnt_end_day]').cvtDateDefault() + $('#evnt_end_hour').val() + $('#evnt_end_min').val();
+				
+                $('input[name=evnt_start_date]').val(makeStartDate);
+                $('input[name=evnt_end_date]').val(makeEndDate);
+				
+				// 측정시간 세팅
+				makeStartDate 	= $('#limit_start_hour').val() + $('#limit_start_min').val();
+				makeEndDate 	= $('#limit_end_hour').val() + $('#limit_end_min').val();
+				
+				$('#limit_start_time').val(makeStartDate);
+				$('#limit_end_time').val(makeEndDate);
+	               
+	           	// 부스터 일시 세팅
+                makeStartDate 	= $('input[name=boost_day]').cvtDateDefault() + $('#boost_start_hour').val() + $('#boost_start_min').val();
+                makeEndDate 	= $('input[name=boost_day]').cvtDateDefault() + $('#boost_end_hour').val() + $('#boost_end_min').val();
+				
+				$('#boost_start_date').val(makeStartDate);
+				$('#boost_end_date').val(makeEndDate);
+
+                // 다중보상 세팅
+                $("input[name=cpbook_id_arr]").val( $("tbody[id*=pedometer_cpb_tbody]:visible input[name=cpbook_id][type=hidden]").serialize().replaceAll("cpbook_id=", "").split("&").join(",") );
+                $("input[name=vali_term_start_dd_arr]").val( $("input[name=vali_term_start_dd]:visible").serialize().replaceAll("vali_term_start_dd=", "").replaceAll("-", "").split("&").join(",") );
+                $("input[name=vali_term_end_dd_arr]").val( $("input[name=vali_term_end_dd]:visible").serialize().replaceAll("vali_term_end_dd=", "").replaceAll("-", "").split("&").join(",") );
+                $("input[name=coupon_issue_type_cd_arr]").val( $("select[name=coupon_issue_type_cd]:visible").serialize().replaceAll("coupon_issue_type_cd=", "").split("&").join(",") );
+                $("input[name=cpbook_type_cd_arr]").val( $("tbody[id*=pedometer_cpb_tbody]:visible input[name=cpbook_type_cd]").serialize().replaceAll("cpbook_type_cd=", "").split("&").join(",") );
+                
+                var sumVal = "";
+                if($("input[name=multi_target_yn]:checked").val() == "N"){
+                	sumVal = $("input[name=step_per_day_acp_count]").val();
+                } else {
+                	$("input[name=step_per_day_acp_count_multi]").each(function(idx, obj){
+                		idx == 0 ? sumVal += $(obj).val() : sumVal += "," + $(obj).val();
+                	});
+                }
+                $("input[name=step_per_day_acp_count_arr]").val( sumVal );
+                
+                sumVal = "";
+                if($("input[name=multi_target_yn]:checked").val() == "N"){
+                	sumVal = $("input[name=step]").val();
+                } else {
+                	$("input[name=step_multi]").each(function(idx, obj){
+                		idx == 0 ? sumVal += $(obj).val() : sumVal += "," + $(obj).val();
+                	});
+                }
+                $("input[name=step_arr]").val( sumVal );
+                
+				// ---------------- 서버 전송 데이터 세팅 종료--------------------------//
+
+				// 실제 데이터 전송
+				$.ajax({
+				    url: api_url + '/backoffice/event/pedometer/update',
+				    type: 'POST',
+				    async: true,
+				    cache: false,
+				    datatype: 'json',
+				    contentType: 'application/json;charset=utf-8',
+				    data: JSON.stringify($("#frmPedometer").serializeFormObject()),
+				    success: function(obj){
+				    	alert(obj.message);
+				    	
+				    	var url = "/application/event/pedometer/pedometerEventRN.do";
+						var method = "POST";
+						cf_action(url, method, $("#frmKeepData").serialize());
+				    },
+				    error: function(obj) {
+				    	var serverObj = obj.responseJSON;
+				    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+				    	return;
+				    }
+				});			
+				
+			} else {
+				$("button[type=submit]").attr("disabled",false);
+			}
+	
+		} else {
+			return;
+		}
+	}
+	
+	/**
+	 * ==================================================================================
+	 * 수정 화면 : 상세 데이터 처리
+	 * ----------------------------------------------------------------------------------
+	 * 수정 화면의 데이터 처리
+	 * ==================================================================================
+	 */
+	function f_pedometerDetail() {
+		$.ajax({
+			url: api_url+'/backoffice/event/pedometer/show', //this is the submit URL
+			type: 'GET', // GET or POST
+			async: true,
+			cache: true,
+			datatype: 'json',
+			data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+			beforeSend : function() {},
+			success: function(obj){
+				var tag_input = "";
+	        	
+				$('input[name=evnt_id]').val(obj.data.main.evnt_id);
+				$('input[name=campaign_id]').val(obj.data.main.campaign_id);
+				$('input[name=campaign_start_dy]').val(obj.data.main.campaign_start_dy);
+				$('input[name=campaign_end_dy]').val(obj.data.main.campaign_end_dy);
+					
+				$("#pedometer_campaign_id").text(obj.data.main.campaign_id);
+				$("#pedometer_campaign_term").text(cf_cvtDateFormat(obj.data.main.campaign_start_dy,'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat(obj.data.main.campaign_end_dy,'yyyy-MM-dd'));
+				$("#pedometer_custgp_cnt").text("1");
+				$("#pedometer_campaign_nm").text(obj.data.main.campaign_nm);
+				$("#pedometer_custgp").text(obj.data.main.lst_custgp_id + " - " + obj.data.main.custgp_nm);
+				
+				tag_input = "<input type='hidden' name='lst_custgp_id' value='"+obj.data.main.lst_custgp_id+"'>";
+				$("#campaign_custgp").append(tag_input);
+				$('#btn_campaign').text('수정');
+				
+				$('input:radio[name=rserv_ntce_yn]:input[value='+ obj.data.main.rserv_ntce_yn +']').attr("checked", true); 	// 게시구분
+				f_publishType($(":radio[name='rserv_ntce_yn']:checked").val(), obj.data.main.rserv_ntce_dd); 					// 예약일 disable 및 설정
+				
+				$('input[name=evnt_title]').val(obj.data.main.evnt_title);																	// 이벤트 제목
+				$("textarea[name=evnt_desc]").val(obj.data.main.evnt_desc);															// 이벤트 혜택
+				$("#evnt_type_cd").val(obj.data.main.evnt_type_cd).trigger("change");												// 이벤트 구분
+				
+				$('#evnt_start_day').val(cf_cvtDateFormat(obj.data.main.evnt_start_dd, 'yyyy-MM-dd'));							// 이벤트 시작일
+				$('#evnt_start_hour').val(obj.data.main.evnt_start_hhmi.substring(0,2));												// 이벤트 진행시작시간
+				$('#evnt_start_min').val(obj.data.main.evnt_start_hhmi.substring(2,4));													// 이벤트 진행시작분
+				$('#evnt_end_day').val(cf_cvtDateFormat(obj.data.main.evnt_end_dd, 'yyyy-MM-dd'));							// 이벤트 종료일
+				$('#evnt_end_hour').val(obj.data.main.evnt_end_hhmi.substring(0,2));													// 이벤트 진행종료시간
+				$('#evnt_end_min').val(obj.data.main.evnt_end_hhmi.substring(2,4));													// 이벤트 진행종료분
+			
+				$('input[name=tgt_qty]').val(obj.data.main.tgt_qty);   																	// 선착순 목표수량
+	
+				$("textarea[name=note]").val(obj.data.main.note);																		// 안내문구
+				
+	    		// 측정시간 정보
+	    		if(obj.data.main.limit_time_yn == "Y"){
+	    			$("input[name=limit_time_yn]:eq(1)").trigger("click");
+	    			
+	    			var limit_start_time 	= obj.data.main.limit_start_time;
+	    			var limit_start_hour 	= limit_start_time.substr(0, 2);
+	    			var limit_start_min 		= limit_start_time.substr(2, 4);
+	    			var limit_end_time 		= obj.data.main.limit_end_time;
+	    			var limit_end_hour 	= limit_end_time.substr(0, 2);
+	    			var limit_end_min 		= limit_end_time.substr(2, 4);
+	    			
+					$("#limit_start_hour").val(limit_start_hour);
+					$("#limit_start_min").val(limit_start_min);
+					$("#limit_end_hour").val(limit_end_hour);
+					$("#limit_end_min").val(limit_end_min);
+	    		}
+	        	$("#limit_step_per_day").val(obj.data.main.limit_step_per_day);
+	    		
+	    		// 부스터 정보
+	    		if(obj.data.main.booster_yn == "Y"){
+	    			$("input[name=booster_yn]:eq(1)").trigger("click");
+	    			
+					$('#boost_day').val(cf_cvtDateFormat(obj.data.main.boost_start_dd,'yyyy-MM-dd'));	// 부스터 시작일
+					$('#boost_start_hour').val(obj.data.main.boost_start_hhmi.substring(0,2));				// 부스터 진행시작시간
+					$('#boost_start_min').val(obj.data.main.boost_start_hhmi.substring(2,4));					// 부스터 진행시작분
+					$('#boost_end_hour').val(obj.data.main.boost_end_hhmi.substring(0,2));					// 부스터 진행종료시간
+					$('#boost_end_min').val(obj.data.main.boost_end_hhmi.substring(2,4));					// 부스터 진행종료분
+					
+	        		$("#boost_ratio").val(obj.data.main.boost_ratio);
+	    		}
+	    		
+	    		// 다중보상 정보
+	    		if(obj.data.main.multi_target_yn == "Y"){
+	    			$("input[name=multi_target_yn]:eq(1)").trigger("click");
+	    			
+    				$("div[name=divCpbookIssueType]:eq(0) label:eq(0)").html("1차 쿠폰발행 유형 <sup>*</sup>");
+    				$("div[name=divCpbookIssueType]:eq(0) label:eq(1)").html("1차 쿠폰북 유효기간 <sup>*</sup>");
+    				$("div[name=divCpbookInfo]:eq(0) label:eq(0)").html("1차 판매조건 및 쿠폰북 <sup>*</sup>");
+	    			
+    				$("div[name=divCpbookIssueType]").show();
+    				$("div[name=divCpbookInfo]").show();
+    				
+    				$("#multi_target_cnt").val(obj.data.tgt_list.length).trigger("change");
+	    		}
+	    		
+	    		// 다중보상 정보 호출
+    			callMultiTargetList(obj.data.tgt_list);
+				
+				// 이미지 호출
+		    	callImageList(obj.data.img_list);
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }	
+		});
+	}
+	
+	function callMultiTargetList(listObj) {
+		$(listObj).each(function(idx, obj) {
+			// 달성횟수, 달성목표 세팅
+			if(idx == $(listObj).length-1){
+				$("input[name=step]").val( obj.step );
+				$("input[name=step_per_day]").val( obj.step_per_day );
+				$("input[name=step_per_day_acp_count]").val( obj.step_per_day_acp_count );
+				$("input[name=reward_qty]").val( obj.reward_qty );
+			}
+			
+			$("input[name=step_per_day_acp_count_multi]:eq(" + idx + ")").val(obj.step_per_day_acp_count);
+			$("input[name=step_multi]:eq(" + idx + ")").val(obj.step);
+			$("input[name=reward_qty_multi]:eq(" + idx + ")").val(obj.reward_qty);
+			
+			$('#coupon_issue_type_cd' + (idx+1)).val(obj.coupon_issue_type_cd);									// 쿠폰발행유형
+			$("#vali_term_start_dd" + (idx+1)).val(cf_cvtDateFormat(obj.vali_term_start_dd, 'yyyy-MM-dd'));	// 쿠폰북 유효기간 시작일
+			$("#vali_term_end_dd" + (idx+1)).val(cf_cvtDateFormat(obj.vali_term_end_dd, 'yyyy-MM-dd'));		// 쿠폰북 유효기간 종료일
+
+			if(obj.cpbook_id != null && obj.cpbook_id != "") {
+				var tag_td = '';
+				var app_exposure_branch = '';
+				tag_td += '<td class="ta-c"><input type="checkbox" value="'+ obj.cpbook_id +'"></td>';
+				tag_td += "<input type='hidden' name='cpbook_id' value='"+ obj.cpbook_id +"'>";
+				tag_td += '<td class="ta-c">' + obj.cpbook_id + '</td>';
+				tag_td += '<td class="ta-c">' + obj.cpbook_nm + '</td>';
+				tag_td += '<td class="ta-c">' + obj.cpbook_type_nm + '</td>';
+				tag_td += '<input type="hidden" name="cpbook_type_cd" value="' + obj.cpbook_type_cd + '">';
+				tag_td += '<td class="ta-c">' + obj.coupon_cnt + '</td>';
+		
+				if(obj.use_psbt_brnch_yn === 'Y') {
+					app_exposure_branch = "사용가능지점";
+				} else {
+					app_exposure_branch = "사용제외지점";
+				}
+				
+				tag_td += "<td class='ta-c'>"+ app_exposure_branch + " : " + obj.app_view_str_nm +"</td>\n";
+				$('#pedometer_cpb_tbody' + (idx+1)).append('<tr>' + tag_td + '</tr>');
+			}
+		});
+	}
+
+	function callImageList(listObj) {
+		// 상세 이미지 타입 갯수 카운팅
+		var detailImgCnt = 0;
+		
+		$(listObj).each(function(idx, obj){
+			if(obj.type == "D")
+				detailImgCnt++;
+		});
+		
+		// 상세 이미지 갯수만큼 상세 부가 이미지 만들기
+		for(var i=0; i < detailImgCnt-1; i++){
+			$("#btnImgPlus").trigger("click");
+		}
+		
+		// 이미지 호출
+		var detailImgIdx = 0;
+		$(listObj).each(function(idx, obj){
+			var previewSelStr 		= "";
+			var uploadfileSelStr 	= "";
+			
+			if( obj.type != "D" ){
+				previewSelStr 		= 'preview_uploadfile' + obj.type;
+				uploadfileSelStr 	= "uploadfile" + obj.type;
+			} else if( obj.type == "D" && detailImgCnt > 0 ){
+				if( detailImgIdx == 0){
+					previewSelStr 		= 'preview_uploadfile' + obj.type;
+					uploadfileSelStr 	= "uploadfile" + obj.type;
+				} else {
+					previewSelStr 		= 'preview_uploadfile' + obj.type + detailImgIdx;
+					uploadfileSelStr 	= "uploadfile" + obj.type + detailImgIdx;
+				}
+				detailImgIdx++;
+			}
+			
+			var preview = $("#" + previewSelStr);
+			preview.find('img').attr('src', obj.prvw_url);
+			
+			var fName = '<p class="alert alert-info bd0">'+obj.img_orgin_file_nm+'</p>';
+			preview.parent().append(fName); 
+			
+			var span = $('<span>').addClass('button-delete btn_del_' + uploadfileSelStr);
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm')
+				.attr('href', 'javascript:cf_fileDelete("' + uploadfileSelStr + '")')
+				.text('파일삭제');
+			
+// 			var input_file_divn_cd = $('<input>')
+// 				.attr('type', 'hidden')
+// 				.attr('name', 'file_divn_cd')
+// 				.val(obj.file_divn_cd);
+
+			var input_img_type = $('<input>')
+				.attr('type', 'hidden')
+				.attr('name', 'img_type')
+				.val(obj.type);
+			
+			var input_local_file_name = $('<input>')
+				.attr('type', 'hidden')
+				.attr('name', 'img_strge_file_nm')
+				.val(obj.img_strge_file_nm);
+			
+			var input_atch_file_nm = $('<input>')
+				.attr('type', 'hidden')
+				.attr('name', 'img_orgin_file_nm')
+				.val(obj.img_orgin_file_nm);
+			
+			span.append(aTag);
+// 			span.append(input_file_divn_cd);
+			span.append(input_img_type);
+			span.append(input_local_file_name);
+			span.append(input_atch_file_nm);
+			
+			var btn_div = $("#" + uploadfileSelStr).parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+		});
+
+        // 파일 삭제 후 validation 재설정.
+        $('.button-delete').click(function(button){
+            $(this).parent().find('input:file').attr('data-valid-use', true);
+        })
+	}
+	
+	/* ============================================================================================
+	/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+	/* ============================================================================================ */
+	var pagefunction = function() {
+		f_ajaxCommonCode({
+			target:"select[name=coupon_issue_type_cd]", 
+			cd_divn_id: "FCFS_ISSUE_TYPE_CD",
+			codeId : "",
+			fnSuccess : ""
+		});
+		
+		// 초기데이터 로드 : 이벤트구분
+        f_ajaxCommonCode({
+			target:"select[name=evnt_type_cd]", 
+			cd_divn_id: "PEDOMETER_EVNT_TYPE_CD",
+			codeId : "",
+			fnSuccess : ""
+		});
+		
+		// 초기값 Setting : 진행시,분
+        f_setTimeStr();
+		
+		// 만보기 이벤트 수정화면 상세 데이터 추출
+		f_pedometerDetail();
+	};
+	
+	/* ============================================================================================
+	/* 페이지 셋업 (Don't remove!!!)
+	/* --------------------------------------------------------------------------------------------
+	/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+	/* ============================================================================================ */
+	pageSetUp();
+	
+	/* ============================================================================================
+	/* 페이지 정보 설정 로드
+	/* --------------------------------------------------------------------------------------------
+	/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+	/* ============================================================================================ */
+	pagefunction();
+</script>

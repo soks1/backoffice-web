@@ -1,0 +1,385 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken"	data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>
+					<span class="title_mclub_name"></span>
+					&nbsp;클럽&nbsp;쿠폰북관리&nbsp;상세정보
+					</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmDeMcEvntCpb">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" id="evnt_id">
+							<input type="hidden" id="aprv_sts_cd">
+							<input type="hidden" id="mclub_id">
+							<input type="hidden" id="mclub_name">
+							<input type="hidden" id="end_dd" name="end_dd">
+							<input type="hidden" id="cpbook_vali_term_end_dd" name="cpbook_vali_term_end_dd">
+							
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">승인일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id=aprv_sts_cd_name></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">진행상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="prgs_sts_cd_name"></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="evnt_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">설명 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="evnt_desc"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">적용기간 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="apply_dd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 유효기간 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="cpbook_vali_term_dd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 발행수 : </label>
+									<div class="col-md-1">
+										<span class="form-control cs-css-03" id="cpbook_issue_cnt"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 : </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<colgroup>
+										            <col width="5%" />
+										            <col width="20%" />
+										            <col />
+										            <col width="20%" />
+										            <col width="20%" />
+										        </colgroup>
+												<thead>
+													<tr>
+														<th class="ta-c">No</th>
+														<th class="ta-c">쿠폰북번호</th>
+														<th class="ta-c">쿠폰북명</th>
+														<th class="ta-c">쿠폰북유형</th>
+														<th class="ta-c">쿠폰수</th>
+													</tr>
+												</thead>
+												<tbody id="detail_mclub_cpb_tbody">
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+                    					<a href="javascript:f_openChangeDateRD('vali');" class="btn btn-info btn_auth_vali_stop">유효기간 종료일 변경</a>
+<!-- 										<a href="javascript:f_openChangeDateRD('apply');" class="btn btn-success btn_auth_aprv_stop">적용기간 종료일 변경</a> -->
+										<a onclick="f_evntApprove(MCLUB_EVNT_APPROVAL_STATUS_CODE.REJECT, this.innerHTML);" class="btn btn-danger btn_auth_approve">반려</a>
+										<a onclick="f_evntApprove(MCLUB_EVNT_APPROVAL_STATUS_CODE.APPROVE, this.innerHTML);" class="btn btn-primary btn_auth_approve">승인</a>
+										<a onclick="f_evntApprove(MCLUB_EVNT_APPROVAL_STATUS_CODE.STANDBY, this.innerHTML);" class="btn btn-info btn_auth_create">승인요청</a>
+										<a href="javascript:f_detailMclubList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_detailMclubEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_detailMclubDelete();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="closing_aprv_date_rd" style="display: none;"></div>
+<div id="change_date_rd" style="display: none;"></div>
+<div id="coupon_book_rd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 쿠폰북 상세 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponBookRD(id) {
+	$.ajax({
+		url: '/application/coupon/campaign/couponBookRD.do',
+		type: 'GET',
+		async: false,
+		cache: true,
+		data: {cpbook_id:id},
+		success: function(data) {
+			var $target = $('#coupon_book_rd');
+			$target.empty();
+			$target.html(data);
+		},
+		complete: function() {
+			$('#coupon_book_rd').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 쿠폰북 상세 다이얼로그
+ * ==================================================================================
+ */
+$('#coupon_book_rd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 상세 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 기간 종료일 다이얼로그 호출
+ * ==================================================================================
+ */
+
+ $('#change_date_rd').dialog({
+		autoOpen : false,
+		width : 400,
+		minHeight: 300,
+		resizable : false,
+		modal : true,
+		title : "<div class='widget-header'><h6 class='term_type_name'></h6></div>",
+		buttons : [{
+			html : "취소",
+			"class" : "btn btn-default",
+			click : function() {
+				$(this).dialog("close");
+				$('#change_date_rd').empty();
+			}
+		},{
+			html : "저장",
+			"class" : "btn btn-primary",
+			click : function() {
+				
+				if( $('#frmChangeDate').formValid() ) {
+					
+					var data = $("#frmChangeDate").serializeFormObject();
+					$.ajax({
+						url: api_url + "/backoffice/mclub/detailMclub/evnt/finishdate/update",
+						type: "POST",
+						contentType: "application/json;charset=utf-8", // POST 일때만 사용
+						async: false,
+						cache: true,
+						data: JSON.stringify($("#frmChangeDate").serializeFormObject()),
+						success: function(obj) {
+							alert(obj.message);
+							f_detailMclubList();
+						},
+					    error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+					    	return;
+					    }	
+					});
+					
+					$(this).dialog("close");
+				}
+			}
+		}]
+	});
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	var frmKeepDataJson = $("#frmKeepData").serializeFormObject();
+	frmKeepDataJson['mclub_id'] = '<%=LangUtil.replaceInjection(request.getParameter("mclub_id"))%>';
+	
+	f_getMclubName(frmKeepDataJson, setMclubName);
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+	
+	$.ajax({
+	    url: api_url+"/backoffice/mclub/detailMclub/evnt/show", 
+	    type: "GET", 
+	    async: false,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    success: function(obj){
+	    	var data = obj.data;
+	    	$('#mclub_name').val(data.mclub_name);
+	    	$('#mclub_id').val(data.mclub_id);
+	    	$('#evnt_id').val(data.evnt_id);
+	    	$('#aprv_sts_cd').val(data.aprv_sts_cd);
+	    	$('#end_dd').val(data.end_dd);
+	    	$('#cpbook_vali_term_end_dd').val(data.cpbook_vali_term_end_dd);
+	    	
+	    	$("#reg_date").html(data.reg_date);
+	    	$("#reg_id_name").html(data.reg_id_name);
+	    	$("#mod_date").html(data.mod_date);
+	    	$("#mod_id_name").html(data.mod_id_name);
+	    	
+	    	$("#aprv_date").html(data.aprv_date);
+	    	$("#aprv_name").html(data.aprv_name);
+	    	$("#aprv_sts_cd_name").html(data.aprv_sts_cd_name);
+	    	$("#prgs_sts_cd_name").html(data.prgs_sts_cd_name);
+	    	
+	    	$("#evnt_name").html(data.evnt_name);
+	    	$("#evnt_desc").html(data.evnt_desc);
+	    	
+	    	$("#apply_dd").html(cf_cvtDateFormat(data.start_dd,'yyyy-MM-dd') + " ~ " + cf_cvtDateFormat(data.end_dd,'yyyy-MM-dd') );
+	    	$("#cpbook_vali_term_dd").html(data.cpbook_vali_term_end_dd + "일");
+	    	$("#cpbook_issue_cnt").html(data.cpbook_issue_cnt);
+			
+	    	if(data.cpbook_info) {
+	    		$.each(data.cpbook_info, function(i, item) {
+		    		var tag_td = "";
+		    		tag_td += '<td class="ta-c">' + (i+1) + '</td>';
+		    		tag_td += '<td class="ta-c">' + item.cpbook_id + '</td>';
+		    		tag_td += '<td class="ta-c"><a href="javascript:f_openCouponBookRD(\''+item.cpbook_id+'\')">' + item.cpbook_nm + '</a></td>';
+		    		tag_td += '<td class="ta-c">' + item.cpbook_type_cd_name + '</td>';
+		    		tag_td += '<td class="ta-c">' + item.coupon_cnt + '</td>';
+		    		$("#detail_mclub_cpb_tbody").append('<tr>' + tag_td + '</tr>');
+		    	});
+	    	}
+	    	// 게시물 상태 :  승인완료
+	    	if(data.aprv_sts_cd === 'APPROVE') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    		
+	    		if (data.prgs_sts_cd !== 'PROGRES') {
+	    			$('.btn_auth_aprv_stop').remove();
+		    		$('.btn_auth_vali_stop').remove();
+					}
+	    	}
+	    	// 게시물 상태 : 승인대기중
+	    	else if(data.aprv_sts_cd === 'STANDBY') {
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_aprv_stop').remove();
+	    		$('.btn_auth_vali_stop').remove();
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	// 게시물 상태 : 승인 요청전
+	    	else if(data.aprv_sts_cd === 'REQUEST') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_aprv_stop').remove();
+	    		$('.btn_auth_vali_stop').remove();
+	    	}
+	    	// 게시물 상태 : 반려
+	    	else if(data.aprv_sts_cd === 'REJECT') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_aprv_stop').remove();
+	    		$('.btn_auth_vali_stop').remove();
+	    	}
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

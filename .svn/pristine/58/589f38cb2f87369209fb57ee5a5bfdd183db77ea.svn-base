@@ -1,0 +1,459 @@
+package com.penta.backoffice.web.common.controller;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.View;
+
+//IMPORT COM.NETS.SSO.AGENT.AUTHCHECK.AUTHCHECK;
+//IMPORT COM.NETS.SSO.COMMON.ENUMS.AUTHSTATUS;
+import com.penta.backoffice.base.exception.BOAcceccDeniedException;
+import com.penta.backoffice.base.exception.BOException;
+import com.penta.backoffice.base.exception.WBizException;
+import com.penta.backoffice.base.util.DateTime;
+import com.penta.backoffice.base.util.JsonParserUtil;
+import com.penta.backoffice.base.util.LangUtil;
+import com.penta.backoffice.web.common.constant.CommonConstant;
+
+/**
+ * @class : CommonController.java
+ * @author : 
+ * @since :
+ * 
+ * @description : 공통으로 사용하는 사용자 컨트롤러
+ * 
+ * Copyright (C) by PENTAWORKS All right reserved.
+ */
+@Controller
+public class CommonController implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	// ---------------- service start ---------------- //
+
+	@Autowired
+	private View jsonView;
+
+	@Autowired
+	private Properties config;
+	
+	// ---------------- service end ---------------- //
+
+	/**
+	 * 로그인 페이지 호출
+	 * 
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/login.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public String login(HttpSession session, HttpServletResponse response) throws Exception {
+		return "/application/login";
+	}
+
+	/**
+	 * 마이다스 유입시 프로세스
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws IOException
+	 * @throws WBizException
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/midas/login.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public void midas(HttpServletRequest request, HttpServletResponse response, Model model, HttpSession session) throws IOException, WBizException,
+			BOAcceccDeniedException {
+
+		String encEmpno = request.getParameter("parm1");
+		String encTime = request.getParameter("parm2");
+
+		String decEmpno = new String(Base64.decodeBase64(encEmpno.getBytes()), "UTF-8");
+
+		// yyyyMMddHHmm
+		String decTime = new String(Base64.decodeBase64(encTime.getBytes()), "UTF-8");
+		String now = DateTime.getStringDate(new Date(), "yyyyMMddHHmmss");
+
+		long fromTime = Long.parseLong(decTime);
+		long toTime = Long.parseLong(now);
+
+		long term = toTime - fromTime;
+		if (term > 9000) {
+			try {
+				response.setContentType("text/html; charset=utf-8");
+				PrintWriter out = response.getWriter();
+				out.print(LangUtil.getMessage("종료된 세션입니다. 로그인을 다시 하시기 바랍니다.", config.getProperty("lottemart.midas.url")));
+				out.flush();
+				out.close();
+			}
+			catch (IOException e) {
+				throw new WBizException("세션 종료 중 에러 발생");
+			}
+		}
+		else {
+
+			BufferedReader br = null;
+
+			try {
+
+				URL url = new URL(config.getProperty("lottemart.api.url") + "/apis/backoffice/member/login");
+				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+				conn.setDoOutput(true);
+				conn.setRequestMethod("POST");
+				conn.setRequestProperty("Content-Type", "application/json");
+
+				String ip = getClientIpAddress(request);
+
+				String params = "{\"empno\":\"" + decEmpno + "\",\"ip\":\"" + ip + "\"}";
+
+				OutputStream os = conn.getOutputStream();
+				os.write(params.getBytes());
+				os.flush();
+
+				br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+				StringBuilder sb = new StringBuilder();
+
+				String line = null;
+
+				while ((line = br.readLine()) != null) {
+					sb.append(line);
+				}
+
+				conn.disconnect();
+
+				// JSON 데이터로 파싱
+				JSONObject jsonObj = new JSONObject(sb.toString());
+
+				JSONObject obj_data = jsonObj.getJSONObject("data");
+				JSONObject obj_empinfo = obj_data.getJSONObject("emp_info");
+				JSONArray obj_menu = obj_data.getJSONArray("menu_list");
+
+				// 회원 정보 MAP로 추출
+				Map<String, Object> empinfo = JsonParserUtil.jsonToMap(obj_empinfo);
+
+				// MENU 정보 MAP로 추출
+				JSONObject obj_menu_list = new JSONObject();
+				obj_menu_list.put("menu_list", obj_menu);
+				Map<String, Object> menu_list = JsonParserUtil.jsonToMap(obj_menu_list);
+
+				// 현 접속시도자가 역할 정보를 가지고 있는지 확인
+				int authCnt = (int) empinfo.get("rol_set_cnt");
+
+				if (authCnt < 1) {
+					throw new BOAcceccDeniedException("권한 없는 잘못된 접근");
+				}
+
+				session.setAttribute(CommonConstant.SESSION_EMPNO, empinfo.get("empno"));
+				session.setAttribute(CommonConstant.SESSION_NAME, empinfo.get("nm"));
+				session.setAttribute(CommonConstant.SESSION_STR_CD, empinfo.get("str_cd"));
+				session.setAttribute(CommonConstant.SESSION_STR_NM, empinfo.get("str_nm"));
+				session.setAttribute(CommonConstant.SESSION_DUTY_CD, empinfo.get("duty_cd"));
+				session.setAttribute(CommonConstant.SESSION_HQ_BASE_YN, empinfo.get("hq_base_yn"));
+
+				// 메뉴 정보 세션 저장
+				session.setAttribute(CommonConstant.SESSION_MENU, menu_list);
+				session.setMaxInactiveInterval(Integer.parseInt(config.getProperty("lottemart.backoffice.session.time")));
+
+				response.sendRedirect("/index.do");
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+				response.sendRedirect(config.getProperty("lottemart.midas.url"));
+			}
+			finally {
+				if (br != null) {
+					try {
+						br.close();
+					}
+					catch (IOException ioe) {
+						ioe.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * LOGIN 처리
+	 * 
+	 * @param request
+	 * @param response
+	 * @param model
+	 * @return
+	 * @throws IOException
+	 * @throws WBizException
+	 * @throws Exception
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/login/proc.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public Object loginProc(HttpServletRequest req, HttpServletResponse res, Model model, HttpSession ses) throws Exception {
+		Map<String, Object> result = new HashMap<String, Object>();
+		
+		BufferedReader br = null;
+		HttpURLConnection conn = null;
+		
+		try {
+			// 로그인 API 호출
+			URL url = new URL(config.getProperty("backoffice.api.url") + "/apis/backoffice/member/login/process");
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+			
+			JSONObject jsonParams = new JSONObject();
+			jsonParams.put("login_id", req.getParameter("login_id"));
+			jsonParams.put("login_pw", req.getParameter("login_pw"));
+
+			OutputStream os = conn.getOutputStream();
+			os.write(jsonParams.toString().getBytes());
+			os.flush();
+
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+			StringBuilder sb = new StringBuilder();
+
+			String line = null;
+
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+
+			// JSON 데이터로 파싱
+			JSONObject jsonObj = new JSONObject(sb.toString());
+			JSONObject obj_data = jsonObj.getJSONObject("data");
+
+			JSONObject obj_empinfo = obj_data.getJSONObject("emp_info");
+			JSONArray obj_menu = obj_data.getJSONArray("menu_list");
+
+			// MENU 정보 MAP로 추출
+			JSONObject obj_menu_list = new JSONObject();
+			obj_menu_list.put("menu_list", obj_menu);
+			Map<String, Object> menu_list = JsonParserUtil.jsonToMap(obj_menu_list);
+
+			// 현 접속시도자가 역할 정보를 가지고 있는지 확인
+			int authCnt = (int) obj_empinfo.get("rol_set_cnt");
+
+			if (authCnt < 1) {
+				throw new BOAcceccDeniedException("권한 없는 잘못된 접근(역할 정보 미존재)");
+			}
+			
+			ses.setAttribute(CommonConstant.SESSION_EMPNO	  , obj_empinfo.get("empno").toString());
+			ses.setAttribute(CommonConstant.SESSION_NAME	  , obj_empinfo.get("nm").toString());
+			ses.setAttribute(CommonConstant.SESSION_STR_CD	  , obj_empinfo.get("str_cd").toString());
+			ses.setAttribute(CommonConstant.SESSION_STR_NM	  , obj_empinfo.get("str_nm").toString());
+			ses.setAttribute(CommonConstant.SESSION_DUTY_CD	  , obj_empinfo.get("duty_cd").toString());
+			ses.setAttribute(CommonConstant.SESSION_AUTH_CD	  , obj_empinfo.get("user_divn_cd"));
+			ses.setAttribute(CommonConstant.SESSION_HQ_BASE_YN, obj_empinfo.get("hq_base_yn").toString());
+			ses.setAttribute(CommonConstant.SESSION_EMP_TOKEN , obj_empinfo.get("emp_token").toString());
+			
+			// 메뉴 정보 세션 저장
+			ses.setAttribute(CommonConstant.SESSION_MENU, menu_list);
+			ses.setMaxInactiveInterval(Integer.parseInt(config.getProperty("backoffice.session.time")));
+			
+			result.put("access_token", obj_empinfo.get("emp_token").toString());
+			return result;
+		}
+		catch (Exception e) {
+			logger.error("### loginProc error ", e);
+			throw e;
+		}
+		finally {
+			if (conn != null) conn.disconnect();	
+
+			try {
+				if (br != null) br.close();
+			}
+			catch (IOException ioe) {
+				logger.error("### loginProc close error!! : ", ioe);
+			}
+		}
+	}
+
+	/**
+	 * 인덱스 페이지 호출
+	 * 
+	 * @param session
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/index.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public String index(HttpSession session, HttpServletResponse response) throws Exception {
+		return "/application/index";
+	}
+
+	/**
+	 * 로그 아웃
+	 * 
+	 * @param request
+	 * @param response
+	 * @param session
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/logout.do", method = RequestMethod.GET)
+	public void logout(HttpServletRequest request, HttpServletResponse response, HttpSession session) throws Exception {
+		
+		String token = (String) request.getHeader("access_token");
+
+		session.setMaxInactiveInterval(0);
+		session.invalidate();
+		
+		BufferedReader br = null;
+		HttpURLConnection conn = null;
+		
+		try {
+			// 로그아웃 처리 api 호출
+			JSONObject jsonParams = new JSONObject();
+			
+			URL url = new URL(config.getProperty("backoffice.api.url") + "/apis/backoffice/member/logout");
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Type", "application/json");
+			conn.setRequestProperty("access_token",  token);
+			
+			OutputStream os = conn.getOutputStream();
+			os.write(jsonParams.toString().getBytes());
+			os.flush();
+
+			br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+
+			StringBuilder sb = new StringBuilder();
+
+			String line = null;
+
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+		}
+		catch (IOException e) {
+			logger.error("### logoutProc error ", e);
+			throw e;
+		}
+		finally {
+			if (conn != null) conn.disconnect();	
+
+			try {
+				if (br != null) br.close();
+			}catch (IOException ioe) {
+				logger.error("### logoutProc close error!! : ", ioe);
+			}
+		}
+
+		response.sendRedirect("/login.do");
+	}
+
+	/**
+	 * 백오피스 왼쪽 메뉴
+	 * 
+	 * @param session
+	 * @param map
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/left.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public View left(HttpSession session, ModelMap map) throws Exception {
+		Map<String, Object> menuTree = (Map<String, Object>) session.getAttribute(CommonConstant.SESSION_MENU);
+		map.addAllAttributes(menuTree);
+		return jsonView;
+	}
+
+	/**
+	 * 메인 페이지 데쉬보드
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/application/dashboard.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public String dashboard() throws Exception {
+		return "/application/dashboard";
+	}
+
+	/**
+	 * 엑셀업로드 공통 다이얼
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/application/common/excelUploadWD.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public String excelUploadWD(HttpSession session, HttpServletResponse response) throws Exception {
+		Map<String, Object> menuAuth = (Map<String, Object>) session.getAttribute("menuAuth");
+		if (menuAuth.get(CommonConstant.MENU_AUTH_READ) == null || ((String) menuAuth.get(CommonConstant.MENU_AUTH_READ)).equals(CommonConstant.MENU_USE_FALSE)) {
+			throw new BOException("권한이 없는 잘못된 접근");
+		}
+		return "/application/common/excelUploadWD";
+	}
+
+	/**
+	 * 접속 IP 확인
+	 * @param req
+	 * @return
+	 */
+	private String getClientIpAddress(HttpServletRequest req) {
+		String ip = req.getHeader("X-Forwarded-For");
+
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = req.getHeader("Proxy-Client-IP");
+		}
+
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = req.getHeader("WL-Proxy-Client-IP");
+		}
+
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = req.getHeader("HTTP_CLIENT_IP");
+		}
+
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = req.getHeader("HTTP_X_FORWARDED_FOR");
+		}
+
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = req.getRemoteAddr();
+		}
+
+		return ip;
+	}
+	
+	/**
+	 * 우편번호 찾기
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/application/cooperateService/tenant/tenantFindPostnoSD.do", method = { RequestMethod.GET, RequestMethod.POST })
+	public String tenantFindPostnoSD() throws Exception {
+		return "/application/00old/cooperateService/tenant/tenantFindPostnoSD";
+	}
+	
+}

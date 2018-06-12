@@ -1,0 +1,239 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>CRM 쿠폰북 발행 게시중단</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<form id="frmCampainBreak" class="form-horizontal" method="post">
+						<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+						<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+						<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+						<%
+							Enumeration<?> e = request.getParameterNames();
+							while(e.hasMoreElements()){
+								String key = (String)e.nextElement();
+								String values[] = request.getParameterValues(key);
+								for(int i = 0; i < values.length; i++) {
+									out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+								}
+							}
+						%>
+						<div class="widget-body no-padding">
+							<div class="table-responsive" style="max-height:417px; overflow-y:auto;">
+								<table class="table table-bordered table-striped">
+									<colgroup>
+							            <col width="3%" />
+							            <col width="5%" />
+							            <col width="9%" />
+							            <col />
+							            <col width="15%" />
+							            <col width="6%" />
+							            <col width="12%" />
+							            <col width="14%" />
+							        </colgroup>
+									<thead>
+										<tr>
+											<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+											<th class="ta-c">No.</th>
+											<th class="ta-c">쿠폰북 번호</th>
+											<th class="ta-c">쿠폰북명</th>
+											<th class="ta-c">쿠폰북 유형</th>
+											<th class="ta-c">쿠폰수</th>
+											<th class="ta-c">시작일</th>
+											<th class="ta-c">종료일</th>
+										</tr>
+									</thead>
+									<tbody id="breakBook_tbody">
+										
+									</tbody>
+								</table>
+							</div>
+							<div class="dt-toolbar-footer">
+								<div class="col-md-12 ta-l">
+									<i class="fa fa-info-circle"></i> 종료일은 기존에 설정된 일자보다 연장할 수 없으며, 단축만 가능합니다.<br>
+									<i class="fa fa-info-circle"></i> 종료일 오른쪽의 체크박스에 체크한 것만 저장처리가 됩니다.
+								</div>
+								
+								<div class="col-md-12 ta-r">
+									<a href="javascript:f_closeDialog()" class="btn btn-default">취소</a>
+									<a href="javascript:f_breakSubmit()" class="btn btn-primary">저장</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 취소버튼 이벤트 : 다이얼로그 닫기
+ * ==================================================================================
+ */
+function f_closeDialog() {
+	$('#campain_break_rd').dialog('close');
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 게시중단 다이얼로그 데이터 전송
+ * ==================================================================================
+ */
+function f_breakSubmit() {
+	if($('#frmCampainBreak').formValid()) {
+		if($('#breakBook_tbody').find('input[type=checkbox]:checked').length != 0){
+			var over_date_flag = true;
+			var min_date = (cf_termDate(-1)).replace(/\-/g,'');
+			var param ={};
+			var cpbook_id_list = [];
+			var ori_end_dd_list = [];
+			var vali_term_end_dd_list = [];
+			$('#breakBook_tbody').find('input[type=checkbox]:checked').each(function(i,items) {
+	// 			$(items).parents("tr").find('input[name=ori_end_dd_list]').val();
+				var comapre_date = $(items).parents("tr").find('input[name=ori_end_dd_list]').val();
+				// 날짜 변환 err로 인한 추가
+				comapre_date = comapre_date.substring(0,8);
+				var end_dd = $(items).parents("tr").find('input[name=vali_term_end_dd_list]').val();
+			    $temp = items;
+	// 			var comapre_date = $('#breakBook_tbody').find('input[name=ori_end_dd_list]').eq(i).val();
+	// 			var end_dd = $(this).val();
+				var max_date = (cf_termDate(-1, cf_cvtDateFormat(comapre_date,'yyyy-MM-dd'))).replace(/\-/g,'');
+				var break_date = end_dd.replace(/\-/g,'');
+	//			alert("break : " + break_date + " max : " + max_date + " min_date : " + min_date);	
+	//			alert("parseInt(break_date) : " + parseInt(break_date) + " parseInt(max_date) : " + parseInt(max_date) + " min_date : " + min_date);
+				if(parseInt(break_date) > parseInt(max_date)) {
+					alert('종료일은 단축만 가능 합니다.');
+					$(items).parents("tr").find('input[name=vali_term_end_dd_list]').focus();
+					over_date_flag = false;
+					return false;
+				}
+				
+				if(parseInt(break_date) > parseInt(min_date)) {
+					alert('종료일은 직전일부터 선택가능 합니다.');
+					$(items).parents("tr").find('input[name=vali_term_end_dd_list]').focus();
+					over_date_flag = false;
+					return false;
+				}				
+				cpbook_id_list.push($(items).parents("tr").find('input[name=cpbook_id_list]').val());
+				ori_end_dd_list.push($(items).parents("tr").find('input[name=ori_end_dd_list]').val());
+				vali_term_end_dd_list.push($(items).parents("tr").find('input[name=vali_term_end_dd_list]').val().replace(/\-/g,''));
+			});
+			
+			if(over_date_flag != true) {
+				return;
+			}
+			
+			param["cpbook_id_list"] = cpbook_id_list;
+			param["ori_end_dd_list"] = ori_end_dd_list;
+			param["vali_term_end_dd_list"] = vali_term_end_dd_list;
+			param["custgp_cl_cpbook_id"] = $('#frmCampainBreak input[name=custgp_cl_cpbook_id]').val();
+		    param["emp_str_cd"] = $('#frmCampainBreak input[name=emp_str_cd]').val();
+	        param["empno"] = $('#frmCampainBreak input[name=empno]').val();
+	        param["hq_base_yn"] = $('#frmCampainBreak input[name=hq_base_yn]').val();
+	        param["lst_custgp_id"] = $('#frmCampainBreak input[name=lst_custgp_id]').val();
+	        
+			if(confirm('현재 발행된 쿠폰북의 종료일이 변경됩니다.\n\n정말 게시를 중단하겠습니까?')) {
+// 	        $debug = param;
+			//return false;
+				$.ajax({
+					url: api_url+'/backoffice/campaign/custgroup/couponbook/stop',
+				    type: 'POST',
+				    async: true,
+				    cache: false,
+				    datatype: 'json',
+				    contentType: 'application/json;charset=utf-8',
+	// 			    data: JSON.stringify($('#frmCampainBreak').serializeFormObject()),
+				    data: JSON.stringify(param),
+				    beforeSend : function() {},
+				    success: function(obj){
+				    	alert(obj.message);
+				    	f_closeDialog();
+				    	var url = '/application/coupon/campaign/couponCampaignRN.do';
+						var method = 'POST';
+						cf_action(url, method, $('#frmKeepData').serialize());
+				    },
+				    error: function(obj) {
+				    	var serverObj = obj.responseJSON;
+				    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+				    	return;
+				    }
+				});	 
+			}
+		} else{
+			alert("중단할 데이터를 선택하세요");
+		}
+	}
+	else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	var data = {
+			custgp_cl_cpbook_id : $('input[name=custgp_cl_cpbook_id]').val(),
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			lst_custgp_id : $('input[name=lst_custgp_id]').val()
+	};
+
+	$.ajax({
+	    url: api_url+'/backoffice/campaign/couponbook/list', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var tbody = $('#breakBook_tbody');
+	    	tbody.html('');
+	    	$.each(obj.data.cpbook_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c" onclick="event.cancelBubble = true;"><input type="checkbox"></td>';
+	    		tag_td += '<td class="ta-c" style="vertical-align:middle;">'+items.rnum+'</td>\n';
+	    		tag_td += '<input type="hidden" name="cpbook_id_list" data-array-always="true" value="'+items.cpbook_id+'">';
+	    		tag_td += '<td class="ta-c" style="vertical-align:middle;">'+items.cpbook_id+'</td>\n';
+	    		tag_td += '<td class="ta-c" style="vertical-align:middle;">'+items.cpbook_nm+'</td>\n';
+	    		tag_td += '<td class="ta-c" style="vertical-align:middle;">'+items.cpbook_type_cd_name+'</td>\n';
+	    		tag_td += '<td class="ta-c" style="vertical-align:middle;">'+items.coupon_cnt+'</td>\n';
+	    		tag_td += '<td class="ta-c" style="vertical-align:middle;">'+cf_cvtDateForm(items.vali_term_start_dd, 'yyyy-MM-dd')+'</td>\n';
+	    		tag_td += '<input type="hidden" name="ori_end_dd_list" value="'+items.vali_term_end_dd+'">';
+	    		tag_td += '<td class="ta-c input-icon-right"><i class="fa fa-calendar" style="padding-right:10px"></i><input class="form-control datepicker" name="vali_term_end_dd_list" data-valid-use="true" data-array-always="true" data-date-format="yyyyMMdd" type="text" data-dateformat="yy-mm-dd" placeholder="종료일" value="'+cf_cvtDateForm(items.vali_term_end_dd, 'yyyy-MM-dd')+'"></td>\n';
+	    	
+	    		var tag_tr = '<tr>'+tag_td+'</tr>';
+	    		tbody.append(tag_tr);
+	    	});
+	    	pageSetUp();
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+dialog_pagefunction();
+</script>

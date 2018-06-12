@@ -1,0 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script src="${pageContext.request.contextPath}/resources/js/application/cooperateService.js"></script>
+<script src="//d1p7wdleee1q2z.cloudfront.net/post/search.min.js"></script>
+<div id="targetHtml">
+	<jsp:include page="/WEB-INF/jsp/application/cooperateService/tenant/tenantLN.jsp" flush="true" />
+</div>

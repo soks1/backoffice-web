@@ -1,0 +1,271 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>쿠폰 사용 정보</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<!-- <legend></legend> -->
+																
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰번호 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="rd_coupon_id"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="rd_coupon_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">상품 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="rd_prod_content"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰유형 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="rd_coupon_type_cd_name"></span>
+									</div>
+									<label class="col-md-3 control-label cs-css-05">할인적립(금액/율) : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="rd_dc_savu_amt"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">유효기간 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="rd_vali_term_dd"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">사용가능일자 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="rd_use_day_info"></span>
+									</div>
+								</div>
+								<div class="form-group" id="end_dd_chg_reason" style="display:none;">
+									<label class="col-md-2 control-label cs-css-05">유효기간 변경 사유 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="end_dd_chg_reason_cd_name"></span>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row" id="couponbookLL">
+	<!-- 쿠폰북 목록 -->
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 사용이력 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_coupon_use_grid" class="widget-body no-padding">
+						<table id="coupon_use_grid"></table>
+						<div id="coupon_use_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepDataRD">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+</form>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	
+	var action = $('#frmKeepDataRD').serializeFormObject();
+	action['empno'] = '${sessionScope.sessionEmpno}';
+	
+	$.ajax({
+	    url: api_url+'/backoffice/campaign/member/coupon/use/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: false,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(action)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	$('#rd_coupon_id').html($('#frmKeepDataRD').find('input[name=coupon_id]').val());
+	    	$('#rd_coupon_nm').html(obj.data.coupon_nm);
+	    	$('#rd_prod_content').html(obj.data.prod_content);
+	    	$('#rd_coupon_type_cd_name').html(obj.data.coupon_type_cd_name);
+	    	
+	    	
+	    	var coupon_type_cd = $('#frmKeepDataRD').find('input[name=coupon_type_cd]').val();
+	    	if(coupon_type_cd == 'A' || coupon_type_cd == 'F' || coupon_type_cd == 'J' || coupon_type_cd == 'L') {
+	    		$('#rd_dc_savu_amt').html(cf_setComma(obj.data.dc_savu_amt) + ' %');  
+			} 
+	    	else if(coupon_type_cd == 'B' || coupon_type_cd == 'G' || coupon_type_cd == 'K' || coupon_type_cd == 'M') {
+				$('#rd_dc_savu_amt').html(cf_setComma(obj.data.dc_savu_amt) + ' 원');  
+			} 
+	    	else if(coupon_type_cd == 'C' || coupon_type_cd == 'H' || coupon_type_cd == 'N') {
+				$('#rd_dc_savu_amt').html(cf_setComma(obj.data.dc_savu_amt) + ' 배');  
+			} 
+	    	else if(coupon_type_cd == 'D' || coupon_type_cd == 'I' || coupon_type_cd == 'E' || coupon_type_cd == 'O') {
+				$('#rd_dc_savu_amt').html(cf_setComma(obj.data.dc_savu_amt) + ' P');  
+			} 
+	    	else {
+				$('#rd_dc_savu_amt').html(obj.data.dc_savu_amt);
+			}
+	    		    	
+	    	$('#rd_vali_term_dd').html(cf_cvtDateFormat(obj.data.vali_term_start_dd,'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat(obj.data.vali_term_end_dd,'yyyy-MM-dd'));
+	    	
+	    	if(obj.data.use_day_info != '') {
+    			var day_info = obj.data.use_day_info;
+    			var day_lst = day_info.split(",");
+    			var day_html = '';
+    			for(var x = 0; x < day_lst.length; x++) {
+    				if(x == 0) {
+						day_html = cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');	
+					}
+					else {
+						day_html = day_html + ', ' + cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');	
+					}
+    			}
+    			$('#rd_use_day_info').html(day_html);
+    		}
+	    	
+	    	var s_dd = $('<input>').attr('name','s_vali_term_end_dd').attr('type','hidden').val(obj.data.vali_term_start_dd);
+	    	var e_dd = $('<input>').attr('name','e_vali_term_end_dd').attr('type','hidden').val(obj.data.vali_term_end_dd);
+	    	$('#frmKeepDataRD').append(s_dd);
+	    	$('#frmKeepDataRD').append(e_dd);
+	    	
+	    	
+	    	if(obj.data.end_dd_chg_yn == 'Y') {
+	    		$('#end_dd_chg_reason').show();
+	    		$('#end_dd_chg_reason_cd_name').html(obj.data.end_dd_chg_reason_cd_name);
+	    		
+	    	}
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $('#coupon_use_rd').dialog('option','width') - 45;
+		
+		jQuery("#coupon_use_grid").jqGrid({
+			url : api_url+"/backoffice/campaign/member/coupon/use/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['구분', '사용일시', '적용건수'],
+			colModel : [
+				{ name : 'coupon_use_divn_cd_name', index : 'coupon_use_divn_cd_name',	align : "center",	sortable : false, 	width : (pageWidth*(33/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						if(rowObject.coupon_use_divn_cd == 'USE') {
+							return rowObject.coupon_use_divn_cd_name;
+						} 
+						else {
+							return '<span style="color:#ff0000">'+rowObject.coupon_use_divn_cd_name+'</span>';
+						}
+					}
+				}, 
+				{ name : 'reg_date', 				index : 'reg_date', 				align : "center", 	sortable : true, 	width : (pageWidth*(34/100)) 	}, 
+				{ name : 'coupon_apply_buy_qty', 	index : 'coupon_apply_buy_qty',		align : "center",	sortable : false, 	width : (pageWidth*(33/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "rnum",
+				root : 		function(obj){ return obj.data.coupon_use_list; },				// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			search : false,
+			serializeRowData: function (postData) { return "params="+encodeURI(JSON.stringify(postData)); },
+			serializeGridData: function(postData) { return "params="+encodeURI(JSON.stringify(postData)); },
+			postData: $('#frmKeepDataRD').serializeFormObject(),
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#coupon_use_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : false,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+		});
+		jQuery("#coupon_use_grid").jqGrid('navGrid', "#coupon_use_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		$("#coupon_use_grid").gridCss();
+	  	$("#coupon_use_grid_cb").css("border-left-width","0");
+	  	$("#coupon_use_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_coupon_use_grid_cb").css("padding","7px 0");
+	  	$("#coupon_use_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#coupon_use_grid").jqGrid( 'setGridWidth', $("#target_coupon_use_grid").width() );
+		});
+	} 
+	// end function
+};
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+</script>

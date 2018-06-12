@@ -1,0 +1,205 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page import="com.penta.backoffice.web.common.controller.CommonController"%>
+<%@ page import="java.util.Enumeration"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-11" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 선물 수/발신 정보</h2>
+				</header>
+				<div id="width_target">
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">선물 발신자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="send_user_rep_id"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">선물 수신자 : </label>
+									<div class="col-md-4" style="padding-left: 1px;">
+										<span class="form-control cs-css-03" id="recv_user_rep_id"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">원본 쿠폰북 ID : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="send_cpbook_id"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">선물 쿠폰북 ID : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="recv_cpbook_id"></span>
+									</div>
+								</div>
+								<div class="form-group" >
+									<label class="col-md-2 control-label cs-css-05">선물 발신 일시: </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="send_date"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">선물 수신일시: </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="recv_date"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">선물 쿠폰 수 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="cp_cnt"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">쿠폰 유효 기간 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="vali_term_dd"></span>
+									</div>
+								</div>
+								
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 선물 쿠폰 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="table-responsive" style="overflow: auto;">
+							<table class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th class="ta-c">no</th>
+										<th class="ta-c">쿠폰 ID</th>
+										<th class="ta-c">쿠폰명</th>
+										<th class="ta-c">쿠폰 유형</th>
+										<th class="ta-c">사용 여부</th>
+										<th class="ta-c">사용일</th>
+									</tr>
+								</thead>
+								<tbody id="coupon_tbody">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+function fn_submit(data) {
+	
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	
+	var _send_cpbook_id = $("#frmKeepData [name=send_cpbook_id").val();
+	var _recv_cpbook_id = $("#frmKeepData [name=recv_cpbook_id").val();
+	var _send_user_rep_id = $("#frmKeepData [name=send_user_rep_id").val();
+	var _recv_user_rep_id = $("#frmKeepData [name=recv_user_rep_id").val();
+	var _send_cpbook_mapp_digit = $("#frmKeepData [name=send_cpbook_mapp_digit").val();
+	var _recv_cpbook_mapp_digit = $("#frmKeepData [name=recv_cpbook_mapp_digit").val();
+	
+	
+	var data = $('#frmKeepData').serializeFormObject();
+	
+	data.send_cpbook_id = _send_cpbook_id;
+	data.recv_cpbook_id = _recv_cpbook_id;
+	data.send_user_rep_id =_send_user_rep_id;
+	data.recv_user_rep_id =_recv_user_rep_id;
+	data.send_cpbook_mapp_digit =_send_cpbook_mapp_digit;
+	data.recv_cpbook_mapp_digit = _recv_cpbook_mapp_digit;
+	data.empno = '${sessionScope.sessionEmpno}';
+
+		$.ajax({
+		    url: api_url+'/backoffice/gift/show', //this is the submit URL
+		    type: 'GET', // GET or POST
+		    async: true,
+		    cache: true,
+		    datatype: 'json',
+		    data: encodeURI('params='+JSON.stringify(data)),
+		    beforeSend : function() {},
+		    success: function(obj){
+		    	cpbookData = obj.data.gift_cpbook_info;
+		    	
+		    	// 쿠폰북 정보
+		    	$("#send_user_rep_id").html(cpbookData["send_user_rep_id"]);
+		    	$("#recv_user_rep_id").html(cpbookData['recv_user_rep_id']);
+		    	$("#send_cpbook_id").html(cpbookData['send_cpbook_id']);
+		    	$("#recv_cpbook_id").html(cpbookData['recv_cpbook_id']);
+		    	$("#send_date").html(cpbookData['send_date']);
+		    	$("#recv_date").html(cpbookData['recv_date']);
+		    	$("#cp_cnt").html(cpbookData['cp_cnt']);
+		    	$("#vali_term_dd").html(cpbookData["vali_term_start_dd"] + "~" + cpbookData["vali_term_end_dd"]);
+		    	
+		    	// 쿠폰북 쿠폰 정보
+		    	$("#coupon_tbody").empty();
+		    	
+		    	cpbook_cp_list = obj.data.gift_cp_info;
+		    	$.each(cpbook_cp_list, function(i, item) {
+		    		var tag_td = '';
+		    		tag_td += '<td class="ta-c">'+item.rnum+'</td>';
+		    		tag_td += '<td class="ta-c">'+item.coupon_id+'</td>';
+		    		tag_td += '<td class="ta-c">'+item.coupon_nm+'</td>';
+			    	tag_td += '<td class="ta-c">'+item.coupon_type_cd_name+'</td>';
+		    		if (item.use_chk == "Y"){
+			    		tag_td += '<td class="ta-c">'+item.coupon_use_divn_cd_name+'</td>';
+			    		tag_td += '<td class="ta-c">'+item.use_date+'</td>';
+		    		}else {
+			    		tag_td += '<td class="ta-c">-</td>';
+			    		tag_td += '<td class="ta-c">-</td>';
+		    		}
+		    		var tag_tr = "<tr>"+tag_td+"</tr>";
+		    		$("#coupon_tbody").append(tag_tr);
+		    	});
+			}	
+		});
+	
+	
+
+}
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+dialog_pagefunction();
+</script>

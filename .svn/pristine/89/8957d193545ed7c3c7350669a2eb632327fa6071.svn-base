@@ -1,0 +1,164 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div id="wid-id-2">
+				<div class="jarviswidget-editbox">
+				</div>
+				<div class="widget-body">
+					<form class="form-horizontal" id="frmStamp1">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-md-2 control-label">결제일</label>
+								<div class="col-md-8">
+									<input class="form-control datepicker pr12 tac" type="text" id="stamp_seal_dd" name="stamp_seal_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="결제일">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">점포</label>
+								<div class="col-md-10">
+									<select class="form-control" id="str_cd" name="str_cd" data-valid-use="true" data-valid-title="점포">
+										<option value="">선택</option>
+									</select>									
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-2 control-label">미션</label>
+								<div class="col-md-10">
+									<select class="form-control" id="bsis_mison_yn" name="bsis_mison_yn" data-valid-use="true" data-valid-title="미션">
+										<option value="">선택</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group" id="divProduct" style="display:none;">
+								<label class="col-md-2 control-label">판매코드</label>
+								<div class="col-md-4">
+									<input class="form-control" type="text" id="prod_sell_cd" name="prod_sell_cd" 
+										data-valid-use="false" data-valid-title="판매코드">
+								</div>
+								<label class="col-md-2 control-label">수량</label>
+								<div class="col-md-4">
+									<input class="form-control" type="text" id="prod_cnt" name="prod_cnt" 
+										data-valid-use="false" data-valid-num="true" data-valid-max="4" data-valid-title="수량" />
+								</div>
+							</div>
+							<div class="form-group" id="divPrice" style="display:none;">
+								<label class="col-md-2 control-label">결제금액</label>
+								<div class="col-md-10">
+									<input class="form-control" type="text" id="setl_amt" name="setl_amt"  
+										data-valid-use="false" data-valid-num="true" data-valid-max="10" data-valid-title="결제금액">
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+// 스탬프 강제 날인하기
+function f_stampForceSeal() {
+	if(!$('#frmStamp1').formValid()) return;
+		
+	var params = $.extend({}, pageData);
+	params.stamp_seal_dd = $("#stamp_seal_dd").val().replace(/-/gi, "");
+	params.str_cd = $("#str_cd").val();
+	params.bsis_mison_yn = $("#bsis_mison_yn").val();
+	params.prod_sell_cd = $("#prod_sell_cd").val();
+	params.prod_cnt = $("#prod_cnt").val();
+	params.setl_amt = $("#setl_amt").val();
+	
+	$.ajax({
+		url: api_url+"/backoffice/stamp/forceseal",
+	    type: "POST",
+	    async: true,
+	    datatype: 'json',
+	    contentType: 'application/json;charset=utf-8',
+	    data: JSON.stringify(params),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	alert("처리되었습니다.");
+	    	$('#stamp_forece_seal_wd').dialog("close");
+	    	$('#stampfund_info_sd').dialog("close");
+	    	f_searchRN();
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    }
+	});
+}
+
+var pageData = {
+	stamp_card_id : "",
+	stamp_id : "",
+	empno : "${sessionScope.sessionEmpno}",
+	user_rep_id : ""
+};
+
+function pageInit_stampForceSeal() {
+	
+	// 초기 데이터 설정
+	pageData.stamp_card_id = $("#frmKeepDataRD").find("input[name=stamp_card_id]").val();
+	pageData.stamp_id  = $("#frmKeepDataRD").find("input[name=stamp_id]").val();
+	pageData.user_rep_id  = $("#frmKeepData").find("input[name=user_rep_id]").val();
+
+	f_ajaxStrCdCode($('#str_cd'));
+	
+	$("#bsis_mison_yn").change(function() {
+		var stampApplyToCd = $(this).find("option:selected").data("stampApplyToCd");
+		if (stampApplyToCd == "PRODUCT" || stampApplyToCd == "MIX") {
+			$("#divProduct").show().find("input:text").attr("data-valid-use", "true");
+			$("#divPrice").hide().find("input:text").attr("data-valid-use", "false");
+			
+		} else if (stampApplyToCd == "PRICE") {
+			$("#divProduct").hide().find("input:text").attr("data-valid-use", "false");
+			$("#divPrice").show().find("input:text").attr("data-valid-use", "true");
+			
+		} else {
+			$("#divProduct").hide();
+			$("#divPrice").hide();
+			
+		}
+	});
+
+	$.ajax({
+		url: api_url+"/backoffice/stamp/show",
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(pageData)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var df_mission_yn = "";
+	    	$.each(obj.data.mission_list, function(i, misson) {
+	    		if(misson.bsis_mison_yn == 'Y'){
+	    			df_mission_yn = "(기본미션)";
+	    		} else if(misson.bsis_mison_yn == 'N'){
+	    			df_mission_yn = "(특별미션)";
+	    		}
+				$("#bsis_mison_yn").append("<option value='" + misson.bsis_mison_yn + "'"
+					+ " data-stamp-apply-to-cd='" + misson.stamp_apply_to_cd + "'>"
+					+ misson.stamp_apply_to_cd_name +df_mission_yn+ "</option>");
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+pageInit_stampForceSeal();
+
+</script>

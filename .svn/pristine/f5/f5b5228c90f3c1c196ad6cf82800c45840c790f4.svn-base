@@ -1,0 +1,285 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">지점번호</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="l_str_cd">
+									</div>
+									<label class="col-md-1 control-label">지점명</label>
+									<div class="col-md-3">
+										<select class="form-control" name="l_str_nm">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									<label class="col-md-1 control-label">ZONE 상태</label>
+									<div class="col-md-3">
+										<select class="form-control" name="use_yn">
+											<option value="">전체</option>
+										</select> 
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">층 번호</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="l_floor_no" />
+									</div>
+									
+									<label class="col-md-1 control-label">층 이름</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="l_floor_nm" />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">ZONE 이름</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="l_zone_nm">
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> ZONE 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_zone_grid" class="widget-body no-padding">
+						<table id="zone_grid"></table>
+						<div id="zone_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+		
+	// 초기데이터 로드 : 승인상태
+	f_ajaxLpotZoneStrNmCode($("select[name=l_str_nm]"));
+	// 초기데이터 로드 : 승인상태
+	f_ajaxLpotZoneUseYnCode($("select[name=use_yn]"));
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#zone_grid").parent().width() - 100;
+
+		jQuery("#zone_grid").jqGrid({
+			url : api_url+"/backoffice/lpot/zone/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '지점번호', '지점명', '층 번호', '층 이름', 'ZONE 이름', '진행중 이벤트', 'ZONE 상태', 'ZONE 번호'],
+			colModel : [
+				{ name : 'rnum', 					index : 'rnum',		 				align : "center",	sortable : false, 	width : (pageWidth*(3/100)) 	},
+				{ name : 'l_str_cd', 				index : 'l_str_cd', 				align : "center",	sortable : true, 	width : (pageWidth*(8/100))		},
+				{ name : 'l_str_nm', 				index : 'l_str_nm', 				align : "center",	sortable : false, 	width : (pageWidth*(8/100))		},
+				{ name : 'l_floor_no', 				index : 'l_floor_no', 				align : "center",	sortable : false, 	width : (pageWidth*(5/100))		}, 
+				{ name : 'l_floor_nm', 				index : 'l_floor_nm', 				align : "center", 	sortable : false, 	width : (pageWidth*(10/100))	}, 
+				{ name : 'l_zone_nm', 				index : 'l_zone_nm', 				align : "center",	sortable : false, 	width : (pageWidth*(20/100)), 	classes:'pointer'	}, 	
+				{ name : 'event_cnt', 				index : 'event_cnt', 				align : "center", 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'use_yn_nm', 				index : 'use_yn_nm', 				align : "center", 	sortable : true, 	width : (pageWidth*(8/100)) 	},				
+				{ name : 'l_zone_no', 				index : 'l_zone_no', 				align : "center",	hidden:true	}
+
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "l_zone_no",
+				root : 		function(obj){ return obj.data.l_str_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},	            
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 부분 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();	// 검색 폼 데이터 추출
+					postData._search = true;
+					$("#zone_grid").jqGrid('setGridParam', {search: true});
+					$("#zone_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#zone_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#zone_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+				
+				return encodeURI("params="+JSON.stringify(postData));
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_l_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			},
+			search : false,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#zone_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			recordpos : "left",
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){ },
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 6) {
+					$("#zone_grid").jqGrid('setGridParam', {'postData' : {'l_zone_no':rowid} });
+					var postData = $('#zone_grid').jqGrid("getGridParam", "postData");					
+					var url = "/application/lpot/lpotZoneRN.do";
+					var method = "POST";
+					cf_action(url, method, postData);
+			   }
+			},
+			gridComplete: function() {
+				var postData = $('#zone_grid').jqGrid("getGridParam", "postData");
+				$('#zone_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#zone_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			},
+			onSortCol: function(columnName, columnIndex, sortOrder) {
+				//$('.s-ico').find("span[sort='asc']").addClass('ui-state-disabled');
+				//$('.s-ico').find("span[sort='desc']").addClass('ui-state-disabled');
+			}
+		});
+		jQuery("#zone_grid").jqGrid('navGrid', "#zone_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		/* if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#zone_grid").jqGrid('navButtonAdd','#zone_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/stamp/stamp/stampWN.do";
+					var method = "POST";
+					var postData = $('#zone_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});
+		} */
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#zone_grid").gridCss();
+	  	$("#zone_grid_cb").css("border-left-width","0");
+	  	$("#zone_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_zone_grid_cb").css("padding","7px 0");
+	  	$("#zone_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  			  
+	    /* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#zone_grid").jqGrid( 'setGridWidth', $("#target_zone_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

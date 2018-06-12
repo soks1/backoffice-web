@@ -1,0 +1,235 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<input type="hidden" id="custgp_id" name="custgp_id" value="<%=LangUtil.replaceInjection(request.getParameter("custgp_id"))%>">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div>
+				<div class="widget-body">
+					<div id="chart_detail_canvas_txt_1" align="right"></div>
+					<div id="div_canvas_detail_container_1"><canvas id="chart_canvas_detail_1" height="200"></canvas></div>
+					<div id="legend_chart_canvas_detail_1"></div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div id="target_data_stats_detail_grid" class="widget-body" style="max-height: 400px; overflow-y:auto; overflow-x:hidden;">
+				<table id="data_stats_detail_grid"></table>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+pageSetUp();
+
+var _url_detail = api_url+"/backoffice/statistics/jointpurchase/event/custgroup/show";
+//API list object 추출
+var _list_detail = function(obj){
+	return obj.data.list;
+};
+var _chart_list_detail = function(obj){
+	return obj.data.list;
+};
+// request param settting : api call, excel call
+var _data_detail = function(){
+	var searchData = $("#frmSearch").serializeFormObject();
+	searchData["s_prgs_dd"] = $('#s_mod_date').cvtDateDefault();
+	searchData["e_prgs_dd"] = $('#e_mod_date').cvtDateDefault();
+			
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}', 
+		_search : true,
+		rows : 100,
+		page : 1,
+		lst_custgp_id : $('#custgp_id').val(),
+		sidx : 'evt_title',
+		sord : 'asc',
+		search_info : searchData
+	};
+	return data;
+};
+var pageDailogfunction = function() {
+	// 서버 통신
+	f_ajaxSubmit(); 
+};
+/* ============================================================================================
+/* Server와 통신 
+/* ============================================================================================ */
+function f_ajaxSubmit() {
+	// 실제 데이터 전송
+	$.ajax({
+		url : _url_detail,
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(_data_detail())),
+	    success: function(obj){
+	    	var chart_list_detail = _chart_list_detail(obj);
+	    	var grid_list_detail = _list_detail(obj);
+	    	// 차트 텍스트 세팅
+	    	f_setChartDetailTxt();
+	    	// chart
+	    	drawChartDetail(chart_list_detail);
+	    	// grid	   
+	    	run_jqgrid_detail_function(grid_list_detail);	   
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+} 
+/* ============================================================================================
+/* Grid Data 생성
+/* ============================================================================================ */
+function run_jqgrid_detail_function(jsonData) { 
+	$('#data_stats_detail_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#data_stats_detail_grid").parent().width() - 100;
+	var addData = null;
+	jQuery("#data_stats_detail_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['이벤트명', '행사일자', '시작시간', '종료시간', '상품명', '목표수', '참여자수', '목표대비<br>참여율', '목표수량<br>달성시간'],
+		colModel : [
+			{ name : 'evt_title', 		index : 'evt_title',		align : "center",	sortable : false, 	width : (pageWidth*(20/100))	},
+			{ name : 'prgs_dd', 		index : 'prgs_dd',			align : "center",	sortable : false, 	width : (pageWidth*(10/100))	},
+			{ name : 'prgs_start_date', index : 'prgs_start_date',	align : "center",	sortable : false, 	width : (pageWidth*(9/100))		},
+			{ name : 'prgs_end_date', 	index : 'prgs_end_date',	align : "center",	sortable : false, 	width : (pageWidth*(9/100))		},
+			{ name : 'prod_nm', 		index : 'prod_nm',			align : "center",	sortable : false, 	width : (pageWidth*(21/100))	},
+			{ name : 'tgt_cnt',			index : 'tgt_cnt',			align : "center", 	sortable : true, 	width : (pageWidth*(7/100)),	sorttype:"float",
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'ptc_cnt',			index : 'ptc_cnt', 			align : "center", 	sortable : true, 	width : (pageWidth*(8/100)),	sorttype:"float",
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'ptc_ratio',		index : 'ptc_ratio', 		align : "center", 	sortable : true, 	width : (pageWidth*(7/100)),	sorttype:"float",	
+				formatter : function(cellvalue, options, rowObject) {
+					if(cellvalue.toString().indexOf('%') == -1){
+						cellvalue =  cf_setComma(cf_mathRound(cellvalue)) + ' %';
+					} 
+					return cellvalue;
+				}
+			},
+			{ name : 'tgt_qty_atan_tm',	index : 'tgt_qty_atan_tm',	align : "center",	sortable : true, 	width : (pageWidth*(9/100))	}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  
+		shrinkToFit : true,
+		onSortCol: function (index, columnIndex, sortOrder) {
+			addData = jQuery("#data_stats_detail_grid").jqGrid('getRowData',1);
+			$("#data_stats_detail_grid").jqGrid('delRowData', '1');
+		},
+		loadComplete : function(){ 
+			// 전체값 Grid 상위 설정 및 font bold 처리
+			if(addData != null){
+				$("#data_stats_detail_grid").jqGrid('addRowData', '1', addData, "first");
+			}	
+			var rowData = $("#data_stats_detail_grid").jqGrid('getRowData', 1);
+			for(var nCol=0; nCol < Object.keys(rowData).length; nCol++){
+                $('#data_stats_detail_grid').setCell(1,nCol,'',{'font-weight':'bold'});
+			}
+		},
+		gridComplete: function(data){}
+	});
+
+  	$("#data_stats_detail_grid").gridCss();
+  	$("#data_stats_detail_grid_cb").css("border-left-width","0");
+  	$("#data_stats_detail_grid_cb").css("padding-left","4px");
+  	$("#jqgh_data_stats_detail_grid_cb").css("padding","7px 0");
+  	
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#data_stats_detail_grid").jqGrid( 'setGridWidth', $("#target_data_stats_detail_grid").width() );
+	});
+    
+    $("#data_stats_detail_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	    
+}
+/* ============================================================================================
+/* Chart 생성
+/* ============================================================================================ */
+function drawChartDetail(dataset){
+	var _label = [];
+	var _data1 = [];
+	var _data2 = [];
+	var default_value_spacing = 200;
+	for(var nRow=1; nRow<dataset.length; nRow++){
+		// Chart 데이터 처리 시작 =========================
+		_label[nRow-1] = dataset[nRow].evt_title +  "(" + dataset[nRow].prod_nm + ")";
+		_data1[nRow-1] = dataset[nRow].tgt_cnt;
+		_data2[nRow-1] = dataset[nRow].ptc_cnt;
+		// Chart 데이터 처리 시작 =========================
+	}
+	
+	if(dataset.length > 2) {
+		default_value_spacing = default_value_spacing / dataset.length;
+	}
+	
+    var chart1_detail_data = {
+	 	labels: _label,
+        datasets: [
+	 		{
+	            label: "목표수",
+	            fillColor: "rgba(79,129,189,1)",
+	            strokeColor: "rgba(79,129,189,1)",
+	            highlightFill: "rgba(79,129,189,0.8)",
+	            highlightStroke: "rgba(79,129,189,0.8)",
+	            //data: [240, 80, 10, 75, 75, 45, 30, 30, 20, 220]
+	 			data: _data1
+	        },
+	        {
+	            label: "참여자수",
+	            fillColor: "rgba(192,80,77,1)",
+	            strokeColor: "rgba(192,80,77,1)",
+	            highlightFill: "rgba(192,80,77,0.8)",
+	            highlightStroke: "rgba(192,80,77,0.8)",
+	            //data: [135, 120, 30, 15, 80, 10, 90, 45, 3, 5]
+	        	data: _data2
+	        }
+        ]
+	};
+    
+    var chart1_detail_options = {
+		    scaleBeginAtZero : true,
+		    scaleShowGridLines : true,
+		    scaleGridLineColor : "rgba(0,0,0,.05)",
+		    scaleGridLineWidth : 1,
+		    barShowStroke : true,
+		    barStrokeWidth : 1,
+		    barValueSpacing : default_value_spacing,
+		    labelLength: 20,
+		    barDatasetSpacing : 1,
+	        responsive: true
+	    };
+
+	if (window.bar_detail_chart1){ 
+        window.bar_detail_chart1.destroy();
+    }
+    var bar_detail_chart1 = document.getElementById("chart_canvas_detail_1").getContext("2d");
+    bar_detail_chart1 = new Chart(bar_detail_chart1).Bar(chart1_detail_data, chart1_detail_options);
+    legend($("#legend_chart_canvas_detail_1"), chart1_detail_data);
+	
+	// ---------------------- 지점별 쿠폰 데이터 그리드 ---------------------- //
+}
+/* ============================================================================================
+/* Chart 좌상단 Text Setting
+/* ============================================================================================ */
+function f_setChartDetailTxt(){
+	// 발행일 기준 text setting
+	var vdate = $('#s_mod_date').val() + " ~ " + $('#e_mod_date').val();
+	$('#chart_detail_canvas_txt_1').html('※ 발행일 기준: ' + vdate);
+}
+
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/chartjs/chart.min.js", pageDailogfunction);
+</script>

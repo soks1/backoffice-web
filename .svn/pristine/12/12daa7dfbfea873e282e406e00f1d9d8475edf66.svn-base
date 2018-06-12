@@ -1,0 +1,399 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%> 
+<section id="widget-grid" class=""> 
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>엘팟 이벤트 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<input type="hidden" id="evnt_id">
+							<fieldset>
+								<legend>엘팟 이벤트 상세</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">승인일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_nm" style="color: #ff0000;"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">진행상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="prgs_sts_cd_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 번호 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="l_event_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">이벤트 기간 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="prgs_date"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">고객군 정보 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="lst_custgp_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 구분 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="target_type"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="l_event_title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 설명 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="l_event_desc"></span>
+									</div>
+								</div>								
+							<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 총 발급수 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="issue_cpbook_cnt"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">이벤트 재수신 지연시간 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="receive_time_nm"></span>
+									</div>
+								</div>
+							<legend></legend>
+							</fieldset>
+							<fieldset>
+								<div class="form-group" id="lpot_event_table_div" style="display: none;">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 : </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered" id="lpot_event_cpbook_table">
+												<thead>
+													<tr>
+														<th class='ta-c'>쿠폰북ID</th>
+														<th class='ta-c'>쿠폰북명</th>
+														<th class='ta-c'>쿠폰북 유형</th>
+														<th class='ta-c'>쿠폰수</th>
+														<th class='ta-c'>적용기간</th>
+													</tr>
+												</thead>
+												<tbody>													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset>
+								<div class="form-group" id="lpot_event_popup_div" style="display: none;">
+									<label class="col-md-1 control-label cs-css-05">팝업 : </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered" id="lpot_event_popup_table">
+												<thead>
+													<tr>
+														<th class='ta-c'>팝업ID</th>
+														<th class='ta-c'>제목</th>
+														<th class='ta-c'>자세히보기</th>
+														<th class='ta-c'>페이지 경로</th>
+													</tr>
+												</thead>
+												<tbody>													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 ZONE : </label>
+									<div class="col-md-5">
+										<div class="table-responsive" style="max-height:120px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class='ta-c'>지점명</th>
+														<th class='ta-c'>ZONE 명</th>
+														<th class='ta-c' style='display: none;'>ZONE 번호</th>
+													</tr>
+												</thead>
+												<tbody id="lpot_zone_tbody" data-valid-title="이벤트 ZONE"></tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12" >
+										<a href="javascript:f_lpotEventStoppage();" class="btn btn-danger btn_auth_stop">즉시종료</a>
+										<a href="javascript:f_lpotEventReject();" id="btn_reject" class="btn btn-danger btn_auth_approve">반려</a>
+										<a href="javascript:f_lpotEventApprovalAsk();" class="btn btn-success btn_auth_create">승인요청</a>
+										<a href="javascript:f_lpotEventApprove();" id="btn_approve" class="btn btn-primary btn_auth_approve">승인</a>										
+										
+										<!-- 상품중복방지 체크 필요 Object Start -->
+										<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+										<!-- common_dialog_script.js 해당 화면에 공통 다이얼로그가 선언되어있는지 확인 필요 -->
+										<div id="request_check" style="display:none;"></div>
+										<input type="hidden" id="dupCheck" name="dupCheck" value="0">
+										<!-- Callback 함수 -->
+										<script>
+										 function f_approve_proc(gbn){
+											 if(gbn == "0"){
+												 f_stampApprovalAsk();
+											 }else if(gbn == "1"){
+												 f_stampApprove();
+											 }
+										 }
+										</script>
+										<!-- 상품중복방지 체크 필요 Object End -->
+										
+										
+										<a href="javascript:f_lpotEventList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_lpotEventEdit();" id="btn_modify" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_lpotEventDelete();" id="btn_delete" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+function f_lpotEventStoppage() {
+	var _evnt_id = $("input[name=l_event_id]").val();
+	
+	if(confirm("정말 게시중단 하시겠습니까?")) {
+		
+		var data = {
+			empno: $.getSessionData().empno,
+			emp_str_cd: $.getSessionData().emp_str_cd,
+			l_event_id : _evnt_id
+		};
+
+		$.ajax({
+			url: api_url + "/backoffice/lpot/event/stoppage",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_lpotEventShow();
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+		
+	}
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+
+	//버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+
+	$.ajax({
+	    url: api_url+"/backoffice/lpot/event/show",
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var objData = obj['data']['event_detail'];
+	    	
+	    	$("#reg_date").html(objData['reg_date']);
+	    	$("#reg_id").html(objData['reg_id_name']);
+	    	$("#mod_date").html(objData['mod_date']);
+	    	$("#mod_id").html(objData['mod_id_name']);
+	    	
+	    	$("#aprv_date").html(objData['aprv_date']);
+	    	$("#aprv_id").html(objData['aprv_id_name']);
+	    	$("#aprv_sts_cd_nm").html(objData['aprv_sts_cd_nm']);
+	    	$("#prgs_sts_cd_nm").html(objData['prgs_sts_cd_nm']);
+
+	    	$("#l_event_id").html(objData['l_event_id']);
+	    	var prgs_start_date = objData['prgs_start_date'];
+			var prgs_end_date = objData['prgs_end_date'];
+			$("#prgs_date").html(prgs_start_date + ' ~ ' + prgs_end_date);
+	    	$("#prgs_date").html(objData['prgs_date']);
+	    	
+	    	$("#lst_custgp_nm").html(objData['lst_custgp_nm']);
+	    	$("#l_event_title").html(objData['l_evnt_title']);
+	    	$("#l_event_desc").html(objData['l_evnt_desc']);
+	    	$("#issue_cpbook_cnt").html(objData['issue_cpbook_cnt']);
+	    	$("#receive_time_nm").html(objData['receive_time_nm']);
+	    		    	   	
+	    	var target_id = objData['target_id'];
+	    	var l_cpbook_nm = objData['cpbook_nm'];
+	    	var l_cpbook_gbn_nm = objData['cpbook_gbn_nm'];
+	    	var l_coupon_cnt = objData['coupon_cnt'];
+	    	var link_nm = objData['link_nm'];
+	    	var vali_term_dd = objData['vali_term_start_dd'] + ' ~ ' + objData['vali_term_end_dd'];
+	    	
+	    	var popup_nm = objData['popup_nm'];
+	    	var detail_show_yn = objData['detail_show_yn'];
+	    	
+	    	var _target_type = objData['target_type'];
+	    		    	
+	    	if (_target_type == "CPBOOK") {
+	    		$("#target_type").text('쿠폰북');
+	    		$('#lpot_event_table_div').show();
+	    		$('#lpot_event_cpbook_table > tbody:last').append('<tr><td class="ta-c">'+target_id+'</td><td class="ta-c">'+l_cpbook_nm+'</td><td class="ta-c">'+l_cpbook_gbn_nm+'</td><td class="ta-c">'+l_coupon_cnt+'</td><td class="ta-c">'+vali_term_dd+'</td></tr>');
+	    	} else if (_target_type == "POPUP") {
+	    		$("#target_type").text('팝업');
+	    		$('#lpot_event_popup_div').show();
+	    		$('#lpot_event_popup_table > tbody:last').append('<tr><td class="ta-c">'+target_id+'</td><td class="ta-c">'+popup_nm+'</td><td class="ta-c">'+detail_show_yn+'</td><td class="ta-c">'+link_nm+'</td></tr>');
+	    	} else if (_target_type == "WAKEUP") {
+	    		$("#target_type").text('WAKE UP');
+	    	}	    		
+
+	    	var zoneData = obj['data']['zone_list'];
+	    	$.each(zoneData, function(i, item) {
+		    	var l_str_nm =  zoneData['l_str_nm'];
+		    	var l_zone_nm =  zoneData['l_zone_nm'];
+		    	
+		    	var tag_td = "";
+		    	tag_td += "<td class='ta-c'>" + item.l_str_nm + "</td>";
+				tag_td += "<td class='ta-c'>" + item.l_zone_nm + "</td>";
+				tag_td += "<td class='ta-c' style='display: none;'>" + item.l_zone_no + "</td>";
+
+				$("#lpot_zone_tbody").append("<tr>" + tag_td + "</tr>");
+	    	});
+	    	
+	    	$('#aprv_sts_cd').val(objData['aprv_sts_cd']);
+	    	if(objData['prgs_sts_cd'] != 'PROGRES') {
+				$('.btn_auth_stop').remove();
+			}
+	    	
+	    	// 게시물 상태 :  승인완료
+	    	if(objData['aprv_sts_cd'] == 'APPROVE') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	// 게시물 상태 : 승인대기중
+	    	else if(objData['aprv_sts_cd'] == 'STANDBY') {
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    		$('.btn_auth_stop').remove();
+	    	}
+	    	// 게시물 상태 : 승인 요청전
+	    	else if(objData['aprv_sts_cd'] == 'REQUEST') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_stop').remove();
+	    	}
+	    	// 게시물 상태 : 반려
+	    	else if(objData['aprv_sts_cd'] == 'REJECT') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_stop').remove();
+	    	}
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

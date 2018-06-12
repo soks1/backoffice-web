@@ -1,0 +1,56 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmCloseDate">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="cpzine_id" value="<%=LangUtil.replaceInjection(request.getParameter("cpzine_id"))%>">
+							<input type="hidden" name="limit_apply_start_dd" value="<%=LangUtil.replaceInjection(request.getParameter("limit_apply_start_dd"))%>">
+							<input type="hidden" name="limit_apply_end_dd" value="<%=LangUtil.replaceInjection(request.getParameter("limit_apply_end_dd"))%>">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-3 control-label">종료일</label>
+									<div class="col-md-6">
+										<div class="input-group">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="closingApply_end_dd" name="apply_end_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-valid-title="종료일" data-dateformat='yy-mm-dd' placeholder="종료일" onclick="f_datepickerIndex();">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label"></label>
+									<div class="col-md-10">
+										<i class="fa fa-info-circle"></i> 종료일은 오늘 날짜부터 선택 가능합니다.
+									</div>
+								</div>
+								
+							</fieldset>							
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+pageSetUp();
+
+$('#closingApply_end_dd').datepicker('option','minDate', $("input[name=limit_apply_start_dd]").val());
+$('#closingApply_end_dd').datepicker('option','maxDate', $("input[name=limit_apply_end_dd]").val());
+
+function f_datepickerIndex() {
+	$("#ui-datepicker-div").css("z-index","10000");
+}
+</script>

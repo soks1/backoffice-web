@@ -1,0 +1,624 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>이벤트 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmLifekok" name="frmLifekok">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" id="up_tenant_cd" name="up_tenant_cd" value="" >
+							
+							<input type="hidden" name="strge_nm" id="strge_nm" value="">
+							<input type="hidden" name="orgin_nm" id="orgin_nm" value="">
+							
+							<input type="hidden" name="templ_id" id="templ_id" value="">
+							<input type="hidden" name="templ_yn" id="templ_yn" value="N">
+							
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">그룹명<sup>*</sup></label>
+									<div class="col-md-2">
+										<select class="form-control" id="group_nm" name="group_nm">
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">사업자 지점선택<sup>*</sup></label>
+									
+									<div class="col-md-1">
+										<a href="javascript:f_open_tenantEventStrSelectSD();" id="btn_str_select" class="btn btn-success" style="width:90px; display:none;">추가</a>
+									</div>
+									<div class="col-md-1">
+										<a href="javascript:f_open_tenantEventStrSelectModifySD();" id="btn_modify" class="btn btn-success" style="width:150px; display:none;">리스트 확인/삭제</a>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label"></label>
+									<span class="col-md-8 control-label text-align-left" id="_str_nm"></span>
+								</div>
+							
+								<div class="form-group">
+									<label class="col-md-2 control-label">이벤트 제목 <sup>*</sup></label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" name="event_title" id="event_title" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="이벤트 제목">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									
+									<div class="col-md-4">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 이미지 등록시, 사이즈: 350 X 450px  /  파일종류: jpg, gif, png  / 최대파일용량: 300KB</p>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">기간 <sup>*</sup></label>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="prgs_start_date" name="prgs_start_date" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' data-valid-title="이벤트시작일" placeholder="이벤트시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="prgs_end_date" name="prgs_end_date" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' data-valid-title="이벤트종료일" placeholder="이벤트종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">등록일자 <sup>*</sup></label>
+									<div class="col-md-2">
+										<span class="form-control" id="reg_date"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이벤트설명<sup>*</sup></label>
+									<div class="col-md-8">
+										<textarea class="form-control" rows="8" name="event_desc" data-valid-use="true" data-valid-symbol="false" data-valid-max="500" data-valid-title="이벤트설명"></textarea>
+									</div>
+								</div>
+									
+								<div class="form-group">
+									<label class="col-md-2 control-label">해시태그 <sup>*</sup></label>
+									<div class="col-md-8">
+										<input class="form-control" type="text" name="hashtag_words" data-valid-use="true" data-valid-symbol="false" data-valid-max="200" data-valid-title="해시 태그">
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 쿠폰 List <sup>*</sup></h2>
+				</header>
+				<div class="col-md-12">
+					<a href="javascript:f_openTenantEventCouponSelectSD('tenantEventCoupon_list')" class="btn btn-primary">쿠폰선택</a>
+					<a href="javascript:f_delete_tenantEventSelectedCoupon();" class="btn btn-danger">선택삭제</a>
+				</div>
+				<div>
+					<div class="table-responsive" style="max-height:230px; overflow:auto;">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+<!-- 									<th class="ta-c">no</th> -->
+									<th class="ta-c">제목</th>
+									<th class="ta-c">품목명</th>
+									<th class="ta-c">정액/정률</th>
+									<th class="ta-c">등록일자</th>
+									<th class="ta-c">쿠폰사용개수</th>
+								</tr>
+							</thead>
+							<tbody id="tenantEventCoupon_list" data-valid-title="쿠폰목록">
+								
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>						
+	
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<a href="javascript:f_tenantEventList();" class="btn btn-default">취소</a>
+				<a href="javascript:f_tenantEventWN_submit();" class="btn btn-primary">승인요청</a>
+			</div>
+		</div>
+	</div>
+</section>
+<div id="select_str_sd" style="display:none;"></div>
+<div id="edit_str_sd" style="display:none;"></div>
+<div id="tenantEventCouponSelectSD" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+// 지점 등록,편집을 위한 선언
+var selectTenantList = []; //선택한 지점들이 저장
+var modifyTenantList = []; //수정시 임시 저장
+
+/* ============================================================================================
+/* 그룹 선택 > 지점 선택 컨트롤
+/* ============================================================================================ */
+$('#group_nm').change(function (e) {
+	
+	selectTenantList = [];
+	modifyTenantList = [];
+	
+	$('#_str_cd_list_text').val("");
+	$('#_tenant_nm_list_text').val("");
+	$('#_tenant_cd_list_text').val("");
+	$('#_str_nm').text("");
+	
+	if($('#group_nm').val() == ""){
+		$('#btn_str_select').hide();
+		$('#btn_modify').hide();
+		$('#up_tenant_cd').val("");
+	}else{
+		$('#btn_str_select').show();
+		$('#btn_modify').show();
+		$('#up_tenant_cd').val($('#group_nm').val());
+	}
+	
+});
+
+/* ============================================================================================
+/* 조회 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#prgs_start_date').datepicker(
+    $.extend({
+    	minDate: 0,
+    	onSelect: function(selected) {
+            $("#prgs_end_date").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#prgs_end_date').datepicker(
+    $.extend({
+    	minDate: 0,
+    	onSelect: function(selected) {
+            $("#prgs_start_date").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+/**
+ * ==================================================================================
+ * 배열 children sort
+ * ==================================================================================
+ */
+function f_arraySortForSTR_NM(_array){
+	 _array.sort(function (a, b) {
+			return a.str_nm < b.str_nm ? -1 : a.str_nm > b.str_nm ? 1 : 0;  
+		});
+}
+ 
+/**
+ * ==================================================================================
+ * 지점 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_open_tenantEventStrSelectSD(){
+	
+	$('#select_str_sd').empty();
+	
+	$.ajax({
+		url		: "/application/cooperateService/tenantEvent/tenantEventStrSelectSD.do",
+		type	: 'POST',
+		cache	: false,
+
+		success	: function(data){
+			var $target = $('#select_str_sd');
+			$target.empty();
+			$target.html(data);
+		},
+		
+	});
+	$('#select_str_sd').dialog('open');	
+	
+}
+//--------------지점 선택 다이얼로그 화면 구문-----------------//
+$('#select_str_sd').dialog({
+	autoOpen : false,
+	width : 600,
+	minHeight: 650,
+	resizable : false,
+	position : "top",
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 지점 선택 </h6></div>",
+	buttons : [
+				{
+					html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+					"class" : "btn btn-default",
+					click : function() {
+						$(this).dialog("close");
+					}
+				}
+				,
+				{
+					html : "<i class='fa fa-save'></i>&nbsp; 적용",
+					"class" : "btn btn-primary",
+					click : function() {
+							var rowId = $("#tenant_grid").jqGrid('getGridParam', 'selarrrow');
+							
+							if(rowId.length < 1){
+								alert("가맹점을 선택해 주세요.");
+								return;
+							}
+							
+							for(var i = 0; i < rowId.length; i++) {
+								var duplication_cnt = 0;
+								if(selectTenantList.length > 0){
+									var _cd = $("#tenant_grid").jqGrid('getRowData', rowId[i]).tenant_cd;
+									for(var j=0; j < selectTenantList.length; j++){
+										if(selectTenantList[j].tenant_cd == _cd){
+											duplication_cnt++;
+										}									
+									}
+								}
+								if( duplication_cnt == 0){
+									selectTenantList.push($("#tenant_grid").jqGrid('getRowData', rowId[i]));
+								}
+							}
+							
+							f_arraySortForSTR_NM(selectTenantList);
+							
+							for(var i = 0; i < selectTenantList.length ; i++){
+								selectTenantList[i].no = i+1;
+							}
+
+							var tenant_nm_list_text = "";
+							if(selectTenantList.length > 5){
+								tenant_nm_list_text = selectTenantList[0].tenant_nm + " 외 "+(selectTenantList.length-1)+ "개 가맹점";
+							}else{
+								for(var i = 0 ; i < selectTenantList.length; i++){
+									if(i > 0){
+										tenant_nm_list_text += ', '	
+									}
+									tenant_nm_list_text += selectTenantList[i].tenant_nm;
+								}
+							}
+							
+							$('#_str_nm').text(tenant_nm_list_text);
+							$(this).dialog("close");
+						}
+				}
+	]
+});
+
+
+/**
+ * ==================================================================================
+ * 지점 편집 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_open_tenantEventStrSelectModifySD(){
+	if(selectTenantList.length < 1){
+		alert("지점 선택 후 이용해 주세요.");
+		return;
+	}
+	$.ajax({
+		url		: "/application/cooperateService/tenantEvent/tenantEventStrSelectModifySD.do",
+		type	: 'POST',
+		cache	: false,
+
+		success	: function(data){
+			var $target = $('#edit_str_sd');
+			$target.empty();
+			$target.html(data);
+		},
+	});
+	$('#edit_str_sd').dialog('open');	
+}
+//--------------지점 편집 다이얼로그 화면 구문-----------------//
+$('#edit_str_sd').dialog({
+	autoOpen : false,
+	width : 600,
+	minHeight: 650,
+	position : "top",
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 지점 선택 수정 </h6></div>",
+	buttons : [
+				{
+					html : "취소",
+					"class" : "btn btn-default",
+					click : function() {
+						modifyTenantList = [];
+						$(this).dialog("close");
+					}
+				}
+				,
+				{
+					html : "적용",
+					"class" : "btn btn-primary",
+					click : function() {
+				
+						selectTenantList = [];
+						if(modifyTenantList.length > 0){
+							for(var i = 0 ; i < modifyTenantList.length ; i++){
+								selectTenantList.push(modifyTenantList[i]);
+							}
+						}
+						
+						var tenant_nm_list_text = "";
+						
+						if(selectTenantList.length > 0){
+							if(selectTenantList.length > 5){
+								tenant_nm_list_text = selectTenantList[0].tenant_nm + " 외 "+(selectTenantList.length-1)+ "개 가맹점";
+							}else{
+								for(var i = 0 ; i < selectTenantList.length; i++){
+									if(i > 0){
+										tenant_nm_list_text += ', '	
+									}
+									tenant_nm_list_text += selectTenantList[i].tenant_nm;
+								}
+							}
+						}
+						
+						$('#_str_nm').text(tenant_nm_list_text);
+						$(this).dialog("close");
+						
+					}
+				}
+	]
+});
+/**
+ * ==================================================================================
+ * 등록/수정 : 표지템플릿 파일 삭제 버튼 이벤트
+ * ==================================================================================
+ */
+function f_templateEventWNFileDelete() {
+	$('input[name=strge_nm]').val("");
+	$('input[name=orgin_nm]').val("");
+	$('input[name=templ_id]').val("");
+	$('input[name=templ_yn]').val('N');
+	
+	var preview = $('#preview_uploadfile');
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_uploadfile').parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_uploadfile').remove();
+}
+/* ============================================================================================
+/* 파일 업로드
+/* --------------------------------------------------------------------------------------------
+/* 파일 업로드 이벤트 핸들러
+/* ============================================================================================ */
+$('#uploadfile').change(function (e) {
+ 	
+ 	var limitWidth  = 350,
+ 		limitHeight = 450,
+ 		limitSize 	= 300;
+ 	
+ 	var intpuFile = $(this);
+ 	var file = this.files[0];
+    var reader = new FileReader();
+    var image  = new Image();
+ 	var boolFile = true;
+  
+ 	reader.readAsDataURL(file);  
+     
+ 	reader.onload = function(_file) {
+        image.src    = _file.target.result;              // url.createObjectURL(file);
+        image.onload = function() {
+            var w = this.width,
+                h = this.height,
+                t = file.type,                           // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size/1024);
+//                  s = ~~(file.size/1024) +'KB';
+             
+            if(w > limitWidth || h > limitHeight){
+            	alert("제한 사이즈를 초과하셨습니다.( "+limitWidth+" * "+limitHeight+" )\n너비 : " + w + " 높이 : " + h);
+            }else if(s > limitSize){
+            	alert("제한 파일용량을 초과하셨습니다.( "+limitSize+" kb )\n파일용량 : " + s);
+            }else{
+            	f_lifekok_fileUpload(intpuFile, "LKOKEVENT");
+            }
+        };
+        image.onerror= function() {
+        	alert("유효한 파일타입이 아닙니다. 이미지 파일(jpg,png,gif)을 등록해 주세요");
+//              alert('Invalid file type: '+ file.type);
+        };
+    };
+});
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 / 쿠폰 관리 > 이벤트 등록 > 쿠폰선택 팝업 호출
+ * ==================================================================================
+ */
+function f_openTenantEventCouponSelectSD() {
+	 
+	$.ajax({
+		url: "/application/cooperateService/tenantEvent/tenantEventCouponSelectSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#tenantEventCouponSelectSD');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#tenantEventCouponSelectSD').dialog('open');
+		}
+	});
+}
+/**
+ * ==================================================================================
+ * 쿠폰 선택 다이얼로그 구문
+ * ==================================================================================
+ */
+$('#tenantEventCouponSelectSD').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 100,
+	resizable : false,
+	position : "top",
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰 선택 </h6></div>",
+});
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_tenantEventWN_submit() {
+	
+	if($('#frmLifekok').formValid()) {
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		if($('input[name=templ_id]').val() == "" && $('input[name=orgin_nm]').val() == "" && $('input[name=strge_nm]').val() == ""){
+			alert("이미지를 등록해 주세요.");
+			return;
+		}
+		
+		var _coupon_list_length = $("#tenantEventCoupon_list tr").length;
+		if(_coupon_list_length < 1){
+			alert("쿠폰을 선택 해주세요");
+			return;
+		}
+		
+		if($('#_str_nm').text() == ""){
+			alert("지점을 선택해 주세요.");
+			return;
+		}
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		var data = $('#frmLifekok').serializeFormObject();
+	
+		var _coupon_list = [];
+		for (var i = 0; i < $("#tenantEventCoupon_list tr").length; i++) {
+			var coupon_list_item = {};
+			coupon_list_item['coupon_id'] = $("#tenantEventCoupon_list tr").eq(i).find('input[name=t_coupon_id]').val();
+			coupon_list_item['apply_to_type_cd'] = 'PRICE';
+			
+			_coupon_list.push(coupon_list_item);
+		}
+		data['coupon_list'] = _coupon_list;
+		data['tenant_list'] = selectTenantList;
+		
+       	// 실제 데이터 전송
+		$.ajax({
+		    url: api_lifekok_url+'/backoffice/lifekok/event/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_tenantEventList();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+		
+	} else {
+		return;
+	}
+}
+/**
+ * ==================================================================================
+ * 등록/수정 : 대상 쿠폰 선택삭제 이벤트
+ * ==================================================================================
+ */
+function f_delete_tenantEventSelectedCoupon() {
+	cf_delTableRow('tenantEventCoupon_list');
+}
+ 
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+// 	오늘날짜 
+	var Now = new Date();
+	var NowTime = Now.getFullYear();
+	var m_z = "";
+	if((Now.getMonth() + 1) < 10){m_z = "0"};
+	NowTime += '-' +m_z+""+ (Now.getMonth() + 1) ;
+	if((Now.getDate()) < 10){m_z = "0"}else{m_z = ""};
+	NowTime += '-' +m_z+""+ Now.getDate();
+	$('#reg_date').html(NowTime);	
+	
+	f_ajaxGroupCode("group_nm");
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

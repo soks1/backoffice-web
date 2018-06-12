@@ -1,0 +1,313 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>지점혜택 및 공지 상세</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal"  id="frmBranchNotice" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="str_cd" value="<%=request.getParameter("str_cd") %>" >
+							<input type="hidden" name="brnc_bene_noti_id" value="<%=request.getParameter("brnc_bene_noti_id") %>">
+
+							<fieldset>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">대상고객</label>
+									<div class="col-md-6">
+										<span class="form-control cs-css-03" id="cust_grd_nm"></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">등록자</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">등록일자</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">승인상태</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_sts_nm"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">승인일자</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">노출기간</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="vali_term_dd"></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">제목</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="noti_title"></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">부제목</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="noti_sub_title"></span>
+									</div>
+								</div>
+
+								<div class="form-group" id="img_container">
+									<label class="col-md-2 control-label cs-css-05">이미지</label>
+									<div class="col-md-10" id="img">
+									</div>
+								</div>
+
+								<div class="form-group" id="gen_img_container">
+									<label class="col-md-2 control-label cs-css-05">템플릿</label>
+									<div class="col-md-10" id="gen_img">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">내용</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-04" id="noti_content"></span>
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_openClosingDateRD();" class="btn btn-success btn_auth_stop">적용 종료일 변경</a>
+										<a href="javascript:f_reject();" class="btn btn-danger btn_auth_approve">반려</a>
+										<a href="javascript:f_approve();" class="btn btn-primary btn_auth_approve">지점장승인</a>
+										<a href="javascript:f_approve_ask();" class="btn btn-info btn_auth_create">승인요청</a>
+										<a href="javascript:f_branchNoticeList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_branchNoticeEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_branchNoticeDel();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>	
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="closing_date_rd" style="display: none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+
+/**
+ * ==================================================================================
+ * 상세 : 시간연장 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+ $('#closing_date_rd').dialog({
+	autoOpen : false,
+	width : 400,
+	minHeight: 300,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 적용 종료일 변경 </h6></div>",
+	buttons : [{
+		html : "취소",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+			$('#closing_date_rd').empty();
+		}
+	},{
+		html : "저장",
+		"class" : "btn btn-primary",
+		click : function() {
+
+			if( $('#frmCloseDate').formValid() ) {
+				$.ajax({
+				    url: api_url+'/backoffice/branch/benefit/finishdate/update', //this is the submit URL
+					type: "POST",
+					contentType: "application/json;charset=utf-8", // POST 일때만 사용
+					async: false,
+					cache: true,
+					data: JSON.stringify($("#frmCloseDate").serializeFormObject()),
+					success: function(resultData) {
+						alert(resultData["message"]);
+						var url = '/application/branch/benefit/benefitRN.do';
+						var method = "POST";
+						cf_action(url, method, $("#frmKeepData").serialize());
+					//	f_joinList();
+					},
+				    error: function(resultData) {
+				    	var serverObj = resultData["responseJSON"] || {};
+				    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+				    	return;
+				    }	
+				});
+				
+				$(this).dialog("close");
+			}
+		}
+	}]
+});
+
+
+/* ============================================================================================
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+	
+	$.ajax({
+	    url: api_url+'/backoffice/branch/benefit/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	detailData = resultData.data.notice_info;
+
+	    	
+	    	// 게시물 상태 :  승인완료
+	    	if(detailData["aprv_sts_cd"] == 'APPROVE') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	// 게시물 상태 : 승인대기중
+	    	else if(detailData["aprv_sts_cd"] == 'STANDBY') {
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_stop').remove();
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	// 게시물 상태 : 승인 요청전
+	    	else if(detailData["aprv_sts_cd"] == 'REQUEST') {
+	    		$('.btn_auth_approve').remove();
+ 	    		$('.btn_auth_stop').remove();
+	    	}
+	    	// 게시물 상태 : 반려
+	    	else if(detailData["aprv_sts_cd"] == 'REJECT') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_stop').remove();
+	    	}
+	    	
+	    	// 종료 상태인 경우 시간연장 버튼 숨김
+	    	if(detailData["prgs_sts_cd"] == 'END' || detailData["prgs_sts_cd"] == 'CPSNEND') {
+	    		$('.btn_auth_stop').remove();
+	    	}
+	    	
+	    	
+	    	$("input[name=str_cd]").val(detailData["str_cd"]);
+	    	$("input[name=brnc_bene_noti_id]").val(detailData["brnc_bene_noti_id"]);
+	    	$('#cust_grd_nm').text(detailData["cust_grd_nm"]);
+	    	$('#reg_id_name').text(detailData["reg_id_name"]);
+	    	$('#reg_date').text(cf_changeDateFormat(detailData["reg_date"],'yy-mm-dd'));
+	    	$('#aprv_sts_nm').text(detailData["aprv_sts_nm"]);
+	    	$('#aprv_date').text(detailData["aprv_date"]);
+	    	var vali_term_dd 	= cf_changeDateFormat(detailData["vali_term_start_dd"],'yy-mm-dd')
+	    						+ " ~ "
+	    						+ cf_changeDateFormat(detailData["vali_term_end_dd"],'yy-mm-dd');
+	    	$('#vali_term_dd').text(vali_term_dd);
+	    	$('#noti_title').text(detailData["noti_title"]);
+	    	$('#noti_sub_title').text(detailData["noti_sub_title"]);
+// 	    	$('#noti_content').text(detailData["noti_content"]);
+// 	    	$('#noti_content').text(detailData["noti_content"]);
+	    	$('#noti_content').html(detailData["noti_content"].replaceAll('\\n','<br/>'));	    	
+
+	    	
+	    	if(detailData["img_view_nm"] != "") {
+		    	var tag_img = $('<img>').attr('src',detailData["img_prvw_url"]).attr('alt',detailData["img_view_nml"]).addClass('img-responsive');
+		    	$("#img").append(tag_img);
+	    	}
+	    	else {
+	    		$('#img_container').hide();
+	    	}
+	    	
+	    	
+			
+			// 템플릿(생성이미지)
+			if (detailData['gen_img_view_nm'] != '') {
+	    		var $gen_img_container = $('#gen_img_container');
+	    		$('<img />', {'src': detailData['gen_img_prvw_url']}).appendTo( $('#gen_img') );
+	    		$gen_img_container.show();
+			}
+			else {
+				$('#gen_img_container').hide();
+			}
+			
+	    	
+		},
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }	
+	});
+
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>
+

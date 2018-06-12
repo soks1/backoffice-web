@@ -1,0 +1,158 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>쿠폰 상세 보기</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >제목 </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="coupon_nm"></span>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내용 이미지 </label>
+									<div class="col-md-10" id="coupon_img">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >품목명 </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="item_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >할인유형 </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="dc_type_cont"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >등록일자 </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >설명 </label>
+									<div class="col-md-10">
+										<textarea class="form-control cs-css-03" id="coupon_desc_content" rows="8" readonly="readonly"></textarea>
+									</div>
+								</div>
+								
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantEventCouponEN()" class="btn btn-success" style="display:none;" id="tenantEventCoupon_modify_btn">수정</a>
+										<a href="javascript:f_tenantEventLN()" class="btn btn-default">목록</a>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	
+	//권한에 따른 수정버튼 노출 여부
+	var auth_u = '${sessionScope.menuAuth.U}';
+	if( auth_u == 'Y') {
+		$('#tenantEventCoupon_modify_btn').show();
+	}
+	
+	$.ajax({
+	    url: api_lifekok_url+'/backoffice/lifekok/coupon/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	
+	    	$("#coupon_nm").html(detailData['coupon_nm']);
+	    	$("#item_nm").html(detailData['item_nm']);
+	    	$("#reg_date").html(detailData['reg_date']);
+	    	$("#coupon_desc_content").html(detailData['coupon_desc_content']);
+	    	$("#dc_type_cont").html(detailData['dc_type_cont']);
+	    	
+	    	var tag_img = "";
+	    	if(detailData['prvw_url'] != ""){
+// 	    		var _url = detailData['prvw_url'].replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+	    		var _url = detailData['prvw_url'];
+	    		if(_url.indexOf("null/null") == -1){
+	    			tag_img = $('<img>').attr('src',_url).addClass('img-responsive');
+	    		}else{
+	    			tag_img = $('<img>').attr('src',"${pageContext.request.contextPath}/resources/img/noPreview.png").addClass('img-responsive');
+	    		}
+	    	}
+	    	$("#coupon_img").append(tag_img);
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

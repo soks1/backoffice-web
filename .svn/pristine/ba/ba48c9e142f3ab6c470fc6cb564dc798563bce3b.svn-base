@@ -1,0 +1,137 @@
+/**
+ * ==================================================================================
+ * 공통 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_noticeList() {
+	var url = "/application/board/system_notice/noticeLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_noticeEdit() {
+	var url = "/application/board/system_notice/noticeEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 달력 디폴트 데이터 설정
+ * ==================================================================================
+ */
+function f_initDate() {
+	$('#frmSearch input[name=s_reg_date]').val(cf_termDate(-30));
+	$('#frmSearch input[name=e_reg_date]').val(cf_toDate());
+}
+/**
+ * ==================================================================================
+ * 상세에서 삭제 하기
+ * ==================================================================================
+ */
+function f_noticeDelete() {
+	if(confirm("정말 삭제하시겠습니까?")) {
+		var select_ids = [$("#frmKeepData").find("input[name=noticbd_id]").val()];
+		var data = {
+			empno: $("#frmKeepData").find("input[name=empno]").val(), 
+			emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+			noticbd_id_list : select_ids
+		};
+		$.ajax({
+			url: api_url + "/backoffice/common/board/delete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_noticeList();
+			}	
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#s_reg_date').getObjLength() > 0 ) {
+		if( $('#e_reg_date').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_reg_date').getObjLength() > 0 ) {
+		if( $('#s_reg_date').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	f_addButton();
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();	
+	$("#notice_grid").jqGrid('setGridParam', {search: true});
+	$("#notice_grid").jqGrid('setGridParam', {page: 1});
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#notice_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	$("#btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#s_reg_date, #e_reg_date" ).datepicker( "option", {minDate: null, maxDate: null});
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	$("#notice_grid").jqGrid('setGridParam', {search: true});
+	$("#notice_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#notice_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	// 달력 디폴트 데이터 설정
+	f_initDate();
+}
+

@@ -1,0 +1,1142 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row"> 
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>M쿠폰북 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmCpBook" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<!-- 비회원 추가 START -->
+								<div class="form-group">
+									<label class="col-md-1 control-label">사용대상 구분<sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="nomem_view_gbn" value="M" checked="checked" data-valid-use="true" data-check-only="true" data-valid-title="회원">
+													회원
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="nomem_view_gbn" value="N" data-valid-use="true" data-check-only="true" data-valid-title="비회원">
+													비회원
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- 비회원 추가 END -->
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 유형 <sup>*</sup></label>
+									<div class="col-md-3">
+										<select class="form-control" name="cpbook_type_cd" data-valid-use="true" data-valid-title="쿠폰북 유형">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">온라인몰, 매장 <sup>*</sup></label>
+									<div class="col-md-3">
+										<select class="form-control" name="issue_chanel_cd" data-valid-use="true" data-valid-title="온라인몰, 매장">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<label class="col-md-2 control-label">롯데마트몰 발행기기</label>
+									<div class="col-md-2">
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" id="issue_quipmnt_cd_pc_yn" name="issue_quipmnt_cd_pc_yn" value="N" disabled="disabled">
+											  <span>PC</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" id="issue_quipmnt_cd_mobile_yn" name="issue_quipmnt_cd_mobile_yn" value="N" disabled="disabled">
+											  <span>모바일</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">브랜드 <sup>*</sup></label>
+									<div class="col-md-3">
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="lmart_issue_yn" value="N">
+											  <span>롯데마트</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="tru_issue_yn" value="N">
+											  <span>토이저러스</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="vic_issue_yn" value="N">
+											  <span>빅마켓</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">사용지점 <sup>*</sup></label>
+									<!-- 
+									<div class="col-md-6">
+										<input type="hidden" id="use_brnch_info_list" name="use_brnch_info_list" value="">
+									</div>
+									 -->
+									<div class="col-md-2">
+										<label class="checkbox-inline" >
+											<input type="checkbox" class="checkbox style-2" id="use_brnch_info_all_yn" name="use_brnch_info_all_yn" value="N">
+											<span>전체선택</span>
+										</label>
+									</div>
+									<div class="col-md-2">
+										<label class="checkbox-inline" >
+											<input type="checkbox" class="checkbox style-2" id="use_brnch_info_select" name="use_brnch_info_select" value="N">
+										    <span>부분선택</span>
+										</label>
+									</div>
+									<div class="col-md-12">
+										<div class="col-md-12 str_checkall_div" style = "display: none;">
+											<label class="checkbox-inline" >
+												<input type="checkbox" class="checkbox style-2" name="str_checkall" value="N">
+											    <span>전지점선택</span>
+											</label>
+										</div>
+										<div class="col-md-12 use_brnch_select_list" style = "display: none;">
+											
+									    </div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">App노출지점 <sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="use_psbt_brnch_yn" value="Y" data-valid-use="true" data-check-only="true" data-valid-title="App노출지점">
+											사용가능매장 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="use_psbt_brnch_yn" value="N" data-valid-use="true" data-check-only="true" data-valid-title="App노출지점">
+											사용제외매장 </label>
+									</div>
+									<div class="col-md-4">
+										<input class="form-control" name="use_psbt_excp_brnch_content" type="text" data-valid-use="true" data-valid-symbol="true" data-valid-title="App노출지점내용">
+									</div>
+								</div>
+								<div class="form-group cooperation" style="display: none;">
+									<label class="col-md-1 control-label">협력사 코드</label>
+									<div class="col-md-2">
+										<input type="hidden" id="ven_cd"/>
+									</div>
+									<div class="col-md-3">
+										<a href="javascript:f_addVenCd()" class="btn btn-primary btn-sm">추가</a><span id="cooperation_count"> 총 0개 업체 선택</span>
+									</div>
+									<label class="col-md-3 control-label"></label>
+									<label class="col-md-3 control-label"></label>
+								</div>
+								<div class="form-group cooperation" style="display: none;">
+									<label class="col-md-1 control-label"></label>
+									<div class="col-md-11">
+										<input class="form-control tagsinput" id="cooperation" value="" data-role="tagsinput">
+									</div>
+								</div>
+								<div class="form-group maxUseCoupon" style="display: none;">
+									<label class="col-md-1 control-label">최대 선택가능 쿠폰수</label>
+									<div class="col-md-1">
+										<input class="form-control" name="combo_max_sel_cnt" type="text" data-valid-num="true" data-valid-max="4" data-valid-title="최대 선택가능 쿠폰수">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북명 <sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="cpbook_nm" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="쿠폰북명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 설명</label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="cpbook_desc_content" data-valid-symbol="true" data-valid-max="108" data-valid-title="쿠폰북 설명">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">자사/타사 <sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="cpbook_company_type" value="1" data-valid-use="true" data-check-only="true" checked="checked"  data-valid-title="자사/타사">자사
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="cpbook_company_type" value="2" data-valid-use="true" data-check-only="true">타사
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 타사 선택 쿠폰북은 APP 내 [M제휴] 메뉴에 노출됩니다. 단, CRM 발행에 한 하며 신용카드 쿠폰은 [M쿠폰] 금액형에 노출됩니다.</p>
+										<p><i class="fa fa-info-circle"></i> 타사 선택 시 대상쿠폰은 타사 쿠폰만 선택 가능합니다.</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 노출 타입<sup>*</sup></label>
+									<div class="col-md-8">
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_size_type_cd" value="S" checked="checked" data-valid-use="false" data-check-only="true">
+													S타입
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_size_type_cd" value="M" data-valid-use="false" data-check-only="true">
+													M타입
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_size_type_cd" value="L" data-valid-use="false" data-check-only="true">
+													L타입
+												</label>
+											</div>
+										</div>
+										<label class="col-md-1 control-label">&nbsp;</label>
+										<div class="col-md-10">
+											<p><i class="fa fa-info-circle"></i> 대상쿠폰은 선택한 쿠폰 노출 타입과 동일한 타입으로 등록된 쿠폰만 조회 및 선택 가능합니다.</p>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">롯데마트몰 <sup>*</sup></label>
+									<div class="col-md-3">
+										<a href="javascript:f_openTemplateSD();" class="btn btn-primary btn-sm">표지템플릿 선택</a>
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-10" id="image_precautions">
+										<p><i class="fa fa-info-circle"></i> 표지템플릿 선택을 클릭하시면, 이미 제작된 쿠폰북 표지에서 선택하여 쿠폰북 이미지로 사용할 수 있습니다.</p>
+										<p><i class="fa fa-info-circle"></i> 직접등록 시, 사이즈: 1040px X 380px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB </p>
+									</div>
+								</div>
+								<input type="hidden" name="template_use_yn" value="N">
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">M쿠폰앱 <sup>*</sup></label>
+									<div class="col-md-3">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile2" name="uploadfile2">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile2" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-10" id="image_precautions">
+										<p><i class="fa fa-info-circle"></i> 표지템플릿 선택을 클릭하시면, 이미 제작된 쿠폰북 표지에서 선택하여 쿠폰북 이미지로 사용할 수 있습니다.</p>
+										<p><i class="fa fa-info-circle"></i> 직접등록 시, 사이즈: 1040px X 380px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB </p>
+									</div>
+								</div>
+								<input type="hidden" name="template_use_yn2" value="N">
+							</fieldset>
+							<!-- 적용 대상(카테고리) -->
+							<fieldset id="applyTypeFieldSetB" >
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">대상쿠폰(<span id="couponCount">0</span>) <sup>*</sup></label>
+									<div class="col-md-11">
+										<p><a href="javascript:f_openCouponSelectSD();" class="btn btn-primary btn-sm">쿠폰선택</a>
+										   <a href="javascript:f_selectCouponDelete();" class="btn btn-danger btn-sm">선택삭제</a></p>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c" style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">쿠폰번호</th>
+														<th class="ta-c">쿠폰명</th>
+														<th class="ta-c">쿠폰유형</th>
+														<th class="ta-c">할인/적립 유형</th>
+														<th class="ta-c">적용 기준</th>
+														<th class="ta-c">할인 상품</th>
+														<th class="ta-c">조건 상품</th>
+														<th class="ta-c">할인 적용 단계</th>
+														<th class="ta-c">할인적립(금액/율/개수)</th>
+														<th class="ta-c">사용가능일자</th>
+														<th class="ta-c">쿠폰별 쿠폰북 매핑수</th>
+														<th class="ta-c">우선순위</th>
+													</tr>
+												</thead>
+												<tbody id="selectCoupon_tbody" data-valid-title="대상쿠폰">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_couponBookList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="coupon_select_sd" style="display:none;"></div>
+<div id="templates_sd" style="display:none;"></div>
+<div id="couponbook_info_rd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 자사/타사 radio
+/* ============================================================================================ */
+$("input[name=cpbook_company_type]").change(function () {
+	
+	$("#selectCoupon_tbody").empty();
+	$("#couponCount").text(cf_getTrElementCount($("#selectCoupon_tbody")));
+	
+});
+
+/* ============================================================================================
+/* 회원/비회원 radio
+/* ============================================================================================ */
+$('input[name="nomem_view_gbn"]').change(function(){
+	var _nomem_gbn = $(this).val();
+	if(_nomem_gbn == "N") {
+		// 쿠폰북 유형 일반쿠폰북으로 고정
+		$('select[name=cpbook_type_cd]').val("A").attr("selected","selected");
+		$('select[name=cpbook_type_cd]').attr("disabled", true);
+		
+		// 온라인몰/매장 매장으로 고정
+		$('select[name=issue_chanel_cd]').val("OFFLINE").attr("selected","selected");
+		$('select[name=issue_chanel_cd]').attr("disabled", true);
+		
+		// 롯데마트몰 발행기기 체크해제
+		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+		
+		// 사용지점 전체선택 체크
+		$("input[name=use_brnch_info_all_yn]").prop("checked", true);
+		$("input[name=use_brnch_info_all_yn]").attr("disabled", true);
+		$("input[name=use_brnch_info_select]").attr("disabled", true);
+		$("input[name=use_brnch_info_all_yn]").val("Y");
+		$('#use_brnch_info_list').select2('enable', false);
+		
+		// App 노출 지점 사용가능매장으로 고정 및 전점 하드코딩
+		$("input[name=use_psbt_brnch_yn]:radio[value=Y]").prop('checked',true);
+		$("input[name=use_psbt_brnch_yn]").attr("disabled", true);
+		$("input[name=use_psbt_excp_brnch_content]").val("전점");
+		$("input[name=use_psbt_excp_brnch_content]").attr("disabled",true);
+		
+		// 스마트콤보 쿠폰수 입력영역 숨김
+		$(".maxUseCoupon").hide();
+	}else {
+		// 쿠폰북 유형 일반쿠폰북으로 고정
+		$('select[name=cpbook_type_cd]').val("").attr("selected","selected");
+		$('select[name=cpbook_type_cd]').attr("disabled", false);
+		
+		// 온라인몰/매장 매장으로 고정
+		$('select[name=issue_chanel_cd]').val("").attr("selected","selected");
+		$('select[name=issue_chanel_cd]').attr("disabled", false);
+		
+		// 롯데마트몰 발행기기 체크해제
+		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", false);
+		
+		// 사용지점 전체선택 체크
+		$("input[name=use_brnch_info_all_yn]").prop("checked", false);
+		$("input[name=use_brnch_info_all_yn]").attr("disabled", false);
+		$("input[name=use_brnch_info_select]").attr("disabled", false);
+		$("input[name=use_brnch_info_all_yn]").val("N");
+		$('#use_brnch_info_list').select2('enable', true);
+		
+		// App 노출 지점 사용가능매장으로 고정 및 전점 하드코딩
+		$("input[name=use_psbt_brnch_yn]:radio[value=Y]").prop('checked',false);
+		$("input[name=use_psbt_brnch_yn]").attr("disabled", false);
+		$("input[name=use_psbt_excp_brnch_content]").val("");
+		$("input[name=use_psbt_excp_brnch_content]").attr("disabled",false);
+		
+	}
+
+});
+/* ============================================================================================
+/* 쿠폰별 쿠폰북 정보 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 맵핑수 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+$('#couponbook_info_rd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 쿠폰별 쿠폰북 정보 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#couponbook_info_rd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ============================================================================================
+ * 체크 박스 선택에 따른 값 변경
+ * --------------------------------------------------------------------------------------------
+ * 체크 TRUE		: Y
+ * 체크 FALSE	: N
+ * ============================================================================================ 
+ */
+$(".checkbox").change(function() {
+	if($(this).is(':checked')) {
+		$(this).val("Y");
+// 		if($(this).attr("name") == "tru_issue_yn"){
+// 			$("input[name=vic_issue_yn]").attr("checked", false);
+// 			$("input[name=vic_issue_yn]").val("N");
+// 		} else if($(this).attr("name") == "vic_issue_yn"){
+// 			$("input[name=tru_issue_yn]").attr("checked", false);
+// 			$("input[name=tru_issue_yn]").val("N");
+// 		}
+	} else {
+		$(this).val("N");
+	}
+});
+
+
+/**
+ * ==================================================================================
+ * 쿠폰북 표지템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 표지템플릿 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=template_list]:checked");
+
+			var v_nm = chk_obj.attr('img_view_nm');
+			//var l_nm = chk_obj.attr('img_local_nm');
+			var img_path = chk_obj.attr('img_path');
+			var thum_path = chk_obj.attr('thum_path');			
+			
+			// 이미지1
+			$('#preview_uploadfile').find('img').attr('src',img_path);			
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_uploadfile');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateFileDelete()").text('파일삭제');						
+			var template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			$('input[name=template_use_yn]').val('Y');			
+			var btn_div = $("#uploadfile").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			// 이미지2
+			f_templateFileDelete2();
+			$('#preview_uploadfile2').find('img').attr('src',thum_path);			
+			fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile2').parent().append(fName); 
+			
+			span = $('<span>').addClass('btn_del_uploadfile2');
+			aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateFileDelete2()").text('파일삭제');			
+			template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id2').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			$('input[name=template_use_yn2]').val('Y');			
+			var btn_div = $("#uploadfile2").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#templates_sd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 쿠폰 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#coupon_select_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			$("#to_tbody").find("tr").each(function(){
+				
+				var tag_td = "";
+				var key = "";
+				// 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+				$(this).find("td").each(function(i){
+					// 각 셀 데이터 생성
+					if(i == 1) {
+						key = $(this).text();
+						tag_td += "<input type='hidden' name='coupon_id_list' data-array-always='true' value='"+key+"'>";
+					}
+					tag_td += "<td class='ta-c'>"+$(this).html()+"</td>";	
+				});
+				tag_td += "<td class='ta-c input-icon-right'><input type='text' name='ord_list' onkeyup='cf_numChk(this);' data-array-always='true' style='padding:0 0 0 2px; text-align:center' value='1' /></td> \n";
+				var tag_tr = "<tr>"+tag_td+"</tr>";
+				
+				// 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+				var chk = 0;
+				$("#selectCoupon_tbody").find("tr > td").each(function(){
+					if($(this).text() == key) {
+						chk++;
+					}
+				});
+				
+				// 같은 데이터가 없을 경우에만 등록 시킨다.
+				if(chk == 0) {
+					$("#selectCoupon_tbody").append(tag_tr);
+				}
+				
+			});
+			$("#couponCount").text(cf_getTrElementCount($("#selectCoupon_tbody")));
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#coupon_select_sd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 태그즈 인풋
+ * ==================================================================================
+ */
+$('.tagsinput').tagsinput({
+	itemValue: 'id',
+	itemText: 'text',
+	typeaheadjs: {
+		displayKey: 'text'
+	}
+});
+
+$('.tagsinput').on('itemAdded', function(event) {
+	var count = $('.tagsinput').tagsinput('items').length;
+	$('#cooperation_count').text(" 총 " + count + "개 업체 선택");
+});
+
+$('.tagsinput').on('itemRemoved', function(event) {
+	var count = $('.tagsinput').tagsinput('items').length;
+	$('#cooperation_count').text(" 총 " + count + "개 업체 선택");
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 협력사 코드
+ * ==================================================================================
+ */
+$("#ven_cd").select2({
+    placeholder: "협력사 코드 입력(6자리)",
+    minimumInputLength: 6,
+    width: '100%',
+    ajax: {
+        url: api_url + "/backoffice/common/partner/list",
+        dataType: 'json',
+        async: false,
+		cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            return encodeURI('params={"ven_cd":"'+term+'"}');
+        },
+        results: function (obj, page) {
+            var results = [];
+            $.each(obj.data.mst_list, function(index, item){
+              results.push({
+                id: item.ven_cd,
+                text: item.ven_nm
+              });
+            });
+            return {
+                results: results
+            };
+        }
+    },
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 롯데마트몰 발행기기 선택 이벤트
+ * ==================================================================================
+ */
+$("select[name=issue_chanel_cd]").change(function(){
+	if($.trim($(this).val()) == '' ) {
+		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	}
+	else if($(this).val() !== 'OFFLINE') {
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", false);
+	}
+	else {
+		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	}
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 쿠폰북 유형 선택 이벤트
+ * ==================================================================================
+ */
+$("select[name=cpbook_type_cd]").change(function(){
+	if($(this).val() === 'B') {
+   		$(".cooperation").show();
+   		$(".maxUseCoupon").hide();
+   	} else if($(this).val() === 'C') {
+   		$(".maxUseCoupon").show();
+   		$(".cooperation").hide();
+   	} else {
+   		$(".cooperation").hide();
+   		$(".maxUseCoupon").hide();
+   	}
+});
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 쿠폰북 노출 타입에 따라 이미지 사이즈 문구 변경
+ * ==================================================================================
+*/
+ $("input[name=cpbook_size_type_cd]").change(function(){
+	$(".table-responsive").find("input[type=checkbox]").attr("checked",true);
+	f_selectCouponDelete();
+	$(".table-responsive").find("input[type=checkbox]").attr("checked",false);
+ 	var coupon_size = $("input[name=coupon_size_type_cd]:checked").val();
+ 	$("#image_precautions p:nth-child(2)").empty();
+ 	if  (coupon_size == "M") {
+ 		$("#image_precautions p:nth-child(2)").append("<i class='fa fa-info-circle'></i>").append(" 직접등록 시, 사이즈: 400px X 400px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB");
+ 	} else if  (coupon_size == "L") {
+ 		$("#image_precautions p:nth-child(2)").append("<i class='fa fa-info-circle'></i>").append(" 직접등록 시, 사이즈: 684px X 370px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB");
+ 	} else {
+ 		$("#image_precautions p:nth-child(2)").append("<i class='fa fa-info-circle'></i>").append(" 직접등록 시, 사이즈: 350px X 350px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB");
+ 	}
+ });
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 파일 업로드
+ * ==================================================================================
+ */
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this),'IMG_COUPONBOOK_LIST');
+});
+
+$('#uploadfile2').change(function (e) {
+	cf_fileUpload($(this),'IMG_COUPONBOOK_LIST', "2");
+});
+
+/* ============================================================================================
+/* 사용지점 전체선택 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 체크 TRUE	: 미션 수행 지점 입력박스 disalbe
+/* 체크 FALSE	: 미션 수행 지점 입력박스 enable
+/* ============================================================================================ */
+$('input[name=use_brnch_info_all_yn]').click(function(){
+	$("#use_brnch_info_list").parent().show();
+	$(".use_brnch_select_list").hide();
+	$(".str_checkall_div").hide();
+	$("input[name=use_brnch_info_all_yn]").val("Y");
+	$("input[name=use_brnch_info_select]").val("N");
+	$("input[name=str_checkall]").val("N");
+	$('.use_brnch_select_list').empty();
+    if($(this).is(':checked')){
+        $('#use_brnch_info_list').select2('enable', false);
+		$("#use_brnch_info_select").prop("checked", false);
+    } else {
+        $('#use_brnch_info_list').select2('enable', true);
+    }
+});
+$('input[name=use_brnch_info_select]').click(function(){
+	$("#use_brnch_info_list").parent().hide();
+	$(".use_brnch_select_list").show();
+	$(".str_checkall_div").show();
+	$("input[name=use_brnch_info_all_yn]").val("N");
+	$("input[name=use_brnch_info_select]").val("Y");
+    if($(this).is(':checked')){
+		$("#use_brnch_info_all_yn").prop("checked", false);
+        $('#use_brnch_info_list').select2('enable', true);
+
+        var data = {
+    				empno: "${sessionScope.sessionEmpno}", 
+    				str_cd: "${sessionScope.sessionStrCd}",
+    				mclub_id: " "
+    		};
+    		$.ajax({
+    			url: api_url + '/backoffice/common/branch/list',
+    			type: "GET",
+    			async: false,
+    			data: encodeURI('params='+JSON.stringify(data)),
+    			success: function(obj) {
+    				var target = $(".use_brnch_select_list");
+    				
+    				$.each(obj.data.brnch_list, function(i, item) {       					
+       					var str_chbox = '<div class="col-md-2">' 
+       						+ '<label class="checkbox-inline" >'
+       						+ '<input type="checkbox" class="checkbox style-2" name="str_cpbook" id="str'+item.str_cd+'" value="'+item.str_cd+'" onclick="str_check();">'
+    					    + '<span>'+item.str_nm+'</span>'
+    						+ '</label>'
+    						+ '</div>';
+        				target.append(str_chbox);
+       				});
+
+    				// 체크박스가 안되서 초기화
+    				$("input[name=str_cpbook]").prop("checked",false);
+    				$("#strALL").parent().parent().empty().hide();
+    			},
+    			error: function(obj) {
+    		    	var serverObj = obj.responseJSON;
+    		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+    		    	return;
+    		    }
+    		});
+    		
+    } else {
+        $('#use_brnch_info_select').select2('enable', true);
+        $('#use_brnch_info_list').select2('enable', true);
+        $(".use_brnch_select_list").hide();
+        $(".use_brnch_select_list").children().attr("checked", false);
+    	$('.use_brnch_select_list').empty();
+    }
+});
+
+function str_check(){
+	if( $("input:checkbox[name=str_cpbook]").length === $("input:checkbox[name=str_cpbook]:checked").length ) { 
+		$("input[name=str_checkall]").prop("checked",true);
+		$("input[name=str_checkall]").val("Y");
+	} else { 
+		$('input[name=str_checkall]').prop("checked",false);
+		$("input[name=str_checkall]").val("N");
+	}
+}
+
+$("input[name=str_checkall]").click(function(){
+    if($("input[name=str_checkall]").prop("checked")){
+    	$("input[name=str_checkall]").val("Y");
+        $("input[name=str_cpbook]").prop("checked",true);
+        //클릭이 안되있으면
+    }else{
+    	$("input[name=str_checkall]").val("N");
+        $("input[name=str_cpbook]").prop("checked",false);
+    }
+});
+
+
+/* ============================================================================================
+/* 사용지점 셀렉트 박스
+/* --------------------------------------------------------------------------------------------
+/* 미션수행지점 INPUT BOX 값으로 검색 결과 리스트 갱신
+/* ============================================================================================ */
+$('#use_brnch_info_list').select2({
+	placeholder: '사용 지점 검색',
+    width: '100%',
+    multiple: true,
+    ajax: {
+        url: api_url + '/backoffice/common/branch/list',
+        dataType: 'json',
+        cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            var data = {
+                sys_type : 'BACKOFFICE',
+                svc_type : 'CPBOOK',
+                empno: '${sessionScope.sessionEmpno}',
+                hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+                use_type : 'USE_BRANCH',
+                str_cd : '${sessionScope.sessionStrCd}',
+                str_nm: term
+            };
+            return encodeURI('params='+JSON.stringify(data));
+        },
+        results: function (obj, page) {
+            var results = [];
+            $.each(obj.data.brnch_list, function(index, item){
+                results.push({
+                    id: item.str_cd,
+                    text: item.str_nm
+				});
+            });
+            return {
+                results: results
+            };
+        }
+    }
+});
+
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	if($('#frmCpBook').formValid() && $('#selectCoupon_tbody').tableRowValid() ) {
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		
+		// 이미지1
+		if($('input[name=template_id]').val() != undefined) {
+			if($('input[name=template_id]').val() == '') {
+				alert('이미지는 필수 입력 값입니다.');
+				return;
+			}
+		} else {
+			if($('input[name=img_strge_file_nm]').val() == undefined || $('input[name=img_strge_file_nm]').val() == '') {
+				alert('이미지는 필수 입력 값입니다.');
+				return;
+			}	
+		}
+		
+		// 이미지2
+		if($('input[name=template_id2]').val() != undefined) {
+			if($('input[name=template_id2]').val() == '') {
+				alert('이미지는 필수 입력 값입니다.');
+				return;
+			}
+		} else {
+			if($('input[name=img_strge_file_nm2]').val() == undefined || $('input[name=img_strge_file_nm2]').val() == '') {
+				alert('이미지는 필수 입력 값입니다.');
+				return;
+			}	
+		}
+		
+		
+	
+		// 온라인몰, 매장이 온라인 또는 온/오프라인일때 롯데마트몰 발행기기 확인
+		if( $('select[name=issue_chanel_cd]').children("option:selected").val() != 'OFFLINE' ) {
+			var issue_quipmnt_cd_pc_yn = 0;
+			if( $('input[name=issue_quipmnt_cd_pc_yn]').is(':checked') ) {
+				issue_quipmnt_cd_pc_yn++;
+			}
+			if( $('input[name=issue_quipmnt_cd_mobile_yn]').is(':checked') ) {
+				issue_quipmnt_cd_pc_yn++;
+			}
+			if(issue_quipmnt_cd_pc_yn < 1) {
+				alert('롯데마트몰 발행기기는 1개 이상 선택하셔야 합니다.');
+				return;
+			}
+		}
+		
+		// 발행처 3개중 1개는 무조건 선택 해야 함.
+		var issue_yn_cnt = 0;
+		if( $('input[name=lmart_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		if( $('input[name=tru_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		if( $('input[name=vic_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		if(issue_yn_cnt < 1) {
+			alert('발행 채널은 1개 이상 선택하셔야 합니다.');
+			return;
+		}
+		
+		// 스마트 콤보 쿠폰북 선택시 최대 선택가능 쿠폰수 체크
+		if( $('select[name=cpbook_type_cd]').children("option:selected").val() == 'C' ) {
+			if( $('input[name=combo_max_sel_cnt]').isEmpty() != true ) {
+				return;
+			}
+		}
+				
+		// 사용지점 전체 선택이 아닐때 지점 등록 확인
+		if( $('input[name=use_brnch_info_all_yn]').is(':checked') != true ) {
+			if ( $('.use_brnch_select_list').find('input:checkbox').attr("checked",true) < 1 ) {
+				alert('사용 지점을 등록해 주세요.');
+				return;
+			}
+		}
+		/* if( $('input[name=use_brnch_info_all_yn]').is(':checked') != true ) {
+			if( $('#use_brnch_info_list').select2('data').length < 1 ) {
+				alert('사용 지점을 등록해 주세요.');
+				return;
+			}
+		} */
+		
+		// 발행 채널이 오라프인 경우에만 정액할인(포인트쿠폰) 허용
+		if( $('select[name=issue_chanel_cd]').children("option:selected").val() != 'OFFLINE' ) {
+			var chk_cnt_1 = 0;
+			$('#selectCoupon_tbody').find('input[name=coupon_type_cd]').each(function() {
+				if( $(this).val() == 'E' ) {
+					$(this).parent().parent().find('input[type=checkbox]').prop('checked',true);
+					chk_cnt_1++;
+				}
+			});
+			if(chk_cnt_1 > 0) {
+				alert('정액할인(포인트쿠폰)은 오프라인으로만 발행할 수 있습니다.\n\n대상쿠폰 목록에 체크된 항목을 확인해주세요.');
+				return;
+			}
+		}
+		
+ 		// 일반 쿠폰북이 아닌데 정액할인(포인트쿠폰)이 선택된 경우
+/* 		
+		if( $('select[name=cpbook_type_cd]').children("option:selected").val() != 'A') {
+			var chk_cnt_2 = 0;
+			$('#selectCoupon_tbody').find('input[name=coupon_type_cd]').each(function() {
+				if( $(this).val() == 'E' ) {
+					$(this).parent().parent().find('input[type=checkbox]').prop('checked',true);
+					chk_cnt_2++;
+				}
+			});
+			if(chk_cnt_2 > 0) {
+				alert('정액할인(포인트쿠폰)은 일반쿠폰북으로만 발행할 수 있습니다.\n\n대상쿠폰 목록에 체크된 항목을 확인해주세요.');
+				return;
+			}
+		} 
+*/
+		
+		// 신규가입 쿠폰북, 스마트 쿠폰북 쿠폰 체크
+		if( $('select[name=cpbook_type_cd]').children("option:selected").val() == 'C' || $('select[name=cpbook_type_cd]').children("option:selected").val() == 'D' ) {
+			var chk_cnt_4 = 0;
+			$('#selectCoupon_tbody').find('input[name=coupon_type_cd]').each(function() {
+				/*
+				if( $(this).val() == 'J' || $(this).val() == 'K' || $(this).val() == 'P' || $(this).val() == 'Q' 
+					|| $(this).val() == 'R' || $(this).val() == 'S' || $(this).val() == 'L' || $(this).val() == 'M' 
+					|| $(this).val() == 'N' || $(this).val() == 'O' || $(this).val() == 'T' || $(this).val() == 'U'
+					|| $(this).val() == 'V' || $(this).val() == 'W' ) {
+					$(this).parent().parent().find('input[type=checkbox]').prop('checked',true);
+					chk_cnt_4++;
+				}
+				*/
+				if ($(this).val() == 'P' || $(this).val() == 'Q' || $(this).val() == 'R' || $(this).val() == 'S' 
+					|| $(this).val() == 'T' || $(this).val() == 'U' || $(this).val() == 'V' || $(this).val() == 'W' ) {
+					$(this).parent().parent().find('input[type=checkbox]').prop('checked',true);
+					chk_cnt_4++;
+				}
+			});
+			if (chk_cnt_4 > 0) {
+				// alert('반복사용금지, 일자지정쿠폰, 다둥이쿠폰은 일반쿠폰북으로만 발행 할 수 있습니다.\n\n대상쿠폰 목록에 체크된 항목을 확인해주세요.');
+				alert('다둥이쿠폰은 일반쿠폰북으로만 발행 할 수 있습니다.\n\n대상쿠폰 목록에 체크된 항목을 확인해주세요.');
+				return;
+			}
+		}
+		
+		// 스마트 콤보 쿠폰북일 경우 금액형 쿠폰 등록 불가
+		if( $('select[name=cpbook_type_cd]').children("option:selected").val() == 'C' ) {
+			var chk_cnt_3 = 0;
+			// 쿠폰 type 비교 [기존코드를 이렇게 변경 하면 좋음]
+			var product_types = ['A', 'B', 'C', 'D', 'E', 'J', 'K', 'X', 'Y', 'Z']; 
+			$('#selectCoupon_tbody').find('input[name=coupon_type_cd]').each(function() {
+				// if( $(this).val() != 'A' && $(this).val() != 'B' && $(this).val() != 'C' && $(this).val() != 'D') {
+				//if ($(this).val() != 'A' && $(this).val() != 'B' && $(this).val() != 'C' && $(this).val() != 'D'
+				//	&& $(this).val() != 'E' && $(this).val() != 'J' && $(this).val() != 'K') {
+				if ( $.inArray($(this).val(), product_types) < 0) {
+					$(this).parent().parent().find('input[type=checkbox]').prop('checked',true);
+					chk_cnt_3++;
+				}
+			});
+			if(chk_cnt_3 > 0) {
+				alert('금액형 쿠폰은 스마트콤보쿠폰북으로는 발행할 수 없습니다.\n\n대상쿠폰 목록에 체크된 항목을 확인해주세요.');
+				return;
+			}
+		}
+
+		var sort_list = [];
+		for (var i = 0; i < $("#selectCoupon_tbody tr").length; i++) {
+			if($("#selectCoupon_tbody tr").eq(i).find("input[name=ord_list]").val() == "") {
+				alert("우선 순위를 입력해 주세요.");
+				return false;
+			}
+			var sort_item = {};
+			sort_item['coupon_id'] = $("#selectCoupon_tbody tr").eq(i).find("input[name=coupon_id_list]").val();
+			sort_item['ord_seq'] = $("#selectCoupon_tbody tr").eq(i).find("input[name=ord_list]").val();
+			
+			sort_list.push(sort_item);
+		}
+
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		
+		var data = $('#frmCpBook').serializeFormObject();
+       	var ven_info_list = $('.tagsinput').tagsinput('items');
+       	//var use_brnch_info_list = $("#use_brnch_info_list").select2('data');
+       	
+       	var use_brnch_info_list = [];
+       	$(".use_brnch_select_list").find("input:checked").each(function(i, items) {
+       		use_brnch_info_list.push({ 
+       			"id" : $(this).val(),
+       			"text" : $(this).next().text()
+       		});
+       	});
+       	
+       	data["ven_info_list"] = ven_info_list;
+       	data["use_brnch_info_list"] = use_brnch_info_list;
+       	data["coupon_ord_list"] = sort_list;
+
+       	// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/couponbook/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_couponBookList();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 쿠폰북 유형
+	f_ajaxCPbookTypeCode($('select[name=cpbook_type_cd]'));
+	
+	// 초기데이터 로드 : 온라인몰, 매장
+	f_ajaxPublerCode($('select[name=issue_chanel_cd]'));
+	
+	// 본사여부에 다른 사용 지점
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#use_brnch_info_all_yn').attr('disabled', true);
+		$('#use_brnch_info_list').select2('enable', false);
+		var info_data = [];
+		var items = {};
+		items["id"] = '${sessionScope.sessionStrCd}';
+		items["text"] = '${sessionScope.sessionStrNm}';
+		info_data[0] = items;
+		$('#use_brnch_info_list').select2("data",info_data);
+	}
+
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

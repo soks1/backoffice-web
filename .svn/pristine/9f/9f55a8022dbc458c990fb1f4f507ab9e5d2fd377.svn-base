@@ -1,0 +1,620 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+function f_startDatepicker(startDate, endDate) {
+	startDate.datepicker(
+		    $.extend({
+		        onSelect: function(selected) {
+		        	endDate.datepicker('option','minDate', selected);
+		        }
+		    }, date_opts)
+		);
+	
+}
+
+function f_endDatepicker(startDate, endDate) {
+	endDate.datepicker(
+	    $.extend({
+	        onSelect: function(selected) {
+	        	startDate.datepicker('option','maxDate', selected);
+	        }
+	    }, date_opts)
+	);
+}
+
+function f_startDatepickerMultiple(startDate, endDate, startDate2, endDate2) {
+	startDate.datepicker(
+		$.extend({
+			onSelect: function(selected) {
+				endDate.datepicker('option','minDate', selected);
+				endDate.datepicker('option','maxDate', cf_termDate(90, selected));
+				startDate2.datepicker('option','minDate', selected);
+			}
+		}, date_opts)
+	);
+}
+
+function f_endDatepickerMultiple(startDate, endDate, startDate2, endDate2) {
+	
+	endDate.datepicker(
+		$.extend({
+			onSelect: function(selected) {
+				startDate.datepicker('option','maxDate', selected);
+				endDate2.datepicker('option','maxDate', selected);
+				startDate2.datepicker('option','maxDate', selected);
+			}
+		}, date_opts)
+	);
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 메인리스트 화면 가기
+ * ==================================================================================
+ */
+function f_mclubList() {
+	var url = "/application/mclub/mclubLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 이벤트 세부리스트 화면 가기
+ * ==================================================================================
+ */
+function f_detailMclubList() {
+	var url = "/application/mclub/detailMclub/detailMclubLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_mclubEdit() {
+	var url = "/application/mclub/mclubEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 이벤트 수정 화면 가기
+ * ==================================================================================
+ */
+function f_detailMclubEdit() {
+	var url = "/application/mclub/detailMclub/detailMclubEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 조회 화면 가기
+ * ==================================================================================
+ */
+function f_mclubRead() {
+	var url = "/application/mclub/mclubRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 이벤트 조회 화면 가기
+ * ==================================================================================
+ */
+function f_detailMclubRead() {
+	var url = "/application/mclub/detailMclub/detailMclubRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() { 
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	if($("#frmListSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#start_dd').getObjLength() > 0 ) {
+		if( $('#start_dd').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#end_dd').getObjLength() > 0 ) {
+		if( $('#end_dd').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmListSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#mclub_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#mclub_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#mclub_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#start_dd, #end_dd" ).datepicker( "option", {minDate: null, maxDate: null});
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#mclub_grid").jqGrid('setGridParam', {search: false});
+	$("#mclub_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#mclub_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$("#frmListSearch").cleanObject();
+}
+
+/**
+ * ==================================================================================
+ * 클럽 상세 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_detailSearch() { 
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#start_dd').getObjLength() > 0 ) {
+		if( $('#start_dd').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#start_dd').getObjLength() > 0 ) {
+		if( $('#start_dd').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_detailAddButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#detail_mclub_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#detail_mclub_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#detail_mclub_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 클럽 상세 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_detailAddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancelDetail();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 클럽 상세 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancelDetail() {
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#s_apply_start_dd, #e_apply_start_dd" ).datepicker( "option", {minDate: null, maxDate: null});
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#detail_mclub_grid").jqGrid('setGridParam', {search: false});
+	$("#detail_mclub_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#detail_mclub_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 쿠폰북 정보 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponBookSD() {
+	$.ajax({
+		url: "/application/common/couponBookSD.do",
+		type: 'GET',
+		async: false,
+		cache: true,
+		success: function(data) {
+			var $target = $('#detail_mclub_couponbook_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#detail_mclub_couponbook_sd').dialog('open');
+		}
+	});
+
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 이벤트 선택 삭제
+ * ==================================================================================
+ */
+function f_detailMclubDelete() {
+	
+	if($('#aprv_sts_cd').val() == MCLUB_APPROVAL_STATUS_CODE.APPROVE) {
+		alert("승인상태의 이벤트는 삭제가 불가능합니다.");
+		return;
+	}
+	
+	var result = confirm("정말 삭제하시겠습니까?");
+	if (!result) {
+		return;
+	}
+	
+	var select_ids = [$("#frmKeepData").find("input[name=evnt_id]").val()];
+	var data = {
+		empno: $("#frmKeepData").find("input[name=empno]").val(), 
+		emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+		mclub_id: $("#frmKeepData").find("input[name=mclub_id]").val(),
+		detail_mclub_evnt_id_list : select_ids
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/mclub/detailMclub/evnt/delete",
+		type: "POST",
+		contentType: "application/json;charset=utf-8", 
+		async: true,
+		cache: false,
+		data: JSON.stringify(data),
+		success: function(obj) {
+			alert(obj.message);
+			f_detailMclubList();
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 기간 종료일 변경 다이얼로그
+ * ----------------------------------------------------------------------------------
+ * 적용 종료일 변경
+ * ==================================================================================
+ */
+
+function f_openChangeDateRD(term_type) {
+	var evnt_id = $('#frmKeepData').find('input[name=evnt_id]').val();
+	var mclub_id = $('#frmKeepData').find('input[name=mclub_id]').val();
+	var end_dd = $('#frmDeMcEvntCpb').find('input[name=end_dd]').val();
+	var cpbook_vali_term_end_dd = $('#frmDeMcEvntCpb').find('input[name=cpbook_vali_term_end_dd]').val();
+	
+	var data = {
+			"evnt_id" : evnt_id,
+			"mclub_id" : mclub_id,
+			"term_type" : term_type,
+			"end_dd" : end_dd,
+			"cpbook_vali_term_end_dd" : cpbook_vali_term_end_dd
+	}
+	$.ajax({
+		url: "/application/mclub/detailMclub/closingDateRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data: data,
+		success: function(data) {
+			var $target = $('#change_date_rd');
+			$target.html(data);
+		}	
+	});
+	$('#change_date_rd').dialog('open');
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 클럽폐쇄 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openClosingMclubRD() {
+	 
+	var mclub_id = $('#frmMclubData').find('input[name=mclub_id]').val();
+
+	 $.ajax({
+		url: '/application/mclub/closingMclubRD.do',
+		type: 'GET',
+		async: false,
+		cache: true,
+		data: {
+			 "mclub_id" : mclub_id 
+		 },
+		success: function(data) {
+			var $target = $('#closing_mclub_rd');
+			$target.empty();
+			$target.html(data);
+		},
+		complete: function() {
+			$('#closing_mclub_rd').dialog('open');
+		}
+	});
+}
+
+/**
+ * 상세 화면 : 이벤트 승인,반려,승인요청 처리
+ * 등록한 클럽 승인, 반려, 승인요청 처리
+ *
+ * @param statusCode MCLUB_APPROVAL_STATUS_CODE
+ * @param statusName status name
+ * @see MCLUB_APPROVAL_STATUS_CODE
+ */
+function f_approve(statusCode, statusName) {
+
+	var result = confirm(statusName + "을(를) 진행 하시겠습니까?");
+	if (!result) {
+		return;
+	}
+		
+	var data = $("#frmKeepData").serializeFormObject();
+	data['aprv_sts_cd_to_update'] = statusCode;
+	
+	$.ajax({
+		url: api_url + "/backoffice/mclub/approve",
+		type: "POST",
+		contentType: "application/json;charset=utf-8",
+		async: true,
+		cache: false,
+		data: JSON.stringify(data),
+		success: function(obj) {
+			if (obj.code != "S0000") {
+				alert("실패하였습니다.");
+				return;
+			}
+
+			alert(obj.message);
+
+			var url = "/application/mclub/mclubRN.do";
+			var method = "POST";
+			cf_action(url, method, $("#frmKeepData").serialize());
+		}
+	});
+}
+
+
+/**
+ * 이벤트 상세 화면 : 이벤트 승인,반려,승인요청 처리
+ * 등록한 이벤트 승인, 반려, 승인요청 처리
+ *
+ * @param statusCode MCLUB_EVNT_APPROVAL_STATUS_CODE
+ * @param statusName status name
+ * @see MCLUB_EVNT_APPROVAL_STATUS_CODE
+ */
+function f_evntApprove(statusCode, statusName) {
+
+	var result = confirm(statusName + "을(를) 진행 하시겠습니까?");
+	if (!result) {
+		return;
+	}
+
+	var data = $("#frmKeepData").serializeFormObject();
+	data['aprv_sts_cd_to_update'] = statusCode;
+
+	$.ajax({
+		url: api_url + "/backoffice/mclub/detailMclub/evnt/approve",
+		type: "POST",
+		contentType: "application/json;charset=utf-8",
+		async: true,
+		cache: false,
+		data: JSON.stringify(data),
+		success: function (obj) {
+			if (obj.code != "S0000") {
+				alert("실패하였습니다.");
+				return;
+			}
+
+			alert(obj.message);
+
+			var url = "/application/mclub/detailMclub/detailMclubRN.do";
+			var method = "POST";
+			cf_action(url, method, $("#frmKeepData").serialize());
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 고객군ID 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCustgpSD() {
+	$.ajax({
+		url: "/application/mclub/custgpSD.do",
+		type: 'GET',
+		async: false,
+		cache: true,
+		success: function(data) {
+			var $target = $('#custgp_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#custgp_sd').dialog('open');
+		}
+	});
+}
+
+function setMclubName(mclub_name){
+	$(".title_mclub_name").html('&nbsp;' + mclub_name);
+}
+
+/**
+ * ==================================================================================
+ * Mclub 이름 조회
+ * ==================================================================================
+ */
+/**
+ * @Param empno
+ * @Param str_cd
+ * @Param hq_base_yn
+ * @Param mclub_id   
+ */
+function f_getMclubName(jsonData, callbackFunction) {
+	$.ajax({
+		url: api_url+"/backoffice/mclub/detailMclub/mclubName", 
+		type: "GET",
+		datatype: 'json',
+		data: encodeURI("params="+JSON.stringify(jsonData)),
+		success: function(obj){
+			var data = obj.data;
+			if (data && data.mclub_name) {
+				var mclub_name = data.mclub_name;
+				if (typeof callbackFunction === 'function') {
+					callbackFunction(mclub_name);	
+				}
+			}
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+			alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 수정 화면 : 이미지 노출과 버튼 설정
+ * ----------------------------------------------------------------------------------
+ * 변수 : $('#preview_uploadfileC'), $("#uploadfileC"), obj.data.img_list[1], 'LIST'
+ * 		  이미지, 버튼, 이미지 데이터[], 이미지파일구분코드
+ * ==================================================================================
+ */
+function modifyImg(target1, target2, img_list, file_divn_cd){
+	var preview = target1;
+	preview.find('img').attr('src',img_list.img_url);
+	
+	var fName = '<p class="alert alert-info bd0">'+img_list.img_view_nm+'</p>';
+	preview.parent().append(fName); 
+	
+	var span = $('<span>').addClass('btn_del_'+target2.attr("id"));
+	var aTag = $('<a>')
+				.addClass('btn btn-danger btn-sm')
+				.attr('href','javascript:cf_fileDelete(\''+target2.attr("id")+'\')')
+				.text('파일삭제');
+
+	if(file_divn_cd == "C") {
+		img_list.file_divn_cd = "IMG_MCLUB_DETAIL_CONTENT";
+	}else if(file_divn_cd == "M") {
+		img_list.file_divn_cd = "IMG_MCLUB_CONTENT";
+	}
+	var input_file_divn_cd = $('<input>')
+		.attr('type', 'hidden')
+		.attr('name', 'file_divn_cd')
+		.val(img_list.file_divn_cd);
+	var input_local_file_name = $('<input>')
+				.attr('type', 'hidden')
+				.attr('name', 'img_strge_file_nm')
+				.val(img_list.img_local_nm);
+	
+	var input_atch_file_nm = $('<input>')
+				.attr('type', 'hidden')
+				.attr('name', 'img_orgin_file_nm')
+				.val(img_list.img_view_nm);
+	
+	var img_file_divn_cd = $('<input>')
+				.attr('type', 'hidden')
+				.attr('name', 'img_type')
+				.val(img_list.img_type);
+
+	span.append(aTag);
+	span.append(input_file_divn_cd);
+	span.append(input_local_file_name);
+	span.append(input_atch_file_nm);
+	span.append(img_file_divn_cd);
+	
+	var btn_div = target2.parent().parent();
+	btn_div.find("a").attr("disabled", true);
+	btn_div.find("span").attr("disabled", true);
+	btn_div.append(span);
+	
+}

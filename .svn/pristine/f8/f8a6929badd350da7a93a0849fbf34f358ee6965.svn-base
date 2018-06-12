@@ -1,0 +1,424 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>채널콕 수정</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmChkok">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="media_id" value=""> 
+							<input type="hidden" name="direct_buy_yn" value=""> 
+							<input type="hidden" name="prod_list" data-array-always="true" > 
+							
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">동영상 제목 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="title" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="동영상 제목" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">URL <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="media_url"  data-valid-symbol="false" data-valid-max="500" data-valid-title="URL" />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용 <sup>*</sup></label>
+									<div class="col-md-10">
+										<textarea class="form-control" name="desc_content" rows="10" data-valid-use='true' data-valid-max="4000" data-valid-title="내용"></textarea>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">카테고리 <sup>*</sup></label>
+									<div class="col-md-2">
+										<select class="form-control" id="category_cd" name="category_cd" data-valid-use="true" data-valid-title="카테고리">
+											<option value="">선택</option>
+										</select>
+									</div>
+									
+									<div class="col-md-2">
+										<label class="checkbox-inline" >
+											<input type="checkbox" class="checkbox style-2" id="prod_mapp_yn" name="prod_mapp_yn">
+											<span>상품 링크</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">동영상 노출기간 <sup>*</sup></label>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" style="z-index:20 !important;" id="ntce_st_date" name="ntce_st_date" type="text" data-valid-use="true" data-date-format="yyyyMMdd" data-valid-title="동영상 노출기간 시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" style="z-index:20 !important;" id="ntce_ed_date" name="ntce_ed_date" type="text" data-valid-use="true" data-date-format="yyyyMMdd" data-valid-title="동영상 노출기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div id="prod_disabled" style="display:none">
+									<div class="form-group">
+										<label class="col-md-2 control-label">상품 노출기간 </label>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" style="z-index:20 !important;" id="prod_op_st_date" name="prod_op_st_date" type="text" data-valid-use="false" data-date-format="yyyyMMdd" data-valid-title="상품 노출기간 시작일" placeholder="시작일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" style="z-index:20 !important;" id="prod_op_ed_date" name="prod_op_ed_date" type="text" data-valid-use="false" data-date-format="yyyyMMdd" data-valid-title="상품 노출기간 종료일" placeholder="종료일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+									</div>								
+									<div class="form-group">
+										<label class="col-md-2 control-label">상품 </label>
+										<div class="col-md-10">
+											<p><a href="javascript:f_chkOpenProductMultiSD('prod_list');" class="btn btn-primary btn-sm">상품선택</a>
+												<a href="javascript:f_selectProductDelete();" class="btn btn-danger btn-sm">선택삭제</a></p>
+											<div class="table-responsive" style="max-height:230px; overflow:auto;">
+												<table class="table table-bordered">
+													<thead>
+														<tr>
+															<th style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+															<th class="ta-c">판매코드</th>
+															<th class="ta-c">상품코드</th>
+															<th class="ta-c">상품명</th>
+															<th class="ta-c">규격</th>
+															<th class="ta-c">업체명</th>
+															<th class="ta-c">원가</th>
+															<th class="ta-c">매가</th>
+															<th class="ta-c">이익율</th>
+															<th class="ta-c">거래형태</th>
+														</tr>
+													</thead>
+													<tbody id="prod_list" data-valid-title="적용대상">
+														
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">해시 태그 </label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="hashtag_words" data-valid-use="false" data-valid-symbol="false" data-valid-max="500" data-valid-title="해시 태그" />
+									</div>
+								</div>
+								
+							</fieldset>
+								
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_chkokRead()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="chk_product_multi_sd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+
+$('input[name=prod_mapp_yn]').change(function(){
+	if($("input:checkbox[name='prod_mapp_yn']").is(":checked") == true) {
+		$('#prod_disabled').show();		
+		$("input[name=prod_mapp_yn]").val("Y");
+		
+	} else {
+		$('#prod_disabled').hide();
+		$("input[name=prod_mapp_yn]").val("N");
+		$('#prod_list').empty();
+		$('#prod_op_st_date').val("");
+		$('#prod_op_ed_date').val("");
+	}
+	
+});
+/* ============================================================================================
+/* 등록/수정 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#prod_op_st_date').datepicker(
+	    $.extend({
+	    	minDate:0,
+	    	onSelect: function(selected) {
+	            $("#prod_op_ed_date").datepicker('option','minDate', selected);
+	        }
+	    }, date_opts)
+	);
+	$('#prod_op_ed_date').datepicker(
+	    $.extend({
+	    	minDate:0,
+	    	onSelect: function(selected) {
+	            $("#prod_op_st_date").datepicker('option','maxDate', selected);
+	        }
+	    }, date_opts)
+	);
+
+	$('#ntce_st_date').datepicker(
+	    $.extend({
+	    	minDate:0,
+	    	onSelect: function(selected) {
+	            $("#ntce_ed_date").datepicker('option','minDate', selected);
+	            $("#prod_op_st_date").datepicker('option','minDate', selected);
+	            $("#prod_op_ed_date").datepicker('option','minDate', selected);
+	        }
+	    }, date_opts)
+	);
+	$('#ntce_ed_date').datepicker(
+	    $.extend({
+	    	minDate:0,
+	    	onSelect: function(selected) {
+	            $("#ntce_st_date").datepicker('option','maxDate', selected);
+	            $("#prod_op_ed_date").datepicker('option','maxDate', selected);
+	            $("#prod_op_st_date").datepicker('option','maxDate', selected);
+	        }
+	    }, date_opts)
+	);
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	$('#use_day').val(cf_termDate(1));
+	
+	$('#use_day').datepicker('option','minDate', cf_toDate());
+	
+	// 채널콕 카테고리 초기값.
+	f_ajaxCategoryCode("category_cd", "");
+
+	$.ajax({
+	    url: api_chkok_url+'/backoffice/chkok/media/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	
+	    	$("input[name=media_id]").val(detailData['media_id']);
+	    	$("input[name=title]").val(detailData['title']);
+	    	$("input[name=media_url]").val(detailData['media_url']);
+	    	$("input[name=desc_content]").val(detailData['desc_content']);
+	    	
+	    	$("select[name=category_cd]").val(detailData.category_cd).attr("selected", "selected"); 
+	    	
+	    	//화면로드시 체크박스 표시여부
+	    	if(detailData.direct_buy_yn=='Y'){
+	    		$("input[name=direct_buy_yn]").prop("checked",true);
+	    		$("input[name=direct_buy_yn]").val("Y");
+	    	}else{
+	    		$("input[name=direct_buy_yn]").prop("checked",true);
+	    		$("input[name=direct_buy_yn]").val("Y");
+	    	}
+	    	
+	    	$("#prod_mapp_yn").html(detailData['prod_mapp_yn']);
+	    	if(detailData.prod_mapp_yn == 'Y'){
+	    		$("input[name=prod_mapp_yn]").prop("checked",true);
+	    		$('#prod_disabled').show();	
+	    		$("input[name=prod_mapp_yn]").val("Y");
+	    		
+	    		
+	    	} else {
+	    		$("input[name=prod_mapp_yn]").prop("checked",false);
+	    		$("input[name=prod_mapp_yn]").val("N");
+	    	}
+	    	
+	    	$("#ntce_st_date").val(detailData['ntce_st_date']);
+	    	$("#ntce_ed_date").val(detailData['ntce_ed_date']);
+			    	
+	    	$("#prod_op_st_date").val(detailData['prod_op_st_date']);
+	    	$("#prod_op_ed_date").val(detailData['prod_op_ed_date']);
+	    	
+	    	$("input[name=hashtag_words]").val(detailData['hashtag_words']);
+	    	
+	    	if(detailData['prod_list']) {
+	    		$.each(detailData['prod_list'], function(i, prodItem) {
+		    		var tag_td = '';
+		    		var option = "";
+		    		
+		    		tag_td += '<td class="ta-c"><input type="checkbox" value="'+prodItem.prod_sell_cd+'"></td>';
+		    		tag_td += '<td class="ta-c" id="t_prod_sell_cd">' + prodItem.prod_sell_cd + '</td>';
+		    		tag_td += '<td class="ta-c" id="t_prod_cd">' + prodItem.prod_cd + '</td>';
+		    		tag_td += '<td class="ta-c" id="t_prod_nm">' + prodItem.prod_nm + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.standard_content + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.ven_nm + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.buy_prc + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.sell_prc + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.prftrat + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.trd_typ_nm + '</td>';
+		    		
+					option += '<option value="'+prodItem.prod_sell_cd+'">'+prodItem.prod_nm+'</option>';
+// 					$('#rep_prod_sell_cd').append(option);
+		    		$('#prod_list').append('<tr>' + tag_td + '</tr>');
+		    	});
+	    	}
+	    	
+
+	    	
+	    	if(obj.data.desc_content != "") {
+		    	$("textarea[name=desc_content]").val(obj.data.desc_content.replaceAll("&gt;", ">").replaceAll("&lt;", "<"));
+	    	}
+	    	
+	    	
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+};
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	
+	if($('#frmChkok').formValid() ){
+	
+	// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		
+		if($("input[name=title]").val() == ''){
+			alert("동영상 제목을 입력해주세요.");
+			return;
+		}
+	
+		if($("input[name=media_url]").val() == ''){
+			alert("동영상 URL을 입력해주세요");
+			return;
+		} else {
+			if( $("input[name=media_url]").val().indexOf("http://") == -1 && $("input[name=media_url]").val().indexOf("https://") == -1) {
+				
+				$("input[name=media_url]").val("http://" + $("input[name=media_url]").val());
+			}
+		}
+		
+		if( !$("#input[name=desc_content").val() == ''){
+			alert("내용을 입력해주세요.");
+			return;
+		}
+		
+		if( $('select[name=category_cd]').val() == '') {
+			alert('카테고리를 선택해 주세요');
+			return;
+		}
+	
+	// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+	
+	//상품목록 데이터 이름 부여
+	var _prod_list = [];
+	for (var i = 0; i < $("#prod_list tr").length; i++) {
+		var prod_list_item = {};
+		prod_list_item['prod_sell_cd'] = $("#prod_list tr").eq(i).find("#t_prod_sell_cd").html();
+		prod_list_item['prod_cd'] = $("#prod_list tr").eq(i).find("#t_prod_cd").html();
+		prod_list_item['prod_nm'] = $("#prod_list tr").eq(i).find("#t_prod_nm").html();
+		
+		_prod_list.push(prod_list_item);
+	}
+	if($("#prod_list tr").length > 0){
+		$("input[name=direct_buy_yn]").val("Y");
+		$("input[name=prod_mapp_yn]").val("Y");
+		if($("input[name=prod_op_st_date]").val() == "" || $("input[name=prod_op_ed_date]").val() == ""){
+			alert("상품노출기간을 입력하세요");
+			return
+		}
+	}
+	var data = $('#frmChkok').serializeFormObject();
+	
+	data['prod_list'] = _prod_list;
+	
+	$.ajax({
+	    url: api_chkok_url+"/backoffice/chkok/media/modify",
+	    type: "POST",
+	    async: true,
+	    cache: false,
+	    datatype: 'json',
+	    contentType: 'application/json;charset=utf-8',
+	    data: JSON.stringify(data),
+	    success: function(obj){
+	    	alert(obj.message);
+	    	var url = "/application/chkok/chkokRN.do";
+	    	var method = "POST";
+	    	var postData ={
+	    			media_id : $("input[name=media_id]").val(),
+	    			empno	 : '${sessionScope.sessionEmpno}'
+	    	}; 
+	    	cf_action(url, method, postData);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	
+	} else {
+		return;
+	}
+	
+}
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

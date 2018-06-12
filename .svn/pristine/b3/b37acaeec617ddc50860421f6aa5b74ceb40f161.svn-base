@@ -1,0 +1,372 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>O2O 이벤트 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmO2o">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="o2o_evnt_id" value="">
+							
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사제목 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="evt_title" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="행사제목">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사설명</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="evt_desc" data-valid-symbol="true" data-valid-max="108" data-valid-title="행사설명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사기간 <sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="evt_term_start_dd" name="evt_term_start_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-valid-title="행사기간 시작일" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="evt_term_end_dd" name="evt_term_end_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-valid-title="행사기간 종료일" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">	
+									<label class="col-md-2 control-label">행사 지점 <sup>*</sup></label>
+									<div class="col-md-2">
+										<select class="form-control" id="str_cd" name="str_cd" data-valid-use="true" data-valid-title="행사 지점">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group" style="margin-bottom: 0;">
+									<div class="col-md-2 control-label">
+										<label>행사 ZONE <sup>*</sup></label>
+									</div>
+									<div class="col-md-10">
+										<div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:f_openZoneSelect();" class="btn btn-primary btn-sm">ZONE 선택</a>
+												<a href="javascript:cf_delTableRow('o2o_zone_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+										
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">지점코드</th>
+														<th class="ta-c">지점명</th>
+														<th class="ta-c">ZONE ID</th>
+														<th class="ta-c">ZONE 명</th>
+														<th class="ta-c">비콘수</th>
+													</tr>
+												</thead>
+												<tbody id="o2o_zone_tbody" data-valid-title="행사 ZONE">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-2 control-label"></div>
+									<div class="col-md-10">
+										<i class="fa fa-info-circle"></i> 행사 진행 지점 ZONE 중 다른 행사에 연결되지 않은 ZONE 만 선택할 수 있습니다.
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰북 <sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:f_openCpBookSD('o2o_cpb_tbody');" class="btn btn-primary btn-sm">쿠폰북 선택</a>
+												<a href="javascript:cf_delTableRow('o2o_cpb_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th>쿠폰북 번호</th>
+														<th>쿠폰북명</th>
+														<th>쿠폰북 유형</th>
+														<th>쿠폰수</th>
+														<th>시작일</th>
+														<th>종료일</th>
+													</tr>
+												</thead>
+												<tbody id="o2o_cpb_tbody" data-valid-title="쿠폰북">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_o2oList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="zone_sd" style="display:none;"></div>
+<div id="cpbook_sd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<!-- end widget grid -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	if($('#frmO2o').formValid() && $('#o2o_zone_tbody').tableRowValid() && $('#o2o_cpb_tbody').tableRowValid()) {
+		
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/event/o2o/update',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify($('#frmO2o').serializeFormObject()),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_o2oList();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#evt_term_start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#evt_term_end_dd').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#evt_term_end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#evt_term_start_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+
+/**
+ * ==================================================================================
+ * 쿠폰북 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#cpbook_sd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 768,
+	draggable: false,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			if($("#to_tbody").find("tr").length > 1) {
+				alert('쿠폰북 등록은 한개만 가능 합니다.');
+				return;
+			}
+			if($("#o2o_cpb_tbody").find("tr").length > 0) {
+				alert('이미 등록한 쿠폰북이 있습니다.\n\n삭제 후 등록해 주시기 바랍니다.');
+				return;
+			}
+			
+			$("#to_tbody").find("tr").each(function(){
+				
+				var tag_td = "";
+				var key = "";
+				var chk = 0;
+				
+				// 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+				$(this).find("td").each(function(i){
+					// 각 셀 데이터 생성
+					if(i < 5) {
+						if(i == 1) {
+							key = $(this).text();
+							tag_td += "<input type='hidden' name='cpbook_id' value='"+key+"'>";
+						}
+						tag_td += "<td>"+$(this).html()+"</td>\n";	
+					}	
+				});
+				
+				tag_td += "<td><input class='datepicker' name='vali_term_start_dd' data-valid-use='true' data-date-format='yyyyMMdd' type='text' data-dateformat='yy-mm-dd' data-valid-title='시작일' placeholder='시작일'></td>";
+				tag_td += "<td><input class='datepicker' name='vali_term_end_dd' data-valid-use='true' data-date-format='yyyyMMdd' type='text' data-dateformat='yy-mm-dd' data-valid-title='종료일' placeholder='종료일'></td>";
+
+				var tag_tr = "<tr>"+tag_td+"</tr>";
+				
+				// 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+				$("#o2o_cpb_tbody").find("tr > td").each(function(){
+					if($(this).text() == key) {
+						chk++;
+					}
+				});
+				
+				// 같은 데이터가 없을 경우에만 등록 시킨다.
+				if(chk == 0) {
+					$("#o2o_cpb_tbody").append(tag_tr);	
+				}
+				pageSetUp();
+			});
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCode($('#str_cd'));
+	
+	
+	
+	$.ajax({
+	    url: api_url+'/backoffice/event/o2o/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	$('input[name=o2o_evnt_id]').val(obj.data.o2o_evnt_id);
+	    	$('input[name=evt_title]').val(obj.data.evt_title);
+	    	$('input[name=evt_desc]').val(obj.data.evt_desc);
+	    	
+	    	$('input[name=evt_term_start_dd]').val(cf_cvtDateFormat(obj.data.evt_term_start_dd,'yyyy-MM-dd'));
+	    	$('input[name=evt_term_end_dd]').val(cf_cvtDateFormat(obj.data.evt_term_end_dd,'yyyy-MM-dd'));
+	    	$("#str_cd").val(obj.data.str_cd).attr('selected','selected');
+	    		
+	    	// TODO : 행사존 지점 수정 해야 함!
+	    	var zone = '';
+	    	zone += '<tr>';
+	    	zone += ' <td class="ta-c"><input type="checkbox" value="' + obj.data.zone_id + '"></td>';
+	    	zone += ' <input type="hidden" name="zone_id" value="' + obj.data.zone_id + '">';
+	    	zone += ' <td class="ta-c">' + obj.data.str_cd + '</td>';
+	    	zone += ' <td class="ta-c">' + obj.data.str_nm + '</td>';
+	    	zone += ' <td class="ta-c">' + obj.data.zone_id + '</td>';
+	    	zone += ' <td class="ta-c">' + obj.data.zone_nm + '</td>';
+	    	zone += ' <td class="ta-c">' + obj.data.zone_qty + '</td>';
+	    	zone += '</tr>';
+	    	$('#o2o_zone_tbody').append(zone);
+	    	
+	    	var cpb = "";
+	    	cpb += '<tr>';
+	    	cpb += ' <td><input type="checkbox" value="'+obj.data.cpbook_id+'"></td>';
+	    	cpb += ' <input type="hidden" name="cpbook_id" value="'+obj.data.cpbook_id+'"><td>'+obj.data.cpbook_id+'</td>';
+	    	cpb += ' <td>'+obj.data.cpbook_nm+'</td>';
+	    	cpb += ' <td>'+obj.data.cpbook_type_nm+'</td>';
+	    	cpb += ' <td>'+obj.data.coupon_cnt+'</td>';
+	    	cpb += ' <td><input class="datepicker" name="vali_term_start_dd" data-valid-use="true" data-date-format="yyyyMMdd" type="text" data-dateformat="yy-mm-dd" data-valid-title="시작일" placeholder="시작일" value="'+obj.data.vali_term_start_dd+'"></td>';
+	    	cpb += ' <td><input class="datepicker" name="vali_term_end_dd" data-valid-use="true" data-date-format="yyyyMMdd" type="text" data-dateformat="yy-mm-dd" data-valid-title="종료일" placeholder="종료일" value="'+obj.data.vali_term_end_dd+'"></td>';
+	    	cpb += '</tr>';
+	    	$('#o2o_cpb_tbody').append(cpb);
+	    	
+	    	/* ============================================================================================
+	    	/* 페이지 셋업 (Don't remove!!!)
+	    	/* --------------------------------------------------------------------------------------------
+	    	/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+	    	/* ============================================================================================ */
+	    	pageSetUp();
+	    	
+		},
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }	
+	});
+	
+	
+
+};
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

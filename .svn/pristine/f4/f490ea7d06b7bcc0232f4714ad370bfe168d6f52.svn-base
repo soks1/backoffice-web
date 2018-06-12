@@ -1,0 +1,740 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+<!-- test  -->
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">노출 구분<sup></sup></label>
+									<div class="col-md-3">
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="" data-check-only="true"  checked="checked" />전체</label>
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="M" data-check-only="true" />회원</label>
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="N" data-check-only="true" />비회원</label>
+                                    </div>
+									<label class="col-md-1 control-label">쿠폰북 노출타입<sup></sup></label>
+									<div class="col-md-3">
+										<select class="form-control" name="cpbook_size_type_cd">
+ 											<option value="">전체</option>
+										</select>
+                                    </div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록지점</label>
+									<div class="col-md-3">
+										<select class="form-control" id="str_cd" name="str_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">쿠폰북유형</label>
+									<div class="col-md-3">
+										<select class="form-control" name="cpbook_type_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">온라인몰, 매장</label>
+									<div class="col-md-3">
+										<select class="form-control" name="issue_chanel_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북번호</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="cpbook_id" data-valid-title="쿠폰북번호">
+									</div>
+									<label class="col-md-1 control-label">쿠폰북명</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="cpbook_nm">
+									</div>
+									<label class="col-md-1 control-label">롯데마트몰 발행기기</label>
+									<div class="col-md-3">
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" id="issue_quipmnt_cd_pc_yn" name="issue_quipmnt_cd_pc_yn" value="N" disabled="disabled">
+											  <span>PC</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" id="issue_quipmnt_cd_mobile_yn" name="issue_quipmnt_cd_mobile_yn" value="N" disabled="disabled">
+											  <span>모바일</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">사용지점</label>
+									<div class="col-md-6">
+										<input type="hidden" id="use_brnch_info_list" name="use_brnch_info_list" value="">
+									</div>
+									<div class="col-md-1">
+										<label class="checkbox-inline" >
+											  <input type="checkbox" class="checkbox style-2" id="use_brnch_info_all_yn" name="use_brnch_info_all_yn" value="N">
+											  <span>전체선택</span>
+										</label>
+									</div>
+									<label class="col-md-1 control-label">브랜드</label>
+									<div class="col-md-3">
+										<select class="form-control" name="issue_divn_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+						<div class="form-actions mt0">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> M쿠폰북 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_coupon_book_grid" class="widget-body no-padding">
+						<table id="coupon_book_grid"></table>
+						<div id="coupon_book_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="campaign_info_rd" style="display: none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 회원/비회원 radio
+/* ============================================================================================ */
+$('input[name="nomem_view_gbn"]').change(function(){
+	var _nomem_gbn = $(this).val();
+	if(_nomem_gbn == "N") {
+		// 쿠폰북 유형 일반쿠폰북으로 고정
+		$('select[name=cpbook_type_cd]').val("A").attr("selected","selected");
+		$('select[name=cpbook_type_cd]').attr("disabled", true);
+		
+		// 온라인몰/매장 매장으로 고정
+		$('select[name=issue_chanel_cd]').val("OFFLINE").attr("selected","selected");
+		$('select[name=issue_chanel_cd]').attr("disabled", true);
+		
+		// 롯데마트몰 발행기기 체크해제
+		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+		
+		// 사용지점 전체선택 체크
+		$("input[name=use_brnch_info_all_yn]").prop("checked", true);
+		$("input[name=use_brnch_info_all_yn]").attr("disabled", true);
+		$("input[name=use_brnch_info_all_yn]").val("Y");
+		$('#use_brnch_info_list').select2('enable', false);
+		
+		// App 노출 지점 사용가능매장으로 고정 및 전점 하드코딩
+		$("input[name=use_psbt_brnch_yn]:radio[value=Y]").prop('checked',true);
+		$("input[name=use_psbt_brnch_yn]").attr("disabled", true);
+		$("input[name=use_psbt_excp_brnch_content]").val("전점");
+		$("input[name=use_psbt_excp_brnch_content]").attr("disabled",true);
+		
+		$('select[name=issue_divn_cd]').val("").attr("selected","selected");
+		$('select[name=issue_divn_cd]').attr("disabled", true);
+		
+		$('select[name=str_cd]').val("").attr("selected","selected");
+		$('select[name=str_cd]').attr("disabled", true);
+	}else {
+		// 쿠폰북 유형 일반쿠폰북으로 고정
+		$('select[name=cpbook_type_cd]').val("").attr("selected","selected");
+		$('select[name=cpbook_type_cd]').attr("disabled", false);
+		
+		// 온라인몰/매장 매장으로 고정
+		$('select[name=issue_chanel_cd]').val("").attr("selected","selected");
+		$('select[name=issue_chanel_cd]').attr("disabled", false);
+		
+		// 롯데마트몰 발행기기 체크해제
+		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", false);
+		
+		// 사용지점 전체선택 체크
+		$("input[name=use_brnch_info_all_yn]").prop("checked", false);
+		$("input[name=use_brnch_info_all_yn]").attr("disabled", false);
+		$("input[name=use_brnch_info_all_yn]").val("N");
+		$('#use_brnch_info_list').select2('enable', true);
+		
+		// App 노출 지점 사용가능매장으로 고정 및 전점 하드코딩
+		$("input[name=use_psbt_brnch_yn]:radio[value=Y]").prop('checked',false);
+		$("input[name=use_psbt_brnch_yn]").attr("disabled", false);
+		$("input[name=use_psbt_excp_brnch_content]").val("");
+		$("input[name=use_psbt_excp_brnch_content]").attr("disabled",false);
+		
+		$('select[name=issue_divn_cd]').val("").attr("selected","selected");
+		$('select[name=issue_divn_cd]').attr("disabled", false);
+		
+		$('select[name=str_cd]').val("").attr("selected","selected");
+		$('select[name=str_cd]').attr("disabled", false);
+		
+	}
+
+});
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : Campaign/Segment 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#campaign_info_rd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 쿠폰북별 맵핑 정보 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : Campaign/Segment 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponCampaignRD(rowid) {
+	$.ajax({
+		url: '/application/coupon/book/couponCampaignRD.do',
+		type: 'GET',
+		async: true,
+		cache: false,
+		data : {cpbook_id : rowid},
+		success: function(data) {
+			var $target = $('#campaign_info_rd');
+			$target.html(data);
+		}	
+	});
+	$('#campaign_info_rd').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 온라인몰, 매장 이벤트
+ * ----------------------------------------------------------------------------------
+ * 	- ONLINE 	: PC/MOBILE 셀렉트 박스 활성화
+ *	- OFFLINE	: PC/MOBILE 셀렉트 박스 비활성화
+ * 	- ON/OFFLINE: PC/MOBILE 셀렉트 박스 비활성화
+ * ==================================================================================
+ */
+$('select[name=issue_chanel_cd]').change(function(){
+	if($.trim($(this).val()) == '' ) {
+		$('#issue_quipmnt_cd_pc_yn').attr('checked', false);
+		$('#issue_quipmnt_cd_mobile_yn').attr('checked', false);
+		$('#issue_quipmnt_cd_pc_yn').attr('disabled', true);
+		$('#issue_quipmnt_cd_mobile_yn').attr('disabled', true);
+	}
+	else if($(this).val() !== 'OFFLINE') {
+		$('#issue_quipmnt_cd_pc_yn').attr('disabled', false);
+		$('#issue_quipmnt_cd_mobile_yn').attr('disabled', false);
+	}
+	else {
+		$('#issue_quipmnt_cd_pc_yn').attr('checked', false);
+		$('#issue_quipmnt_cd_mobile_yn').attr('checked', false);
+		$('#issue_quipmnt_cd_pc_yn').attr('disabled', true);
+		$('#issue_quipmnt_cd_mobile_yn').attr('disabled', true);
+	}
+});
+
+
+/**
+ * ============================================================================================
+ * 체크 박스 선택에 따른 값 변경
+ * --------------------------------------------------------------------------------------------
+ * 체크 TRUE		: Y
+ * 체크 FALSE	: N
+ * ============================================================================================ 
+ */
+$('.checkbox').change(function() {
+	if($(this).is(':checked')) {
+		$(this).val('Y');	
+	} else {
+		$(this).val('N');
+	}
+});
+
+/* ============================================================================================
+/* 사용지점 전체선택 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 체크 TRUE	: 미션 수행 지점 입력박스 disalbe
+/* 체크 FALSE	: 미션 수행 지점 입력박스 enable
+/* ============================================================================================ */
+$('input[name=use_brnch_info_all_yn]').click(function(){
+    if($(this).is(':checked')){
+        $('#use_brnch_info_list').select2('enable', false);
+    } else {
+        $('#use_brnch_info_list').select2('enable', true);
+    }
+});
+
+
+/* ============================================================================================
+/* 사용지점 셀렉트 박스
+/* --------------------------------------------------------------------------------------------
+/* 미션수행지점 INPUT BOX 값으로 검색 결과 리스트 갱신
+/* ============================================================================================ */
+$('#use_brnch_info_list').select2({
+	placeholder: '사용 지점 검색',
+    width: '100%',
+    multiple: true,
+    ajax: {
+        url: api_url + '/backoffice/common/branch/list',
+        dataType: 'json',
+        cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            var data = {
+                svc_type : 'CPBOOK',
+                empno: '${sessionScope.sessionEmpno}',
+                hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+                use_type : 'USE_BRANCH',
+                str_cd : '${sessionScope.sessionStrCd}',
+                str_nm: term
+            };
+            return encodeURI('params='+JSON.stringify(data));
+        },
+        results: function (obj, page) {
+            var results = [];
+            $.each(obj.data.brnch_list, function(index, item){
+                results.push({
+                    id: item.str_cd,
+                    text: item.str_nm
+				});
+            });
+            return {
+                results: results
+            };
+        }
+    }
+});
+
+
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 등록지점 호출
+	f_ajaxStrCdCode($('#str_cd'));
+	
+	// 초기데이터 로드 : 쿠폰북 유형
+	f_ajaxCPbookTypeCode($('select[name=cpbook_type_cd]'));
+	
+	// 초기데이터 로드 : 온라인몰, 매장
+	f_ajaxPublerCode($('select[name=issue_chanel_cd]'));
+	
+	// 초기데이터 로드 : 발행처
+	f_ajaxIssueDivnCode($('select[name=issue_divn_cd]'));
+	
+	// 초기데이터 로드 : 쿠폰북 노출위치
+	f_ajaxCpbookSizeCode($('select[name=cpbook_size_type_cd]'));
+	
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#use_brnch_info_all_yn').attr('disabled', true);
+		$('#use_brnch_info_list').select2('enable', false);
+		var info_data = [];
+		var items = {};
+		items["id"] = '${sessionScope.sessionStrCd}';
+		items["text"] = '${sessionScope.sessionStrNm}';
+		info_data[0] = items;
+		$('#use_brnch_info_list').select2("data",info_data);
+	}
+			
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', cpbook_grid_function);
+
+	function cpbook_grid_function() {
+		
+		var pageWidth = $('#coupon_book_grid').parent().width() - 100;
+
+		jQuery('#coupon_book_grid').jqGrid({
+			url : api_url+'/backoffice/couponbook/list',
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['No.', '등록지점', '쿠폰북 번호', '쿠폰북명', '회원구분', '쿠폰북유형', '쿠폰북노출타입', '쿠폰수', '사용지점', '등록일자' ],
+			colModel : [
+				{ name : 'rnum', 				index : 'rnum', 				align : 'center',	sortable : false, 	width : (pageWidth*(5/100))		},
+				{ name : 'reg_id_str_cd_name',	index : 'reg_id_str_cd_name',	align : 'center', 	sortable : false, 	width : (pageWidth*(8/100)) 	}, 
+				{ name : 'cpbook_id',			index : 'cpbook_id', 			align : 'center',	sortable : false, 	width : (pageWidth*(8/100)),	classes:'pointer' }, 
+				{ name : 'cpbook_nm', 			index : 'cpbook_nm',			align : 'center', 	sortable : false, 	width : (pageWidth*(35/100)),	classes:'pointer' }, 
+				{ name : 'nomem_view_gbn_name',	index : 'nomem_view_gbn_name',	align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	}, 
+				{ name : 'cpbook_type_cd_name',	index : 'cpbook_type_cd_name',	align : 'center', 	sortable : false, 	width : (pageWidth*(15/100)) 	}, 
+				{ name : 'cpbook_size_type_cd',	index : 'cpbook_size_type_cd',	align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'coupon_cnt', 			index : 'coupon_cnt', 			align : 'center', 	sortable : true, 	width : (pageWidth*(7/100)),
+					formatter : function(cellvalue, options, rowObject) {
+						if(cellvalue > 0) {
+							return cf_setComma(cellvalue);	
+						} else {
+							return cellvalue;
+						}
+					}
+				},
+				{ name : 'brnch_info_cnt',		index : 'brnch_info_cnt',		align : 'center', 	sortable : true, 	width : (pageWidth*(7/100)),
+					formatter : function(cellvalue, options, rowObject) {
+						if(cellvalue > 0) {
+							return cf_setComma(cellvalue);	
+						} else {
+							return cellvalue;
+						}
+					}
+				},
+				{ name : 'reg_date', 			index : 'reg_date',				align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : 'cpbook_id',
+				root : 		function(obj){ return obj.data.cpbook_list; },		// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI('params='+JSON.stringify(postData)); },
+			serializeGridData: function(postData) { 
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 발행 채널에 따른 롯데마트몰 발행기기 컨트롤
+					var keep_issue_chanel_cd = $("#frmKeepData").find('input[name="search_info[issue_chanel_cd]"]').val();
+					if($.trim(keep_issue_chanel_cd) == '' || keep_issue_chanel_cd == 'OFFLINE') {
+						$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+						$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+					}
+					else {
+						$("#issue_quipmnt_cd_pc_yn").attr("disabled", false);
+						$("#issue_quipmnt_cd_mobile_yn").attr("disabled", false);
+						
+						if( $("#frmKeepData").find('input[name="search_info[issue_quipmnt_cd_pc_yn]"]').val() == 'Y') {
+							$("#issue_quipmnt_cd_pc_yn").prop("checked",true);
+							$("#issue_quipmnt_cd_pc_yn").val("Y");
+						}
+						if( $("#frmKeepData").find('input[name="search_info[issue_quipmnt_cd_mobile_yn]"]').val() == 'Y') {
+							$("#issue_quipmnt_cd_mobile_yn").prop("checked",true);
+							$("#issue_quipmnt_cd_mobile_yn").val("Y");
+						}
+					}
+					
+					// 사용지점 데이터 등록
+					if('${sessionScope.sessionHqBaseYn}' == 'Y') {
+						var use_brnch_info_list = $("#frmKeepData").find('input[name="search_info[use_brnch_info_list]"]').val();
+						var brnch_info_name_list = $("#frmKeepData").find('input[name="search_info[brnch_info_name_list]"]').val();
+						
+						if(use_brnch_info_list != '') {
+							var ids = use_brnch_info_list.split(',');
+							var names = brnch_info_name_list.split(',');
+							var info_data = [];
+							
+							for(var i = 0; i < ids.length; i++) {
+								var items = {};
+								items["id"] = ids[i];
+								items["text"] = names[i];
+								info_data[i] = items;
+							}
+							$('#use_brnch_info_list').select2("data",info_data);	
+						}
+						if( $("#frmKeepData").find('input[name="search_info[use_brnch_info_all_yn]"]').val() == 'Y') {
+							$("#use_brnch_info_all_yn").prop("checked",true);
+							$("#use_brnch_info_all_yn").val("Y");
+							$('#use_brnch_info_list').select2('enable', false);
+						}
+					}
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#coupon_book_grid").jqGrid('setGridParam', {search: true});
+					$("#coupon_book_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#coupon_book_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#coupon_book_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+				
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{ 
+				search_info: '', 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}' 
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#coupon_book_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 3 || index == 4) {
+					$('#coupon_book_grid').jqGrid('setGridParam', {'postData' : {'cpbook_id':rowid} });
+					var postData = $('#coupon_book_grid').jqGrid('getGridParam', 'postData');
+					
+					var url = '/application/coupon/book/couponBookRN.do';
+					var method = 'POST';
+					cf_action(url, method, postData);
+			   }
+			},
+			gridComplete: function() {
+				var postData = $('#coupon_book_grid').jqGrid("getGridParam", "postData");
+				$('#coupon_book_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#coupon_book_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			}
+		});
+		jQuery('#coupon_book_grid').jqGrid('navGrid', '#coupon_book_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery('#coupon_book_grid').jqGrid('navButtonAdd','#coupon_book_grid_page',{
+				caption: '삭제',
+				id: 'delete_button',
+				buttonicon: 'ui-icon-trash',
+				onClickButton: function(){ 
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+
+
+					if(select_ids.length < 1) {
+						alert('삭제하실 쿠폰북을 선택해 주세요.');
+						return;
+					}
+					
+					var data = {
+						cpbook_id_list : select_ids,
+						empno: '${sessionScope.sessionEmpno}', 
+						emp_str_cd: '${sessionScope.sessionStrCd}',
+						hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+					};
+					
+					
+					// 삭제 유/무 확인 
+					$.ajax({
+						url: api_url + "/backoffice/couponbook/delete/check",
+						type: "POST",
+						contentType: "application/json;charset=utf-8", // POST 일때만 사용
+						async: false,
+						cache: true,
+						data: JSON.stringify(data),
+						success: function(obj) {
+							
+							if(obj.data.delete_yn == 'N') {
+								var dis_list = '';
+								if(obj.data.cpbook_list) {
+						    		$.each(obj.data.cpbook_list, function(i, item) {
+						    			dis_list += ' - ' + item.cpbook_nm + '('+item.cpbook_id+')\n';
+							    	});
+						    	}
+								alert('삭제 불가능한 쿠폰북이 속해져 있습니다.\n\n' + dis_list);
+								return;
+							}
+							else {
+								
+								if(confirm("정말 삭제하시겠습니까?")) {
+									$.ajax({
+										url: api_url + "/backoffice/couponbook/delete",
+										type: "POST",
+										contentType: "application/json;charset=utf-8", // POST 일때만 사용
+										async: false,
+										cache: true,
+										data: JSON.stringify(data),
+										success: function(obj) {
+											alert(obj.message);
+											$("#coupon_book_grid").trigger("reloadGrid");
+										},
+										error: function(obj) {
+									    	var serverObj = obj.responseJSON;
+									    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+									    	return;
+									    }
+									});
+								}
+								
+							}
+						},
+						error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+					    	return;
+					    }
+					});
+
+					
+				}
+			});
+		}
+					
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery('#coupon_book_grid').jqGrid('navButtonAdd','#coupon_book_grid_page',{
+				caption: '등록',
+				id: 'add_button',
+				buttonicon: 'ui-icon-plus',
+				onClickButton: function(){
+					var url = '/application/coupon/book/couponBookWN.do';
+					var method = 'POST';
+					var postData = $('#coupon_book_grid').jqGrid('getGridParam', 'postData'); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#coupon_book_grid").jqGrid('navButtonAdd','#coupon_book_grid_page',{
+				caption: "복사",
+				id: "copy_button",
+				buttonicon: "ui-icon-check",
+				onClickButton: function(){ 
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					
+					if(select_ids.length < 1) {
+						alert('복사하실 쿠폰북을 선택해 주세요.');
+						return;
+					}
+					
+					var data = {
+						cpbook_id_list : select_ids,
+						empno: '${sessionScope.sessionEmpno}', 
+						emp_str_cd: '${sessionScope.sessionStrCd}',
+						hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+					};
+					
+					$.ajax({
+						url: api_url + "/backoffice/couponbook/copy",
+						type: "POST",
+						contentType: "application/json;charset=utf-8", // POST 일때만 사용
+						async: false,
+						cache: true,
+						data: JSON.stringify(data),
+						success: function(obj) {
+							alert(obj.message);
+							$("#coupon_book_grid").trigger("reloadGrid");
+						},
+						error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+					    	return;
+					    }
+					});
+				}
+			});	
+		}
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$('#coupon_book_grid').gridCss();
+	  	$('#coupon_book_grid_cb').css('border-left-width','0');
+	  	$('#coupon_book_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_coupon_book_grid_cb').css('padding','7px 0');	  	
+	  	$('#coupon_book_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery('#coupon_book_grid').jqGrid( 'setGridWidth', $('#target_coupon_book_grid').width() );
+		});
+	} 
+	// end function
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+</script>

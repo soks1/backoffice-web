@@ -1,0 +1,142 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/**
+ * ==================================================================================
+ * 스케줄수행 현황 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_scheduleList() {
+	var url = "/application/schedule/scheduleLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 스케줄수행 현황 상세 화면 가기
+ * ==================================================================================
+ */
+function f_scheduleView(id) {	
+	$.ajax({
+		url: "/application/schedule/scheduleRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data: {schedule_id:id},
+		success: function(data) {
+			var $target = $('#schedule_popup');
+		
+			$target.html(data);
+		},
+		complete: function() {
+			$('#schedule_popup').dialog('open');
+		}
+	});	
+}
+
+/**
+ * ==================================================================================
+ * 스케줄수행 현황 상세 팝업
+ * ==================================================================================
+ */
+$('#schedule_popup').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 300,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-bell-o'></i> 안내 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 스케줄수행 현황 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#schedule_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#schedule_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#schedule_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 스케줄수행 현황 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 스케줄수행 현황 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").val($('#frmSearch input[name=search_date]').val(cf_toDate()));
+	$("#scss_yn").find('option:eq(0)').prop("selected","selected");
+	$("#job_title").val("");
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	$("#schedule_grid").jqGrid('setGridParam', {search: false});
+	$("#schedule_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	
+	$("#schedule_grid").jqGrid('setGridParam', {'postData' : searchData}).trigger('reloadGrid');		
+}

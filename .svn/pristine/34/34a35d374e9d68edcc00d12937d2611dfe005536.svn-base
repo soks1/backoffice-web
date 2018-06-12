@@ -1,0 +1,158 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 캠페인 목록 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_campaign_grid" class="widget-body no-padding">
+						<table id="campaign_grid"></table>
+						<div id="campaign_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+<form id="searchData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var layer_pagefunction = function() {
+	
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $('#campaign_grid').parent().width() - 100;
+		
+		jQuery('#campaign_grid').jqGrid({
+			url : api_url+'/backoffice/campaign/choice/list',
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['No.', '캠페인ID', '캠페인명', '캠페인시작일', '캠페인종료일'],
+			colModel : [
+				{ name : 'rnum', 				index : 'rnum',		 			align : 'center',	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'campaign_id', 		index : 'campaign_id', 			align : 'center',	sortable : false, 	width : (pageWidth*(10/100)),	classes:'pointer'}, 
+				{ name : 'campaign_nm', 		index : 'campaign_nm', 			align : 'center',	sortable : false, 	width : (pageWidth*(15/100)) 	}, 
+				{ name : 'campaign_start_dy', 	index : 'campaign_start_dy',	align : 'center',	sortable : true, 	width : (pageWidth*(15/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						return cf_cvtDateFormat(cellvalue,'yyyy-MM-dd');
+					}
+				},
+				{ name : 'campaign_end_dy', 	index : 'campaign_end_dy', 		align : 'center',	sortable : true, 	width : (pageWidth*(15/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						return cf_cvtDateFormat(cellvalue,'yyyy-MM-dd');
+					}
+				}
+				
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : 'campaign_id',
+				root : 		function(obj){ return obj.data.campaign_list; },				// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			search : true,
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			postData:{ 
+				search_info: $('#frmSearchCampain').serializeFormObject(), 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#campaign_grid_page',
+			sortname : 'load_dd',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : 'left',
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true
+		});
+		jQuery('#campaign_grid').jqGrid('navGrid', '#campaign_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+					
+		// btn_add
+		jQuery('#campaign_grid').jqGrid('navButtonAdd','#campaign_grid_page',{
+			caption: '적용',
+			id: 'add_button',
+			buttonicon: 'ui-icon-plus',
+			onClickButton: function(){
+				var rowId = $(this).jqGrid('getGridParam', 'selarrrow');
+				if(rowId.length > 1) {
+					alert('캠페인 설정은 1건만 가능 합니다.');
+					return;
+				}
+				var list = jQuery('#campaign_grid').getRowData(rowId);
+				var cellValue_campID = list.campaign_id;
+				var cellValue_campNM = list.campaign_nm;
+				var cellValue_campSdate = list.campaign_start_dy;
+				var cellValue_campEdate = list.campaign_end_dy;
+				
+				$('input[name=campaign_id]').val(cellValue_campID);
+				$('#frmCampaign').find('#campaign_id').html(cellValue_campID);
+				$('#frmCampaign').find('#campaign_nm').html(cellValue_campNM);
+				$('#frmCampaign').find('#campaign_dy').html(cf_cvtDateFormat(cellValue_campSdate,'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat(cellValue_campEdate,'yyyy-MM-dd'));
+				
+				$('#frmCampaign').find('input[name=campaign_start_dy]').val(cellValue_campSdate);
+				$('#frmCampaign').find('input[name=campaign_end_dy]').val(cellValue_campEdate);
+				
+				$('#coupon_campaign_sd').dialog('close');
+			}
+		});
+		
+		$('#campaign_grid').gridCss();
+	  	$('#campaign_grid_cb').css('border-left-width','0');
+	  	$('#campaign_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_campaign_grid_cb').css('padding','7px 0');
+	  	$('#campaign_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery('#campaign_grid').jqGrid( 'setGridWidth', $('#target_campaign_grid').width() );
+		});
+	} 
+	// end function
+};
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', layer_pagefunction);
+</script>

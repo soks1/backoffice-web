@@ -1,0 +1,125 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<%@ page import="java.awt.Image" %>
+<%@ page import="javax.swing.ImageIcon" %>
+
+<section id="widget-grid" class="">
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmLifekok" name="frmLifekok">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							
+							<fieldset>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<div class="col-md-2" style="width:120px;">
+											<span class="btn btn-success fileinput-button">
+												<i class="glyphicon glyphicon-plus"></i>
+											    <span>Excel 업로드</span>
+											    <input type="file" id="uploadfile" name="uploadfile" onchange="getCmaFileView(this,'all')">
+											</span>
+										</div>
+										<div class="col-md-8">
+											<span class="form-control cs-css-03" id="file_nm" >가맹점 엑셀파일을 등록해주세요</span>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							
+						</form>
+					</div>
+				</div>
+</section>
+<div id="templates_sd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+/* ============================================================================================
+/* 그룹 엑셀 파일 업로드
+/* ============================================================================================ */
+ 
+function getCmaFileInfo(obj,stype) {
+   var fileObj, pathHeader , pathMiddle, pathEnd, allFilename, fileName, extName;
+   if(obj == "[object HTMLInputElement]") {
+       fileObj = obj.value
+   } else {
+       fileObj = document.getElementById(obj).value;
+   }
+   if (fileObj != "") {
+           pathHeader = fileObj.lastIndexOf("\\");
+           pathMiddle = fileObj.lastIndexOf(".");
+           pathEnd = fileObj.length;
+           fileName = fileObj.substring(pathHeader+1, pathMiddle);
+           extName = fileObj.substring(pathMiddle+1, pathEnd);
+           allFilename = fileName+"."+extName;
+           
+           if(extName != "xlsx"){
+        	   alert("엑셀 파일을 등록해주세요.(확장자 xlsx)");
+        	   $('#uploadfile').val("");
+        	   $('#file_nm').text("");
+        	   return;
+           }
+
+           if(stype == "all") {
+                   return allFilename; // 확장자 포함 파일명
+           } else if(stype == "name") {
+                   return fileName; // 순수 파일명만(확장자 제외)
+           } else if(stype == "ext") {
+                   return extName; // 확장자
+           } else {
+                   return fileName; // 순수 파일명만(확장자 제외)
+           }
+   } else {
+           alert("파일을 선택해주세요");
+           return;
+   }
+    // getCmaFileView(this,'name');
+    // getCmaFileView('upFile','all');
+}
+ 
+function getCmaFileView(obj,stype) {
+    var s = getCmaFileInfo(obj,stype);
+    $('#file_nm').text(s);
+//     console.log(s);
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

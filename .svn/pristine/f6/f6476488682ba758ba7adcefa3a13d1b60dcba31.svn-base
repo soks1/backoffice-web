@@ -1,0 +1,336 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>공지사항 수정</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmLifekok" name="frmLifekok">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="orgin_nm" value="">
+							<input type="hidden" name="strge_nm" value="">
+							<input type="hidden" name="board_id" value="">
+<!-- 							<input type="hidden" name="_templ_kind_cd" value="LKOKBOARD"> -->
+							
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label" style="width:145px !important">제목 <sup>*</sup></label>
+										<div class="col-md-5">
+											<input class="form-control" type="text" id="title" name="title" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="제목">
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label" style="width:145px !important">공지사항 게시기간 <sup>*</sup></label>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="post_start_dd" name="post_start_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="post_end_dd" name="post_end_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>	
+										<div class="col-md-2">
+											<label class="checkbox-inline" >
+												<input type="checkbox" class="checkbox style-2" id="notice_yn" name="notice_yn" value="N">
+												<span>사용</span>
+											</label>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label" style="width:145px !important">내용 이미지</label>
+										<div class="col-md-2">
+											<div id="preview_uploadfile" class="files">
+												<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+											</div>
+										</div>
+										<div class="col-md-2">
+											<span class="btn btn-success fileinput-button">
+											    <i class="glyphicon glyphicon-plus"></i>
+											    <span>파일선택</span>
+											    <input type="file" id="uploadfile" name="uploadfile">
+											</span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label" style="width:145px !important">&nbsp;</label>
+										<div class="col-md-10">
+											<p><i class="fa fa-info-circle"></i> 이미지 등록시, 가로 사이즈: 1040px / 세로 사이즈 무관 / 파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label" style="width:145px !important">설명 <sup>*</sup></label>
+										<div class="col-md-10">
+											<textarea class="form-control" id="_content" rows="5" data-valid-use='true' data-valid-max="4000" data-valid-title="내용"></textarea>
+										</div>
+									</div>
+								</div>
+								
+								
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantNoticeRN();" class="btn btn-default">취소</a>
+										<a href="javascript:f_tenantNoticeEN_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 등록/수정 : 체크박스 컨트롤
+ * ==================================================================================
+ */
+$('input[name=notice_yn]').change(function(){
+	if($("input:checkbox[name='notice_yn']").is(":checked") == true){
+		$('input[name=notice_yn]').val("Y");
+	}else{
+		$('input[name=notice_yn]').val("N");
+	}
+});
+/**
+ * ==================================================================================
+ * 등록/수정 : 파일 업로드
+ * ==================================================================================
+ */
+$('#uploadfile').change(function (e) {
+	
+	var limitWidth = 1040,
+		limitHeight = 0,
+		limitSize = 150;
+	
+	var intpuFile = $(this);
+	var file = this.files[0];
+    var reader = new FileReader();
+    var image  = new Image();
+	var boolFile = true;
+ 
+	reader.readAsDataURL(file);  
+    
+	reader.onload = function(_file) {
+        image.src    = _file.target.result;              // url.createObjectURL(file);
+        image.onload = function() {
+            var w = this.width,
+                h = this.height,
+                t = file.type,                           // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size/1024);
+//                 s = ~~(file.size/1024) +'KB';
+            if(w > limitWidth){
+            	alert("제한 사이즈를 초과하셨습니다.( 제한 너비 : "+limitWidth+"px )\n너비 : " + w);
+            }else if(s > limitSize){
+            	alert("제한 파일 용량을 초과하셨습니다.( 제한 파일용량 : "+limitSize+" kb)\n업로드 파일용량 : "+s);
+            }
+            else{
+            	f_lifekok_fileUpload(intpuFile, "LKOKBOARD");
+            }
+        };
+        image.onerror= function() {
+        	alert("유효한 파일타입이 아닙니다. 이미지 파일을 등록해 주세요");
+//             alert('Invalid file type: '+ file.type);
+        };
+    };
+});
+/* ============================================================================================
+/* 등록 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#post_start_dd').datepicker(
+    $.extend({
+    	minDate:0,
+    	onSelect: function(selected) {
+            $("#post_end_dd").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#post_end_dd').datepicker(
+    $.extend({
+    	minDate:0,
+    	onSelect: function(selected) {
+            $("#post_start_dd").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_tenantNoticeEN_submit() {
+		
+	if($('#frmLifekok').formValid() ){
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		var data = $('#frmLifekok').serializeFormObject();
+		
+		data['content'] = $('textarea[id=_content]').val();
+		
+// 		실제 데이터 전송
+		$.ajax({
+// 		    url: api_lifekok_img_url+'/backoffice/lifekok/notice/modify',
+		    url: api_lifekok_url+'/backoffice/lifekok/notice/modify',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+					var postData = {
+						board_id:$('input[name=board_id]').val(),
+						empno: '${sessionScope.sessionEmpno}'
+					};
+					var url = "/application/cooperateService/notice/noticeRN.do";
+					var method = "GET";
+					cf_action(url, method, postData);
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});	
+		
+	} else {
+		return;
+	}
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+
+	$('input[name=file_divn_cd]').val("LKOKBOARD");
+	
+	$.ajax({
+	    url: api_lifekok_url+'/backoffice/lifekok/notice/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	
+	    	$("#title").val(detailData['title']);
+	    	$("#post_start_dd").val(detailData['post_start_dd']);
+	    	$("#post_end_dd").val(detailData['post_end_dd']);
+	    	$('input[name=board_id]').val(detailData['board_id']);
+	    	
+	    	$("#notice_yn").val(detailData['notice_yn']);
+	    	//화면로드시 체크박스 표시여부
+	    	if(detailData.notice_yn=='Y'){
+	    		$("input[name=notice_yn]").prop("checked",true);
+	    	}
+	    	
+	    	$('textarea[id=_content]').val(detailData['content']);
+	    	$("#reg_nm").html(detailData['reg_nm']);
+	    	$("#reg_date").html(detailData['reg_date']);
+	    	$("#post_status").html(detailData['post_status']);
+	    	var _post_term = detailData['post_start_dd'] +"  ~  "+detailData['post_end_dd']; 
+	    	$("#post_term").html(_post_term);
+	    	
+			// 등록된 이미지 보여주기---------------------------------------------------------------
+	    	
+// 	    	var _url = detailData.url.replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+	    	var _url = detailData.url;
+
+	    	if(_url != ""){
+				var preview = $('#preview_uploadfile');
+	
+		    	$('input[name=strge_nm]').val(obj.data.strge_nm);
+				$('input[name=orgin_nm]').val(obj.data.orgin_nm);
+				preview.find('img').attr('src',_url);			
+				var fName = '<p class="alert alert-info bd0">'+obj.data.orgin_nm+'</p>';
+				preview.parent().append(fName); 
+				
+				var span = $('<span>').addClass('btn_del_uploadfile');
+				var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr('href','javascript:f_lifekok_fileDelete(\'uploadfile\')').text('파일삭제');			
+	
+				span.append(aTag);
+				
+				var btn_div = $("#uploadfile").parent().parent();
+				btn_div.find("a").attr("disabled", true);
+				btn_div.find("span").attr("disabled", true);
+				btn_div.append(span);
+	    	}
+			
+	    	// 등록된 이미지 보여주기 끝---------------------------------------------------------------
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

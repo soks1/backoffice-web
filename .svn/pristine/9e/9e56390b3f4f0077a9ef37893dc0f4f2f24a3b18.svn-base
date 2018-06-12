@@ -1,0 +1,336 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> Zone 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="alert alert-info no-margin fade in">
+							<div class="form-horizontal">
+								<fieldset>
+									<div class="form-group">
+										<label class="col-md-1 control-label">&middot; 지점</label>
+										<div class="col-md-4">
+											<select class="form-control" id="str_cd" name="str_cd">
+												<option value="">전체</option>
+											</select>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+
+					<div id="target_zone_beacon_grid" class="widget-body no-padding">
+						<table id="zone_beacon_grid"></table>
+						<div id="zone_beacon_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 비콘 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					
+					<form id="frmBeacon" class="form-horizontal" method="post">
+						<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+						<input type="hidden" name="str_cd" value="${sessionScope.sessionStrCd}">
+						<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+						<input type="hidden" name="zone_id" value="">
+						<div class="widget-body no-padding">
+							<div class="table-responsive" style="max-height:417px; overflow-y:auto;">
+								<table class="table table-bordered table-striped">
+									<thead>
+										<tr>
+											<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+											<th class="ta-c">지점명</th>
+											<th class="ta-c">비콘ID</th>
+											<th class="ta-c">비콘명</th>
+										</tr>
+									</thead>
+									<tbody id="beacon_tbody" data-valid-title="ZONE별 비콘목록">
+										
+									</tbody>
+								</table>
+							</div>
+							<div class="dt-toolbar-footer">
+								<div class="col-md-12 ta-r">
+									<a href="javascript:f_openBeaconSD('beacon_tbody');" id="btn_beacon_select" class="btn btn-success disabled">비콘선택</a>
+									<a href="javascript:f_delete();" id="delbtn_beacon_select" class="btn btn-warning disabled">삭제</a>
+									<a href="javascript:f_submit();" id="btn_save" class="btn btn-primary disabled">저장</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="beacon_sd" style="display:none;"></div>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html('&#160;');
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/**
+ * ==================================================================================
+ * 지점 선택시 지점에 해당하는 목록 조회
+ * ==================================================================================
+ */
+$('#str_cd').change(function(){
+	var searchData = {};
+	searchData['str_cd'] = $('#str_cd').children("option:selected").val();
+	$("#zone_beacon_grid").jqGrid('setGridParam', {search: true});
+	$("#zone_beacon_grid").jqGrid('setGridParam', {page: 1});
+	$("#zone_beacon_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+});
+
+/**
+ * ==================================================================================
+ * 상세 : Zone 목록에서 Zone ID 클릭시 우측 비콘목록 table에 data set.
+ * ==================================================================================
+ */
+function f_beaconList() {
+	 
+	$.ajax({
+	    url: api_url+"/backoffice/system/device/zone/beacon/list", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmBeacon').serializeFormObject())),
+	    success: function(obj){
+	    	var tbody = $('#beacon_tbody');
+	    	tbody.empty();
+	    	
+	    	$.each(obj.data.zone_bcon_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c"><input type="checkbox" value="'+items.bcon_id+'"></td>\n';
+	    		tag_td += '<input type="hidden" name="bcon_id_list" value="'+items.bcon_id+'">\n';
+	    		tag_td += '<td class="ta-c">'+items.str_cd_name+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.bcon_id+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.bcon_nm+'</td>\n';
+	    		var tag_tr = '<tr>'+tag_td+'</tr>';
+	    		tbody.append(tag_tr);
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+	
+	
+}
+
+
+function f_delete() {
+	
+	var idx = 0;
+	var sel_ids = new Array();
+	$('#beacon_tbody').find('input[type=checkbox]').each(function(i) {
+		if($(this).is(':checked')) {
+			sel_ids[idx] = $(this).val();
+			idx++;
+		}
+	});
+	
+	if(idx > 0) {
+		if(confirm("ZONE의 선택된 비콘을 정말 해제 하시겠습니까?")) {
+					
+			var data = $('#frmBeacon').serializeFormObject();
+			data['bcon_id_list'] = sel_ids;
+					
+			$.ajax({
+			    url: api_url+'/backoffice/system/device/zone/beacon/delete',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	$('#zone_beacon_grid').trigger('reloadGrid');
+			    	f_beaconList();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		}
+	} else {
+		alert("삭제할 비콘을 선택해 주세요.");
+	}
+}
+
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	if($('#beacon_tbody').tableRowValid()) {
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/system/device/zone/beacon/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify($('#frmBeacon').serializeFormObject()),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	$('#zone_beacon_grid').trigger('reloadGrid');
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCode($('#str_cd'));
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#zone_beacon_grid").parent().width() - 100;
+
+		jQuery("#zone_beacon_grid").jqGrid({
+			url : api_url+"/backoffice/system/device/zone/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '지점명', 'Zone ID', 'Zone 명', '연결된 비콘수', '수정일'],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 		align : "center",	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'str_cd_name', 	index : 'str_cd_name', 		align : "center",	sortable : false, 	width : (pageWidth*(15/100))	},
+				{ name : 'zone_id', 		index : 'zone_id', 			align : "center",	sortable : false, 	width : (pageWidth*(25/100)),	classes:'pointer' 	},
+				{ name : 'zone_nm', 		index : 'zone_nm', 			align : "center",	sortable : false, 	width : (pageWidth*(30/100)),	classes:'pointer' 	},
+				{ name : 'link_bcon_cnt', 	index : 'link_bcon_cnt', 	align : "center",	sortable : false, 	width : (pageWidth*(15/100)) 	},
+				{ name : 'mod_date', 		index : 'mod_date', 		align : "center", 	sortable : false, 	width : (pageWidth*(15/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "zone_id",
+				root : 		function(obj){ return obj.data.zone_list; },		// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return "params="+JSON.stringify(postData); },
+			serializeGridData: function(postData) { return "params="+JSON.stringify(postData); },
+			postData:{ 
+				search_info: {str_cd : $('#str_cd').children("option:selected").val()}, 
+				empno: '${sessionScope.sessionEmpno}', 
+				str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}' 
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#zone_beacon_grid_page',
+			sortname : 'mod_date',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			multiselect : false,
+			multiboxonly: true,
+			autowidth : true,
+			shrinkToFit : true,
+			recordpos : "left",
+			height : 'auto',
+			onCellSelect: function(rowid, index, contents, event) {
+				if(index == 2 || index == 3) {
+					
+					// 존데이터 셋팅 및 버튼 컨트롤
+					$("#frmBeacon").find('input[name=zone_id]').val(rowid);
+					$("#btn_beacon_select").removeClass("disabled");
+					$("#delbtn_beacon_select").removeClass("disabled");
+					$("#btn_save").removeClass("disabled");
+					
+					f_beaconList();
+
+				}
+			}
+		});
+		jQuery("#zone_beacon_grid").jqGrid('navGrid', "#zone_beacon_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		$('#zone_beacon_grid').gridCss();
+	  	$("#zone_beacon_grid_cb").css("border-left-width","0");
+	  	$("#zone_beacon_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_zone_beacon_grid_cb").css("padding","7px 0");
+	  	$("#zone_beacon_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#zone_beacon_grid").jqGrid( 'setGridWidth', $("#target_zone_beacon_grid").width() );
+		});
+	} 
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+</script>
+
+

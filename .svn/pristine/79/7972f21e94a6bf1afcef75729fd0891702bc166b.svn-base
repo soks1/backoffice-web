@@ -1,0 +1,624 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>배너 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" name="noticbd_divn_cd" value="BANNER">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">노출 구분 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="nomem_view_gbn_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">카테고리 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="mbanner_cat_cd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">카테고리 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="mbanner_sub_cat_cd_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="title"></span>
+									</div>
+								</div>								
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">게시기간 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ntce_period"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">게시상태 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ntce_sts_cd"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">배너이미지 : </label>
+									<div class="col-md-11" id="banner_img">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">랜딩이미지 : </label>
+									<div class="col-md-11" id="banner_landing_img">
+									</div>
+								</div>
+								<div class="form-group" id="linkUrlA" style="display:none">
+									<label class="col-md-2 control-label">페이지경로</label>
+									<div class="col-md-2">
+										<select class="form-control" name="noticbd_divn_cd_temp" id="noticbd_divn_cd_temp" >
+											<option value="">선택</option>
+											<option value="LIST" >목록</option>
+											<option value="CRM" >쿠폰북</option>
+											<option value="CPZINE" >쿠폰진</option>
+											<option value="FCFS" >달려라선착순</option>
+											<option value="STAMP" >스탬프</option>
+											<option value="EVENTCOK" >이벤트콕</option>
+											<option value="CHANNELCOK" >채널콕</option>
+										</select>
+									</div>
+									<div class="col-md-5">
+										<select class="form-control" name="link_noticbd_id" id="link_noticbd_id">
+										</select>
+									</div>
+									<div class="col-md-3">
+										<select class="form-control" name="zine_ord_seq" id="zine_ord_seq" style="display: none;">
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">연결방법 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="link_method_cd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >페이지경로 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ot_title"></span>
+									</div>
+								</div>
+								<legend></legend>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_closedown();" class="btn btn-danger btn_auth_delete">즉시중단</a>
+										<a href="javascript:f_mainbannerList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_mainbannerEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_mainbannerDelete();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+/* ============================================================================================
+/* APP 내부 페이지 연결
+/* --------------------------------------------------------------------------------------------
+/* 배너 클릭시 연결될 내부게시판 호출
+/* ============================================================================================ */
+$('#noticbd_divn_cd_temp').change(function(){
+	var _divn_cd = $(this).val();
+	
+	$('#zine_ord_seq').hide();
+	
+	if(_divn_cd != "") {
+		var data = $('#frmBanner').serializeFormObject();
+		data.empno = "${sessionScope.sessionEmpno}";
+		data.link_url = _divn_cd;
+		data.nomem_view_gbn = $(':radio[name="nomem_view_gbn"]:checked').val();
+		
+		if(_divn_cd != "LIST") {
+			if(_divn_cd == "EVENTCOK" || _divn_cd == "CHANNELCOK") {
+				var _url = "";
+				if(_divn_cd == "EVENTCOK") {
+					_url = "/backoffice/common/board/issue/event/cok";
+				}else {
+					_url = "/backoffice/common/board/issue/channel/cok";
+				}
+				
+				$.ajax({
+					url: api_url + _url,
+//	 				type: 'GET', // 기본이 GET 임 주석처리.
+//	 				cache: true, // 기본이 true 임 주석처리.
+					async: false,
+					data: encodeURI('params='+JSON.stringify(data)),
+					success: function(obj){
+						var objData = obj['data'] || {};
+						$('select[name=link_noticbd_id]').data({'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '': function() {}}).triggerHandler('init');
+					},beforeSend:function(){
+						$("select[name=link_noticbd_id] option[value!='']").remove();
+					},error: function(obj) {
+				    	var serverObj = obj.responseJSON;
+				    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+				    	return;
+				    }
+				});
+			} else {
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+	// 				type: 'GET', // 기본이 GET 임 주석처리.
+	// 				cache: true, // 기본이 true 임 주석처리.
+					async: false,
+					data: encodeURI('params='+JSON.stringify(data)),
+					success: function(obj){
+						var objData = obj['data'] || {};
+						$('select[name=link_noticbd_id]').data({'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '': function() {}}).triggerHandler('init');
+					},beforeSend:function(){
+						$("select[name=link_noticbd_id] option[value!='']").remove();
+					},error: function(obj) {
+				    	var serverObj = obj.responseJSON;
+				    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+				    	return;
+				    }
+				});
+			}
+		} else {
+			var _items = [
+	  			{'key': 'MAIN', 'label': '메인'},
+	  			{'key': 'MCOUPON', 'label': 'M쿠폰 - 상품쿠폰'},
+	  			{'key': 'MPRICE', 'label': 'M쿠폰 -금액쿠폰'},
+				{'key': 'MLIFE', 'label': 'M-LIFE'},
+				{'key': 'EVENTCOK', 'label': '이벤트콕'},
+				{'key': 'CHANNELCOK', 'label': '채널콕'},
+				{'key': 'LIFECOK', 'label': '생활콕'},
+				{'key': 'MCLUB', 'label': 'M클럽'},
+				{'key': 'LEAFLET', 'label': '행사정보'},
+				{'key': 'NOTICE', 'label': '공지사항'},
+				{'key': 'FCFS', 'label': '달려라선착순'},
+				{'key': 'STAMP', 'label': 'M스탬프'},
+				{'key': 'RECEIPT', 'label': '스마트영수증'},
+				{'key': 'POLL', 'label': 'POLL'},
+				{'key': 'PEVENT', 'label': '걷기'}
+	  		];
+			$('select[name=link_noticbd_id]').data({'items': _items, 'key': 'key', 'label': 'label', '': function() {}}).triggerHandler('init');
+		}
+	}
+});
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	
+	$('select[name=link_noticbd_id]')
+	.on('change', function() {
+		var issue_cpbook_key = "";
+		issue_cpbook_key = $(this).data().key;
+		if(issue_cpbook_key === "evnt_id") {
+			var cpz_contents_data = $('#searchProduct').serializeFormObject();
+			var ctype = $(this).children(":selected").data("item").ctype;
+			var evnt_id = $(this).children(":selected").data("item").evnt_id;
+			
+			if(ctype == "CPZINE" || ctype == "MLIFE") {
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.custgp_cl_cpbook_id = evnt_id;
+				cpz_contents_data.s_type = "CPZINE";
+				
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						if(obj.url_type=="CPBOOK") {
+							$.each(obj.result_list, function(i, item) {
+								options += "<option value='"+item.order_seq+"'>"+item.cpzine_contents_title+"</option>";
+							});
+						}
+							target.html(options);
+					}	
+				});
+				
+				$("#zine_ord_seq").show();
+				
+			}else if(ctype == "CRM"){
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.cpbook_id = $(this).children(':selected').val();
+				$.ajax({
+					url: api_url+"/backoffice/couponbook/coupon/couponlist",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						
+						$('#zine_ord_seq').show();
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						$.each(obj.coupon_list, function(i, item) {
+							options += "<option value='"+item.coupon_id+"'>"+item.coupon_nm+"</option>";
+						});
+						target.html(options);
+					}	
+				});
+				
+				$('#zine_ord_seq').show();
+			} else {
+				$("#zine_ord_seq").hide();
+			}
+		}
+	})
+	.bind('getData', function(evt, key) {
+	
+		var self = this;
+		var $option = $(self).children(':selected');
+		return ($option.data('item')||{})[key || '_'] || '';
+	})
+	.bind('init', function(evt) {
+		var self = this;
+		var _options = $(self).data();
+		$(self).empty().append( $('<option></option>').data('item', {}).val('').text('선택') );
+		$.each(_options['items'] || [], function() {
+			$('<option></option>').data('item', this).val(this[_options['key']]).text(this[_options['label']]).appendTo( $(self) );
+		});
+
+		if (_options['_select'] && $.isFunction(_options['_select'])) {
+			
+			_options['_select'].apply(self);
+			$(self).val($(self).val() || '');
+
+			delete _options['_select'];
+			
+			$(self).data( _options );
+		}
+		else if (_options['defaultValue']){
+			$(self).val(_options['defaultValue'] || '');
+		}
+		var issue_cpbook_key = "";
+		issue_cpbook_key = $("#link_noticbd_id").data().key;
+		if(issue_cpbook_key === "evnt_id") {
+			var _cpz_ord = $(self).data()._cpz_ord;
+			var ctype = $(this).children(":selected").data("item").ctype;
+			var evnt_id = $(this).children(":selected").data("item").evnt_id;
+			var cpz_contents_data = $('#searchProduct').serializeFormObject();
+
+			if(ctype == "CPZINE" || ctype == "MLIFE") {
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.custgp_cl_cpbook_id = evnt_id;
+				cpz_contents_data.s_type = "CPZINE";
+				
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						if(obj.url_type=="CPBOOK") {
+							$.each(obj.result_list, function(i, item) {
+								options += "<option value='"+item.order_seq+"'>"+item.cpzine_contents_title+"</option>";
+							});
+						}
+							target.html(options);
+					}	
+				});
+				
+				if(_cpz_ord != "") {
+					$("#zine_ord_seq").show();
+					$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+				}
+			}else if(ctype == "CRM"){
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.cpbook_id = $(this).children(':selected').data("item").evnt_id;
+				$.ajax({
+					url: api_url+"/backoffice/couponbook/coupon/couponlist",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						
+						$('#zine_ord_seq').show();
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						$.each(obj.coupon_list, function(i, item) {
+							options += "<option value='"+item.coupon_id+"'>"+item.coupon_nm+"</option>";
+						});
+						target.html(options);
+					}	
+				});
+				if(_cpz_ord != "") {
+					$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+				}
+				
+			}else{
+				$("#zine_ord_seq").hide();
+			}
+		}
+	});
+	
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/board/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var objData = obj['data'] || {};
+	    	var ntce_start_hhmi = objData['ntce_start_hhmi'];
+	    	var ntce_end_hhmi = objData['ntce_end_hhmi'];
+	    	$("#reg_date").html(objData['reg_date_name']);
+	    	$("#reg_id").html(objData['reg_id_name']);
+	    	$("#mod_date").html(objData['mod_date_name']);
+	    	$("#mod_id").html(objData['mod_id_name']);
+	    	$("#title").html(objData['title']);
+	    	$("#noticbd_id").html(objData['noticbd_id']);
+	    	$("#ntce_period").html(cf_cvtDateFormat(objData['ntce_start_dd'],'yyyy-MM-dd') + ' ' + ntce_start_hhmi.substr(0,2) + ':' + ntce_start_hhmi.substr(2,4) + ' ~ ' + cf_cvtDateFormat(objData['ntce_end_dd'],'yyyy-MM-dd') + ' ' + ntce_end_hhmi.substr(0,2) + ':' + ntce_end_hhmi.substr(2,4));   
+	    	$("#ntce_sts_cd").html(objData['ntce_sts_cd_name']); //게시상태값 현재 누락되어있음
+	    	$("#link_method_cd").html(objData['link_method_cd_name']);
+	    	$("#mbanner_cat_cd").html(objData['mbanner_cat_cd_name']);
+	    	
+	    	$("#mbanner_sub_cat_cd_name").html(objData['mbanner_sub_cat_cd_name']);
+	    	
+	    	$("#nomem_view_gbn_name").html(objData['nomem_view_gbn_name']);
+	    	
+	    	
+	    	if (objData['link_method_cd'] == 'APPLIST'){
+		    	if(objData['url_type'] != "LIST") {
+		    		if(objData['url_type'] == "EVENTCOK") {
+			    		var _cpz_ord = "";
+			    		if(objData['ot_link_url'].indexOf("noticbd_id") > -1) {
+			    			_cpz_ord = objData['ot_link_url'];
+			    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-15);
+			    		}
+			    		var crmData = {
+								empno: '${sessionScope.sessionEmpno}', 
+								emp_str_cd: '${sessionScope.sessionStrCd}',
+								hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+								noticbd_divn_cd_temp : objData['url_type'],
+			    				nomem_view_gbn : objData['nomem_view_gbn']	
+						};
+			    		
+			    		$.ajax({
+							url: api_url+"/backoffice/common/board/issue/event/cok",
+							cache: true,
+							datatype: 'json',
+							data: encodeURI('params='+JSON.stringify(crmData)),
+							success: function(obj) {
+								var detailData = obj['data'] || {};
+								$('select[name=link_noticbd_id]')
+								.data({
+									'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+										var self = this;
+										
+										$(self).children()
+													.filter(function() {
+														return $(this).data('item')['evnt_id'] == objData['link_noticbd_id'];
+													}).prop('selected', 'selected');
+									}
+								})
+								.triggerHandler('init');
+								$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+							}
+			    		});
+			    		
+		    		} else if(objData['url_type'] == "CHANNELCOK") {
+			    		var _cpz_ord = "";
+			    		if(objData['ot_link_url'].indexOf("media_id") > -1) {
+			    			_cpz_ord = objData['ot_link_url'];
+			    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-15);
+			    		}
+			    		var crmData = {
+								empno: '${sessionScope.sessionEmpno}', 
+								emp_str_cd: '${sessionScope.sessionStrCd}',
+								hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+								noticbd_divn_cd_temp : objData['url_type']
+						};
+			    		
+			    		$.ajax({
+							url: api_url+"/backoffice/common/board/issue/channel/cok",
+							cache: true,
+							datatype: 'json',
+							data: encodeURI('params='+JSON.stringify(crmData)),
+							success: function(obj) {
+								var detailData = obj['data'] || {};
+								$('select[name=link_noticbd_id]')
+								.data({
+									'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+										var self = this;
+										
+										$(self).children()
+													.filter(function() {
+														return $(this).data('item')['evnt_id'] == objData['link_noticbd_id'];
+													}).prop('selected', 'selected');
+									}
+								})
+								.triggerHandler('init');
+								$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+							}
+			    		});
+		    		} else {
+			    		var _cpz_ord = "";
+			    		if(objData['ot_link_url'].indexOf("coupon_id") > -1) {
+			    			_cpz_ord = objData['ot_link_url'];
+			    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-5);
+			    			
+			    		}else if(objData['ot_link_url'].indexOf("active") > -1) {
+			    			_cpz_ord = objData['ot_link_url'];
+			    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-1);
+			    		}else {
+			    			_cpz_ord = "";
+			    		}
+			    		var crmData = {
+								empno: '${sessionScope.sessionEmpno}', 
+								emp_str_cd: '${sessionScope.sessionStrCd}',
+								hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+								noticbd_divn_cd_temp : objData['url_type']
+	
+						};
+	
+			    		$.ajax({
+							url: api_url+"/backoffice/common/board/issue/cpzine/list",
+							cache: true,
+							datatype: 'json',
+							data: encodeURI('params='+JSON.stringify(crmData)),
+							success: function(obj) {
+								var detailData = obj['data'] || {};
+								$('select[name=link_noticbd_id]')
+								.data({
+									'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+										var self = this;
+										
+										$(self).children()
+													.filter(function() {
+														return $(this).data('item')['evnt_id'] == objData['link_noticbd_id'];
+													}).prop('selected', 'selected');
+									}
+								})
+								.triggerHandler('init');
+								
+								if($("#zine_ord_seq option:selected").val() == "") {
+									$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+								}else {
+									$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text() + "( " + $("#zine_ord_seq option:selected").text() + " )");
+								}
+	// 							$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text() + " " + $("#zine_ord_title").val());
+							}
+			    		});
+		    		}
+		    	}else {
+		    		var _items = [
+		    			  			{'key': 'MAIN', 'label': '메인'},
+						  			{'key': 'MCOUPON', 'label': 'M쿠폰 - 상품쿠폰'},
+						  			{'key': 'MPRICE', 'label': 'M쿠폰 -금액쿠폰'},
+		    						{'key': 'MLIFE', 'label': 'M-LIFE'},
+		    						{'key': 'EVENTCOK', 'label': '이벤트콕'},
+		    						{'key': 'CHANNELCOK', 'label': '채널콕'},
+		    						{'key': 'LIFECOK', 'label': '생활콕'},
+		    						{'key': 'MCLUB', 'label': 'M클럽'},
+		    						{'key': 'LEAFLET', 'label': '행사정보'},
+		    						{'key': 'NOTICE', 'label': '공지사항'},
+		    						{'key': 'FCFS', 'label': '달려라선착순'},
+		    						{'key': 'STAMP', 'label': 'M스탬프'},
+		    						{'key': 'RECEIPT', 'label': '스마트영수증'},
+		    						{'key': 'POLL', 'label': 'POLL'},
+		    						{'key': 'PEVENT', 'label': '걷기'}
+		    			  		];
+		    		var _list_id = objData['link_noticbd_id'];
+   					$('select[name=link_noticbd_id]').data({'items': _items, 'key': 'key', 'label': 'label', '_select': function() { $(this).val(_list_id); }}).triggerHandler('init');
+   					$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+   					
+		    	}
+	    		
+	    	}else if(objData['link_method_cd'] == 'URL'){
+	    		$("#ot_title").text(objData['ot_link_url']);
+	    	}
+	    	
+	    	
+	    	var tag_img = $("<img>").attr("src",objData['noticbd_img_list'][0].prvw_url).attr("alt",objData['noticbd_img_list'][0].img_orgin_file_nm).addClass('img-responsive');
+	    	$("#banner_img").append(tag_img);
+	    	
+	    	objData['noticbd_img_list'][1] = objData['noticbd_img_list'][1]==undefined?"" : objData['noticbd_img_list'][1];
+			if(objData['noticbd_img_list'][1] != "") {
+		    	var landing_img = $("<img>").attr("src",objData['noticbd_img_list'][1].prvw_url).attr("alt",objData['noticbd_img_list'][1].img_orgin_file_nm).addClass('img-responsive');
+		    	$("#banner_landing_img").append(landing_img);
+			}
+			
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

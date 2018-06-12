@@ -1,0 +1,485 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>가맹점 정보 상세</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="form-horizontal" id="frmLifekok">
+						
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="tenant_cd" value="">
+							<input type="hidden" name="today" value="">
+							<input type="hidden" name="login_vali_end_dy" value="">
+						
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important">가입일자 </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" style="width:130px !important">폐점일자 </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="cld_str_dy"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important">입점상태 </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="tenant_entshp_sts_cd_nm"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" style="width:130px !important">승인상태 </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important">사업자 가맹점번호 </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="tenant_cd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" style="width:130px !important">사업자 아이디/사업자 비밀번호 유효기간 </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="login_vali_end_dy"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05"  style="width:140px !important">사업자 지점명</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="str_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important" >사업자 이메일</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="tenant_user_email"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important" >사업자 대표자명</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="presid_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important">가맹점 이미지 </label>
+									<div class="col-md-10" id="tenant_img">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important">가맹점 메인이미지 </label>
+									<div class="col-md-10" id="tenant_main_img">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05"  style="width:140px !important">사업자 가맹점명/업종</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="tenant_nm_biz_cate_cd_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05"  style="width:140px !important">사업자등록번호</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="coregno"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important" >사업자 가맹점 주소</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="tenant_addr"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important" >사업자 아이디</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="tenant_user_id"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important" >사업자 휴대번호</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="tenant_user_cell_no"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important" >사업자 전화번호</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="tenant_rep_tel_no"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+<!-- 									<div class="col-md-12"> -->
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">사업자 매장주소지도</label>
+										<div class="col-md-10">
+										<div id="map_canvas" style="width:720px; height:350px;"></div>
+										</div>	
+<!-- 									</div> -->
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:140px !important" >사업자 가맹점 소개</label>
+									<div class="col-md-10">
+										<textarea class="form-control cs-css-03" rows="8" id="tenant_intro_content" readonly="readonly"></textarea>
+									</div>
+								</div>
+
+								<div class="form-group">
+<!-- 									<div class="col-md-12"> -->
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">사업자 메뉴(서비스)소개</label>
+										<div class="col-md-10">
+										<textarea class="form-control cs-css-03" id="tenant_svc_desc" rows="3" readonly="readonly"></textarea>
+										</div>	
+<!-- 									</div> -->
+								</div>
+
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantEN();" class="btn btn-success" style="display:none;" id="tenantModify">수정</a>
+										<a href="javascript:f_close_dy_select();" class="btn btn-danger" style="display:none;" id="tenantClose">폐점</a>
+										<a href="javascript:f_input_return_reason();" class="btn btn-danger" style="display:none;" id="tenantReturn">반려</a>
+										<a href="javascript:f_approve_confirm();"	 class="btn btn-primary" style="display:none;" id="tenantApprove">승인</a>
+										<a href="javascript:f_extension_validity();" class="btn btn-primary" style="display:none;" id="tenantExtensionOfValidity">유효기간 연장</a>
+										<a href="javascript:f_tenantList();" class="btn btn-default" style="display:none;" id="tenantList" >목록</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="approve_confirm" style="display:none;"></div>
+<div id="extension_validity" style="display:none;"></div>
+<div id="input_return_reason" style="display:none;"></div>
+<div id="tenantNewValiditySD" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+<script type="text/javascript">
+
+/*
+ * ==================================================================================
+ * 가맹점 관리 : 반려 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_input_return_reason(){
+	 
+	$.ajax({
+		url		: "/application/cooperateService/tenant/tenantReturnReasonSD.do",
+		type	: 'POST',
+		cache	: false,
+
+		success	: function(data){
+			var $target = $('#input_return_reason');
+			$target.empty();
+			$target.html(data);
+		},
+		
+	});
+	$('#input_return_reason').dialog('open');
+}
+//--------------가맹점 반려 다이얼로그 화면 구문-----------------//
+$('#input_return_reason').dialog({
+	autoOpen : false,
+	width : 450,
+	minHeight: 100,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 가맹점 반려 사유 </h6></div>",
+});
+/**
+ * ==================================================================================
+ * 가맹점 관리 : 폐점 버튼 
+ * ==================================================================================
+ */
+function f_close_dy_select(){
+	var data = $('#frmLifekok').serializeFormObject();
+	data['cld_str_dy'] = $('input[name=today]').val(); 
+	if(confirm("적용 시 app에 즉시 반영됩니다. 폐점설정 하시겠습니까?")){
+		
+		$.ajax({
+		    url: api_lifekok_url+'/backoffice/lifekok/tenant/close',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+				var url = "/application/cooperateService/tenant/tenantRN.do";
+		    	var method = "GET";
+		    	var postData ={
+		    			tenant_cd : $("input[name=tenant_cd]").val(),
+		    			empno	  : '${sessionScope.sessionEmpno}'
+		    	}; 
+		    	cf_action(url, method, postData);
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});	
+	}
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 관리 : 승인 버튼 (승인 확정하기)
+ * ==================================================================================
+ */
+function f_approve_confirm(){
+	 
+ 	$.ajax({
+		url		: "/application/cooperateService/tenant/tenantNewValiditySD.do",
+		type	: 'POST',
+		cache	: false,
+
+		success	: function(data){
+			var $target = $('#tenantNewValiditySD');
+			$target.empty();
+			$target.html(data);
+		},
+	});
+	$('#tenantNewValiditySD').dialog('open');
+}
+//--------------가맹점 승인 다이얼로그 화면 구문-----------------//
+$('#tenantNewValiditySD').dialog({
+	autoOpen : false,
+	width : 300,
+	minHeight: 100,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 신규 유효기간 지정 </h6></div>",
+});
+
+/**
+ * ==================================================================================
+ * 가맹점 관리 : 유효기간 연장 다이얼로그 호출
+ * ==================================================================================
+ */
+ 
+ 
+function f_extension_validity(){
+	 
+	$.ajax({
+		url		: "/application/cooperateService/tenant/tenantValidityExtendSD.do",
+		type	: 'GET',
+		cache	: false,
+		success	: function(data){
+			var $target = $('#extension_validity');
+			$target.empty();
+			$target.html(data);
+		}
+	});
+	//엔터키 사용불가
+	$("#extension_validity").keypress(function(e){
+		if(e.keyCode ==13) e.preventDefault();
+	});
+	
+	$("#extension_validity").keypress(function(e){ if(e.keyCode == 13)  return false;});
+	$('#extension_validity').dialog('open');
+}
+//--------------유효기간 연장 다이얼로그 화면 구문-----------------//
+$('#extension_validity').dialog({
+	autoOpen : false,
+	width : 300,
+	minHeight: 100,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 유효기간 연장 </h6></div>",
+});
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	
+	window.loadGoogleMaps();
+	$(window).bind('gMapsLoaded', mapLoading);
+
+	// 	오늘날짜 
+	var Now = new Date();
+	var NowTime = Now.getFullYear();
+	if(Now.getMonth() < 10){NowTime += "0";}
+	NowTime += ""+(Now.getMonth() + 1) ;
+	if(Now.getDate() < 10){NowTime += "0";}
+	NowTime += ""+Now.getDate();
+	$('input[name=today]').val(NowTime);
+	
+	$.ajax({
+		url: api_lifekok_url+'/backoffice/lifekok/tenant/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	
+	    	$("#reg_date").html(detailData['reg_date']);								//가입일자
+	    	$("#cld_str_dy").html(detailData['cld_str_dy']);							//폐점일자
+	    	$("#tenant_entshp_sts_cd_nm").html(detailData['tenant_entshp_sts_cd_nm']);	//입점상태
+	    	$("#tenant_cd").html(detailData['tenant_cd']);								//가맹점 번호(가맹점 코드)
+	    	$("input[name=tenant_cd]").val(detailData['tenant_cd']);					//가맹점 번호(가맹점 코드)
+	    	$("#str_nm").html(detailData['str_nm']);									//지점명(점포명))
+	    	$("#tenant_user_email").html(detailData['tenant_user_email']);				//이메일(가맹점사용자이메일)
+	    	$("#presid_nm").html(detailData['presid_nm']);								//대표자명
+	    	$("#tenant_img_url").html(detailData['tenant_img_url']);					//이미지(이미지url)	
+	    	$("#tenant_nm_biz_cate_cd_nm").html(detailData['tenant_nm']+" / "+detailData['biz_cate_cd_nm']); //가맹점명 / 업종
+	    	$("#coregno").html(detailData['coregno']);									//사업자등록번호
+	    	$("#tenant_addr").html(detailData['tenant_addr']);							//가맹점 주소
+	    	$("#tenant_user_id").html(detailData['tenant_user_id']);					//아이디(가맹점사용자ID)
+	    	$("#tenant_user_cell_no").html(detailData['tenant_user_cell_no']);			//휴대번호
+	    	$("#tenant_rep_tel_no").html(detailData['tenant_rep_tel_no']);				//전화번호
+	    	$("#tenant_svc_desc").html(detailData['tenant_svc_desc']);					//가맹점 소개
+	    	$("#login_vali_end_dy").html(detailData['login_vali_end_dy']);				//로그인 유효기간
+	    	$('input[name=login_vali_end_dy]').val(detailData['login_vali_end_dy']);	//로그인 유효기간 - 유효기간연장팝업사용
+	    	$("#tenant_intro_content").html(detailData['tenant_intro_content']);		//로그인 유효기간
+	    	
+	    	//좌표 이용 구글맵 표시
+	    	var latitude = detailData['latt_val'];
+	    	var longitude = detailData['lngt_val'];	
+	    	mapLoading(latitude, longitude);
+	    	
+			if(detailData['tenant_img_url'] != "" && detailData['tenant_img_url'] != 'http://imagecoupond.lottemart.com/') {
+				//로컬
+// 	    		var _delivery_img = detailData['tenant_img_url'].replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+				//개발
+	    		var _delivery_img = detailData['tenant_img_url'];
+	    		var _img = $('<img>').attr('src', _delivery_img).attr('alt', detailData['orgin_nm']).addClass('img-responsive');
+	        	$("#tenant_img").append(_img);
+	    	}
+	    	
+			if(detailData['tenant_main_img_url'] != "" && detailData['tenant_main_img_url'] != 'http://imagecoupond.lottemart.com/') {
+				//로컬
+// 	    		var _delivery_img = detailData['tenant_main_img_url'].replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+				//개발
+	    		var _delivery_img = detailData['tenant_main_img_url'];
+	    		var _img = $('<img>').attr('src', _delivery_img).attr('alt', detailData['main_orgin_nm']).addClass('img-responsive');
+	        	$("#tenant_main_img").append(_img);
+	    	}
+	    	
+	    	$("#aprv_sts_cd_nm").html(detailData['aprv_sts_cd_nm']);		//승인상태
+	    	
+	    	if(detailData['tenant_entshp_sts_cd']=="CLDSHP"){
+	    		tenantClose.style.display = "none"
+	    		tenantReturn.style.display = "none"
+	    		tenantApprove.style.display = "none"
+	    		tenantList.style.display = "inline"
+		    	tenantExtensionOfValidity.style.display = "none"
+		    	
+    		}else{
+    			if(detailData['aprv_sts_cd_nm'] == "승인대기"){
+		    		tenantClose.style.display = "none"
+		    		tenantReturn.style.display = "inline"
+		    		tenantApprove.style.display = "inline"
+		    		tenantList.style.display = "inline"
+		    		tenantExtensionOfValidity.style.display = "none"
+		    		
+		    	}else if(detailData['aprv_sts_cd_nm'] == "승인"){
+		    		tenantClose.style.display = "inline"
+		    		tenantReturn.style.display = "none"
+		    		tenantApprove.style.display = "none"
+		    		tenantList.style.display = "inline"
+			    	tenantExtensionOfValidity.style.display = "inline"	
+			    	
+		    	}else if(detailData['aprv_sts_cd_nm'] == "반려"){
+		    		tenantClose.style.display = "none"
+		    		tenantReturn.style.display = "none"
+		    		tenantApprove.style.display = "none"
+		    		tenantList.style.display = "inline"
+			    	tenantExtensionOfValidity.style.display = "none"	    		
+		    	}
+    		}
+	    	
+	    	// 권한에 따른 버튼 처리
+	    	var auth_a = '${sessionScope.menuAuth.A}';
+	     	if(auth_a != 'Y') {
+	     		$('#tenantClose').hide();
+	     		$('#tenantReturn').hide();
+	     		$('#tenantApprove').hide();
+	     		$('#tenantExtensionOfValidity').hide();
+	     	}
+	     	var auth_u = '${sessionScope.menuAuth.U}';
+	     	if(auth_u == 'Y' && detailData['aprv_sts_cd_nm'] == "승인" && detailData['tenant_entshp_sts_cd_nm'] == "입점"){
+	     		$('#tenantModify').show();
+	     	}
+	     	
+	     	if($("#str_nm").html() == '본부'){
+	    		$('#tenantClose').hide();
+	    		$('#tenantExtensionOfValidity').hide();
+	    		$('#tenantModify').hide();
+	    	}
+	     	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

@@ -1,0 +1,106 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>채널콕 카테고리 추가</h2>
+				</header>
+				<div class="jarviswidget-editbox"></div>
+				<div class="widget-body">
+					<form class="form-horizontal" method="post" id="frmChkok" name="frmChkok">
+						<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-md-3 control-label">카테고리 이름 <sup>*</sup> : </label>
+								<div class="col-md-9">
+									<input class="form-control" type="text" name="category_nm" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="카테고리 이름">
+								</div>
+							</div>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_chkCategoryRegistSubmit();" class="btn btn-primary">추가</a>
+										<a href="javascript:f_chkCategoryRegistCancel();" class="btn btn-default">취소</a>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+var dialog_pagefunction = function(){
+	
+};
+
+
+//input 에서 엔터키 입력시 반응하지 않도록 
+$('#chk_category_regist_sd').find('input').keypress(function(e) {
+	if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+		$(this).parent().parent().parent().parent().find('.ui-dialog-buttonpane').find('button:first').click(); /* Assuming the first one is the action button */
+		return false;
+	}
+});	
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_chkCategoryRegistSubmit() {
+	if($('#frmChkok').formValid() ){
+		var data = $('#frmChkok').serializeFormObject();
+		if(confirm("적용 시 app에 즉시 반영됩니다. 카테고리를 추가하시겠습니까?")){
+			
+			$.ajax({
+			    url: api_chkok_url+'/backoffice/chkok/category/regist',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	f_chkokList(); 
+					$('#chk_category_regist_sd').dialog("close");
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});	
+		}
+	} else {
+		return;
+	}
+}
+
+function f_chkCategoryRegistCancel(){
+	$('#chk_category_regist_sd').dialog("close");
+}
+
+
+</script>

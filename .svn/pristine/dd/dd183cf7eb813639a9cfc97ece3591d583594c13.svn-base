@@ -1,0 +1,462 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 그룹 상세 페이지 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+						<input type="hidden" id="empno" value="${sessionScope.sessionEmpno }">
+						<input type="hidden" id="tenant_cd" value="">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">가입일자</label>
+										<div class="col-md-10">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">그룹명</label>
+										<div class="col-md-10">
+										<span class="form-control cs-css-03" id="tenant_nm"></span>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">대표자명</label>
+										<div class="col-md-3">
+										<span class="form-control cs-css-03" id="presid_nm"></span>
+										</div>	
+										<label class="col-md-1 control-label">카테고리</label>
+										<div class="col-md-3">
+										<span class="form-control cs-css-03" id="_category"></span>
+										</div>	
+										<label class="col-md-1 control-label">업종</label>
+										<div class="col-md-3">
+										<span class="form-control cs-css-03" id="_biz_cate_cd_nm"></span>
+										</div>	
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="group_modify_btn" onclick="f_tenantGroupEN();" class="btn btn-success"><i class="fa fa-search"></i> 그룹정보수정 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>	
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 지점 리스트 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_child_tenant_grid" class="widget-body no-padding">
+						<table id="child_tenant_grid"></table>
+						<div id="child_tenant_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+</section>
+
+<div id="add_tenant_excelSD" style="display:none;"></div>
+<div id="map_canvas" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+ 
+var pagefunction = function() {
+	
+	var auth_u = '${sessionScope.menuAuth.U}';
+	if( auth_u == 'N') {
+		$('#group_modify_btn').hide();
+	}
+// 	window.loadGoogleMaps(); //다음 화면 맵로딩을 위한 사전작업(없을시 인터넷 사용기록 삭제 후 최초 맵 로딩시 구글맵 로딩안됨)
+	window.loadGoogleMaps();
+	$(window).bind('gMapsLoaded', mapLoading);
+// 	mapLoading(0, 0);
+	
+	
+	$('#tenant_cd').val($('#frmKeepData').serializeFormObject().tenant_cd);
+	
+	$.ajax({
+	    url: api_lifekok_url+"/backoffice/lifekok/tenant/group/show", //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	
+	    	$("#reg_date").html(detailData['reg_date']);
+	    	$("#tenant_nm").html(detailData['tenant_nm']);
+	    	$("#presid_nm").html(detailData['presid_nm']);
+	    	$("#_biz_cate_cd_nm").html(detailData['biz_cate_cd_nm']);
+	    	var _cate_cd =detailData['biz_cate_cd'].substring(0,2);
+	    	if(_cate_cd == "01"){	$('#_category').text("맛집/카페");   	}
+	    	else
+	    	if(_cate_cd == "02"){	$('#_category').text("헤어뷰티");    	}
+	    	else
+	    	if(_cate_cd == "03"){	$('#_category').text("생활편의");    	}
+	    	else
+	    	if(_cate_cd == "04"){	$('#_category').text("여가/문화");    	}
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", child_tenant_grid_function);
+	function child_tenant_grid_function() {
+		
+		var pageWidth = $("#child_tenant_grid").parent().width() - 100;
+
+		jQuery("#child_tenant_grid").jqGrid({
+			url : api_lifekok_url+"/backoffice/lifekok/tenant/group/show",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '사업자 가맹점 번호', '사업자 가맹점명', '사업자 번호', '등록지점', '사업자 가맹점 주소', '사업자 대표자명', '사업자 아이디','사업자 전화번호','h업종','hidden'],
+			colModel : [
+				{ name : 'no', 					index : 'no',		 			align : 'center',	sortable : false, 	width : (pageWidth*(3/100)) 	},
+				{ name : 'tenant_cd', 			index : 'tenant_cd', 			align : 'center', 	sortable : false, 	width : (pageWidth*(4/100)), 	classes:'pointer toooltip'  },
+				{ name : 'tenant_nm', 			index : 'tenant_nm', 			align : 'center', 	sortable : false, 	width : (pageWidth*(6/100)), 	classes:'pointer toooltip'  },
+				{ name : 'coregno', 			index : 'coregno', 				align : 'center',	sortable : false, 	width : (pageWidth*(4/100)), 	classes:'pointer toooltip'  }, 
+				{ name : 'str_nm', 				index : 'str_nm', 				align : 'center',	sortable : false, 	width : (pageWidth*(6/100)), 	classes:'pointer toooltip'  },
+				{ name : 'tenant_addr', 		index : 'tenant_addr',			align : 'center', 	sortable : false, 	width : (pageWidth*(15/100)) 	},
+				{ name : 'presid_nm', 			index : 'presid_nm', 			align : 'center', 	sortable : false, 	width : (pageWidth*(4/100)) 	},
+				{ name : 'tenant_user_id', 		index : 'tenant_user_id', 		align : 'center', 	sortable : false, 	width : (pageWidth*(6/100)) 	},
+				{ name : 'tenant_user_cell_no', index : 'tenant_user_cell_no', 	align : 'center', 	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'biz_cate_cd', 		index : 'biz_cate_cd', 			hidden : true,		width: 0 },
+				{ name : 'biz_cate_cd_nm', 		index : 'biz_cate_cd_nm', 		hidden : true, 		width: 0 }
+				
+			],
+			jsonReader: {
+				repeatitems : false,
+				root :		function(obj){ return obj.data.tenant_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#child_tenant_grid").jqGrid('setGridParam', {search: true});
+					$("#child_tenant_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+// 					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#child_tenant_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#child_tenant_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				tenant_cd : $('#tenant_cd').val(),
+				rows: '10',
+				page: '1'			
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#child_tenant_grid_page',
+			sortname : 'reg_date',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+				if('${sessionScope.menuAuth.R}' == 'Y') {			   
+					if(index > 1 && index < 5) {
+						var _tenant_cd = $("#child_tenant_grid").jqGrid('getRowData', rowid).tenant_cd;
+						var _empno = $('#empno').val();
+						
+						$("#child_tenant_grid").jqGrid('setGridParam', {'postData' : {'empno':_empno,'tenant_cd':_tenant_cd} });
+						var postData = $('#child_tenant_grid').jqGrid("getGridParam", "postData");
+						
+						var url = "/application/cooperateService/tenantGroup/tenantGroupChildRN.do";
+						var method = "POST";
+						cf_action(url, method, postData);
+					}
+			   } 
+			},
+			gridComplete: function() {	
+				var postData = $('#child_tenant_grid').jqGrid("getGridParam", "postData");				
+				$('#child_tenant_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#child_tenant_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			}
+		});
+		
+		jQuery("#child_tenant_grid").jqGrid('navGrid', "#child_tenant_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#child_tenant_grid").jqGrid('navButtonAdd','#child_tenant_grid_page',{
+				caption: "삭제",
+				id: "del_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					if(select_ids.length < 1) {
+						alert('삭제할 지점을 선택해 주세요.');
+						return;
+					}
+					var chk_del_list = [];
+					for (var i = 0; i < select_ids.length; i++) {
+						var del_item = {};
+						del_item['tenant_cd'] = $("#child_tenant_grid").jqGrid('getRowData', select_ids[i]).tenant_cd;
+						chk_del_list.push(del_item);
+					}
+					
+					if(confirm("즉시 반영됩니다. 정말 삭제하시겠습니까?")){
+						var data = {
+							chk_list : chk_del_list,
+							empno : '${sessionScope.sessionEmpno}',
+							up_tenant_cd : $('#tenant_cd').val()
+						};
+						
+						$.ajax({
+							url: api_lifekok_url + "/backoffice/lifekok/tenant/group/delete",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$("#child_tenant_grid").trigger("reloadGrid");
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+						    	return;
+						    }
+						});
+					}
+				}
+			});	
+		}
+		if('${sessionScope.menuAuth.U}' == 'Y') {
+			jQuery("#child_tenant_grid").jqGrid('navButtonAdd','#child_tenant_grid_page',{
+				caption: "추가",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					f_open_add_tenant_excelSD();
+				}
+			});	
+		}		
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#child_tenant_grid").gridCss();
+	  	$("#child_tenant_grid_cb").css("border-left-width","0");
+	  	$("#child_tenant_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_child_tenant_grid_cb").css("padding","7px 0");
+	  	$("#child_tenant_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#child_tenant_grid").jqGrid( 'setGridWidth', $("#target_child_tenant_grid").width() );
+		});
+	}
+	
+};
+/**
+ * ==================================================================================
+ * 그룹 상세 : 가맹점목록 엑셀파일 추가 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_open_add_tenant_excelSD() {
+	$.ajax({
+		url: "/application/cooperateService/tenantGroup/addTenantGroupExcelSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#add_tenant_excelSD');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#add_tenant_excelSD').dialog('open');
+		}
+	});
+}
+/* ============================================================================================
+/* 그룹 상세 : 가맹점목록 엑셀파일 추가 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 추가 버튼 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+$('#add_tenant_excelSD').dialog({
+	autoOpen : false,
+	width : 600,
+	minHeight: 200,
+	resizable : false,
+// 	position : "top",
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 지점 추가 </h6></div>",
+	buttons : [
+	           		{
+	           			html : "취소",
+								"class" : "btn btn-default",
+						click : function() {
+							$(this).dialog("close");
+						}
+	           		}
+	           		,
+					{
+						html : "확인",
+								"class" : "btn btn-primary",
+						click : function() {
+							
+							if(confirm("즉시 app에 적용됩니다. 등록내용이 맞습니까?")){
+								
+								var data = $('#frmLifekok').serializeFormObject();
+								
+								var fileData = $('#uploadfile').get(0).files[0];
+								var formData = new FormData();
+								formData.append('file', 		fileData, encodeURI(fileData.name));
+								formData.append('tenant_cd',	$('#tenant_cd').val());
+								formData.append('empno',	$('#empno').val());
+								
+						 		$.ajax({
+						 			//로컬
+// 						 			url: api_lifekok_img_url+"/backoffice/lifekok/tenant/group/add",
+									
+						 			//개발
+							 		url: api_lifekok_url+"/backoffice/lifekok/tenant/group/add",
+									
+						 			type: 'POST',
+						 			data: formData,
+						 	        preprocessData: false,
+						 			cache: false,
+						 			contentType: false,
+						 			processData: false,
+						 			success: function(obj) {
+						 				alert(obj.message);
+										$("#child_tenant_grid").trigger("reloadGrid");
+										$('#add_tenant_excelSD').dialog("close");
+						 			},
+						 			error: function(obj) {
+						 				var serverObj = obj.responseJSON;
+						 		    	alert('code:'+serverObj.code+'\n\n'+'message:'+cf_msg(serverObj.message)+'\n');
+						 		    	return;       
+						 			}
+						 		});
+								
+								
+							}else{
+								return;
+							}
+						}
+					}
+	           ]
+});
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

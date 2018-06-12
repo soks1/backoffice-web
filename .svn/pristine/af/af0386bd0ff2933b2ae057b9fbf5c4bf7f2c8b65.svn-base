@@ -1,0 +1,387 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<script type="text/javascript">
+function f_couponList() {
+	var url = "/application/auction/auctionLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * 발행구분에 따른 예약일 컨트롤러
+ */
+function f_openType(v) {
+	if(v == 'N') {
+		$("#open_date").attr("disabled", true);
+		$("#open_date").val("");
+	} else {
+		$("#open_date").attr("disabled", false);
+		$("#open_date").removeAttr("disabled");
+	}
+}
+
+
+</script>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>경매 수정</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" enctype="multipart/form-data">
+							<fieldset>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사제목</label>
+									<div class="col-md-10">
+										<input class="form-control" placeholder="행사제목을 입력해 주세요." type="text">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사설명</label>
+									<div class="col-md-10">
+										<input class="form-control" placeholder="행사설명을 입력해 주세요." type="text">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">게시 구분</label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="publish_type" value="N" onclick="f_openType(this.value);" checked="checked">
+											즉시게시 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="publish_type" value="R" onclick="f_openType(this.value);">
+											예약게시 </label>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="open_date" name="open_date" type="text" data-dateformat='yy-mm-dd' placeholder="예약일" disabled="disabled">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사진행일</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" data-dateformat='yy-mm-dd' placeholder="진행일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									
+									<label class="col-md-2 control-label">진행시간</label>
+									<div class="col-md-1">
+										<select class="form-control" name="">
+											<option value="">시</option>
+										</select>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" name="">
+											<option value="">분</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label ta-c">~</label>
+									<div class="col-md-1">
+										<select class="form-control" name="">
+											<option value="">시</option>
+										</select>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" name="">
+											<option value="">분</option>
+										</select>
+									</div>
+								</div>
+														
+								<div class="form-group">	
+									<label class="col-md-2 control-label">행사 지점</label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input type="hidden" id="str_cd" name="str_cd" />
+											<span class="input-group-btn">
+						                        <button class="btn btn-default" type="button" onclick="f_eventBranch();">추가</button>
+						                    </span>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<input class="form-control tagsinput" id="alliance" value="" data-role="tagsinput">
+									</div>
+									
+									<label class="col-md-1 control-label">행사코너</label>
+									<div class="col-md-5">
+										<input class="form-control" placeholder="행사코너를 입력해 주세요." type="text">
+									</div>
+								</div>
+								
+								<div class="form-group" style="margin-bottom: 0;">
+									<div class="col-md-2 control-label radio">
+										<label>행사 ZONE</label>
+									</div>
+									<div class="col-md-10">
+										<div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:f_openBeaconSD('auction_beacon_tbody');" class="btn btn-primary btn-sm">ZONE 선택</a>
+												<a href="javascript:cf_delTableRow('auction_beacon_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+										
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th><input type="checkbox"></th>
+														<th>지점코드</th>
+														<th>지점명</th>
+														<th>ZONE ID</th>
+														<th>ZONE 명</th>
+													</tr>
+												</thead>
+												<tbody id="auction_beacon_tbody">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-2 control-label"></div>
+									<div class="col-md-10">
+										<i class="fa fa-info-circle"></i> 행사 진행 지점 ZONE 중 다른 행사에 연결되지 않은 ZONE 만 선택할 수 있습니다.
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-2 control-label radio">
+										<label>경매상품</label>
+									</div>
+									<div class="col-md-10">
+										
+										<div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:f_openProductSingleSD('auction_product_tbody');" class="btn btn-primary btn-sm">상품선택</a>
+												<a href="javascript:cf_delTableRow('auction_product_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+										
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th><input type="checkbox"></th>
+														<th>상품코드</th>
+														<th>상품명</th>
+														<th>업체명</th>
+														<th>원가</th>
+														<th>매가</th>
+														<th>이익율</th>
+													</tr>
+												</thead>
+												<tbody id="auction_product_tbody">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">상품 정상가</label>
+									<div class="col-md-2">
+										<input class="form-control" placeholder="0" type="text">
+									</div>
+									<label class="col-md-2 control-label">경매 시작가</label>
+									<div class="col-md-2">
+										<input class="form-control" placeholder="0" type="text">
+									</div>
+									<label class="col-md-2 control-label">즉시 낙찰가</label>
+									<div class="col-md-2">
+										<input class="form-control" placeholder="0" type="text">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">입찰 기준</label>
+									<div class="col-md-8">
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2">
+											  <span>100원 더</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2">
+											  <span>500원 더</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2">
+											  <span>1,000원 더</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2">
+											  <span>5,000원 더</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2">
+											  <span>10,000원 더</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-2 control-label"></div>
+									<div class="col-md-10">
+										<i class="fa fa-info-circle"></i> 입찰 기준은 반드시 3개를 선택해 주십시오. 3개를 초과해 선택할 수 없습니다.
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지</label>
+									<div class="col-md-3">
+										<div class="col-md-6">
+											<label class="checkbox-inline" >
+												<input type="checkbox" class="checkbox style-2" id="ck_represent_image">
+												<span>대표이미지 선택</span>
+											</label>
+										</div>
+										<div class="col-md-6">
+											<select class="form-control" id="sel_represent_image" disabled="disabled">
+												<option value="">선택</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="form-group" id="area_upload_represent_image">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">유의사항</label>
+									<div class="col-md-10">
+										<textarea class="form-control" placeholder="Textarea" rows="5"></textarea>
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_couponList()" class="btn btn-default">취소</a>
+										<a href="" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="product_single_sd" style="display:none;"></div>
+<div id="beacon_sd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<!-- end widget grid -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+function f_eventBranch() {
+	var count = $('.tagsinput').tagsinput('items').length;
+	
+	if(count > 0) {
+		alert('지점은 1개만 선택 가능 합니다');
+		return;
+	}
+	
+	var select_id = $('#str_cd').select2('data').id;
+	var select_text = $('#str_cd').select2('data').text;
+	
+	$('.tagsinput').tagsinput('add', { id: select_id, text: select_text });
+	$('.tagsinput').tagsinput('refresh');
+}
+
+function loadCooperationData() {
+	$.ajax({
+		url: "/application/coupon/book/publication_branch.do", //this is the submit URL
+		dataType: "json",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(obj){
+	        	$('#branch_code').cf_singleSelect2(100, obj);
+	  		}
+	});
+}
+
+//----- 대표 이미지 선택 ----- //
+$("#ck_represent_image").click(function() {
+	var checkedF = $("#ck_represent_image").is(':checked');
+
+	if (checkedF) {
+		$("#area_upload_represent_image").hide();
+		$("#sel_represent_image").attr("disabled", false);
+	} else {
+		$("#area_upload_represent_image").show();
+		$("#sel_represent_image").attr("disabled", true);
+	}
+});
+
+pageSetUp();
+
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this));
+});
+
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/dropzone/dropzone.min.js", pagefunction);
+
+
+// taginput init
+$('.tagsinput').tagsinput({
+	itemValue: 'id',
+	itemText: 'text',
+	typeaheadjs: {displayKey: 'text'}
+});
+
+$(function() {
+	
+	f_ajaxBranchSel2Box($("#str_cd"));
+
+});
+</script>

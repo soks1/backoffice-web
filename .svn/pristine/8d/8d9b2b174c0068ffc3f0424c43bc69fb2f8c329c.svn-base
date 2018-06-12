@@ -1,0 +1,138 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>캐시 설정 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmAppcache" name="frmAppcache">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="cache_cd" value="">
+							
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">기기 종류 <sup>*</sup></label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="cell_type_cd" value="ANDROID" data-check-only="true" checked="checked">ANDROID
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="cell_type_cd" value="IOS" data-check-only="true">IOS
+										</label>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">등록 사유 <sup>*</sup></label>
+									<div class="col-md-10">
+										<textarea class="form-control" name="reason" id="reason" rows="10" data-valid-use='true' data-valid-max="4000" data-valid-title="등록사유"></textarea>
+									</div>
+								</div>
+								
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_appcacheList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_appcacheWNsubmit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<!-- <div id="chk_product_multi_sd" style="display:none;"></div> -->
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_appcacheWNsubmit() {
+	
+	if($('#frmAppcache').formValid() ){
+		if(confirm("저장 시 APP에 즉시 반영되며 수정이 불가합니다. 저장하시겠습니까?")) {	
+			var data = $('#frmAppcache').serializeFormObject();
+			data['reason'] = $('textarea[id=reason]').val();
+			
+//	 		실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/appcache/create',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	f_appcacheList();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});	
+		} else {
+			return;
+		}
+		
+	}else{
+		return;
+	}
+
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

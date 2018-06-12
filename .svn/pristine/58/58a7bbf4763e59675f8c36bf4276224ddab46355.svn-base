@@ -1,0 +1,258 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<style type="text/css">
+.couponzine_container{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	max-height:700px;
+}
+
+.couponzine_back_img{
+	position: relative;
+	left:0px;
+	height: 100%;
+	width: 100%;
+}
+
+.couponzine_back_img2 {
+	position: relative;
+	left:0px;
+	height: 100%;
+	width: 100%;
+}
+
+.couponzine_info{
+	position: relative;
+	padding: 20px 25px 0 15px;
+	margin: 0;
+	height: 100%;
+	background: rgba(0,0,0,0.5);
+	font-size: 1.0em;
+	color: #fff;
+	border-top: 1px solid #000;
+}
+
+.couponzine_info .con_title .title{
+	font-size: 1.3em;
+	font-weight: bold;
+	border-bottom:1px solid #fff;
+	padding-bottom: 10px;
+}
+
+.couponzine_info .con_title{
+	border-bottom: 1px solid #DCDCDC;
+	padding-bottom: 15px;
+}
+
+.couponzine_info .con_title .category{
+	text-align: right;
+	margin-top: -20px;
+}
+
+.couponzine_info .con_title .subTitle{
+	margin-top: 20px;
+	padding-bottom: 10px;
+	font-size: 1.4em;
+	font-weight: bold;
+}
+
+.couponzine_info .con_subTitle{
+	margin-top: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #DCDCDC;
+}
+
+.couponzine_info .con_subTitle .product_title{
+	font-size: 1.3em;
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+.couponzine_info .con_subTitle .product_div{
+	padding-bottom: 10px; 
+	padding-left: 10px;
+}
+
+.con_title .contents {
+padding-left: 10px;
+}
+
+.couponzine_info .con_subTitle .product_sale {
+	font-size: 1.1em;
+	float: right;
+}
+
+.couponzine_info .con_subTitle .product_total {
+	font-size: 1.3em;
+	font-weight: bold;
+	float: right;
+}
+
+
+
+
+.couponzine_recipe{
+	background-color:  rgba(0,0,0,0.5);
+	border-bottom: 1px solid #333333;
+	padding: 20px 15px;
+	color: #fff;
+}
+
+.couponzine_recipe .con_recipe .recipe_li {
+	padding-bottom: 20px;
+}
+
+.couponzine_recipe .con_recipe .recipe_img{
+	width: 150px;
+	height: 150px;
+	overflow:hidden;
+}
+.recipe_img img{
+	width : 100%;
+	height : 100%;
+}
+.recipe_ul{
+	padding-left: 0px;
+}
+.couponzine_recipe .con_recipe .recipe_text{
+	float: left;
+	padding-left: 170px;
+	margin-top: -130px;
+}
+
+.couponzine_recipe .con_banner{
+	padding-top: 20px;	
+	height: 80px;
+	width: 98%;
+}
+
+.couponzine_recipe .con_banner2{
+	padding-top: 10px;
+	height: 80px;
+	width: 98%;
+}
+
+
+.couponzine_layer {
+	position: absolute;
+	top: 200px;
+	width: 100%;
+	height: 100%;
+}
+</style>
+
+	<div class="couponzine_container">
+		<div class="couponzine_back_img">
+			<img class="couponzine_back_img" src="">
+		</div>
+		<div class="couponzine_layer">
+			<div class="couponzine_info">
+				<div class="con_title">
+					<div class="title"></div>
+					<div class="category"></div>
+					<div class="subTitle"></div>
+					<p class="contents"></p>
+					<div class="detailLinkName" style="text-align: right;"></div>
+				</div>
+<!-- 				<div class="con_subTitle"> -->
+<!-- 					<div class="product_title"></div> -->
+<!-- 					<div class="product_div"> -->
+<!-- 						<span class="product_contents"></span> -->
+<!-- 						<span class="product_total"></span> -->
+<!-- 					</div> -->
+<!-- 				</div> -->
+			</div>
+			<div class="couponzine_recipe">
+				<div class="con_recipe">
+					<div class="recipe">조리법</div>
+					<ul class="recipe_ul">
+					</ul>
+				</div>
+				<div id="pop_img" class="con_banner">
+					<img class="couponzine_back_img" src="">
+				</div>
+				<div id="pop_img2" class="con_banner2">
+                    <img class="couponzine_back_img2" src="">
+                </div>
+			</div>
+		</div>
+	</div>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 쿠폰진 미리보기
+ * ==================================================================================
+ */
+function f_CouponZineContentsPreview() {
+	$("img.couponzine_back_img").attr("src",$("#preview_main_uploadfile img").attr("src") == "/resources/img/noPreview.png" ? "" : $("#preview_main_uploadfile img").attr("src"));
+	$(".couponzine_info .con_title .title").html($("input[name=top_contents_title]").val());
+	$(".couponzine_info .con_title .category").html($("select[name=cpzine_contents_cat_id] option:selected").text());
+	$(".couponzine_info .con_title .contents").html($("textarea[name=top_contents_content]").val());
+
+	$(".couponzine_info .con_title .detailLinkName").html($("input[name=dtl_img_link_nm]").val());
+
+	$(".couponzine_info .con_subTitle .product_title").html($("fieldset.fieldset_product_group div.div_product_group:first input[name=cpzine_prod_grp_title]").val());
+	
+	var html = [];
+	
+	$.each($("fieldset.fieldset_product_group div.div_product_group"), function(i,items){
+		 					
+		html.push("<div class='con_subTitle'>");
+		html.push("	<div class='product_title'>"+$(items).find("input[name=cpzine_prod_grp_title]").val()+"</div>");
+		$.each($(items).find("div.form-group:not(div.form-group:first)"), function(i,items2){
+			html.push("	<div class='product_div'>");
+			html.push("		<span class='product_contents'></span>");
+			html.push("		<span class='product_total'></span>");
+			html.push("		<div class='product_div clear'>");
+			html.push("			<span class='product_name'>"+$(items2).find("input[name=prod_nm]").val()+"</span>");
+			html.push("			<span class='product_sale'>");
+			html.push("				<span class='product_price'>"+cf_setComma($(items2).find("input[name=dc_before_amt]").val())+"원</span> → "+cf_setComma($(items2).find("input[name=dc_after_amt]").val())+"원</span>");
+			html.push("			</span>");
+			html.push("		</div>")
+			html.push("	</div>")	
+		});
+		html.push("</div>")
+	});
+	
+	$(".couponzine_info").append(html.join(""));
+	
+	
+	html = [];
+	if($("select[name=cpzine_template_kind_code]").val() == "COOK"){
+		$("div.couponzine_recipe .con_recipe").show();
+		$.each($("fieldset.fieldset_cooking_group div.form-group"), function(i, items){
+			html.push('	<li class="recipe_li">')
+			html.push('		<div class="recipe_img"><img src="'+$(items).find("#preview_cooking_uploadfile"+(i+1)+" img").attr("src")+'"></div>')
+			html.push('		<div class="recipe_text">'+$(items).find("textarea[name=desc]").val().replaceAll('\\n','<br/>'));
+			html.push('		</div>');
+			html.push('	</li>');
+		});
+		$("ul.recipe_ul").html(html.join(""))
+	} else{
+		$("div.couponzine_recipe .con_recipe").hide();
+	}
+	var banner_img = $("#preview_link_uploadfile img").attr("src");
+	if($("#link_banner_use_yn").val() == "N" || banner_img == "/resources/img/noPreview.png" || banner_img == "" || banner_img == null || banner_img == "undefinde") {
+		$("#pop_img").hide();
+	}else{
+		$("div.con_banner img").attr("src",$("#preview_link_uploadfile img").attr("src"));
+	}
+
+	var banner_img2 = $("#preview_link_uploadfile2 img").attr("src");
+    if($("#link_banner2_use_yn").val() == "N" || banner_img2 == "/resources/img/noPreview.png" || banner_img2 == "" || banner_img2 == null || banner_img2 == "undefinde") {
+        $("#pop_img2").hide();
+    }else{
+        $("div.con_banner2 img").attr("src",$("#preview_link_uploadfile2 img").attr("src"));
+    }
+	
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+f_CouponZineContentsPreview();
+</script>

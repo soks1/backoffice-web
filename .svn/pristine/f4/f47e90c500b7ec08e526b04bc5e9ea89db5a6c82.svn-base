@@ -1,0 +1,219 @@
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	var obj_auct_id = $("#frmSearch").find('input[name=auct_id]');
+	
+	if( obj_auct_id.getObjLength() > 0 && obj_auct_id.alphanumeric() != true ) {
+		return;
+	}
+		
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#s_prgs_dd').getObjLength() > 0 ) {
+		if( $('#e_prgs_dd').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_prgs_dd').getObjLength() > 0 ) {
+		if( $('#s_prgs_dd').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#o2o_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#o2o_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#o2o_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#o2o_grid").jqGrid('setGridParam', {search: false});
+	$("#o2o_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#o2o_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_o2oList() {
+	var url = "/application/o2o/o2oLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_o2oEdit() {
+	var url = "/application/o2o/o2oEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 존 선택
+ * ==================================================================================
+ */
+function f_openZoneSelect() {
+	var term_start_dd = $("input[name=evt_term_start_dd]").cvtDateDefault();
+	var term_end_dd = $("input[name=evt_term_end_dd]").cvtDateDefault();
+	
+	if(term_start_dd.length > 0 && term_end_dd.length > 0) {
+		f_openZoneSD('o2o_zone_tbody', term_start_dd, term_end_dd);
+	} else {
+		alert("행사기간이 올바르지 않습니다.");
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 반려
+ * ----------------------------------------------------------------------------------
+ * 등록한 O2O 승인 요청에 대한 반려
+ * ==================================================================================
+ */
+function f_reject() {
+	if(confirm("반려 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/o2o/reject",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/o2o/o2oRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 승인 처리
+ * ----------------------------------------------------------------------------------
+ * 등록한 O2O 승인요청 건에 대한 승인
+ * ==================================================================================
+ */
+function f_approve() {
+	if(confirm("승인 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/o2o/approve",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/o2o/o2oRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 승인 요청
+ * ----------------------------------------------------------------------------------
+ * 등록한 O2O 승인 요청
+ * ==================================================================================
+ */
+function f_approve_ask() {
+	if(confirm("승인요청 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/o2o/approval/ask",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/o2o/o2oRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}

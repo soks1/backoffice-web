@@ -1,0 +1,271 @@
+function f_instiSearch() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if(!$("#frmSearch").searchValid()) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#insti_jqgrid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#insti_jqgrid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#insti_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	 
+	$("#insti_jqgrid").jqGrid('setGridParam', {search: false});
+	$("#insti_jqgrid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#insti_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ * 기관 조회 목록으로 이동
+ * ==================================================================================
+ */
+function f_cancelInstiRgst(mbrId, mbrNm) {
+	if(confirm("취소하시면 입력한 내용이 삭제됩니다.\n취소하시겠습니까?")) {
+		f_instiLN();
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 기관관리 목록 화면 호출
+ * ==================================================================================
+ */
+function f_instiLN() {
+	var url = '/application/merchant/institution/institutionPN.do';
+	var method = 'POST';
+	cf_action(url, method, "");
+}
+
+
+/**
+ * ==================================================================================
+ * 기관관리 수정 화면 호출
+ * ==================================================================================
+ */
+function f_institutionUpdate() {
+	var url = '/application/merchant/institution/institutionEN.do';
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 수정 취소
+ * ==================================================================================
+ */
+function f_cancelInstiUpd() {
+	if(confirm("취소하시면 입력한 내용이 삭제됩니다.\n취소하시겠습니까?")) {
+		f_instiLN();
+	}
+}
+
+/**
+ * ==================================================================================
+ * 기관 정보 셋팅(상세 화면에서 사용)
+ * ==================================================================================
+ */
+function f_instiInfoRN() {
+	$.ajax({
+	    url: api_url + '/bo/institution/npmt_bo_03002',
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    headers: {'AJAX':true},
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+		beforeSend : function() {
+			
+		},
+		success: function(obj) {
+			
+			$('.form-horizontal').find('.read-cont').html('&nbsp;');	
+			
+			// 기본정보
+			$('#insti_id').append(obj.data.insti_id);
+	    	$('#rep_nm').append(obj.data.rep_nm);
+	    	$('#insti_type_cd').append(obj.data.insti_type_cd_nm);
+	    	$('#fn_co_cd').append(obj.data.fn_co_cd_nm);
+	    	$('#cprt_reg_num').append(obj.data.cprt_reg_num);
+	    	$('#insti_nm').append(obj.data.insti_nm);
+	    	if(obj.data.use_yn == 'Y'){
+	    		$('#use_yn').append("사용가능");
+	    	}else{
+	    		$('#use_yn').append("사용중지");
+	    	}
+	    	$('#rep_tel').append(obj.data.rep_tel);
+	    	$('#rep_email').append(obj.data.rep_email);
+	    	$('#zip_code').append(obj.data.zip_code);
+	    	$('#address').append(obj.data.address);
+	    	$('#address_detail').append(obj.data.address_detail);
+	    	$('#home_url').append(obj.data.home_url);
+	    	$('#service_staff_nm').append(obj.data.service_staff_nm);
+	    	$('#service_staff_tel').append(obj.data.service_staff_tel);
+	    	$('#mcht_nm').append(obj.data.mcht_nm);
+		},
+		error: function(obj) {
+			cf_errMsg(obj);
+	    	return;
+	    },
+	    complete: function() {
+	    	
+	    }
+	});
+}
+
+/**
+ * ==================================================================================
+ * 기관 수정
+ * ==================================================================================
+ */
+function f_instiUpd() {
+	
+	if( $('#frmInstiEN').formValid() ) {
+		
+		if(!confirm("해당 내용으로 가맹기관의 정보가\n변경됩니다.")) {
+			return;
+		}
+		
+		var data = $('#frmInstiEN').serializeFormObject();
+		
+		// 실제 데이터 전송
+		$.ajax({
+			url: api_url + '/bo/institution/npmt_bo_03003',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    headers: {'AJAX':true},
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    beforeSend : function() {
+		    },
+		    success: function(obj){
+		    	alert("가맹기관 수정이 정상적으로 처리 되었습니다.");
+		    	
+		    	$.each($('#menuTree').find('a'), function () {
+		    		if($(this).attr('href') == '/application/merchant/institution/institutionPN.do') {
+		    			$(this).click();
+		    		}
+		    	});
+		    },
+		    error: function(obj) {
+		    	cf_errMsg(obj);
+		    	return;
+		    }
+		});
+	}else{
+		return;
+	}
+}
+
+/**
+ * ==================================================================================
+ * 기관 저장
+ * ==================================================================================
+ */
+function f_instiRgst() {
+	
+	if( $('#frmInstiWN').formValid() ) {
+		
+		if(!confirm("해당 내용으로 가맹기관의 정보가 신규\n생성됩니다.")) {
+			return;
+		}
+		
+		var data = $('#frmInstiWN').serializeFormObject();
+		
+		// 실제 데이터 전송
+		$.ajax({
+			url: api_url + '/bo/institution/npmt_bo_03000',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    headers: {'AJAX':true},
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    beforeSend : function() {
+		    },
+		    success: function(obj){
+		    	alert("가맹기관 등록이 정상적으로 처리 되었습니다.");
+		    	
+		    	$.each($('#menuTree').find('a'), function () {
+		    		if($(this).attr('href') == '/application/merchant/institution/institutionPN.do') {
+		    			$(this).click();
+		    		}
+		    	});
+		    },
+		    error: function(obj) {
+		    	cf_errMsg(obj);
+		    	return;
+		    }
+		});
+	}else{
+		return;
+	}
+}
+
+
+
+
+
+
+
+

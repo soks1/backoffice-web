@@ -1,0 +1,257 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>문의 사항 답변</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="form-horizontal" id="frmLifekok">
+						<input type="hidden" id="content_tmp" value=""> 
+							<fieldset>
+							
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">제목</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">공개</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="pbl_yn_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">등록자</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="reg_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">등록일자</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">본문내용</label>
+									<div class="col-md-10">
+										<textarea class="form-control cs-css-03" id="_content" rows="10" readonly="readonly"></textarea>
+									</div>
+								</div>
+								
+								<div class="form-group" id="reply_content_display">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">답변</label>
+									<div class="col-md-10">
+										<textarea class="form-control cs-css-03" rows="8" id="reply_content" placeholder="답변을 등록해 주세요." readonly="readonly" data-valid-use="true" data-valid-symbol="false" data-valid-max="4000" data-valid-title="답변"></textarea>
+									</div>
+								</div>
+								
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantQuestionsLN();" class="btn btn-default">목록</a>
+										<a href="javascript:f_tenantQuestions_reply_cencel();" class="btn btn-default" id="tenantQuestions_reply_cencel_btn">취소</a>
+										<a href="javascript:f_tenantQuestions_reply_submit();" class="btn btn-primary" id="tenantQuestions_reply_submit_btn">저장</a>
+										<a href="javascript:f_tenantQuestions_reply_modify();" class="btn btn-primary" id="tenantQuestions_reply_modify_btn">답변등록</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+/* ============================================================================================
+/* 답변 등록하기 버튼
+/* ============================================================================================ */
+function f_tenantQuestions_reply_modify(){
+	$('#tenantQuestions_reply_modify_btn').hide();	
+	$('#tenantQuestions_reply_submit_btn').show();	
+	$('#tenantQuestions_reply_cencel_btn').show();
+	$('#reply_content_display').show();
+	$('#reply_content').removeAttr('readonly');
+}
+
+/* ============================================================================================
+/* 답변 등록 : 취소
+/* ============================================================================================ */
+function f_tenantQuestions_reply_cencel(){
+	
+	var url = "/application/cooperateService/questions/questionsRN.do";
+	var method = "POST";
+	var postData ={
+			board_id : $('#frmKeepData').serializeFormObject().board_id,
+			empno	 : '${sessionScope.sessionEmpno}'
+	}; 
+	cf_action(url, method, postData);
+}
+
+
+/* ============================================================================================
+/* 답변 등록 : 저장
+/* ============================================================================================ */
+function f_tenantQuestions_reply_submit(){
+	
+	if($('#frmLifekok').formValid()){} else {return;}
+	
+	var _data = $('#frmKeepData').serializeFormObject();
+	if($('textarea[id=reply_content]').val() == ""){
+		alert("답변 내용을 입력해 주세요.");
+		return;
+	}
+	if($('textarea[id=reply_content]').val() == $('#content_tmp').val()){
+		alert("수정된 답변내용이 없습니다.");
+		return;
+	}
+	
+	var data = {
+			empno : _data.empno,
+			board_id : _data.board_id,
+			reply_content : $('textarea[id=reply_content]').val()
+	}
+	
+	if(confirm("즉시 app에 적용됩니다. 답변사항이 모두 맞습니까?")){
+		
+		$.ajax({
+		    url: api_lifekok_url+"/backoffice/lifekok/qna/create",
+		    type: "POST",
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	var url = "/application/cooperateService/questions/questionsRN.do";
+		    	var method = "POST";
+		    	var postData ={
+		    			board_id : _data.board_id,
+		    			empno	 : '${sessionScope.sessionEmpno}'
+		    	}; 
+		    	cf_action(url, method, postData);
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+		
+	}else{
+		
+	}
+		
+	
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	
+	$('#tenantQuestions_reply_submit_btn').hide();
+	$('#tenantQuestions_reply_cencel_btn').hide();
+	$('#reply_content_display').hide();
+	
+	var auth_u = '${sessionScope.menuAuth.U}';
+	
+	//오늘 날짜
+	var Now = new Date();
+	var NowTime = Now.getFullYear();
+	NowTime += '-' + (Now.getMonth() + 1) ;
+	NowTime += '-' + Now.getDate();
+	
+	$.ajax({
+	    url: api_lifekok_url+'/backoffice/lifekok/qna/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	$("#title").html(detailData['title']);							//제목
+	    	$("#reg_nm").html(detailData['reg_nm']);						//등록자
+	    	$('textarea[id=_content]').val(detailData['content']);			//질문내용
+	    	$("#reg_date").html(detailData['reg_date']);					//등록일자
+	    	$("#pbl_yn_nm").html(detailData['pbl_yn_nm']);					//공개여부
+
+	    	if(detailData['reply_content'] != ""){
+	    		$('#reply_content_display').show();
+		    	$('textarea[id=reply_content]').val(detailData['reply_content']);			//답변내용
+		    	$('#content_tmp').val(detailData['reply_content']);			//답변내용 임시저장
+	    	}
+	    	
+	    	if(auth_u == 'N' && detailData['reply_content'] == ""){
+	    		$('div[id=reply_content_display]').hide();
+	    		$('#tenantQuestions_reply_modify_btn').hide();
+	    	}
+	    	if(auth_u == 'N'){
+	    		$('textarea[id=reply_content]').attr('readonly','readonly');
+	    		$('#tenantQuestions_reply_submit_btn').hide();
+	    	};
+	    	if(auth_u == 'Y' && detailData['reply_content'] != ""){
+	    		$('#tenantQuestions_reply_modify_btn').text('답변수정').removeClass('btn-primary').addClass('btn-success');
+	    	};
+				    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

@@ -1,0 +1,326 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">캠페인</label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+										<input type="radio" name="cmp_cd"  id="cmp_cd" value="ALL"  checked="checked">전체</label>
+										<label class="radio radio-inline">
+										<input type="radio" name="cmp_cd"  id="cmp_cd" value="SELECT" >선택 </label>
+									</div>
+									<div class="col-md-1">
+										<a href="javascript:f_openCouponCampaignSD();" class="btn btn-sm btn-success" id="btn_campaign"><strong>캠페인 선택</strong></a>
+									</div>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="campaign_nm"></span>
+										<input type='hidden' id="campaign_id" name="campaign_id">
+									</div>																
+									<label class="col-md-2 control-label">고객군명</label>
+									<div class="col-md-2">
+										<input class="form-control" type="text"  id="cust_gp_nm" name="cust_gp_nm" >
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-6 text-danger ta-l">
+										<i class="fa fa-info-circle"></i> 최근 3개월까지 통계를 조회하실 수 있습니다.
+									</div>								
+									<div class="col-md-6">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-4 col-lg-7">
+			<div class="jarviswidget" id="wid-id-2" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회결과 </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div id="target_data_stats_grid" class="widget-body no-padding" style="max-height: 600px; overflow-y:auto; overflow-x:hidden;">
+						<table id="data_stats_grid"></table>
+					</div>
+					<div id="data_stats_grid_page" class="ta-r" style="padding:5px;">
+						<a href="javascript:excel_down();" id="btn_excel" class="btn btn-sm btn-success">엑셀 다운로드</a>
+					</div>
+				</div>
+					<span>&middot; 발급수 = 발급 된 M스탬프 카드 수 &nbsp;&nbsp;&middot; 완료수 = 미션 완료 스탬프 카드 수 + 기간 만료 스탬프 카드 수 &nbsp;&nbsp;&middot;  달성수 = 완료 보상받은 스탬프 카드 수</span>
+			</div>
+		</article>
+		
+		<article class="col-xs-12 col-sm-12 col-md-8 col-lg-5">
+			<div class="jarviswidget" id="wid-id-4" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+					<h2>고객군별 스템프 발급/완료/달성수 </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div class="widget-body">
+						<div align="left" id="chart_canvas_txt_1">&middot; 조회결과 중 1건을 선택해주세요.</div>
+						<div align="left" id="chart_canvas_txt_2"></div><hr/>
+						<div id="div_canvas_container_1">
+						<canvas id="chart_canvas_1" height="120"></canvas>
+						</div>
+						<div id="legend_chart_canvas_1"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="coupon_campaign_sd" style="display:none;"></div>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js"></script>
+<script type="text/javascript">
+
+pageSetUp();
+/* ============================================================================================
+/* 전역변수 선언 - 수정 용이하도록 상단에 정의
+/* --------------------------------------------------------------------------------------------
+/* GRID 호출 URL / EXCEL DOWONLOAD URL / PARAMETER SETTING 
+/* ============================================================================================ */
+// api_url
+var _url = api_url+"/backoffice/statistics/stamp/custgroup/show";
+// API list object 추출
+var _list = function(obj){
+	return obj.data.stamp_custgp_stat_list;
+};
+// request param settting : api call, excel call
+var _data = function(){
+	var searchData = $("#frmSearch").serializeFormObject();
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}', 
+		stts_xls_dwld_type : 'STAMP_CUSTGP',
+		_search : true,
+		sidx : 'reg_date',
+		sord : 'desc',
+		search_info : searchData
+	};
+	return data;
+};
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 엑셀 다운로드 본사일 경우만 버튼 존재
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#btn_excel').remove();	
+	}
+
+	// 최초 캠페인 버트 비활성화
+	$("#btn_campaign").attr('disabled', 'disabled');
+	
+	f_ajaxSubmit();
+};
+/* ============================================================================================
+/* Server와 통신 
+/* ============================================================================================ */
+function f_ajaxSubmit() { 
+	// 실제 데이터 전송
+	$.ajax({
+		url : _url,
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(_data())),
+	    success: function(obj){
+	    	var list = _list(obj);
+	    	drawChart();
+    		run_jqgrid_function(list);	  
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+} 
+/* ============================================================================================
+/* Grid Data 생성
+/* ============================================================================================ */
+function run_jqgrid_function(jsonData) { 
+	$('#data_stats_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#data_stats_grid").parent().width() - 100;
+	jQuery("#data_stats_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['campaign_id', '캠페인명', '캠페인시작일', '캠페인종료일', '통계일자', '고객군명', '발급수', '완료수', '달성수'],
+		colModel : [
+			{ name : 'campaign_id', 		index : 'campaign_id', 			align : "center",	sortable : false, 	width : (pageWidth*(20/100)),	hidden:true}, 		            
+			{ name : 'campaign_nm', 		index : 'campaign_nm', 			align : "center",	sortable : false, 	width : (pageWidth*(20/100)),	classes:'pointer'}, 
+			{ name : 'campaign_start_dy', 	index : 'campaign_start_dy',	align : "center",	sortable : true, 	width : (pageWidth*(15/100)) 	},
+			{ name : 'campaign_end_dy', 	index : 'campaign_end_dy', 		align : "center",	sortable : true, 	width : (pageWidth*(15/100)) 	},
+			{ name : 'stts_dd', 				index : 'stts_dd', 		align : "center",	sortable : true, 	width : (pageWidth*(15/100)) 	},
+			{ name : 'custgp_nm', 			index : 'custgp_nm', 			align : "center",	sortable : false, 	width : (pageWidth*(20/100)) 	},
+			{ name : 'issue_cnt', 			index : 'issue_cnt', 			align : "center",	sortable : false, 	width : (pageWidth*(10/100)),	formatter : function(cellvalue, options, rowObject) {return cf_setComma(cellvalue);}},
+			{ name : 'fnsh_cnt', 				index : 'fnsh_cnt', 			align : "center",	sortable : false, 	width : (pageWidth*(10/100)),	formatter : function(cellvalue, options, rowObject) {return cf_setComma(cellvalue);}},
+			{ name : 'atan_cnt', 				index : 'atan_cnt', 			align : "center",	sortable : false, 	width : (pageWidth*(10/100)),	formatter : function(cellvalue, options, rowObject) {return cf_setComma(cellvalue);}}
+			
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  
+		shrinkToFit : true,
+		gridComplete: function(data){},
+		onCellSelect: function(rowid, index, contents, event) {
+		   if(index == 1) {		
+				var ret = $("#data_stats_grid").jqGrid('getRowData', rowid);	
+				$('#chart_canvas_txt_1').html('<i class="fa fa-info-circle"></i>&nbsp;<b>' + ret.campaign_nm + ' - ' + ret.custgp_nm + '</b>');
+				$('#chart_canvas_txt_2').html('&nbsp;&nbsp;&nbsp;(캠페인기간: ' + ret.campaign_start_dy + ' ~ ' + ret.campaign_end_dy + ')');
+		    	// chart
+		    	drawChart(ret);   
+		   }
+		}
+	});
+
+  	$("#data_stats_grid").gridCss();
+  	$("#data_stats_grid_cb").css("border-left-width","0");
+  	$("#data_stats_grid_cb").css("padding-left","4px");
+  	$("#jqgh_data_stats_grid_cb").css("padding","7px 0");
+  	
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#data_stats_grid").jqGrid( 'setGridWidth', $("#target_data_stats_grid").width() );
+	});
+
+    $("#data_stats_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	   
+}
+/* ============================================================================================
+/* Chart 생성
+/* ============================================================================================ */
+function drawChart(rowData){
+	var _label = [];
+	var _data1 = [];
+	var _data2 = [];
+	var _data3 =[];
+	if(rowData != null) {
+		// Chart 데이터 처리 시작 =========================
+		_label[0] = rowData.custgp_nm;		// 고객군명
+		_data1[0] = f_uncomma(rowData.issue_cnt);		// 발행수
+		_data2[0] = f_uncomma(rowData.fnsh_cnt);			// 사용수
+		_data3[0] = f_uncomma(rowData.atan_cnt);			// 달성수
+		// Chart 데이터 처리 시작 =========================	
+	 	var chart1_data = {
+		        //labels: ["고객군1", "고객군2", "고객군3", "고객군4", "고객군5", "고객군6", "고객군7", "고객군8", "고객군9", "고객군10", "고객군11", "고객군12", "고객군13", "고객군14"],
+		        labels: _label,
+	            datasets: [
+	           	 		{
+	           	            label: "발급수",
+	           	            fillColor: "rgba(79,129,189,1)",
+	           	            strokeColor: "rgba(79,129,189,1)",
+	           	            highlightFill: "rgba(79,129,189,0.8)",
+	           	            highlightStroke: "rgba(79,129,189,0.8)",
+	           	 			data: _data1
+	           	        },
+	           	        {
+	           	            label: "완료수",
+	           	            fillColor: "rgba(192,80,77,1)",
+	           	            strokeColor: "rgba(192,80,77,1)",
+	           	            highlightFill: "rgba(192,80,77,0.8)",
+	           	            highlightStroke: "rgba(192,80,77,0.8)",
+	           	        	data: _data2
+	           	        },
+	           	        {
+	           	            label: "달성수",
+	           	            fillColor: "rgba(155,187,89,1)",
+	           	            strokeColor: "rgba(155,187,89,1)",
+	           	            highlightFill: "rgba(155,187,89,0.8)",
+	           	            highlightStroke: "rgba(155,187,89,0.8)",
+	           	        	data: _data3
+	           	        }
+	             ]
+		    };
+		    var chart1_options = {
+				    scaleBeginAtZero : true,
+				    scaleShowGridLines : true,
+				    scaleGridLineColor : "rgba(0,0,0,.05)",
+				    scaleGridLineWidth : 1,
+				    barShowStroke : true,
+				    barStrokeWidth : 1,
+				    barValueSpacing : 100,
+				    barDatasetSpacing : 10,
+			        responsive: true
+		    };
+		    
+	    	if (window.barChart1){ 
+	            window.barChart1.destroy();
+	        }
+		    var bar_chart1 = document.getElementById("chart_canvas_1").getContext("2d");
+		    barChart1 = new Chart(bar_chart1).Bar(chart1_data, chart1_options);
+		    legend($("#legend_chart_canvas_1"), chart1_data);		  	
+	} else {
+		$('#chart_canvas_txt_1').html('&middot; 조회결과 중 1건을 선택해주세요.');
+		$('#chart_canvas_txt_2').html('');
+		//f_resetCanvas(1, 120);		// chart 초기화
+    	if (window.barChart1){ 
+            window.barChart1.destroy();
+        }
+		$("#legend_chart_canvas_1").html('');  
+	}
+
+}
+/** ============================================================================================
+/* Validation 처리
+/* --------------------------------------------------------------------------------------------
+/* 일간 조회시 30일을 초과 할수 없음
+/* ============================================================================================ */
+function checkValidation(){
+	if($('input[name=cmp_cd]:checked').val() == 'SELECT'){
+		if($('#campaign_id').val()=='' || $('#campaign_id').val()=='undefined'){
+			alert("캠페인을 선택해 주세요");
+			return false;
+		}
+	}
+	return true;
+}
+/* ============================================================================================
+/* 달력 초기 데이터 설정
+/* ============================================================================================ */
+function f_setCalendar(){
+	// 달력 minDate, maxDate 값을 초기화 / default date setting
+	f_resetCalendar();
+
+	// 최대 조회기간 90일(3개월)
+	$('#s_mod_date').datepicker("option", "minDate", cf_termDate(-91));	
+	$('#s_mod_date').datepicker("option", "maxDate", $("#e_mod_date").val());
+	$('#e_mod_date').datepicker("option", "minDate", $("#s_mod_date").val());
+}
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/chartjs/chart.min.js", pagefunction);
+</script>

@@ -1,0 +1,255 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회조건</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmSearchBeacon">
+							<input type="hidden" name="targetTbody" value="<%=LangUtil.replaceInjection(request.getParameter("targetTbody"))%>">
+							<input type="hidden" name="evt_term_start_dd" />
+							<input type="hidden" name="evt_term_end_dd" />
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">지점선택</label>
+									<div class="col-md-3">
+										<select class="form-control" id="sd_str_cd" name="str_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">행사기간</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="evt_dd"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">키워드</label>
+									<div class="col-md-3">
+										<select class="form-control" name="search_key" id="search_key">
+											<option value="">선택</option>
+											<option value="ID">비컨그룹 ID</option>
+										</select>
+									</div>
+									<div class="col-md-8">
+										<input class="form-control" type="text" name="search_word" id="search_word" />
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_searchBeacon();" class="btn btn-primary">조회</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 조회 결과 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_beacon_group_grid" class="widget-body no-padding">
+						<table id="beacon_group_grid"></table>
+						<div id="beacon_group_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+<form id="searchData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+// 비컨그룹 조회.
+function f_searchBeacon() {
+	var searchData = {};
+	searchData.str_cd = $('#sd_str_cd').children("option:selected").val();
+	searchData.search_key = $('#search_key').children("option:selected").val();
+	searchData.search_word = $("#search_word").val();
+	$("#beacon_group_grid").jqGrid('setGridParam', {search: true});
+	$("#beacon_group_grid").jqGrid('setGridParam', {page: 1});
+	$("#beacon_group_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	searchData = "";
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var layer_pagefunction = function() {
+	// 행사기간 셋팅
+	$("#evt_dd").html($(".evt_start_dd").val() + " ~ " + $(".evt_end_dd").val());
+	$("input[name=evt_term_start_dd]").val($(".evt_start_dd").val());
+	$("input[name=evt_term_end_dd]").val($(".evt_end_dd").val());
+	// 등록지점 호출
+	f_ajaxStrCdCode($("#sd_str_cd"), "BEACON", "BEACON");
+	
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $('#beacon_group_grid').parent().width() - 100;
+		
+		jQuery('#beacon_group_grid').jqGrid({
+			url : api_url+'/backoffice/system/device/zone/list',
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['지점코드', '지점명', '비컨그룹 ID', '비컨그룹 명', '비컨수'],
+			colModel : [
+				{ name : 'str_cd', 				index : 'str_cd',		 	align : 'center',	sortable : false, 	width : (pageWidth*(5/100))},
+				{ name : 'str_cd_name', 		index : 'str_cd_name', 		align : 'center',	sortable : false, 	width : (pageWidth*(10/100))}, 
+				{ name : 'zone_id', 			index : 'zone_id', 			align : 'center',	sortable : false, 	width : (pageWidth*(15/100))}, 
+				{ name : 'zone_nm', 			index : 'zone_nm',			align : 'center',	sortable : true, 	width : (pageWidth*(15/100))},
+				{ name : 'link_bcon_cnt', 		index : 'link_bcon_cnt', 	align : 'center',	sortable : true, 	width : (pageWidth*(15/100))}
+				
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : 'zone_id',
+				root : 		function(obj){ return obj.data.zone_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			search : true,
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			postData:{ 
+				search_info: $('#frmSearchBeacon').serializeFormObject(),
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			},
+			
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#beacon_group_grid_page',
+			sortname : 'zone_id',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : 'left',
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+		});
+		jQuery('#beacon_group_grid').jqGrid('navGrid', '#beacon_group_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		
+		// btn_add
+		jQuery("#beacon_group_grid").jqGrid('navButtonAdd','#beacon_group_grid_page',{
+			caption: "적용",
+			id: "add_button",
+			buttonicon: "ui-icon-plus",
+			onClickButton: function(){
+				var rowId = $(this).jqGrid('getGridParam', 'selarrrow');
+// 				var appendTbody = $("#frmBconCpbook").find("#beacon_group_tbody");
+				var appendTbody = $("#beacon_group_tbody");
+				var checkboxObj = $('#beacon_group_grid').find('input[type=checkbox]:checked');
+				
+// 				if(cf_getTrElementCount(appendTbody) >= 1) {
+// 					alert("이미 등록하셨습니다.\n1건만 등록 가능 합니다.");
+// 					return;
+// 				}
+				
+// 				if(checkboxObj.length > 1) {
+// 					alert("1건만 등록 가능 합니다.");
+// 					return;
+// 				}
+				
+				for(var i = 0; i < rowId.length; i++) {
+					var appendData = "";
+					var zone_sell_cd_val = $(this).jqGrid('getCell', rowId[i], 'zone_id');
+					appendData += "<tr>";
+					appendData += "	<td class='ta-c'><input type='checkbox' value='"+zone_sell_cd_val+"'></td>";
+					appendData += "	<input type='hidden' data-array-always='true' name='zone_id_list' value='"+zone_sell_cd_val+"'>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'str_cd')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'str_cd_name')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'zone_id')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'zone_nm')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'link_bcon_cnt')+"</td>";
+					appendData += "</tr>";
+					
+					// 대표이지 셀렉트 박스가 있을 경우 셀렉트 박스에 데이터 등록
+					
+					var duplication_cnt = 0;
+					
+					// 중복 체크 후 데이터 등록
+					checkboxObj.each(function(){
+						console.log($(this).val() + "this");
+						console.log(zone_sell_cd_val + "zone_sell_cd_val");
+						if( $(this).val() ==  zone_sell_cd_val ) {
+							duplication_cnt++;
+						}
+					});
+					
+					$("#beacon_group_tbody").find("tr > td").each(function(){
+						if($(this).text() == zone_sell_cd_val) {
+							duplication_cnt++;
+						}
+					});
+					
+					console.log(duplication_cnt + "duplication_cnt");
+					if(duplication_cnt == 0) {
+						appendTbody.append(appendData);	
+					}
+				}
+// 				$('input[name=targetTbody]').val("");
+				$('#beacon_group_sd').dialog("close");
+			}
+		});
+		
+					
+		$('#beacon_group_grid').gridCss();
+	  	$('#beacon_group_grid_cb').css('border-left-width','0');
+	  	$('#beacon_group_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_beacon_group_grid_cb').css('padding','7px 0');
+	  	$('#beacon_group_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery('#beacon_group_grid').jqGrid( 'setGridWidth', $('#target_beacon_group_grid').width() );
+		});
+	} 
+	// end function
+};
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', layer_pagefunction);
+</script>

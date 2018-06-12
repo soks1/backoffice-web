@@ -1,0 +1,904 @@
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="com.penta.backoffice.web.common.constant.CommonConstant"%>
+<%@page import="javax.servlet.http.HttpSession" %>
+<%
+	HttpSession ses = request.getSession(true);
+	String authCd = (String) ses.getAttribute(CommonConstant.SESSION_AUTH_CD);
+%>
+
+<style>
+
+.dash-box {
+	padding:10px;
+	background-color:#9ea89e;
+	border: 4px solid #747a74;
+}
+
+.nav-tabs>li {
+    width: 33%;
+}
+
+.nav-tabs > li.nav-item > a.nav-link{
+  	color : #45474b!important;
+}
+.nav-tabs > li.nav-item > a:hover{
+  	background-color: #45474b !important;
+    color : #fff!important;
+}
+
+.nav-tabs > li.active > a.nav-link {
+	background-color : #45474b!important;
+	color : #fff!important;
+	box-shadow : none;
+	font-weight : none;
+}
+
+.table-bordered th {
+	text-align: center !important;
+}
+
+.tooltip-inner {
+    font-size: 14px;
+    text-align: left;
+    max-width: 400px;
+}
+
+.tooltip-inner .unread_mcht {
+	cursor: pointer;
+	padding: 2px;
+}
+
+</style>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" 
+				data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false" 
+				data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>시스템 공지사항</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body no-padding">
+						<div class="widget-body-toolbar">
+							<div class="row">
+								<div class="col-sm-12 text-right">
+									<a href="javascript:f_noticeList();" class="btn btn-default">more</a>
+								</div>
+							</div>
+						</div>
+						
+						<div class="table-responsive">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th class="col-md-3">제목</th>
+										<th class="col-md-2">첨부파일</th>
+										<th class="col-md-1">작성자</th>
+										<th class="col-md-1">작성일</th>
+									<% if (!"MCHT".equals(authCd)) { %>
+										<th class="col-md-1">미조회</th>
+									<% } %>
+									</tr>
+								</thead>
+								
+								<tbody id="dash_notice">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" 
+				data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false"
+				data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<h2>통계/현황</h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="col-sm-12 col-md-12 col-lg-12 mb10">
+							<div class="dash-box">
+								<div class="row">
+									<div class="col-md-2 wid20">
+										<div class="well p10">
+											<p class="cs-css-02">승인건수</p>
+											<p class="cs-css-01" id="total_users">999,999,999</p>
+										</div>
+									</div>
+									<div class="col-md-2 wid20">
+										<div class="well p10">
+											<p class="cs-css-02">취소건수</p>
+											<p class="cs-css-01" id="active_users">999,999,999</p>
+										</div>
+									</div>
+									<div class="col-md-2 wid20">
+										<div class="well p10">
+											<p class="cs-css-02">자동취소건수</p>
+											<p class="cs-css-01" id="today_joined_users">999,999,999</p>
+										</div>
+									</div>
+									<div class="col-md-2 wid20">
+										<div class="well p10">
+											<p class="cs-css-02">결제대기건수</p>
+											<p class="cs-css-01" id="today_leaved_users">999,999,999</p>
+										</div>
+									</div>
+									<div class="col-md-2 wid20">
+										<div class="well p10">
+											<p class="cs-css-02">오류건수</p>
+											<p class="cs-css-01" id="today_leaved_users">999,999,999</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-4" 
+			data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false" 
+			data-widget-editbutton="false" data-widget-sortable="false">
+			<header>
+				<h2>자동취소/결제대기/오류</h2>				
+			</header>
+			<div>
+				<div class="jarviswidget-editbox">
+					<input class="form-control" type="text">	
+				</div>
+				<div class="widget-body">
+					<ul class="nav nav-tabs">
+  						<li class="nav-item active"><a class="nav-link" data-toggle="tab" >자동취소</a></li>
+  						<li class="nav-item"><a class="nav-link" data-toggle="tab" >결제대기</a></li>
+  						<li class="nav-item"><a class="nav-link" data-toggle="tab" >오류</a></li>
+					</ul>
+					
+					<div class="tab-content">
+					  	<div id="home" class="tab-pane fade in active" role="tabpanel">
+						    <h3>자동취소</h3>
+						    <p>Some content.</p>
+						    <p>Some content.</p>
+						    <p>Some content.</p>
+						    <p>Some content.</p>
+					  	</div>
+					  	<div id="menu1" class="tab-pane fade" role="tabpanel">
+						    <h3>결제대기</h3>
+						    <p>Some content in menu 1.</p>
+					  	</div>
+					  	<div id="menu2" class="tab-pane fade" role="tabpanel">
+						    <h3>오류</h3>
+						    <p>Some content in menu 2.</p>
+					  	</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</article>
+	
+</section>
+
+<div id="ie_pop" style="max-height: 700px; overflow: auto; display:none;">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="well well-light">
+				<div class="row">
+			        <div class="col-xs-12 col-sm-12 col-md-12">
+			            <div class="panel panel-success pricing-big">
+			                <div class="ta-c">
+			                    <img alt="" src="${pageContext.request.contextPath}/resources/img/ie/ie_1.jpg" style="width:400px;">
+			                </div>
+			                <div class="panel-body text-align-center">
+								<ul class="list-unstyled text-left">
+						          <li><i class="fa fa-check text-success"></i> <strong> 인터넷 브라우저의 옵션창을 띄운다.</strong></li>
+						          <li><i class="fa fa-check text-success"></i> <strong> 상단의 탭메뉴 중 '보안'탭을 선택 한다.</strong></li>
+						        </ul>
+			                </div>
+			                <div class="ta-c">
+			                    <img alt="" src="${pageContext.request.contextPath}/resources/img/ie/ie_2.jpg" style="width:400px;">
+			                </div>
+			                <div class="panel-body text-align-center">
+								<ul class="list-unstyled text-left">
+						          <li><i class="fa fa-check text-success"></i> <strong> 사용자 지정 수준을 클릭한다.</strong></li>
+						        </ul>
+			                </div>
+			                <div class="ta-c">
+			                    <img alt="" src="${pageContext.request.contextPath}/resources/img/ie/ie_3.jpg" style="width:400px;">
+			                </div>
+			                <div class="panel-body text-align-center">
+								<ul class="list-unstyled text-left">
+						          <li><i class="fa fa-check text-success"></i> <strong> 보안 설정 내용 중 기타영역으로 이동한다.</strong></li>
+						          <li><i class="fa fa-check text-success"></i> <strong> '도메인 간의 데이터 원본 엑세스'를 사용으로 선택한다.</strong></li>
+						          <li><i class="fa fa-check text-success"></i> <strong> '확인' 버튼을 눌러 보안 설정을 저장한다.</strong></li>
+						        </ul>
+			                </div>
+			            </div>
+			        </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+
+
+function f_movePage(page_path) {
+	
+	window.location.hash = page_path;
+	var url = location.href.split('#').splice(1).join('#');
+	if (!url) {
+		try {
+			var documentUrl = window.document.URL;
+			if (documentUrl) {
+				if (documentUrl.indexOf('#', 0) > 0 && documentUrl.indexOf('#', 0) < (documentUrl.length + 1)) {
+					url = documentUrl.substring(documentUrl.indexOf('#', 0) + 1);
+				}
+			}
+		} catch (err) {}
+	}
+	container = $('#content');
+	
+	$('nav li.active').removeClass("active");
+	$('nav li:has(a[href="' + url + '"])').addClass("active");
+	
+	var title = ($('nav a[href="' + url + '"]').attr('title'));
+	document.title = (title || document.title);
+			
+	$.ajax({
+		type : "GET",
+		url : url + location.search,
+		dataType : 'html',
+		async : true,
+		cache : true,
+		success : function(data) {
+			container.css({
+				opacity : '0.0'
+			}).html(data).delay(50).animate({
+				opacity : '1.0'
+			}, 300);
+			data = null;
+			container = null;
+		},
+		error : function(xhr, status, thrownError, error) {
+			container.html('<h4 class="ajax-loading-error"><i class="fa fa-warning txt-color-orangeDark"></i>'+
+					'Error requesting <span class="txt-color-red">' + url + '</span>: ' + xhr.status + ' <span style="text-transform: capitalize;">'  + thrownError + '</span></h4>');
+		},
+		complete: function() {
+			//f_callNoticeAction(id);
+		}
+	});
+}
+
+
+
+function f_noticeList() {
+	
+	window.location.hash = '/application/merchant/notice/noticePN.do';
+	var url = location.href.split('#').splice(1).join('#');
+	if (!url) {
+		try {
+			var documentUrl = window.document.URL;
+			if (documentUrl) {
+				if (documentUrl.indexOf('#', 0) > 0 && documentUrl.indexOf('#', 0) < (documentUrl.length + 1)) {
+					url = documentUrl.substring(documentUrl.indexOf('#', 0) + 1);
+				}
+			}
+		} catch (err) {}
+	}
+	container = $('#content');
+	
+	$('nav li.active').removeClass("active");
+	$('nav li:has(a[href="' + url + '"])').addClass("active");
+	
+	var title = ($('nav a[href="' + url + '"]').attr('title'));
+	document.title = (title || document.title);
+			
+	$.ajax({
+		type : "GET",
+		url : url + location.search,
+		dataType : 'html',
+		async : true,
+		cache : true,
+		success : function(data) {
+			container.css({
+				opacity : '0.0'
+			}).html(data).delay(50).animate({
+				opacity : '1.0'
+			}, 300);
+			data = null;
+			container = null;
+		},
+		error : function(xhr, status, thrownError, error) {
+			container.html('<h4 class="ajax-loading-error"><i class="fa fa-warning txt-color-orangeDark"></i>'+
+					'Error requesting <span class="txt-color-red">' + url + '</span>: ' + xhr.status + ' <span style="text-transform: capitalize;">'  + thrownError + '</span></h4>');
+		},
+		complete: function() {
+			//f_callNoticeAction(id);
+		}
+	});
+}
+
+function f_readSystemNotice(id) {
+	
+	window.location.hash = '/application/merchant/notice/noticePN.do?p=R&noti_id=' + id;	
+	var url = location.href.split('#').splice(1).join('#');
+	if (!url) {
+		try {
+			var documentUrl = window.document.URL;
+			if (documentUrl) {
+				if (documentUrl.indexOf('#', 0) > 0 && documentUrl.indexOf('#', 0) < (documentUrl.length + 1)) {
+					url = documentUrl.substring(documentUrl.indexOf('#', 0) + 1);
+				}
+			}
+		} catch (err) {}
+	}
+	container = $('#content');
+	
+	$('nav li.active').removeClass("active");
+	$('nav li:has(a[href="' + url + '"])').addClass("active");
+	
+	var title = ($('nav a[href="' + url + '"]').attr('title'));
+	document.title = (title || document.title);
+			
+	$.ajax({
+		type : "GET",
+		url : url + location.search,
+		dataType : 'html',
+		async : true,
+		cache : true,
+		success : function(data) {
+			container.css({
+				opacity : '0.0'
+			}).html(data).delay(50).animate({
+				opacity : '1.0'
+			}, 300);
+			data = null;
+			container = null;
+		},
+		error : function(xhr, status, thrownError, error) {
+			container.html('<h4 class="ajax-loading-error"><i class="fa fa-warning txt-color-orangeDark"></i>'+
+					'Error requesting <span class="txt-color-red">' + url + '</span>: ' + xhr.status + ' <span style="text-transform: capitalize;">'  + thrownError + '</span></h4>');
+		},
+		complete: function() {
+			//f_callNoticeAction(id);
+		}
+	});
+}
+
+function f_callNoticeAction(id) {
+	var data = {
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			noticbd_divn_cd : 'BONOTICE',
+			noticbd_id : id,
+			sidx : 'reg_date',
+			sord : 'desc',
+			page : '1',
+			rows : '10',
+			_search : 'true',
+			mode : 'READ'
+	};
+	data['search_info[e_reg_date]'] = '';
+	data['search_info[s_reg_date]'] = '';
+	
+	$.ajax({
+	    url: '/application/board/system_notice/noticePN.do', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: false,
+	    cache: false,
+	    data: data,
+	    success: function(html){
+	    	$('#content').html(html);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+function goScdlrPage() {
+	$("#menuTree a[href='/application/schedule/schedulePN.do']").click();
+}
+
+/* ============================================================================================
+/* 다이얼 로그 기본 스타일 설정
+/* ============================================================================================ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/* ============================================================================================
+/* 다이얼 로그 설정
+/* ============================================================================================ */
+$('#ie_pop').dialog({
+	autoOpen : false,
+	width : 498,
+	height: 700,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> IE 설벙 변경 방법 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/* ============================================================================================
+/* 다이얼 로그 호출
+/* ============================================================================================ */
+function f_browser() {
+	$('#ie_pop').dialog('open');
+}
+
+
+
+
+
+
+function f_unreadMcht(obj) {
+	var mcht_id = $(obj).attr('data-mcht');
+	
+	f_movePage('/application/merchant/merchant/merchantPN.do')
+	
+}
+
+
+function f_atchDownload(id) {
+	var url = api_url+"/bo/dashboard/npmt_bo_01001?";
+	var data = {
+			noti_id: id,
+			access_token: localStorage.getItem('access_token')
+		};
+	var params = encodeURI('params='+JSON.stringify(data));
+	
+	$.fileDownload(url + params);
+}
+	
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function(){
+	
+	$.ajax({
+	    url: api_url+'/bo/dashboard/npmt_bo_01000',
+	    type: 'GET', // GET or POST
+	    async: false,
+	    cache: true,
+	    success: function(obj){
+	    	
+	    	var tbody = $('#dash_notice');
+	    	tbody.html('');
+	    	var row_cnt = 0;
+	    	$.each(obj.data.noti_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td><a href="javascript:f_readSystemNotice(\''+items.noti_id+'\')">'+items.title+'</a></td>\n';
+	    		if (items.view_file_nm != null) {
+	    			tag_td += '<td class="ta-c"><a href="javascript:f_atchDownload(\''+items.noti_id+'\')">'+items.view_file_nm+'</a></td>\n';
+	    		} else {
+	    			tag_td += '<td class="ta-c"></td>\n';
+	    		}
+	    		tag_td += '<td class="ta-c">'+items.reg_nm+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.reg_date+'</td>\n';
+	    		
+			<% if (!"MCHT".equals(authCd)) { %>
+				var tooltip_title = '';
+				if(items.unread_mcht_list.length > 0) {
+					$.each(items.unread_mcht_list, function(j, mcht_items) {
+						tooltip_title += '<div class=\'unread_mcht\' onclick=\'f_unreadMcht(this);\' data-mcht=\''+ mcht_items.mcht_id +'\'>';
+						tooltip_title += '* ' +  mcht_items.mcht_nm; 
+						tooltip_title += '</div>';
+					});
+					
+					tag_td += '<td class="ta-c">';
+					tag_td += '<a href="#" rel="tooltip" title="' + tooltip_title + '">'+items.unread_cnt+'</a>';
+					tag_td += '</td>\n';
+				} else {
+					tag_td += '<td class="ta-c">0</td>\n';
+				}
+
+			<% } %>
+	    		
+	    		var tag_tr = '<tr>'+tag_td+'</tr>\n';
+	    		tbody.append(tag_tr);
+	    		row_cnt++;
+	    	});
+	    	
+	    	$('[rel="tooltip"]').tooltip({placement : 'left', html:true, trigger: 'click'}); 
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+var dashboardfunction = function() {
+	
+	if(navigator.userAgent.indexOf("MSIE") > 0) {
+		$.bigBox({
+			title : "브라우저 경고",
+			content : "현재 사용중인 브라우저는 Internet Explorer(이하 IE) 입니다.<br>IE로 사용하실 경우에는 버전에 따라 데이터 로드에<br>문제가 있을 수 있으니 사용자 지정 옵션을 변경 바랍니다.<br><div class='ta-r'><a href='javascript:f_browser()' class='link-white'>[ 자세히 보기 ]</a></div>",
+			color : "#C46A69",
+			//timeout: 6000,
+			icon : "fa fa-warning shake animated"
+		});
+	}
+	
+	// ---------------------- 데쉬보드 시스템 공지사항 ---------------------- // 
+	
+	var board_data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+	};
+	
+	$.ajax({
+	    url: api_url+'/backoffice/common/board/list',
+	    type: 'GET', // GET or POST
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(board_data)),
+	    success: function(obj){
+	    	
+	    	console.log('obj :: ',obj)
+	    	var tbody = $('#dash_notice');
+	    	tbody.html('');
+	    	var row_cnt = 0;
+	    	$.each(obj.data.sys_noticbd_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td>&middot; <a href="javascript:f_readSystemNotice(\''+items.noticbd_id+'\')">'+items.title+'</a></td>\n';
+	    		tag_td += '<td class="ta-c">'+items.reg_date_name+'</td>\n';
+	    		var tag_tr = '<tr>'+tag_td+'</tr>\n';
+	    		tbody.append(tag_tr);
+	    		row_cnt++;
+	    	});
+	    	if((7 - row_cnt) > 0) {
+	    		for(var j = 0; j < (7 - row_cnt); j++) {
+	    			var tag_tr = '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>\n';
+		    		tbody.append(tag_tr);	
+	    		}
+	    	}
+	    	
+	    	// 스케쥴배치 오류건이 있는 경우 alert
+	    	if (obj.data.scdlr_fail_cnt > 0) {
+	    		var s = "<div class='alert alert-warning alert-dismissible' role='alert'>"
+	    			  + "<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button>"
+	    			  + "<a href='#' onclick='goScdlrPage()'><strong>오류 알림!</strong> 이전 로그인 이후 스케쥴 실행 오류가 " + obj.data.scdlr_fail_cnt + "건이 있습니다.</a>";
+
+	    		$("#widget-grid").prepend(s)
+	    	}
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	// ---------------------- 쿠폰 유형별 사용 패턴 ---------------------- // 
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+	};
+	
+	var cp_patten_data = [];
+	
+	// 실제 데이터 전송
+	$.ajax({
+		url : api_url + '/backoffice/dashboard/coupon/use/pattern/show',
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    success: function(obj){
+	    	$.each(obj.data.list, function(i, item) {
+	    		if(i > 0){
+	    			cp_patten_data[i-1] = item.use_cnt;	
+	    		}
+    		});
+	    	drawCpChart(cp_patten_data);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	function drawCpChart(dataSet) {
+		var chart_coupon_patten_data = {
+		        labels: ["정률할인", "정액할인", "정률적립", "정액적립", "포인트쿠폰", "금액형", "교환형"],
+//		        labels: ["정률할인", "정액할인", "정률적립", "정액적립", "포인트쿠폰", "금액형"],
+		        datasets: [
+			 		{
+			 			label: "My Second dataset",
+			 			fillColor: "rgba(151,187,205,0.5)",
+ 			            strokeColor: "rgba(151,187,205,0.8)",
+ 			            pointColor: "rgba(151,187,205,1)",
+ 			            pointStrokeColor: "rgba(151,187,205,0.2)",
+ 			            pointHighlightFill: "rgba(151,187,205,0.2)",
+ 			            pointHighlightStroke: "rgba(255,255,255,1)",
+			            data: dataSet
+			        }
+		        ]
+		    };
+		    var chart_coupon_patten_options = {
+			    scaleShowLine : true,
+			    angleShowLineOut : true,
+			    scaleShowLabels : true,
+			    scaleBeginAtZero : true,
+			    angleLineColor : "rgba(0,0,0,.1)",
+			    angleLineWidth : 1,
+			    pointLabelFontFamily : "'Arial'",
+			    pointLabelFontStyle : "normal",
+			    pointLabelFontSize : 11,
+			    pointLabelFontColor : "#666",
+			    pointDot : true,
+			    pointDotRadius : 2,
+			    pointDotStrokeWidth : 1,
+			    pointHitDetectionRadius : 20,
+			    datasetStroke : true,
+			    datasetStrokeWidth : 2,
+			    datasetFill : true,
+		        responsive: true,
+		        maintainAspectRatio: false
+		    };
+		    var ctx2 = document.getElementById("chart_coupon_patten").getContext("2d");
+		    chart_2 = new Chart(ctx2).Radar(chart_coupon_patten_data, chart_coupon_patten_options);
+	}
+
+ 	// ---------------------- 이벤트 유형별 사용패턴 ---------------------- //
+ 	
+	var evt_patten_data = [];
+	
+	// 실제 데이터 전송
+	$.ajax({
+		url : api_url + '/backoffice/dashboard/event/use/pattern/show',
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    success: function(obj){
+	    	$.each(obj.data.list, function(i, item) {
+	    		evt_patten_data[i] = item.issue_cnt;
+    	});
+	    	drawEvtChart(evt_patten_data);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+ 	
+ 	function drawEvtChart(dataSet) {
+ 		var chart_event_patten_data = {
+ 		        labels: ["M스탬프", "스마트 영수증", "신규가입", "달려라! 선착순", "제휴이벤트"],
+ 		        datasets: [
+ 			 		{
+ 			 			label: "My Second dataset",
+ 			            fillColor: "rgba(151,187,205,0.5)",
+ 			            strokeColor: "rgba(151,187,205,0.8)",
+ 			            pointColor: "rgba(151,187,205,1)",
+ 			            pointStrokeColor: "rgba(151,187,205,0.2)",
+ 			            pointHighlightFill: "rgba(151,187,205,0.2)",
+ 			            pointHighlightStroke: "rgba(255,255,255,1)",
+ 			            data: dataSet
+ 			        }
+ 		        ]
+ 		    };
+ 		    var chart_event_patten_options = {
+ 			    scaleShowLine : true,
+ 			    angleShowLineOut : true,
+ 			    scaleShowLabels : true,
+ 			    scaleBeginAtZero : true,
+ 			    angleLineColor : "rgba(0,0,0,.1)",
+ 			    angleLineWidth : 1,
+ 			    pointLabelFontFamily : "'Arial'",
+ 			    pointLabelFontStyle : "normal",
+ 			    pointLabelFontSize : 11,
+ 			    pointLabelFontColor : "#666",
+ 			    pointDot : true,
+ 			    pointDotRadius : 2,
+ 			    pointDotStrokeWidth : 1,
+ 			    pointHitDetectionRadius : 20,
+ 			    datasetStroke : true,
+ 			    datasetStrokeWidth : 2,
+ 			    datasetFill : true,
+ 		        responsive: true,
+ 		        maintainAspectRatio: false
+ 		    };
+ 		    var ctx3 = document.getElementById("chart_event_patten").getContext("2d");
+ 		    chart_3 = new Chart(ctx3).Radar(chart_event_patten_data, chart_event_patten_options);
+ 	}
+	
+	// ---------------------- 신규 가입자 현황(Live) ---------------------- // 
+	
+	// Ajax 통신으로 실시간 데이터 가지고 오는 메소드
+	function getLiveChartData() {
+		var rtn = 0;
+		var action = {
+      			empno: '${sessionScope.sessionEmpno}', 
+      			str_cd: '${sessionScope.sessionStrCd}',
+      			hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+       	};
+        
+        $.ajax({
+       		url: api_url+"/backoffice/dashboard/new/member/show",
+       		type: "GET",
+       		async: false,
+       		data: encodeURI('params='+JSON.stringify(action)),
+       		success: function(obj) {
+       			rtn = obj.data.join_cnt;
+       		},
+       		error: function(obj) {
+       	    	var serverObj = obj.responseJSON;
+       	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+       	    	return;
+       	    }
+       	});
+        return rtn;
+	}
+
+    var data = [],
+        totalPoints = 60,
+        $UpdatingChartColors = $("#liveChart").css('color');
+
+    // 기본 값으로 60개 데이터 0으로 초기화
+	for(var i = 0; i < totalPoints; i++) {
+		data[i] = 0;
+	}
+	
+    // 데이터 셋팅
+    function getRandomData() {
+        if (data.length > 0) {
+        	data = data.slice(1);
+        }
+        
+        // do a random walk
+        while (data.length < totalPoints) {
+            var y = getLiveChartData();
+            data.push(y);
+        }
+			
+        // zip the generated y values with the x values
+        var res = [];
+        for (var i = 0; i < data.length; ++i) {
+        	res.push([i, data[i]]);
+        }
+        
+		return res;
+    }
+
+    // setup control widget
+    var updateInterval = 1000 * 60;
+    $("#liveChart").val(updateInterval).change(function () {
+
+        var v = $(this).val();
+        if (v && !isNaN(+v)) {
+            updateInterval = +v;
+            $(this).val("" + updateInterval);
+        }
+
+    });
+
+    // setup plot
+    var options = {
+        yaxis: {
+            min: 0,
+            max: 200
+        },
+        xaxis: {
+            min: 0,
+            max: 59
+        },
+        colors: [$UpdatingChartColors],
+        series: {
+            lines: {
+                lineWidth: 1,
+                fill: true,
+                fillColor: {
+                    colors: [{
+                        opacity: 0.4
+                    }, {
+                        opacity: 0
+                    }]
+                },
+                steps: false
+            }
+        }
+    };
+
+    chart_1 = $.plot($("#liveChart"), [getRandomData()], options);
+	
+    // 반복 호출 시간 설정 (밀리세컨즈)
+	updateInterval = 1000 * 60;
+	update();
+    
+    function update() {
+		try {
+			chart_1.setData([getRandomData()]);
+            chart_1.draw();
+            setTimeout(update, updateInterval);
+		}
+		catch(err) {
+		    clearInterval(updateInterval);
+		}
+    }
+
+	
+	
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+/* loadScript("${pageContext.request.contextPath}/resources/js/plugin/chartjs/chart.min.js", function(){
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/flot/jquery.flot.cust.min.js", function(){
+		loadScript("${pageContext.request.contextPath}/resources/js/plugin/flot/jquery.flot.resize.min.js", function(){
+			loadScript("${pageContext.request.contextPath}/resources/js/plugin/flot/jquery.flot.time.min.js", function(){
+ 				loadScript("${pageContext.request.contextPath}/resources/js/plugin/flot/jquery.flot.tooltip.min.js", dashboardfunction);
+			});
+		});
+	});
+});	
+ */
+pagefunction();
+
+
+/* ============================================================================================
+/* 페이지 셋업정보 파괴
+/* --------------------------------------------------------------------------------------------
+/* 화면에 사용되는 컴포넌트 초기화
+/* ============================================================================================ */
+var pagedestroy = function(){
+	//destroy flots
+	chart_1.shutdown();  
+	chart_1=null;
+};
+</script>

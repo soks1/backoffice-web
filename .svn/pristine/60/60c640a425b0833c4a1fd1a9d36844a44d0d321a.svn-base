@@ -1,0 +1,195 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>POLL 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmPoll" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}" />
+							
+							<fieldset>
+								<legend>기본 정보</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">POLL 유형 <sup>*</sup></label>
+									<div class="col-md-5">
+										<label class="radio radio-inline">
+											<input type="radio" name="poll_type_cd" value="SNGL" onchange="f_pollTypeChange();" checked="checked" data-valid-use="true" data-check-only="true" data-valid-title="단일문항">
+											단일문항</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="poll_type_cd" value="PRS" onchange="f_pollTypeChange();" data-valid-use="true" data-check-only="true" data-valid-title="프로세스">
+											프로세스</label>
+									</div>
+									<label class="col-md-1 control-label">POLL 속성</label>
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="poll_att" data-valid-max="100" data-valid-title="POLL 속성">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">제목 <sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="poll_title" data-valid-use="true" data-valid-max="100" data-valid-title="제목">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">설명</label>
+									<div class="col-md-11">
+										<textarea class="form-control" name="poll_desc" rows="3" data-valid-max="500" data-valid-title="설명"></textarea>
+									</div>
+								</div>
+								<div class="form-group" id="intro_msg_div" style="display:none;">
+									<label class="col-md-1 control-label">인트로 메세지</label>
+									<div class="col-md-11">
+										<textarea class="form-control" name="intro_msg" rows="3" data-valid-max="1000" data-valid-title="인트로 메세지"></textarea>
+									</div>
+								</div>
+								<div class="form-group" id="agree_sbjt_div" style="display:none;">
+									<label class="col-md-1 control-label">동의사항</label>
+									<div class="col-md-11">
+										<textarea class="form-control" name="agree_sbjt" rows="3" data-valid-max="1000" data-valid-title="동의사항"></textarea>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset>
+								<legend>POLL 문항 <small class="editable-empty">&nbsp;&nbsp;&nbsp;<i class="fa fa-info-circle"></i> 기본 정보 작성 후 저장 시 문항입력 리스트가 출력 됩니다.</small></legend>
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_pollList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* POLL 유형 변경 처리
+/* ============================================================================================ */
+function f_pollTypeChange() {
+	var pollTypeCd = $('input[name=poll_type_cd]:checked').val();
+	console.log(pollTypeCd);
+	
+	if(pollTypeCd == 'SNGL') {
+		$('#intro_msg_div').hide();
+		$('#agree_sbjt_div').hide();
+	}
+	else {
+		$('#intro_msg_div').show();
+		$('#agree_sbjt_div').show();
+	}
+}
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	var frm = $('#frmPoll');
+	
+	if(frm.formValid()) {
+		if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+			var data = frm.serializeFormObject();
+	        	
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/poll/create',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	$('#frmKeepData').append( $('<input/>').attr('type', 'hidden').attr('name', 'poll_id').val(obj.data.poll_id));
+			    	
+			    	alert(obj.message);
+			    	f_pollRead();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		}
+	}
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 쿠폰북 유형
+	f_ajaxCPbookTypeCode($('select[name=cpbook_type_cd]'));
+	
+	// 초기데이터 로드 : 온라인몰, 매장
+	f_ajaxPublerCode($('select[name=issue_chanel_cd]'));
+	
+	// 본사여부에 다른 사용 지점
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#use_brnch_info_all_yn').attr('disabled', true);
+		$('#use_brnch_info_list').select2('enable', false);
+		var info_data = [];
+		var items = {};
+		items["id"] = '${sessionScope.sessionStrCd}';
+		items["text"] = '${sessionScope.sessionStrNm}';
+		info_data[0] = items;
+		$('#use_brnch_info_list').select2("data",info_data);
+	}
+	
+	f_pollTypeChange();
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

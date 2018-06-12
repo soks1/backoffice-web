@@ -1,0 +1,208 @@
+/**
+ * ==================================================================================
+ * 공통 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_popupList() {
+	var url = "/application/popup/popupLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_popupEdit() {
+	var url = "/application/popup/popupEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 상세 화면 가기
+ * ==================================================================================
+ */
+function f_popupView() {
+	var url = "/application/popup/popupRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 배너 삭제
+ * ==================================================================================
+ */
+function f_popupDel() {
+	
+	if(confirm("정말 삭제하시겠습니까?")) {
+		var select_ids = [$("#frmKeepData").find("input[name=noticbd_id]").val()];
+		var data = {
+			empno: $("#frmKeepData").find("input[name=empno]").val(), 
+			emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+			noticbd_id_list : select_ids
+		};
+
+		$.ajax({
+			url: api_url + "/backoffice/common/board/delete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_popupList();
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+		
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#ntce_start_dd').getObjLength() > 0 ) {
+		if( $('#ntce_end_dd').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#ntce_end_dd').getObjLength() > 0 ) {
+		if( $('#ntce_start_dd').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('select[name=stype]').val() == '' && $('input[name=sword]').val() != '') {
+		alert('키워드를 선택해 주세요');
+		return;
+	}
+	/*
+	if ( $('input:radio[name="noticbd_divn_cd"]').val() == 'MCLUB') {
+		if ( $('select[name=mclub_name]').val() == '') {
+			alert('M클럽을 선택해 주세요');
+			return;
+		}
+	}
+	*/
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#popup_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#popup_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#popup_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#ntce_start_dd, #ntce_end_dd" ).datepicker( "option", {minDate: null, maxDate: null});
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();	
+	// $("#frmSearch").find('input[name=ntce_start_dd]').val(cf_termDate(-30));
+	// $("#frmSearch").find('input[name=ntce_end_dd]').val(cf_toDate());
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	$("#popup_grid").jqGrid('setGridParam', {search: false});
+	$("#popup_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#popup_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+}
+
+/**
+ * ==================================================================================
+ * 등록/수정 화면 : 비컨그룹 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openGroupSD() {
+	var evt_start_dd = $("#ntce_start_dd").val();
+	var evt_end_dd = $("#ntce_end_dd").val();
+	
+	if(evt_start_dd == "" || evt_end_dd == "") {
+		alert("행사기간을 먼저 선택해 주세요.");
+		return;
+	}else {
+		$.ajax({
+			url: "/application/common/beaconGroupSD.do",
+			type: 'GET',
+			async: true,
+			cache: false,
+			success: function(data) {
+				var $target = $('#beacon_group_sd');
+				$target.html(data);
+			}
+		});
+		$('#beacon_group_sd').dialog('open');
+	}
+}
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 대상 쿠폰 선택삭제 이벤트
+ * ----------------------------------------------------------------------------------
+ * 선택된 테이블 로우를 삭제 후 총 카운트 수 반영
+ * ==================================================================================
+ */
+function f_selectBeaconGroupDelete() {
+	cf_delTableRow('beacon_group_tbody');
+}

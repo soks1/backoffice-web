@@ -1,0 +1,508 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> Zone 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="alert alert-info no-margin fade in">
+							<div class="form-horizontal">
+								<fieldset>
+									<div class="form-group">
+										<label class="col-md-1 control-label">&middot; 지점</label>
+										<div class="col-md-4">
+											<select class="form-control" id="str_cd" name="str_cd">
+												<option value="">전체</option>
+											</select>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+					
+					<div id="target_zone_name_grid" class="widget-body no-padding">
+						<table id="zone_name_grid"></table>
+						<div id="zone_name_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<!-- zone name write start -->
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="zone_name_write_area" data-widget-editbutton="false" data-widget-deletebutton="false" style="display:none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> Zone명 등록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmZoneWrite">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Zone명 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="zone_nm" data-valid-use="true" data-valid-max="50" data-valid-symbol="true" data-valid-title="Zone명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">설명 </label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="10" name="zone_desc" data-valid-max="200" data-valid-symbol="true" data-valid-title="설명"></textarea>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<!-- <a href="javascript:f_cancelWrite();" class="btn btn-default">취소</a> -->
+										<a href="javascript:f_submitWrite();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- zone name edit start -->
+			<div class="jarviswidget jarviswidget-color-blueDark" id="zone_name_edit_area" data-widget-editbutton="false" data-widget-deletebutton="false" style="display:none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> Zone명 등록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmZoneEdit">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="zone_id" value="">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">등록일</label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-2 control-label">등록자</label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">수정일</label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-2 control-label">수정자</label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">지점명</label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="str_cd_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">ZoneID</label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="zone_id"></span>
+									</div>
+									<label class="col-md-2 control-label">연결된 비콘수</label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="link_bcon_cnt"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">Zone명 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="zone_nm" data-valid-use="true" data-valid-max="50" data-valid-symbol="true" data-valid-title="Zone명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">설명 </label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="10" name="zone_desc" data-valid-max="200" data-valid-symbol="true" data-valid-title="설명"></textarea>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_openZoneHistory();" class="btn btn-warning">Zone 사용정보</a>
+										<a href="javascript:f_submitEdit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="zone_history_rd" style="display:none;"></div>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html('&#160;');
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/**
+ * ==================================================================================
+ * 지점 선택시 지점에 해당하는 목록 조회
+ * ==================================================================================
+ */
+$('#str_cd').change(function(){
+	var searchData = {};
+	searchData['str_cd'] = $('#str_cd').children("option:selected").val();
+	$("#zone_name_grid").jqGrid('setGridParam', {search: true});
+	$("#zone_name_grid").jqGrid('setGridParam', {page: 1});
+	$("#zone_name_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+});
+
+
+/**
+ * ==================================================================================
+ * 상세 : 존 사용정보 다이얼로그 정의
+ * ==================================================================================
+ */
+$('#zone_history_rd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> Zone 사용정보 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 상세 : 존 사용정보 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openZoneHistory() {
+	$.ajax({
+		url: "/application/zone/beacon/zoneHistoryRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data : {zone_id : $('#frmZoneEdit input[name=zone_id]').val() },
+		success: function(data) {
+			var $target = $('#zone_history_rd');
+			$target.html(data);
+		}	
+	});
+	$('#zone_history_rd').dialog('open');
+}
+
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submitWrite() {
+	if($('#frmZoneWrite').formValid()) {
+		
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/system/device/zone/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify($('#frmZoneWrite').serializeFormObject()),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	$('#zone_name_grid').trigger('reloadGrid');
+		    	$('#frmZoneWrite input[name=zone_nm]').val("");
+		    	$('#frmZoneWrite textarea[name=zone_desc]').val("");
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+}
+
+function f_cancelWrite(){
+	$('#frmZoneWrite input[name=zone_nm]').val("");
+	$('#frmZoneWrite textarea[name=zone_desc]').val("");
+	$("#zone_name_write_area").hide();
+}
+
+function f_submitEdit() {
+	if($('#frmZoneEdit').formValid()) {
+
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/system/device/zone/update',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify($('#frmZoneEdit').serializeFormObject()),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	$('#zone_name_grid').trigger('reloadGrid');
+		    	/* 
+		    	$('#frmZoneEdit #zone_id').html('');
+		    	$('#frmZoneEdit input[name=zone_id]').val('');
+		    	$('#frmZoneEdit #reg_date').html('');
+		    	$('#frmZoneEdit #reg_id_name').html('');
+		    	$('#frmZoneEdit #mod_date').html('');
+		    	$('#frmZoneEdit #mod_id_name').html('');
+		    	$('#frmZoneEdit #str_cd_name').html('');
+		    	$('#frmZoneEdit #link_bcon_cnt').html('');
+		    	$('#frmZoneEdit input[name=zone_nm]').val('');
+		    	$('#frmZoneEdit textarea[name=zone_desc]').val('');
+		    	*/
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCode($('#str_cd'));
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#zone_name_grid").parent().width() - 100;
+
+		jQuery("#zone_name_grid").jqGrid({
+			url : api_url+"/backoffice/system/device/zone/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '지점명', 'ZoneID', 'Zone 명', '연결된 비콘수', '수정일'],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 		align : "center",	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'str_cd_name', 	index : 'str_cd_name', 		align : "center",	sortable : false, 	width : (pageWidth*(15/100))	},
+				{ name : 'zone_id', 		index : 'zone_id', 			align : "center",	sortable : false, 	width : (pageWidth*(25/100)),	classes:'pointer' 	},
+				{ name : 'zone_nm', 		index : 'zone_nm', 			align : "center",	sortable : false, 	width : (pageWidth*(30/100)),	classes:'pointer' 	},
+				{ name : 'link_bcon_cnt', 	index : 'link_bcon_cnt', 	align : "center",	sortable : false, 	width : (pageWidth*(15/100)) 	},
+				{ name : 'mod_date', 		index : 'mod_date', 		align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "zone_id",
+				root : 		function(obj){ return obj.data.zone_list; },		// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return "params="+JSON.stringify(postData); },
+			serializeGridData: function(postData) { return "params="+JSON.stringify(postData); },
+			postData:{ 
+				search_info: {str_cd : $('#str_cd').children("option:selected").val()}, 
+				empno: '${sessionScope.sessionEmpno}', 
+				str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}' 
+			},
+			search:true,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#zone_name_grid_page',
+			sortname : 'mod_date',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 2 || index == 3) {
+					
+					$("#zone_name_write_area").hide();
+					$("#zone_name_edit_area").show();
+					
+					var data = {
+						empno: '${sessionScope.sessionEmpno}', 
+						str_cd: '${sessionScope.sessionStrCd}',
+						hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+						zone_id : rowid
+					};
+					
+					$.ajax({
+					    url: api_url+"/backoffice/system/device/zone/show", //this is the submit URL
+					    type: "GET", // GET or POST
+					    async: true,
+					    cache: true,
+					    datatype: 'json',
+					    data: encodeURI('params='+JSON.stringify(data)),
+					    beforeSend : function() {},
+					    success: function(obj){
+					    	$('#frmZoneEdit #zone_id').html(obj.data.zone_id);
+					    	$('#frmZoneEdit input[name=zone_id]').val(obj.data.zone_id);
+					    	$('#frmZoneEdit #reg_date').html(obj.data.reg_date);
+					    	$('#frmZoneEdit #reg_id_name').html(obj.data.reg_id_name);
+					    	$('#frmZoneEdit #mod_date').html(obj.data.mod_date);
+					    	$('#frmZoneEdit #mod_id_name').html(obj.data.mod_id_name);
+					    	$('#frmZoneEdit #str_cd_name').html(obj.data.str_cd_name);
+					    	$('#frmZoneEdit #link_bcon_cnt').html(obj.data.link_bcon_cnt);
+					    	$('#frmZoneEdit input[name=zone_nm]').val(obj.data.zone_nm);
+					    	$('#frmZoneEdit textarea[name=zone_desc]').val(obj.data.zone_desc);
+					    },
+					    error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+					    	return;
+					    }
+					});
+			   }
+			}
+		});
+		jQuery("#zone_name_grid").jqGrid('navGrid', "#zone_name_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#zone_name_grid").jqGrid('navButtonAdd','#zone_name_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){ 
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					
+					// 삭제 진행
+					if(confirm('정말 삭제하시겠습니까?')) {
+						
+						var data = {
+							zone_id_list : select_ids,
+							empno: '${sessionScope.sessionEmpno}', 
+							str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+						};
+						
+						$.ajax({
+							url: api_url + '/backoffice/system/device/zone/delete',
+							type: 'POST',
+							contentType: 'application/json;charset=utf-8', // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$('#zone_name_grid').trigger('reloadGrid');
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+						    	return;
+						    }
+						});
+					}
+					
+					
+					//var noticbd_id = $(this).jqGrid('getGridParam', 'selarrrow');
+				}
+			});	
+		}
+		
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#zone_name_grid").jqGrid('navButtonAdd','#zone_name_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					$("#zone_name_edit_area").hide();
+					$("#zone_name_write_area").show();
+				}
+			});	
+		}
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+		
+		$('#zone_name_grid').gridCss();
+	  	$("#zone_name_grid_cb").css("border-left-width","0");
+	  	$("#zone_name_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_zone_name_grid_cb").css("padding","7px 0");
+	  	$("#zone_name_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#zone_name_grid").jqGrid( 'setGridWidth', $("#target_zone_name_grid").width() );
+		});
+	} 
+	// end function
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+</script>
+
+

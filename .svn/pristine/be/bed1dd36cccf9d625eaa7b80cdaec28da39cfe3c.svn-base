@@ -1,0 +1,405 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>문항 목록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmlogic" class="form-horizontal" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<p style="color:red;">* 문항 순서는 POLL 문항목록 저장 후 반영됩니다.</p>
+							<div class="table-responsive" style="min-height:80px; max-height:auto; overflow-y:auto;">
+								<table class="table table-bordered table-striped">
+									<colgroup>
+							            <col width="5%" />
+							            <col width="30%" />
+							            <col />
+							        </colgroup>
+									<thead>
+										<tr>
+											<th class="ta-c">문항<br/>번호</th>
+											<th class="ta-c">질문</th>
+											<th class="ta-c">보기 목록</th>
+										</tr>
+									</thead>
+									<tbody id="logic_qstn_tbody"></tbody>
+								</table>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="defaultShowListTable" style="display:none;">
+	<table class="table table-bordered table-striped">
+		<colgroup>
+            <col width="6%" />
+            <col />
+            <col width="35%" />
+        </colgroup>
+		<thead>
+			<tr>
+				<th class="ta-c" style="padding-left:1px; padding-right:1px;">순서</th>
+				<th class="ta-c">보기내용</th>
+				<th class="ta-c">로직</th>
+			</tr>
+		</thead>
+		<tbody class="logic_show_tbody"></tbody>
+	</table>
+</div>
+
+<div id="logicShowPrsCdDiv" style="display:none;">
+	<select class="form-control" name="show_prs_cd" onchange="f_logicShowPrsCdChange($(this));">
+		<option value="">선택</option>
+	</select>
+</div>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅, 질문 목록 조회
+/* ============================================================================================ */
+var logic_dialog_pagefunction = function() {
+	// 초기데이터 로드 : 공통코드(보기 프로세스 코드)
+	f_ajaxCommonCode({
+		target: "select[name=show_prs_cd]",
+		cd_divn_id: "SHOW_PRS_CD"
+	});
+	
+	var params = $("#frmKeepData").serializeFormObject();
+	
+	$.ajax({
+	    url: api_url+"/backoffice/poll/qstn/list",
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(params)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	f_renderLogicQstnList(obj.data)
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+};
+
+/* ==================================================================================
+ * 질문 목록 화면 출력
+ * ================================================================================== */
+function f_renderLogicQstnList(dataObj) {
+	var defaultShowListTableHtml = $('#defaultShowListTable').html();
+	
+	var logicQstnTbody = $('#logic_qstn_tbody');
+
+	$.each(dataObj.poll_qstn_list, function(i, items) {
+		var qstn_tr = $('<tr/>');
+		var qstn_td_01 = $('<td/>').addClass('ta-c').attr('style', 'background-color:white;');
+		var qstn_td_02 = $('<td/>').addClass('ta-l').attr('style', 'background-color:white;');
+		var qstn_td_03 = $('<td/>').addClass('ta-c').attr('style', 'background-color:white;');
+		
+		qstn_td_01.append(items.qstn_prto);
+		qstn_td_02.append(items.qstn_title);
+		
+		if(items.show_type_cd != 'TEXT') {
+			qstn_td_03.append(defaultShowListTableHtml);
+			
+			if(items.show_type_cd == 'PLUR') {
+				qstn_td_03.find('thead tr th').eq(2).remove();
+			}
+			
+			qstn_td_03.find('tbody').attr('id', items.qstn_id);
+		}
+		
+		qstn_tr.append(qstn_td_01, qstn_td_02, qstn_td_03);
+		
+		logicQstnTbody.append(qstn_tr);
+	});
+	
+	f_selectLogicShowList();
+}
+
+/* ==================================================================================
+ * 보기 목록 조회
+ * ================================================================================== */
+function f_selectLogicShowList() {
+	var params = $("#frmKeepData").serializeFormObject();
+	
+	params['list_type'] = 'LOGIC';
+	
+	$.ajax({
+	    url: api_url+"/backoffice/poll/show/list",
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(params)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	f_renderLogicShowList(obj.data)
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ==================================================================================
+ * 보기 목록 화면 출력
+ * ================================================================================== */
+function f_renderLogicShowList(data) {
+	var logicShowTbodyList = $('.logic_show_tbody');
+	
+	$.each(logicShowTbodyList, function() {
+		var logicShowTbodyObj = $(this);
+			
+		$.each(data.show_list, function(i, items) {
+			var showTypeCd = items.show_type_cd;
+			
+			if(logicShowTbodyObj.attr('id') == items.qstn_id) {
+				var show_tr = $('<tr/>');
+				var show_td_01 = $('<td/>').addClass('ta-c').attr('style', 'padding-left:1px; padding-right:1px;');
+				var show_td_02 = $('<td/>').addClass('ta-l');
+				var show_td_03 = $('<td/>').addClass('ta-c').addClass('logic_td');
+				
+				var show_id_input   = $('<input/>').attr('type', 'hidden').attr('name', 'show_id').val(items.show_id);
+				var show_prto_input = $('<input/>').attr('type', 'hidden').attr('name', 'show_prto').val(items.show_prto);
+				
+				var show_prs_cd_div	   = $('<div/>').addClass('col-md-8').attr('style', 'padding-left:1px; padding-right:1px;');
+				var show_prs_cd_select = $('#logicShowPrsCdDiv').html();
+				
+				var qstn_num_div 	= $('<div/>').addClass('col-md-4').attr('style', 'padding-left:0px; padding-right:1px;');
+				var qstn_num_select = $('<select/>').addClass('form-control').attr('name', 'show_skip_qstn_id').val(items.show_skip_qstn_id);
+				
+				// 순서 필드 정의 [
+				if(showTypeCd != 'ATT') {
+					if(showTypeCd == 'PLUR') {
+						show_td_01.append(items.show_prto);
+					}
+					else {
+						show_td_01.append(items.show_prto, show_id_input);
+					}
+				}
+				else {
+					if(items.show_prto == 0) {
+						show_td_01.append('질문');
+					}
+					else {
+						show_td_01.append(items.show_prto, show_id_input);
+					}
+				}
+				
+				show_td_01.append(show_prto_input)
+				// ]
+				
+				// 보기내용 필드 정의
+				show_td_02.append(items.show_content);
+				
+				var optionGridFlag = false;		// 옵션 출력 유무
+				
+				// 로직 필드 정의 [
+				qstn_num_select.append('<option/>');
+				
+				$.each($('#poll_qstn_tbody tr'), function(idx) {
+					var option = $('<option/>');
+					var qstnId = $(this).find('input[name=qstn_id]').val();
+
+					if(optionGridFlag) {
+						if(POLL_TYPE_CD == 'PRS') {
+							if(idx != 0) {
+								option.text(idx).val(qstnId);
+								
+								if(qstnId == items.show_skip_qstn_id) {
+									option.attr('selected', 'selected');
+								}
+								
+								qstn_num_select.append(option);
+							}
+						}
+						else if(POLL_TYPE_CD == 'SNGL') {
+							option.text(idx).val(qstnId);
+							qstn_num_select.append(option);
+						}
+					}
+					
+					if(items.qstn_id == qstnId) {
+						optionGridFlag = true;
+					}
+				});
+				
+				show_prs_cd_div.append(show_prs_cd_select);
+				
+				$.each(show_prs_cd_div.find('option'), function() {
+					if($(this).val() == items.show_prs_cd) {
+						$(this).attr('selected', 'selected');
+					}
+				});
+				
+				if(items.show_prs_cd == 'SKIP' && $('#poll_qstn_tbody tr').length > 0) {
+					qstn_num_select.show();
+				}
+				else {
+					qstn_num_select.hide();
+				}
+				qstn_num_div.append(qstn_num_select);
+				
+				if(showTypeCd == 'SIN' || showTypeCd == 'ODR' || showTypeCd == 'PLUR') {
+					show_td_03.append(show_prs_cd_div, qstn_num_div);
+				}
+				else if(showTypeCd == 'ATT' || showTypeCd == 'MESR') {
+					if(showTypeCd == 'ATT' && items.show_prto == 0) {
+						show_td_03.append('');
+					}
+					else {
+						show_td_03.append(show_prs_cd_div, qstn_num_div);
+					}
+				}
+				// ]
+				
+				// POLL 유형이 단일문항 일 경우 로직 처리 안함
+				if(POLL_TYPE_CD == 'SNGL') {
+					show_td_03.empty('');
+				}
+				
+				// 보기유형이 '복수' 일 경우 로직 항목 제외
+				if(showTypeCd == 'PLUR') {
+					show_td_03.empty();
+					show_tr.append(show_td_01, show_td_02);
+				}
+				else {
+					show_tr.append(show_td_01, show_td_02, show_td_03);
+				}
+				
+				logicShowTbodyObj.append(show_tr);
+			}
+		});
+		
+		f_setAttCtrl(logicShowTbodyObj);
+	});
+}
+
+function f_logicShowPrsCdChange(obj) {
+	var qstnPrto = parseInt($('#qstn_prto').text());	// 문항 번호
+	
+	if(obj.val() == 'SKIP') {
+		obj.parent().parent().find('select[name=show_skip_qstn_id]').show();
+	}
+	else {
+		obj.parent().parent().find('select[name=show_skip_qstn_id] option').eq(qstnPrto).attr('selected', 'selected');
+		obj.parent().parent().find('select[name=show_skip_qstn_id]').hide();
+	}
+}
+
+/* ==================================================================================
+ * 보기 유형이 '속성' 일 경우 로직 필드 컨트롤
+ * ================================================================================== */
+function f_setAttCtrl(obj) {
+	var listLength = obj.find('input[name=show_prto][value=0]').length;
+
+	if(listLength > 1) {
+		$.each(obj.find('tr'), function(i) {
+			$(this).find('.logic_td').empty();
+		});
+	}
+}
+
+function f_saveLogic() {
+	var showList = [];
+	
+	var tbodyListObj = $('.logic_show_tbody');
+	
+	// 보기 목록의 로직 중 'SKIP' 유효성 채크
+	var skipValLength = 0;
+	$.each(tbodyListObj.find('select[name=show_prs_cd]'), function(i) {
+		if($(this).val() == 'SKIP') {
+			var logicObj = $(this).parents('.logic_td').eq(0);
+
+			if(logicObj.find('select[name=show_skip_qstn_id]').val() == '') {
+				skipValLength++;
+			}
+		}
+	});
+	
+	if(skipValLength > 0) {
+		alert('보기 목록의 로직 중 SKIP 대상 질문 번호를 선택하세요.');
+		return;
+	}
+	
+	$.each(tbodyListObj, function() {
+		var trListObj = $(this).find('tr');
+		
+		$.each(trListObj, function() {
+			var trObj = $(this);
+			
+			if(trObj.find('input[name=show_id]').val() != '') {
+				var data = {
+					show_id 			: trObj.find('input[name=show_id]').val()
+					, show_prs_cd 		: trObj.find('select[name=show_prs_cd]').val()
+					, show_skip_qstn_id : trObj.find('select[name=show_skip_qstn_id]').val()
+				};
+				
+				showList.push(data);
+			}
+		});
+		
+	});
+	
+	var data = {
+		empno : $("#frmKeepData").find('input[name=empno]').val()
+		, show_list : showList
+	};
+	
+	if(confirm("현재 로직을 저장 하시겠습니까?")) {
+		$.ajax({
+		    url: api_url+'/backoffice/poll/logic/update',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	$('#logic_edit_sd').dialog("close");
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+logic_dialog_pagefunction();
+
+</script>

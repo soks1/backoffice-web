@@ -1,0 +1,365 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">조회 기간</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text"  id="s_mod_date" name="s_mod_date" data-dateformat='yy-mm-dd' data-valid-date='true' data-valid-use='true' data-valid-title="시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="e_mod_date" name="e_mod_date" data-dateformat='yy-mm-dd' data-valid-date='true' data-valid-use='true' data-valid-title="종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div  class="col-md-2">
+										<a href="javascript:void(0);" id="cond_monthly" class="btn btn-sm bg-color-blue txt-color-white">월별</a>
+										<a href="javascript:void(0);" id="cond_daily" class="btn btn-sm bg-color-blueDark txt-color-white">일별</a>
+									</div>									
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-6 text-danger ta-l">
+										<i class="fa fa-info-circle"></i>  최근 3개월까지 통계를 조회하실 수 있습니다.
+									</div>
+									<div class="col-md-6">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="s_stts_dd" name="s_stts_dd">
+							<input type="hidden" id="e_stts_dd" name="e_stts_dd">							
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-3" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+					<h2>알림 등록/조회수 </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div class="widget-body">
+						<div align="right" id="chart_canvas_txt_1"></div><hr/>
+						<div id="div_canvas_container_1">
+						<canvas id="chart_canvas_1" height="60"></canvas>
+						</div>
+						<div id="legend_chart_canvas_1"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>알림 등록/조회수 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_data_stats_grid" class="widget-body no-padding">
+						<table id="data_stats_grid"></table>
+					</div>
+					<div id="data_stats_grid_page" class="ta-r" style="padding:5px;">
+						<a href="javascript:excel_down();" id="btn_excel" class="btn btn-sm btn-success">엑셀 다운로드</a>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<input type="hidden" id="view_type" name="view_type" value="M">
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js"></script>
+<script type="text/javascript">
+pageSetUp();
+// api_url
+var _url = api_url+"/backoffice/statistics/news/show";
+// API list object 추출
+var _list = function(obj){
+	return obj.data.news_stat_list;
+};
+// request param settting : api call, excel call
+var _data = function(){
+	$('#s_stts_dd').val($('#s_mod_date').cvtDateDefault());
+	$('#e_stts_dd').val($('#e_mod_date').cvtDateDefault());
+	var searchData = $("#frmSearch").serializeFormObject();
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}', 
+		stts_xls_dwld_type : 'PUSH_NOTI',
+		_search : true,
+		//nd : 1425629361192,
+		rows : 100,
+		page : 1,
+		sidx : 'stts_dd',
+		sord : 'asc',
+		view_type : $("#view_type").val(),
+		search_info : searchData
+	};
+	return data;
+};
+
+var pagefunction = function() {
+	
+	// 엑셀 다운로드 본사일 경우만 버튼 존재
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#btn_excel').remove();	
+	}
+
+	f_setCalendar();	// ---- 초기데이터 설정 : 달력 시작---//
+	
+	// 서버 통신
+	f_ajaxSubmit();
+
+};
+/* ============================================================================================
+/* Server와 통신 
+/* ============================================================================================ */
+function f_ajaxSubmit() {
+	// 실제 데이터 전송
+	$.ajax({
+		url : _url,
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(_data())),
+	    success: function(obj){ 
+	    	var list = _list(obj);
+	    	// 차트 텍스트 세팅
+	    	f_setChartTxt();
+	    	// chart
+	    	drawChart(list);
+	    	// grid	    	
+	    	run_jqgrid_function(list);	   
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+} 
+
+/* ============================================================================================
+/* Grid Data 생성
+/* ============================================================================================ */	
+function run_jqgrid_function(jsonData) {
+	$('#data_stats_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#data_stats_grid").parent().width() - 100;
+	var addData = null;
+	jQuery("#data_stats_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['일자', '등록수', '조회수', '등록대비 조회율'],
+		colModel : [
+			{ name : 'stts_dd', 	index : 'stts_dd',		align : "center",	sortable : true, 	width : (pageWidth*(30/100))},
+			{ name : 'reg_cnt',		index : 'reg_cnt', 		align : "center", 	sortable : true, 	sorttype:"float", width : (pageWidth*(35/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'view_cnt',	index : 'view_cnt', 	align : "center", 	sortable : true, 	sorttype:"float", width : (pageWidth*(35/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'view_rate',	index : 'view_rate', 	align : "center", 	sortable : false, 	sorttype:"float", width : (pageWidth*(35/100)), 
+				formatter : function(cellvalue, options, rowObject) {
+					if(cellvalue.toString().indexOf('%') == -1){
+						cellvalue =  cf_setComma(cf_mathRound(cellvalue)) + ' %';
+					} 
+					return cellvalue;
+				}
+			}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  
+		shrinkToFit : true,
+		onSortCol: function (index, columnIndex, sortOrder) {
+			addData = jQuery("#data_stats_grid").jqGrid('getRowData',1);
+			$("#data_stats_grid").jqGrid('delRowData', '1');
+		},
+		loadComplete : function() {
+			var colModel = $("#data_stats_grid").jqGrid('getGridParam', 'colModel');
+			
+			if($('#view_type').val() == 'M'){
+				jQuery("#data_stats_grid").jqGrid("setLabel", colModel[0]['name'], "기간");
+			} else if($('#view_type').val() == 'D'){
+				jQuery("#data_stats_grid").jqGrid("setLabel", colModel[0]['name'], "일자");
+			}
+			
+			// 전체값 Grid 상위 설정 및 font bold 처리
+			if(addData != null){
+				$("#data_stats_grid").jqGrid('addRowData', '1', addData, "first");
+			}	
+			var rowData = $("#data_stats_grid").jqGrid('getRowData', 1);
+			for(var nCol=0; nCol < Object.keys(rowData).length; nCol++){
+                $('#data_stats_grid').setCell(1,nCol,'',{'font-weight':'bold'});
+			}
+		},
+		gridComplete: function(data){}
+	});
+
+  	$("#data_stats_grid").gridCss();
+  	$("#data_stats_grid_cb").css("border-left-width","0");
+  	$("#data_stats_grid_cb").css("padding-left","4px");
+  	$("#jqgh_data_stats_grid_cb").css("padding","7px 0");
+  
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#data_stats_grid").jqGrid( 'setGridWidth', $("#target_data_stats_grid").width() );
+	});
+    
+   $("#data_stats_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	
+}
+/* ============================================================================================
+/* Chart 생성
+/* ============================================================================================ */
+function drawChart(dataset){
+	var _label = [];
+	var _data1 = [];
+	var _data2 = [];
+	var value_spacing = 300;
+	
+	for(var nRow=1; nRow<dataset.length; nRow++){
+		// Chart 데이터 처리 시작 =========================
+		_label[nRow-1] = sliceMonthStr(dataset[nRow].stts_dd);
+		_data1[nRow-1] = dataset[nRow].reg_cnt;
+		_data2[nRow-1] = dataset[nRow].view_cnt;
+		// Chart 데이터 처리 시작 =========================
+	}	
+    
+	if(dataset.length > 3) {
+		value_spacing = value_spacing / dataset.length;
+	}
+	
+    var chart1_data = {
+	 	labels: _label,
+        datasets: [
+	 		{
+	            label: "등록수",
+	            fillColor: "rgba(79,129,189,1)",
+	            strokeColor: "rgba(79,129,189,1)",
+	            highlightFill: "rgba(79,129,189,0.8)",
+	            highlightStroke: "rgba(79,129,189,0.8)",
+	            //data: [240, 80, 15, 75]
+	 			data: _data1
+	        },
+	        {
+	            label: "조회수",
+	            fillColor: "rgba(192,80,77,1)",
+	            strokeColor: "rgba(192,80,77,1)",
+	            highlightFill: "rgba(192,80,77,0.8)",
+	            highlightStroke: "rgba(192,80,77,0.8)",
+	            //data: [135, 125, 30, 10]
+	        	data: _data2
+	        }
+        ]
+	};
+
+    var chart1_options = {
+		    scaleBeginAtZero : true,
+		    scaleShowGridLines : true,
+		    scaleGridLineColor : "rgba(0,0,0,.05)",
+		    scaleGridLineWidth : 1,
+		    barShowStroke : true,
+		    barStrokeWidth : 1,
+		    barValueSpacing : value_spacing,
+		    barDatasetSpacing : 2,
+	        responsive: true
+	};
+
+		if (window.barChart1){ 
+	        window.barChart1.destroy();
+	    }
+        var bar_chart1 = document.getElementById("chart_canvas_1").getContext("2d");
+        barChart1 = new Chart(bar_chart1).Bar(chart1_data, chart1_options);
+        legend($("#legend_chart_canvas_1"), chart1_data);        
+}
+/* ============================================================================================
+/* Chart 좌상단 Text Setting
+/* ============================================================================================ */
+function f_setChartTxt(){
+	// 발행일 기준 text setting
+	var vdate = $('#s_mod_date').val() + " ~ " + $('#e_mod_date').val();
+	$('#chart_canvas_txt_1').html('※ 가입일 기준: ' +  vdate);    
+}
+/** ============================================================================================
+/* Validation 처리
+/* --------------------------------------------------------------------------------------------
+/* 일간 조회시 30일을 초과 할수 없음
+/* ============================================================================================ */
+function checkValidation(){
+	var sdate = new Date($('#s_mod_date').val());
+	var edate = new Date($('#e_mod_date').val());
+
+	if(edate - sdate < 0){
+		alert("종료일이 시작을보다 앞일 수 없습니다.");
+		return false;
+	}
+	
+	// 월별 조회시 180일을 초과 할수 없음
+	if($('#view_type').val() == 'M' && f_intervalDate(sdate, edate) > 90){
+		alert("월별 조회는 90일을 초과할수 없습니다.");
+		return false;
+	}	
+	// 일별 조회시 30일을 초과 할수 없음
+	if($('#view_type').val() == 'D' && f_intervalDate(sdate, edate) > 30){
+		alert("일별 조회는 30일을 초과할수 없습니다.");
+		return false;
+	}	
+	return true;
+}
+/* ============================================================================================
+/* 달력 초기 데이터 설정
+/* ============================================================================================ */
+function f_setCalendar(){
+	// 달력 minDate, maxDate 값을 초기화 / default date setting
+	f_resetCalendar();
+
+	// 최대 조회기간 90일(3개월)
+	$('#s_mod_date').datepicker("option", "minDate", cf_termDate(-91));	
+	$('#s_mod_date').datepicker("option", "maxDate", $("#e_mod_date").val());
+	$('#e_mod_date').datepicker("option", "minDate", $("#s_mod_date").val());
+	$('#e_mod_date').datepicker("option", "maxDate", cf_termDate(-1));
+}
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", function(){
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/chartjs/chart.min.js", pagefunction);
+});
+</script>

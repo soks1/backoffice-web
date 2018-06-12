@@ -1,0 +1,79 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 고객군 선택 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox" style="margin-bottom: 0;">
+					</div>
+					<div class="widget-body no-padding">
+						<div class="table-responsive" style="max-height:417px; overflow-x:hidden; overflow-y: auto;">
+							<table class="table table-bordered table-striped" style="width: 483px;">
+								<thead>
+									<tr>
+										<th class="ta-c" style="width:20px"><input type="checkbox"></th>
+										<th class="ta-c" style="width:240px">고객군명</th>
+										<th class="ta-c" style="width:150px">고객군ID</th>
+									</tr>
+								</thead>
+								<tbody id="custgroup_tbody">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+</section>
+<script type="text/javascript">
+
+var pagefunction = function () {
+	
+	var data = {
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+	};
+	
+	$.ajax({
+	    url: api_url+'/backoffice/mclub/custgroup/list',
+	    type: 'GET',
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var custgp_list = obj.data.custgp_list;
+	    	$.each(custgp_list, function(i, items) {
+	    		var $tr = $('<tr></tr>').data(items).appendTo( $("#custgroup_tbody") );
+	    		$tr.append( $('<td></td>', {'class': 'ta-c'}).append( $('<input>', {'type':'checkbox'}).val( items['lst_temp_custgp_id'] ) ) );
+	    		$tr.append( $('<td></td>', {'class': 'ta-c custgp_nm'}).text(items['custgp_nm']) );
+	    		$tr.append( $('<td></td>', {'class': 'ta-c'}).text(items['lst_temp_custgp_id']) );
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

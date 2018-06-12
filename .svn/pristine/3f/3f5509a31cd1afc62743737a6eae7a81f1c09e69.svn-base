@@ -1,0 +1,285 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>자주묻는질문 수정</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmFaq" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="noticbd_divn_cd" value="">
+							<input type="hidden" name="noticbd_id" value="">
+							<fieldset>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="title" data-valid-use='true' data-valid-symbol='true' data-valid-max="78" data-valid-title='제목'>
+									</div>
+								</div>
+								<!-- 비회원 추가 START -->
+								<div class="form-group">
+									<label class="col-md-2 control-label">노출 구분<sup>*</sup></label>
+									<div class="col-md-3">
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="M" data-check-only="true" checked="checked">회원</label>
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="N" data-check-only="true">비회원</label>
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="X" data-check-only="true">혼합</label>
+                                    </div>
+								</div>
+								<!-- 비회원 추가 END -->
+								<div class="form-group">
+									<label class="col-md-2 control-label">분류<sup>*</sup></label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="faq_cat_cd_name"></span>
+										<input type="hidden" name="faq_cat_cd">
+									</div>
+									<div class="col-md-2"></div>
+									<label class="col-md-2 control-label">게시상태<sup>*</sup></label>
+									<div class="col-md-2">
+										<select class="form-control" name="ntce_sts_cd" data-valid-use="true" data-valid-title="게시상태">
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용 이미지</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 가로사이즈: 1040px  / 세로사이즈: 무관 /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용<sup>*</sup></label>
+									<div class="col-md-10">
+										<textarea class="form-control" name="content" rows="10" data-valid-use='true' data-valid-symbol='true' data-valid-max="3000" data-valid-title="내용"></textarea>
+									</div>
+								</div>
+								
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_faqList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	if($('#frmFaq').formValid() ) {
+		
+		if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+			$('input[name=noticbd_divn_cd]').val( $("#frmKeepData").find("input[name=noticbd_divn_cd]").val() );
+			$('input[name=noticbd_id]').val( $("#frmKeepData").find("input[name=noticbd_id]").val() );
+			var data = cf_boardFileObject($('#frmFaq'));
+			
+			if(data.noticbd_img_list.length < 1) {
+				var file_data = {};
+				file_data['file_divn_cd'] = 'IMG_FAQ_CONTENT';
+				file_data['img_file_divn_cd'] = 'CONTENT';
+				data['noticbd_img_list'].push(file_data);
+			}
+			
+			// 실제 데이터 전송
+			$.ajax({
+				url: api_url+"/backoffice/common/board/update",
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	f_faqView();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		} else {
+			$("button[type=submit]").attr("disabled",false);
+		}
+	} else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 파일 업로드
+/* --------------------------------------------------------------------------------------------
+/* 파일 업로드 이벤트 핸들러
+/* ============================================================================================ */
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this), 'IMG_FAQ_CONTENT');
+});
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 게시상태
+	f_ajaxNoticeStatusCode($('select[name=ntce_sts_cd]'), 'FAQ');
+	
+	// FAQ 데이터 로드
+	$.ajax({
+	    url: api_url+"/backoffice/common/board/show", //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	$("input[name=title]").val(obj.data.title);
+	    	$("#faq_cat_cd_name").html(obj.data.faq_cat_cd_name);
+	    	$("input[name=faq_cat_cd]").val(obj.data.faq_cat_cd);
+	    	$('textarea[name=content]').val(obj.data.content);
+	    	$("select[name=ntce_sts_cd]").val(obj.data.ntce_sts_cd).attr("selected", "selected");
+	    	$("input[name=nomem_view_gbn]:radio[value='"+obj.data.nomem_view_gbn+"']").prop('checked',true);
+	    	
+	    	// ------------- 이미지 영역 ------------- //
+	    	// 일반 업로드
+	    	if(obj.data.atch_file_nm != "") {
+	    		$.each(obj.data.noticbd_img_list, function(i, item) {
+		    		var preview = $('#preview_uploadfile');
+					preview.find('img').attr('src', item.prvw_url);
+					
+					var fName = '<p class="alert alert-info bd0">'+item.img_orgin_file_nm+'</p>';
+					preview.parent().append(fName); 
+					
+					var span = $('<span>').addClass('btn_del_uploadfile');
+					var aTag = $('<a>')
+								.addClass('btn btn-danger btn-sm')
+								.attr('href','javascript:cf_fileDelete(\'uploadfile\')')
+								.text('파일삭제');
+					
+					var input_file_divn_cd = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'file_divn_cd')
+						.val(item.file_divn_cd);
+					
+					var input_local_file_name = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_strge_file_nm')
+								.val(item.img_strge_file_nm);
+					
+					var input_atch_file_nm = $('<input>')
+								.attr('type', 'hidden')
+								.attr('name', 'img_orgin_file_nm')
+								.val(item.img_orgin_file_nm);
+
+					span.append(aTag);
+					span.append(input_file_divn_cd);
+					span.append(input_local_file_name);
+					span.append(input_atch_file_nm);
+					
+					if(typeof item.file_divn_cd != 'undefined') {
+						var img_file_divn_cd = $('<input>')
+							.attr('type', 'hidden')
+							.attr('name', 'img_file_divn_cd')
+							.val(item.img_file_divn_cd);
+						span.append(img_file_divn_cd);
+					}
+					
+					var btn_div = $("#uploadfile").parent().parent();
+					btn_div.find("a").attr("disabled", true);
+					btn_div.find("span").attr("disabled", true);
+					btn_div.append(span);
+		    	});
+	    	}
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

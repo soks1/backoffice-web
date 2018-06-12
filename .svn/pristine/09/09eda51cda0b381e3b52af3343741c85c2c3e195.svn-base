@@ -1,0 +1,706 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록지점</label>
+									<div class="col-md-3">
+										<select class="form-control" id="str_cd" name="str_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">쿠폰 유형</label>
+									<div class="col-md-3">
+										<select class="form-control" name="coupon_cls_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									<div id="div-coupon-type-cd">
+										<label class="col-md-1 control-label">할인/적립 유형</label>
+										<div class="col-md-3">
+											<select class="form-control" name="coupon_type_cd">
+												<option value="">전체</option>
+											</select> 
+										</div>
+									</div>
+									<div id="div-exch-goods" style="display:none;">
+										<label class="col-md-1 control-label">교환구분</label>
+										<div class="col-md-3">
+											<select class="form-control" name="exch_goods">
+												<option value="">전체</option>
+												<option value="GOODS">물품</option>
+												<option value="L.POINT">L.POINT</option>
+											</select> 
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰번호</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="coupon_id" data-valid-title="쿠폰번호">
+									</div>
+									<label class="col-md-1 control-label">쿠폰명</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="coupon_nm">
+									</div>
+									<label class="col-md-1 control-label">할인/적립액</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="dc_savu_amt" data-valid-title="할인/적립액">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">판매코드</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="prod_sell_cd" data-valid-title="쿠폰번호">
+									</div>
+									
+									<label class="col-md-1 control-label">상품명</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="prod_nm">
+									</div>
+									
+									<label class="col-md-1 control-label">자/타사 구분</label>
+									<div class="col-md-3">
+										<select class="form-control" name="company_type">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰노출타입</label>
+									<div class="col-md-3">
+										<select class="form-control" id="coupon_size_type_cd_nm" name="coupon_size_type_cd_nm">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> M쿠폰 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_coupon_grid" class="widget-body no-padding">
+						<table id="coupon_grid"></table>
+						<div id="coupon_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="couponbook_info_rd" style="display:none;"></div>
+<div id="excel_upload_wd" style="display:none;"></div>
+<div id="excel_download_wd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 적용 대상 유형에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 적용대상 유형 값에 따라 쿠폰유형 정보를 변경 함.
+/* 	- PRICE		: 정률할인/정액할인/정률적립/정액할인
+/* 	- PRODUCT 	: 정률할인/정액할인/정률적립/정액할인/정액할인(포인트쿠폰)
+/* ============================================================================================ */
+$("select[name=coupon_cls_cd]").change(function(){
+	
+	$("#div-coupon-type-cd").show();
+	$("#div-exch-goods").hide().find("select[name=exch_goods]").val("");
+
+	if($(this).val() === 'B') {
+		$("input[name=prod_sell_cd]").attr("disabled", true);
+		$("input[name=prod_nm]").attr("disabled", true);
+		f_ajaxCouponTypeCode($("select[name=coupon_type_cd]"), 'L', $(this).val());
+	}
+	else if($(this).val() === 'A') {
+		$("input[name=prod_sell_cd]").attr("disabled", false);
+		$("input[name=prod_sell_cd]").removeAttr("disabled");
+		$("input[name=prod_nm]").attr("disabled", false);
+		$("input[name=prod_nm]").removeAttr("disabled");
+		f_ajaxCouponTypeCode($("select[name=coupon_type_cd]"), 'L', $(this).val());
+	}
+	else if($(this).val() === 'C'){
+		$("#div-coupon-type-cd").hide().find("select[name=coupon_type_cd]").val("");
+		$("#div-exch-goods").show().find("select[name=exch_goods]").val("");
+		
+		$("select[name=coupon_type_cd]").empty();
+		$("select[name=coupon_type_cd]").append('<option value="">전체</option>');
+		
+	}else if($(this).val() === 'F') {
+		$("input[name=prod_sell_cd]").attr("disabled", false);
+		$("input[name=prod_sell_cd]").removeAttr("disabled");
+		$("input[name=prod_nm]").attr("disabled", false);
+		$("input[name=prod_nm]").removeAttr("disabled");
+		
+		f_ajaxCouponTypeCode($("select[name=coupon_type_cd]"), 'L', $(this).val());
+		
+		$('select[name=coupon_type_cd] option:eq(1)').html('무상');
+		$('select[name=coupon_type_cd] option:eq(2)').html('무상(반복사용금지)');
+	}else {
+		$("input[name=prod_sell_cd]").attr("disabled", false);
+		$("input[name=prod_sell_cd]").removeAttr("disabled");
+		$("input[name=prod_nm]").attr("disabled", false);
+		$("input[name=prod_nm]").removeAttr("disabled");
+		
+		f_ajaxCouponTypeCode($("select[name=coupon_type_cd]"), 'L', $(this).val());
+	}
+});
+
+
+/* ============================================================================================
+/* 쿠폰별 쿠폰북 정보 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 리스트상의 쿠폰북 맵핑수 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+$('#couponbook_info_rd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 쿠폰별 쿠폰북 정보 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 엑셀 업로드 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 리스트상의 엑셀 업로드 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+$('#excel_upload_wd').dialog({
+	autoOpen : false,
+	width : 400,
+	minHeight: 300,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 엑셀 업로드 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			$('#uploading').html('<i class="fa fa-info-circle"></i> 엑셀 데이터 등록 중 입니다.');
+			cf_excelUpload($('#excelfile'));
+		}
+	},
+	{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#excel_upload_wd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 엑셀 다운로드 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 리스트상의 엑셀 다운로드 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+$('#excel_download_wd').dialog({
+	autoOpen : false,
+	width : 400,
+	minHeight: 300,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 엑셀 다운로드 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-search'></i>&nbsp; 조회",
+		"class" : "btn btn-primary",
+		click : function() {
+			var data = {
+					empno: '${sessionScope.sessionEmpno}', 
+					str_cd: '${sessionScope.sessionStrCd}',
+					hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				};
+			data.s_reg_date =  $('#s_reg_date').val().replace(/\-/g, '');
+			data.e_reg_date =  $('#e_reg_date').val().replace(/\-/g, '');
+			var url = api_url+"/backoffice/coupon/excel/download?";
+			var params = encodeURI('params='+JSON.stringify(data));
+			$.fileDownload(url + params);
+		}
+	},
+	{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#excel_download_wd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+ 
+//이미지 미리보기 툴팁
+$(document).tooltip({
+	selector: '.toooltip',
+	container: '#widget-grid',
+	placement: 'right',
+	html: true
+});
+
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCpCode($("#str_cd"));
+	// 초기데이터 로드 : 적용대상유형
+	f_ajaxApplyToTypeCode($("select[name=coupon_cls_cd]"));
+	f_ajaxCouponTypeCode($("select[name=coupon_type_cd]"), 'L', $("select[name=coupon_cls_cd] option:selected").val());
+	
+	// 초기데이터 로드 : 쿠폰노출타입
+	f_ajaxCouponSizeCode($("#coupon_size_type_cd_nm"));
+	
+	// 초기데이터 로드 : 자/타사 구분
+	f_ajaxCommonCode({
+		target:"select[name=company_type]", 
+		cd_divn_id: "COMPANY_TYPE_CD",
+		codeId : "",
+		fnSuccess : ""
+	});
+		
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", coupon_grid_function);
+	function coupon_grid_function() {
+		
+		var pageWidth = $("#coupon_grid").parent().width() - 100;
+
+		jQuery("#coupon_grid").jqGrid({
+			url : api_url+"/backoffice/coupon/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '쿠폰번호', '쿠폰노출타입', '쿠폰명', '쿠폰 유형', '할인/적립 유형', '자/타사', '상품', '할인적립<br>(금액/율)', '쿠폰별 쿠폰북<br>맵핑수', '등록일자', '쿠폰 유형 코드', '이미지미리보기' ],
+			colModel : [
+				{ name : 'rnum', 					index : 'rnum',		 				align : 'center',	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				/* { name : 'reg_id_str_cd_name', 		index : 'reg_id_str_cd_name', 		align : 'center', 	sortable : false, 	width : (pageWidth*(10/100))	}, */
+				{ name : 'coupon_id', 				index : 'coupon_id', 				align : 'center',	sortable : false, 	width : (pageWidth*(7/100)), 	classes:'pointer toooltip'  },
+				{ name : 'coupon_size_type_cd', 	index : 'coupon_size_type_cd', 		align : 'center', 	sortable : false, 	width : (pageWidth*(7/100))		},  
+				{ name : 'coupon_nm', 				index : 'coupon_nm', 				align : 'left',		sortable : false, 	width : (pageWidth*(20/100)),	classes:'pointer'  },
+				{ name : 'coupon_cls_cd_name', 		index : 'coupon_cls_cd_name',		align : 'center', 	sortable : false, 	width : (pageWidth*(7/100)) 	},
+				{ name : 'coupon_type_cd_name', 	index : 'coupon_type_cd_name', 		align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)),  	
+					formatter : function(cellvalue, options, rowObject) {
+						if(rowObject.coupon_cls_cd == "F") {
+							if(rowObject.coupon_type_cd == "1") {
+								cellvalue = "무상";
+							}else {
+								cellvalue = "무상(반복사용금지)";								
+							}
+						}
+						
+						return cellvalue;
+					}	
+				},
+				{ 
+					name : 'company_type_name', 			index : 'company_type_name', 				align : 'center', 	sortable : false, 	width : (pageWidth*(8/100))
+				},
+				{ name : 'prod_content', 			index : 'prod_content', 			align : 'left', 	sortable : false, 	width : (pageWidth*(20/100)),  	
+					formatter : function(cellvalue, options, rowObject) {
+						if(rowObject.prod_content == "") {
+							cellvalue = rowObject.cate_content;
+						}else {
+							cellvalue = rowObject.prod_content;
+						}
+						return cellvalue;
+					}
+				},
+					
+				{ 
+				  name : 'dc_savu_amt', 			index : 'dc_savu_amt', 				align : 'center', 	sortable : true, 	width : (pageWidth*(8/100)), firstsortorder:'asc',
+				  formatter : function(cellvalue, options, rowObject) {
+					  var coupon_type_cd = rowObject.coupon_type_cd;
+					  if(coupon_type_cd == 'A' || coupon_type_cd == 'J' || coupon_type_cd == 'P' || coupon_type_cd == 'F' || coupon_type_cd == 'T' || coupon_type_cd == 'L') {
+						  return cf_setComma(cellvalue) + ' %';
+					  } else if(coupon_type_cd == 'B' || coupon_type_cd == 'E' || coupon_type_cd == 'K' || coupon_type_cd == 'Q' || coupon_type_cd == 'G' || coupon_type_cd == 'U' || coupon_type_cd == 'M') {
+						  return cf_setComma(cellvalue) + ' 원';
+					  } else if(coupon_type_cd == 'C' || coupon_type_cd == 'X' || coupon_type_cd == 'R' || coupon_type_cd == 'H' || coupon_type_cd == 'V' || coupon_type_cd == 'N') {
+						  return cf_setComma(cellvalue) + ' 배';
+					  } else if(coupon_type_cd == 'D' || coupon_type_cd == 'Y' || coupon_type_cd == 'S' || coupon_type_cd == 'I' || coupon_type_cd == 'W' || coupon_type_cd == 'O') {
+						  return cf_setComma(cellvalue) + ' P';
+					  } else if(coupon_type_cd == '1' || coupon_type_cd == '2') {
+						  return cf_setComma(cellvalue) + ' 원';
+					  }else {
+						  return cellvalue;
+					  }
+				  }
+				},
+				{ name : 'mapp_freq_cnt', 			index : 'mapp_freq_cnt', 			align : 'center', 	sortable : true, 	width : (pageWidth*(6/100)), 
+					formatter : function(cellvalue, options, rowObject) {
+						if(cellvalue > 0) {
+							return cf_setComma(cellvalue);	
+						} else {
+							return cellvalue;
+						}
+					},
+					classes:'pointer'	
+				},
+				{ 
+				  name : 'reg_date', 				index : 'reg_date', 				align : 'center', 	sortable : false, 	width : (pageWidth*(7/100)), 	formatter: 'date',	
+				  formatoptions: { srcformat: 'Y-m-d', newformat: 'Y-m-d'}
+				}, 
+				{ name : 'coupon_cls_cd', index : 'coupon_cls_cd', hidden : true, width : 0 },
+				{ name : 'coupon_img_prvw_url', index : 'coupon_img_prvw_url', hidden : true, width : 0	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "coupon_id",
+				root :		function(obj){ return obj.data.coupon_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#coupon_grid").jqGrid('setGridParam', {search: true});
+					$("#coupon_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+					
+					if ($("select[name=coupon_cls_cd]").val() == "C") { // 교환형인 경우, 교환품 show
+						$("#div-coupon-type-cd").hide();
+						$("#div-exch-goods").show();						
+					}
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#coupon_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#coupon_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{ 
+				search_info: "", 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}' 
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#coupon_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 3 || index == 4) {
+					$("#coupon_grid").jqGrid('setGridParam', {'postData' : {'coupon_id':rowid} });
+					var postData = $('#coupon_grid').jqGrid("getGridParam", "postData");
+					
+					var url = "/application/coupon/coupon/couponRN.do";
+					var method = "POST";
+					cf_action(url, method, postData);
+			   } else if(index == 9) {
+				   f_openCouponBookRD(rowid);
+			   }
+			},
+			gridComplete: function() {
+				var postData = $('#coupon_grid').jqGrid("getGridParam", "postData");
+				$('#coupon_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				
+				var sortObj = $('.ui-jqgrid-htable').find('#coupon_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+				
+				f_ajaxCouponTypeCode($("select[name=coupon_type_cd]"), 'L', postData["search_info"].coupon_cls_cd);
+				if(postData["search_info"].coupon_cls_cd == "F") {
+					$('select[name=coupon_type_cd] option:eq(1)').html('무상');
+					$('select[name=coupon_type_cd] option:eq(2)').html('무상(반복사용금지)');
+				}
+				$('select[name=coupon_type_cd]').val(postData["search_info"].coupon_type_cd).attr("selected", "selected");
+				
+				//상품 이미지 미리보기
+				$("td:eq(3)", $("#coupon_grid tr[id]")).each(function() {
+					var img;
+					try {
+						img = $('#coupon_grid').jqGrid("getRowData", $(this).parents('tr').prop('id'))['coupon_img_prvw_url'];
+					}
+					catch(e) {}
+					
+					if (img)
+						$(this).attr('title', "<img style='height: 150px;' src='" + $('#coupon_grid').jqGrid("getRowData", $(this).parents('tr').prop('id'))['coupon_img_prvw_url'] + "'/>");
+					else
+						$(this).attr('title', '이미지가 없습니다.');
+					
+				});
+			}
+		});
+		
+		jQuery("#coupon_grid").jqGrid('navGrid', "#coupon_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#coupon_grid").jqGrid('navButtonAdd','#coupon_grid_page',{
+				caption: "엑셀양식",
+				id: "download_button",
+				buttonicon: "ui-icon-excel",
+				onClickButton: function(){ 
+					// 엑셀 양식 다운로드
+					var data = {
+						empno: '${sessionScope.sessionEmpno}', 
+						str_cd: '${sessionScope.sessionStrCd}',
+						hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+					}; 
+					var url = api_url + "/backoffice/common/excel/coupon/form/download?";
+					var params = encodeURI('params='+JSON.stringify(data));
+					$.fileDownload(url + params);
+					
+				}
+			});
+		}
+		
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#coupon_grid").jqGrid('navButtonAdd','#coupon_grid_page',{
+				caption: "엑셀업로드",
+				id: "upload_button",
+				buttonicon: "ui-icon-excel",
+				onClickButton: function(){ 
+					f_openExcelUploadRD();
+				}
+			});
+			jQuery("#coupon_grid").jqGrid('navButtonAdd','#coupon_grid_page',{
+				caption: "엑셀다운",
+				id: "download2_button",
+				buttonicon: "ui-icon-excel",
+				onClickButton: function(){ 
+					f_openExcelDownloadRD();
+				}
+			});
+		}
+					
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#coupon_grid").jqGrid('navButtonAdd','#coupon_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					var chk_cnt = 0;
+					if(select_ids.length < 1) {
+						alert('삭제하실 쿠폰을 선택해 주세요.');
+						return;
+					}
+					// 쿠폰북 맵핑 데이터 체크 로직
+					for(var i = 0; i < select_ids.length; i++) {
+						var mapp_freq_cnt = $("#coupon_grid").jqGrid('getCell', select_ids[i], 'mapp_freq_cnt');
+						if(mapp_freq_cnt > 0) {
+							chk_cnt++;	
+						}
+					}
+					if(chk_cnt > 0) {
+						alert("쿠폰북에 맵핑된 쿠폰은 삭제가 불가능합니다.");
+						return;
+					}
+					
+					if(confirm("정말 삭제하시겠습니까?")) {
+						
+						var data = {
+							coupon_id_list : select_ids,
+							empno: '${sessionScope.sessionEmpno}', 
+							emp_str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+						};
+
+						$.ajax({
+							url: api_url + "/backoffice/coupon/delete",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$("#coupon_grid").trigger("reloadGrid");
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+						    	return;
+						    }
+						});
+						
+					}
+				}
+			});
+		}
+					
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#coupon_grid").jqGrid('navButtonAdd','#coupon_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/coupon/coupon/couponWN.do";
+					var method = "POST";
+					var postData = $('#coupon_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#coupon_grid").jqGrid('navButtonAdd','#coupon_grid_page',{
+				caption: "복사",
+				id: "copy_button",
+				buttonicon: "ui-icon-check",
+				onClickButton: function(){ 
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					
+					if(select_ids.length < 1) {
+						alert('복사하실 쿠폰을 선택해 주세요.');
+						return;
+					}
+										
+					var data = {
+						coupon_id_list : select_ids,
+						empno: '${sessionScope.sessionEmpno}', 
+						emp_str_cd: '${sessionScope.sessionStrCd}',
+						hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+					};
+					
+					$.ajax({
+						url: api_url + "/backoffice/coupon/copy",
+						type: "POST",
+						contentType: "application/json;charset=utf-8", // POST 일때만 사용
+						async: false,
+						cache: true,
+						data: JSON.stringify(data),
+						success: function(obj) {
+							alert(obj.message);
+							$("#coupon_grid").trigger("reloadGrid");
+						},
+						error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+					    	return;
+					    }
+					});
+				}
+			});	
+		}
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#coupon_grid").gridCss();
+	  	$("#coupon_grid_cb").css("border-left-width","0");
+	  	$("#coupon_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_coupon_grid_cb").css("padding","7px 0");
+	  	$("#coupon_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#coupon_grid").jqGrid( 'setGridWidth', $("#target_coupon_grid").width() );
+		});
+	 	
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

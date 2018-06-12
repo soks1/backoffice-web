@@ -1,0 +1,1027 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>달려라! 선착순 등록</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal"  id="frmGroupBuy" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" id="campaign_id" name="campaign_id" value="" data-valid-use="true" data-valid-title="캠페인/고객군">
+							<input type="hidden" name="campaign_start_dy" value="">
+							<input type="hidden" name="campaign_end_dy" value="">
+							<input type="hidden" name="rep_img_sel_yn" value="N">
+							<fieldset>
+								<div class="form-group" id="campaign_custgp">
+									<label class="col-md-2 control-label">캠페인/고객군<sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<a href="javascript:f_openCampaignSD();" id="btn_campaign" class="btn btn-primary btn-sm">선택</a>
+											<a href="javascript:f_delCampaign();" class="btn btn-danger btn-sm">삭제</a>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_id"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_term"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_custgp_cnt"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_nm"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-04" id="groupbuy_custgp"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사 제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="evt_title" data-valid-use='true' data-valid-symbol='true' data-valid-max="108" data-valid-title='행사제목'>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사 설명</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="evt_desc" data-valid-max="108" data-valid-title='행사내용'>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">게시 구분<sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="rserv_ntce_yn" value="N" data-check-only="true" checked="checked">
+											즉시게시 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="rserv_ntce_yn" value="Y" data-check-only="true">
+											예약게시 </label>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="rserv_ntce_dd" name="rserv_ntce_dd"  data-dateformat="yy-mm-dd" placeholder="예약일" disabled="disabled">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">지점 선택<sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="user_str_use_yn" value="N" data-check-only="true" checked="checked">
+											사용안함 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="user_str_use_yn" value="Y" data-check-only="true">
+											사용 </label>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이벤트 유형 <sup>*</sup></label>
+									<div class="col-md-2">
+										<select class="form-control" id="fcfs_evnt_type_cd" name="fcfs_evnt_type_cd" data-valid-use="true" data-valid-title="이벤트 유형">
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">진행 일시<sup>*</sup></label>
+<!-- 									<div class="col-md-3half"> -->
+<!-- 										<div class="input-group"> -->
+<!-- 											<input style="position: relative; z-index: 19;" class="form-control datepicker pr12 ta-c" type="text" id="evt_start_day" name="evt_start_day" data-dateformat='yy-mm-dd' data-valid-use='true' data-valid-title="행사일시 " data-valid-date='true' placeholder="행사일"> -->
+<!-- 											<span class="input-group-addon"><i class="fa fa-calendar"></i></span> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+									
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input style="position: relative; z-index: 19;" class="form-control datepicker pr12 ta-c" type="text" id="evt_start_day" name="evt_start_day" data-dateformat='yy-mm-dd' data-valid-use='true' data-valid-title="시작일 " data-valid-date='true' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<!-- <label class="col-md-1 control-label">진행시간</label> -->
+									<div class="col-md-1">
+										<select class="form-control" id="evt_start_hour" data-valid-use="true" data-valid-title="행사일 시작 시간 ">
+											<option value="">시</option>										
+										</select>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="evt_start_min" data-valid-use="true" data-valid-title="행사일 시작 분 ">
+											<option value="">분</option>
+										</select>
+									</div>
+									
+									<label class="col-md-1 control-label ta-c">~</label>
+									
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input style="position: relative; z-index: 19;" class="form-control datepicker pr12 ta-c" type="text" id="evt_end_day" name="evt_end_day" data-dateformat='yy-mm-dd' data-valid-use='true' data-valid-title="종료일 " data-valid-date='true' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="evt_end_hour" data-valid-use="true" data-valid-title="행사일 종료 시간 ">
+											<option value="">시</option>
+										</select>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="evt_end_min" data-valid-use="true" data-valid-title="행사일 종료 분 ">
+											<option value="">분</option>
+										</select>
+										<input type="hidden" id="evt_start_date" name="evt_start_date"> <!-- 행사시작일시 -->
+										<input type="hidden" id="evt_end_date" name="evt_end_date"> <!-- 행사종료일시 -->										
+									</div>
+								</div>
+								
+								<div class="form-group" id="div_event_prod">
+									<div class="col-md-2 control-label radio">
+										<label>이벤트 내용<sup>*</sup></label>
+									</div>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="fcfs_evnt_desc" data-valid-use='true' data-valid-symbol='true' data-valid-max="108" data-valid-title='이벤트 내용'>
+										
+										<!-- <div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:f_openProductSingleSD('prod_sell_cd_list');" id="btn_prod_select" class="btn btn-primary btn-sm">상품선택</a>
+												<a href="javascript:f_selectProductDelete();" class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div> -->
+										
+										<!--<div class="table-responsive" style="max-height:230px; overflow:auto;">							
+											 <table class="table table-bordered">
+												<thead>
+													<tr>
+														<th style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">판매코드</th>
+														<th class="ta-c">상품코드</th>
+														<th class="ta-c">상품명</th>
+														<th class="ta-c">규격</th>
+														<th class="ta-c">업체명</th>
+														<th class="ta-c">원가</th>
+														<th class="ta-c">매가</th>
+														<th class="ta-c">이익율</th>
+														<th class="ta-c">거래형태</th>
+													</tr>
+												</thead>
+												<tbody id="prod_sell_cd_list" data-valid-title="이벤트 판매상품">
+													
+												</tbody>
+											</table> 
+										</div>-->
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label grp-target">선착순 목표수량<sup>*</sup></label>
+									<div class="col-md-1 grp-target">
+										<input class="form-control" name="fcfs_tgt_qty" type="text" data-valid-use="true" data-valid-num="true" data-valid-minnum="1" data-valid-title="선착순 목표수량">
+									</div>
+									<label class="col-md-2 control-label product_label grp-product">상품 정상가<sup>*</sup></label>
+									<div class="col-md-2 grp-product">
+										<div class="input-group">
+											<input class="form-control ta-r" name="prod_nor_prc" type="text" data-valid-use="true" data-valid-num="true" onkeyup="this.value=cf_fmtComma(this);" data-valid-max="10" data-valid-title="상품 정상가">
+											<span class="input-group-addon">원</span>
+										</div>
+									</div>
+									<label class="col-md-1 control-label price_label grp-price">판매가<sup>*</sup></label>
+									<div class="col-md-2 grp-price">
+										<div class="input-group">
+											<input class="form-control ta-r" name="curr_sale_prc" type="text" data-valid-use="true" data-valid-num="true" onkeyup="this.value=cf_fmtComma(this);" data-valid-max="10" data-valid-title="판매가">
+											<span class="input-group-addon">원</span>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰발행 유형 <sup>*</sup></label>
+									<div class="col-md-3half">
+										<select class="form-control" id="fcfs_issue_type_cd" name="fcfs_issue_type_cd" data-valid-use="true" data-valid-title="쿠폰발행 유형 ">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<label class="col-md-3half control-label">쿠폰북 구분<sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="cpbook_gbn" value="A" data-check-only="true" checked="checked">
+										일반 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="cpbook_gbn" value="B" data-check-only="true">
+										신데렐라 </label>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰북 유효기간<sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input style="position: relative; z-index: 20;" class="form-control datepicker pr12 ta-c" type="text" id="vali_term_start_dd" name="vali_term_start_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="쿠폰북 유효기간 시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="vali_term_start_time" name="vali_term_start_time" data-valid-use="true" data-valid-title="시작시간" disabled></select>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_end_dd" name="vali_term_end_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="쿠폰북 유효기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="vali_term_end_time" name="vali_term_end_time" data-valid-use="true" data-valid-title="종료시간" disabled></select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰북<sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:f_openCpBookSD('groupbuy_cpb_tbody');" id="btn_groupbuy_cpb" class="btn btn-primary btn-sm">쿠폰북 추가</a>
+												<a href="javascript:cf_delTableRow('groupbuy_cpb_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+										
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c" style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">쿠폰북 번호</th>
+														<th class="ta-c">쿠폰북명</th>
+														<th class="ta-c">쿠폰북유형</th>
+														<th class="ta-c">쿠폰수</th>
+														<th class="ta-c">APP노출지점</th>
+													</tr>
+												</thead>
+												<tbody id="groupbuy_cpb_tbody" data-valid-title="쿠폰북" >
+
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지<sup>*</sup></label>
+									<!-- <div class="col-md-3">
+										<div class="col-md-6">
+											<label class="checkbox-inline">
+												<input type="checkbox" class="checkbox style-2" id="rep_img_sel_yn" name="rep_img_sel_yn" value="N">
+												<span>대표이미지 선택</span>
+											</label>
+										</div>
+										<div class="col-md-6">
+											<select class="form-control" id="rep_prod_sell_cd" name="rep_prod_sell_cd" disabled="disabled" data-valid-title="대표이미지">
+												<option value="">선택</option>
+											</select>
+										</div>
+									</div> -->
+								</div>
+								<div class="form-group" id="area_upload_represent_image">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile" data-valid-title="파일선택">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<!-- <p><i class="fa fa-info-circle"></i> 대표이미지를 선택하신 후 판매코드를 선택하시면 해당 상품의 이미지가 이벤트 상품 이미지로 선택됩니다.</p> -->
+										<p><i class="fa fa-info-circle"></i><!--  직접등록 시,  -->사이즈: 350px X 350px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">꼭! 읽어주세요</label>
+									<div class="col-md-10">
+										<textarea class="form-control" name="note" rows="5" data-valid-max="1000" data-valid-title='꼭! 읽어주세요'>
+&middot; 구매 신청 후 판매확정이 되면 상품을 구매하실 수 있는 쿠폰이 제공됩니다.
+&middot; 달려라! 선착순은 선착순 목표에 도달하지 못할 경우 쿠폰이 발급되지 않습니다.
+&middot; 제공된 쿠폰은 1회만 사용 가능합니다.</textarea>
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_groupBuyList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="groupbuy_campaign_sd" style="display:none;"></div>
+<div id="product_single_sd" style="display:none;"></div>
+<div id="cpbook_sd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+
+/**
+ * ==================================================================================
+ * 캠페인 ID 추가/삭제 시 버튼 텍스트 변경
+ * @param campaign_id  캠페인 ID
+ * ==================================================================================
+ */
+function changeCampaignId(campaign_id) {
+	if(campaign_id == '') {
+		$('#btn_campaign').text('선택');
+	} else {
+		$('#btn_campaign').text('수정');
+	}
+}
+
+/* ============================================================================================
+/* 예약일 minDate 설정
+/* ============================================================================================ */
+$('#rserv_ntce_dd').datepicker(
+	$.extend({
+		minDate: cf_toDate()
+	}, date_opts)
+);
+
+/* ============================================================================================
+/* 쿠폰북 유효기간 입력박스 달력 컨트롤러
+/* ============================================================================================ */
+$('#vali_term_start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#vali_term_end_dd").datepicker('option','minDate', selected);
+            if($(":radio[name='cpbook_gbn']:checked").val() == "B"){
+            	$("#vali_term_end_dd").val($(this).val());
+            }
+        }
+    }, date_opts)
+);
+$('#vali_term_end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#vali_term_start_dd").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/**
+ * ==================================================================================
+ * 캠페인/고객군 삭제 버튼 클릭시 호출되는 메소드
+ * ==================================================================================
+ */
+function f_delCampaign() {
+	$("input[name=campaign_id]").val('');
+	$("input[name=campaign_end_dy]").val('');
+	$("input[name=lst_custgp_id]").remove();
+	
+	$("#groupbuy_campaign_id").text('');
+	$("#groupbuy_campaign_term").text('');
+	$("#groupbuy_custgp_cnt").text('');
+	$("#groupbuy_campaign_nm").text('');
+	$("#groupbuy_custgp").text('');
+	changeCampaignId($("input[name=campaign_id]").val());
+}
+
+/**
+ * ==================================================================================
+ * 캠페인 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#groupbuy_campaign_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인/고객군 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 취소",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			var check_items_cnt = 0;
+			var custgroup_text = "";
+			var today_date = cf_toDate().replace(/\-/g,'');
+			
+			if(cf_getTrElementCount($("#custgroup_tbody")) < 1) {
+				alert("고객군 항목을 조회해 주십시오.");
+				return;
+			} else {
+				$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+					if($(this).is(":checked") == true) {
+						check_items_cnt++;
+					}
+				});
+			}
+			
+			if(check_items_cnt < 1) {
+				alert("고객군 항목을 선택해 주십시오.");
+				return;
+			} else {
+				$("input[name=lst_custgp_id]").remove();
+			}
+			
+			if(check_items_cnt > 1) {
+				alert("고객군 1개만 등록 가능 합니다.");
+				return;
+			}
+			
+			$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+				if($(this).is(":checked")) {
+					var row = $(this).parent().parent();
+					var key = "";
+					var tag_input = "";
+					
+					// 루프문을 돌면서 Append 할 Tag 생성, index가 2인 위치에서 Key가 될 값 추출
+					row.find("td").each(function(idx){
+						// 각 셀 데이터 생성
+						if(idx < 4) {
+							if(idx == 2) {
+								key = $(this).text();
+								tag_input += "<input type='hidden' name='lst_custgp_id' value='"+key+"'>";
+								custgroup_text += key;
+							}
+							if(idx == 3) {
+								custgroup_text += " - " + $(this).text() + "&nbsp;│&nbsp;";
+							}
+						}
+					});
+					
+					$('#campaign_custgp').append(tag_input);
+				}
+			});
+			
+			if( today_date > $("#campaign_end_dy_tmp").val() ) {
+				alert("선택한 캠페인의 캠페인기간이 행사기간으로 설정하기 부적합 합니다.\n\n다시한번 확인해 주세요.");
+				$("input[name=lst_custgp_id]").remove();
+				return;
+			}
+			
+			$("input[name=campaign_id]").val($("#campaign_id_tmp").val());
+			$("#groupbuy_campaign_id").text($("#campaign_id_tmp").val());
+			$("#groupbuy_campaign_term").text(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+			$("#groupbuy_custgp_cnt").text($("input[name=lst_custgp_id]").length);
+			$("#groupbuy_campaign_nm").text($("#campaign_nm_tmp").val());
+			custgroup_text = custgroup_text.substring(0, (custgroup_text.length-8));
+			$("#groupbuy_custgp").html(custgroup_text);
+			
+			if( today_date > $("#campaign_start_dy_tmp").val() ) {
+				$('input[name=evt_start_day]').val(cf_toDate());
+			} else {
+				$('input[name=evt_start_day]').val(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd'));
+			}
+			
+			$("input[name=vali_term_start_dd]").val( cf_termDate(1) );
+			$("input[name=vali_term_end_dd]").val( cf_termDate(30) );
+
+			$("input[name=campaign_start_dy]").val($("#campaign_start_dy_tmp").val());
+			$("input[name=campaign_end_dy]").val($("#campaign_end_dy_tmp").val());
+			
+			changeCampaignId($("input[name=campaign_id]").val());
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰북 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#cpbook_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			var targetTbody = $("#"+$(this).data('targetTbody'));
+			
+			if(cf_getTrElementCount(targetTbody) >= 1) {
+				alert("이미 등록하셨습니다.\n1건만 등록 가능 합니다.");
+				return;
+			}
+			if(cf_getTrElementCount($("#to_tbody")) > 1) {
+				alert("1건만 등록 가능 합니다.");
+				return;
+			}
+			
+			$("#to_tbody").find("tr").each(function(){
+				
+				var tag_td = "";
+				var key = "";
+				var app_exposure_branch = "";
+				
+				// 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+				
+				$(this).find("td").each(function(i){
+					// 각 셀 데이터 생성
+					if(i != 1 && i < 6) {
+						if(i == 2) {
+							key = $(this).text();
+							tag_td += "<input type='hidden' name='cpbook_id' value='"+key+"'>";
+						}
+						tag_td += "<td class='ta-c'>"+$(this).html()+"</td>\n";	
+					}
+				});
+				if($(this).find("input[name='use_psbt_brnch_yn']").val() == 'Y') {
+					app_exposure_branch = "사용가능지점";
+				} else {
+					app_exposure_branch = "사용제외지점";
+				}
+				
+				tag_td += "<td class='ta-c'>"+ app_exposure_branch + " : " + $(this).find("input[name='use_psbt_excp_brnch_content']").val() +"</td>\n";
+				
+				var tag_tr = "<tr>"+tag_td+"</tr>";
+				
+				// 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+				var chk = 0;
+				targetTbody.find("tr > td").each(function(){
+					if($(this).text() == key) {
+						chk++;
+					}
+				});
+				
+				// 같은 데이터가 없을 경우에만 등록 시킨다.
+				if(chk == 0) {
+					targetTbody.append(tag_tr);
+				}
+				
+			});
+			pageSetUp();
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/* ============================================================================================
+/* 대표이미지 선택 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 체크 TRUE 	: 이미지 선택 영역 숨기
+/* 체크 FALSE 	: 이미지 선택 영역 보임
+/* ============================================================================================ */
+$('#rep_img_sel_yn').click(function() {
+	var checkedF = $('#rep_img_sel_yn').is(':checked');
+
+	if (checkedF) {
+		var btn_span = $('#uploadfile').parent(); 
+		if(btn_span.attr('disabled') == 'disabled') {
+			cf_fileDelete('uploadfile');
+		}
+		$('#area_upload_represent_image').hide();
+		$('#rep_prod_sell_cd').attr('disabled', false);
+		$(this).val('Y');
+	} else {
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+		$(this).val('N');
+	}
+});
+
+
+/* ============================================================================================
+/* 게시 구분에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 게시 구분 값에 따라 예약일 입력란 활성여부.
+/* 	- N	: 즉시게시	(예약일 입력란 disable)
+/* 	- Y	: 예약게시	(예약일 입력란 enable)
+/* ============================================================================================ */
+$('input[name="rserv_ntce_yn"]').on('change', function() {
+	var rserv_ntce_yn_flag     = ($(this).val() == 'Y');
+	
+	if(rserv_ntce_yn_flag) {
+		$("#rserv_ntce_dd").removeAttr("disabled")
+						.attr('data-valid-use', 'true')
+						.attr('data-date-format', 'yyyyMMdd')
+						.attr('data-valid-title', '예약일');
+		// 예약일 default 설정(today+1) 
+		$('input[name=rserv_ntce_dd]').val(cf_termDate(1));
+	} else {
+		$("#rserv_ntce_dd").val("");
+		$("#rserv_ntce_dd").attr('disabled', 'disabled')
+						.removeAttr('data-valid-use')
+						.removeAttr('data-date-format')
+						.removeAttr('data-valid-title');
+		$('input[name=rserv_ntce_dd]').val('');
+	}
+});
+
+/* ============================================================================================
+/* 쿠폰북 구분에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 구분 값에 따라 쿠폰북 유효기간 시간 사용여부 조정
+/* 	- A	: 일반	(유효기간의 시간설정이 필요없음, 000000 ~ 235959 초기화)
+/* 	- B	: 신데렐라	(유효기간의 시간설정이 필요함)
+/* ============================================================================================ */
+$('input[name="cpbook_gbn"]').on('change', function() {
+	if($(this).val() == 'A'){
+		$("#vali_term_start_time").val('00');
+		$("#vali_term_end_time").val('23');
+		$("#vali_term_start_time").attr('disabled','disabled');
+		$("#vali_term_end_time").attr('disabled','disabled');
+		$("#vali_term_end_dd").removeAttr('disabled');
+	}else{
+		$("#vali_term_start_time").removeAttr('disabled');
+		$("#vali_term_end_time").removeAttr('disabled');
+		$("#vali_term_end_dd").val($("#vali_term_start_dd").val());
+		$("#vali_term_end_dd").attr('disabled','disabled');
+	}
+});
+
+/* ============================================================================================
+/* 이벤트 유형에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 이벤트 유형 값에 따라 이벤트 판매상 및 상품정상가/할인적용가/적립적용가 show//hide.
+/* 						 대표이미지 선택 disable
+/* ID: fcfs_evnt_type_cd
+/* 	- A	: 판매상품할인	-> ①이벤트 판매상품 HIDE, ②상품정상가 출력, ③대표이미지 선택 disable
+/* 	- B	: 금액할인		-> ①이벤트 판매상품 HIDE, ②할인적용가 출력, ③대표이미지 선택 disable
+/* 	- C	: 금액적립		-> ①이벤트 판매상품 HIDE, ②적립적용가 출력, ③대표이미지 선택 disable
+/* 
+/* 2015-05-21 @DazzleR
+/* ============================================================================================ */
+$("#fcfs_evnt_type_cd").on('change', function() {
+	var fcfs_evnt_type_cd_val = $(this).val();
+
+	$(".grp-product").show();
+	$(".grp-price").show();
+	$(".grp-target").show();
+
+	if(fcfs_evnt_type_cd_val == "A") {
+		//①
+		//$("#div_event_prod").show();
+		//②
+		$(".product_label").html("상품 정상가<sup>*</sup>"); 
+		$(".price_label").html("판매가<sup>*</sup>");
+		$("input[name=prod_nor_prc]").attr('data-valid-title', '상품 정상가');
+		$("input[name=curr_sale_prc]").attr('data-valid-title', '판매가');
+		//③
+		//$("#rep_img_sel_yn").removeAttr("disabled");
+		
+	} else if(fcfs_evnt_type_cd_val == "B"){
+		//①
+		//$("#div_event_prod").hide();
+		//②
+		$(".product_label").html("할인 적용가<sup>*</sup>");
+		$(".price_label").html("할인가<sup>*</sup>");
+		$("input[name=prod_nor_prc]").attr('data-valid-title', '할인 적용가');
+		$("input[name=curr_sale_prc]").attr('data-valid-title', '할인가');
+		
+		
+		$("#prod_sell_cd_list").removeAttr("data-valid-title");
+		//③
+		//$("#rep_img_sel_yn").attr('disabled', 'disabled');
+		
+	} else if(fcfs_evnt_type_cd_val == "C"){
+		//①
+		//$("#div_event_prod").hide();
+		//②
+		$(".product_label").html("적립 적용가<sup>*</sup>");
+		$(".price_label").html("적림금<sup>*</sup>");
+		$("input[name=prod_nor_prc]").attr('data-valid-title', '적립 적용가');
+		$("input[name=curr_sale_prc]").attr('data-valid-title', '적립금');
+		
+		$("#prod_sell_cd_list").removeAttr("data-valid-title");
+		//③
+		//$("#rep_img_sel_yn").attr('disabled', 'disabled');
+		
+	} else if(fcfs_evnt_type_cd_val == "D"){ // 교환형
+		$(".grp-product").hide();
+		$(".grp-price").hide();
+		$("input[name=prod_nor_prc]").val("0");
+		$("input[name=curr_sale_prc]").val("0");
+		
+	} else{
+		
+	}
+	
+	
+});
+
+
+
+
+/* ============================================================================================
+/* 이미지 파일 업로드
+/* --------------------------------------------------------------------------------------------
+/* 이미지 등록/변경시 호출되는 이벤트
+/* ============================================================================================ */
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this), "IMG_JOINTPURCHASE_LIST");
+});
+
+/**
+* ==================================================================================
+* 등록/수정 : 달력 validation
+* ==================================================================================
+*/
+function f_customOverDate() {
+	
+	var event_start_day = $('#frmGroupBuy').find('input[name=evt_start_day]').val().replace(/\-/g,'');
+	var event_reserve_day = $('#frmGroupBuy').find('input[name=rserv_ntce_dd]').val().replace(/\-/g,'');
+	
+	var event_start_time = $('#evt_start_hour').val() + $('#evt_start_min').val();
+	var event_end_time = $('#evt_end_hour').val() + $('#evt_end_min').val();
+	
+	var limit_end_date = cf_termDate(30, $('input[name=evt_start_day]').val()).replace(/\-/g,'');
+	
+	var today_date = cf_toDate().replace(/\-/g,'');
+	
+	var cpb_start_date = $("#vali_term_start_dd").val().replace(/\-/g,'');
+	var cpb_end_date = $("#vali_term_end_dd").val().replace(/\-/g,'');
+	var cpb_start_time = cpb_start_date + $("#vali_term_start_time").val();
+	var cpb_end_time = cpb_end_date + $("#vali_term_end_time").val();
+	
+	var makeStartDate = $('input[name=evt_start_day]').cvtDateDefault() + $('#evt_start_hour').val() + $('#evt_start_min').val();
+	var makeEndDate = $('input[name=evt_end_day]').cvtDateDefault() + $('#evt_end_hour').val() + $('#evt_end_min').val();
+	
+
+	if(parseInt(event_start_day) < parseInt(today_date)) {
+		alert('행사일은 금일 이전으로 선택 불가능합니다.\n\n다시한번 확인해 주세요.');
+		$("#evt_start_day").focus();
+		return false;
+	}
+	
+	if(parseInt(cpb_start_time) > parseInt(cpb_end_time)) {
+		alert('쿠폰북 유효기간 종료일이 시작일보다 이전입니다.\n\n다시한번 확인해 주세요.');
+		$("#vali_term_start_dd").focus();
+		return false;
+	}
+	
+	if(parseInt(event_start_day) > parseInt($("input[name=campaign_end_dy]").val())
+			|| parseInt(event_start_day) < parseInt($("input[name=campaign_start_dy]").val()) ) {
+		alert('행사일은 캠페인 기간 내에서만 설정할 수 있습니다.\n\n다시한번 확인해 주세요.');
+		$("#evt_start_day").focus();
+		return false;
+	}
+	
+	if(parseInt(event_start_day) < parseInt(event_reserve_day) ) {
+		alert('예약일은 행사일 이후로 선택할 수 없습니다.\n\n다시한번 확인해 주세요.');
+		$("#rserv_ntce_dd").focus();
+		return false;
+	}
+	                            
+// 	if(parseInt(event_start_time) >= parseInt(event_end_time)) {
+// 		alert('진행 일시 설정이 올바르지 않습니다.\n\n다시한번 확인해 주세요.');
+// 		$("#evt_end_hour").focus();
+// 		return false;
+// 	}
+	if(parseInt(makeStartDate) >= parseInt(makeEndDate)) {
+		alert('진행 일시 종료일은 시작일 이전으로 선택할 수 없습니다.\n\n다시한번 확인해 주세요.');
+		$("#evt_end_hour").focus();
+		return false;
+	}
+	
+	if(parseInt(cpb_start_date) < parseInt(event_start_day)) {
+		alert('쿠폰북의 시작일이 행사일 이전입니다.\n\n쿠폰북의 시작일은 행사일 이전으로 선택 불가능합니다.\n\n다시한번 확인해 주세요.');
+		$("#vali_term_start_dd").focus();
+		return false;
+	}
+	
+	if(parseInt(cpb_end_date) > parseInt(limit_end_date)) {
+		alert('쿠폰북의 종료일은 행사일 기준 30일까지 선택 가능합니다.\n\n다시한번 확인해 주세요.');
+		$("#vali_term_end_dd").focus();
+		return false;
+	}
+		
+	return true;
+}
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+
+	if($('#frmGroupBuy').formValid()) {
+
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		
+		var table_length_flag = false;
+		var fcfs_evnt_type_cd_val = $("#fcfs_evnt_type_cd").val();
+		
+		$.each($("#frmGroupBuy tbody"), function() {
+			var tbody_id = $(this).attr('id');
+			
+			if(tbody_id == 'prod_sell_cd_list') {
+				if(fcfs_evnt_type_cd_val == "A") {
+					if($('#'+tbody_id).tableRowValid() != true ) {
+						$("#btn_prod_select").focus();
+						table_length_flag = true;
+						return false;
+					}
+				}
+			} else if(tbody_id == 'groupbuy_cpb_tbody') {
+				if($('#'+tbody_id).tableRowValid() != true ) {
+					$("#btn_groupbuy_cpb").focus();
+					table_length_flag = true;
+					return false;
+				}
+			}
+		});
+    	if(table_length_flag) {
+    		$("button[type=submit]").attr("disabled",false);
+			return;
+    	}
+    	
+    	// 대표이미지 체크시 셀렉트 박스 데이터 체크
+		if( $('#rep_img_sel_yn').is(':checked') ) {
+			var length = $('#rep_prod_sell_cd').children('option').length;
+			
+			if(length < 2) {
+				//alert("이벤트 판매상품을 먼저 등록해주세요.");
+				//$('#rep_prod_sell_cd').focus();
+				//return;
+			} else {
+				if( $('#rep_prod_sell_cd').isEmpty() != true ) {
+					return;
+				}
+			}
+			
+		} else {
+			if( !$("#preview_uploadfile").next().hasClass("alert")){
+	    		alert("이미지를 등록해주세요.");
+	    		return;
+	    	}
+		}
+    	
+		if( f_customOverDate() != true) {
+    		return;
+    	}
+
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		
+		if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+			
+			// ---------------- 서버 전송 데이터 세팅 시작--------------------------//
+			// 행사 진행 일시 세팅
+			var makeStartDate = $('input[name=evt_start_day]').cvtDateDefault() + $('#evt_start_hour').val() + $('#evt_start_min').val();
+			var makeEndDate = $('input[name=evt_end_day]').cvtDateDefault() + $('#evt_end_hour').val() + $('#evt_end_min').val();
+			
+			//alert(makeEndDate +"///"+ makeStartDate);
+			$('input[name=evt_start_date]').val(makeStartDate);
+			$('input[name=evt_end_date]').val(makeEndDate);
+			
+			
+			// ---------------- 서버 전송 데이터 세팅 종료--------------------------//
+			
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/event/jointpurchase/create',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify($("#frmGroupBuy").serializeFormObject()),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	f_groupBuyList();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});			
+			
+		} else {
+			$("button[type=submit]").attr("disabled",false);
+		}
+
+	} else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	f_ajaxEventTypeCode($('select[name=fcfs_evnt_type_cd]'), 'W');
+	
+	f_ajaxCommonCode({
+		target:"select[name=fcfs_issue_type_cd]", 
+		cd_divn_id: "FCFS_ISSUE_TYPE_CD",
+		codeId : "",
+		fnSuccess : ""
+	});
+	
+	// 초기값 Setting : 진행시,분
+	f_setTimeStr();
+	
+	for(var i = 0; i < 24 ; i++) {
+		var option1 = $('<option/>');
+		var option2 = $('<option/>');
+		
+		if(i < 10) {
+			i = '0' + i;
+		}
+		
+		option1.val(i).text(i);
+		option2.val(i).text(i);
+		
+		if(i == 23) {
+			option2.attr('selected', 'selected');
+		}
+
+		$('select[id=vali_term_start_time]').append(option1);
+		$('select[id=vali_term_end_time]').append(option2);
+	}
+
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>

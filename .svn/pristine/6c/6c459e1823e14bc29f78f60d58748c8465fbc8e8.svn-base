@@ -1,0 +1,17 @@
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Calendar"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%
+Calendar calendar = Calendar.getInstance();
+String sDate[] = (new SimpleDateFormat("yyyy-MM-dd HH:mm:ss u").format(calendar.getTime())).split(" "); // 0:날짜, 1:시간, 2:요일(1[월]~7[일])
+
+out.println("<input type='hidden' id='__date' name='__date' value='" + sDate[0] + "'>");
+out.println("<input type='hidden' id='__time' name='__time' value='" + sDate[1] + "'>");
+out.println("<input type='hidden' id='__week' name='__week' value='" + sDate[2] + "'>");
+%>
+
+<script src="${pageContext.request.contextPath}/resources/js/application/push.js"></script>
+<div id="targetHtml">
+	<jsp:include page="/WEB-INF/jsp/application/push/crm/crmLN.jsp" flush="false" />
+</div>

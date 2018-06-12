@@ -1,0 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script src="${pageContext.request.contextPath}/resources/js/application/personal.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/plugin/jquery-form/jquery-form.min.js"></script>
+<div id="targetHtml">
+	<jsp:include page="/WEB-INF/jsp/application/coupon/personal/personalCouponBookLN.jsp" flush="false" />
+</div>

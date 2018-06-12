@@ -1,0 +1,82 @@
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#s_join_date').getObjLength() > 0 ) {
+		if( $('#e_join_date').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_join_date').getObjLength() > 0 ) {
+		if( $('#s_join_date').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	if( $('select[name=stype]').val() == '' && $('input[name=sword]').val() != '') {
+		alert('키워드를 선택해 주세요');
+		return;
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	f_addButton();
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();	
+	$("#terms_grid").jqGrid('setGridParam', {search: true});
+	$("#terms_grid").jqGrid('setGridParam', {page: 1});
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#terms_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	$('#wid-id-1').show();
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	$("#btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	$('#wid-id-1').hide();
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#s_mod_date, #e_mod_date" ).datepicker( "option", {minDate: null, maxDate: null});
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();	
+	//$("#frmSearch").find('input[name=s_mod_date]').val(cf_termDate(-30));
+	//$("#frmSearch").find('input[name=e_mod_date]').val(cf_toDate());
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	$("#terms_grid").jqGrid('setGridParam', {search: false});
+	$("#terms_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#terms_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+}

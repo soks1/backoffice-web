@@ -1,0 +1,396 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>경매 상세정보</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="form-horizontal">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<fieldset>
+								<legend>기본정보</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">승인일 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">진행상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="prgs_sts_cd_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 번호 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="auct_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">게시구분 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rserv_ntce"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">행사일 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="prgs_start"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="evt_title"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 설명 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="evt_desc"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 지점 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_str_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 ZONE : </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c">지점코드</th>
+														<th class="ta-c">지점명</th>
+														<th class="ta-c">ZONE ID</th>
+														<th class="ta-c">ZONE 명</th>
+														<th class="ta-c">비콘수</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td class="ta-c" id="str_cd"></td>
+														<td class="ta-c" id="str_nm"></td>
+														<td class="ta-c" id="zone_id"></td>
+														<td class="ta-c" id="zone_nm"></td>
+														<td class="ta-c" id="beacon_cnt"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">경매 상품 : </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c">판매코드</th>
+														<th class="ta-c">상품코드</th>
+														<th class="ta-c">상품명</th>
+														<th class="ta-c">규격</th>
+														<th class="ta-c">업체명</th>
+														<th class="ta-c">원가</th>
+														<th class="ta-c">매가</th>
+														<th class="ta-c">이익률</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td class="ta-c" id="prod_sell_cd"></td>
+														<td class="ta-c" id="prod_cd"></td>
+														<td class="ta-c" id="prod_nm"></td>
+														<td class="ta-c" id="standard_content"></td>
+														<td class="ta-c" id="ven_nm"></td>
+														<td class="ta-c" id="buy_prc"></td>
+														<td class="ta-c" id="sell_prc"></td>
+														<td class="ta-c" id="prftrat"></td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">상품정상가 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="nor_prc"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">경매시작가 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="start_prc"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">즉시낙찰가 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="immedi_bid_prc"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이미지 : </label>
+									<div class="col-md-11" id="action_img">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">유의사항 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="note"></span>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_openTimeExtensionRD();" class="btn btn-success btn_time_ext">시간연장</a>										
+										<a href="javascript:f_reject();" class="btn btn-danger btn_auth_approve">반려</a>
+										<a href="javascript:f_approve();" class="btn btn-primary btn_auth_approve">승인</a>
+										<a href="javascript:f_approve_ask();" class="btn btn-info btn_auth_create">승인요청</a>
+										<a href="javascript:f_auctionList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_auctionEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_auctionDel();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 경매 참여 이력</h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_auction_his_grid" class="widget-body no-padding">
+						<table id="auction_his_grid"></table>
+						<div id="auction_his_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="time_extension_rd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 상세 : 시간연장 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#time_extension_rd').dialog({
+	autoOpen : false,
+	width : 400,
+	minHeight: 300,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 시간 연장 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 상세 : 시간연장 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openTimeExtensionRD() {
+	$.ajax({
+		url: "/application/auction/timeExtensionRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#time_extension_rd');
+			$target.html(data);
+		}	
+	});
+	$('#time_extension_rd').dialog('open');
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+	
+	// 경매 상세 데이터 추출
+	f_actionDetail();
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#auction_his_grid").parent().width() - 100;
+
+		jQuery("#auction_his_grid").jqGrid({
+			url : api_url+"/backoffice/event/auction/participant/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '입찰자(APP ID)', '입찰금액', '입찰 일시', '최종낙찰자'],
+			colModel : [
+				{ name : 'row_num', 	index : 'row_num',		align : "center",	sortable : true, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'attendee', 	index : 'attendee', 	align : "center",	sortable : true, 	width : (pageWidth*(10/100))	}, 
+				{ name : 'tndr_amount', index : 'couponType', 	align : "center",	sortable : true, 	width : (pageWidth*(25/100)), 	classes:'pointer' }, 
+				{ name : 'tndr_date', 	index : 'tndr_date', 	align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'is_winner', 	index : 'is_winner',	align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "row_num",
+				root : 		function(obj){ return obj.data.auction_crnt_info_list; },				// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return "params="+JSON.stringify(postData); },
+			serializeGridData: function(postData) { return "params="+JSON.stringify(postData); },
+			postData:{ 
+				search_info: "", 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				auct_id: $('input[name=auct_id]').val()
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#auction_his_grid_page',
+			sortname : 'row_num',
+			sortorder : "asc",
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 3) {
+					//var cm = $("#auction_his_grid").jqGrid('getGridParam','colModel');
+					//alert(cm[index].name +"|"+rowid);
+					
+					var input = "<input type=\"hidden\" name=\"couponId\" value=\""+rowid+"\" >";
+				  	$("#frmSearch").append(input);
+				  	
+					var searchData = $("#frmSearch").serializeObject();
+					$("#auction_his_grid").jqGrid('setGridParam', {'postData' : {'search':searchData} });
+					var postData = $('#auction_his_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					
+					var url = "/application/auction/auctionRN.do";
+					var method = "POST";
+					cf_action(url, method, postData);
+			   }
+			}
+		});
+		jQuery("#auction_his_grid").jqGrid('navGrid', "#auction_his_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		$("#auction_his_grid").gridCss();
+	  	$("#auction_his_grid_cb").css("border-left-width","0");
+	  	$("#auction_his_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_auction_his_grid_cb").css("padding","7px 0");
+	  	$("#auction_his_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  			  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#auction_his_grid").jqGrid( 'setGridWidth', $("#target_auction_his_grid").width() );
+		});
+	} 
+	// end function
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

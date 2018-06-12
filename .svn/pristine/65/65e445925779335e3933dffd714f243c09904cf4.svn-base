@@ -1,0 +1,23 @@
+/**
+ * ==================================================================================
+ * 공통 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_mainList() {
+	var url = "/application/common/main/mainControlLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_mainEdit() {
+	var url = "/application/common/main/mainControlEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+

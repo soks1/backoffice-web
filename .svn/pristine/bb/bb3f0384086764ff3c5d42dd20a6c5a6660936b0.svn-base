@@ -1,0 +1,664 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>M클럽 이벤트 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">M클럽 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="mclub_id"></span>
+										<input type="hidden" id="mclub_custgp_id" name="mclub_custgp_id" value="" />
+									</div>
+									<label class="col-md-1 control-label cs-css-05">노출 위치 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="view_location"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이벤트 제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="title"></span>
+									</div>
+								</div>								
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 기간 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ntce_period"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">목록 이미지 : </label>
+									<div class="col-md-11" id="preview_uploadfile_img">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">상세 이미지 : </label>
+									<div class="col-md-11" id="preview_uploadfile_detail_img">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">연결방법 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="link_method_cd"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >페이지경로 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="link_url_text"></span>
+									</div>
+									<div class="col-md-5" id="inside_url">
+										<span class="form-control cs-css-03" id="issue_cpbook_text"></span>
+									</div>
+								</div>
+								<div class="form-group" id="linkUrlA" style="display:none">
+									<label class="col-md-2 control-label">페이지경로</label>
+									<div class="col-md-2">
+										<select class="form-control" name="noticbd_divn_cd_temp" id="noticbd_divn_cd_temp" >
+											<option value="">선택</option>
+											<option value="LIST" >목록</option>
+											<option value="CRM" >쿠폰북</option>
+											<option value="CPZINE" >쿠폰진</option>
+											<option value="FCFS" >달려라선착순</option>
+											<option value="STAMP" >스탬프</option>
+											<option value="EVENTCOK" >이벤트콕</option>
+											<option value="CHANNELCOK" >채널콕</option>
+										</select>
+									</div>
+									<div class="col-md-5">
+										<select class="form-control" name="link_noticbd_id" id="link_noticbd_id">
+										</select>
+									</div>
+									<div class="col-md-3">
+										<select class="form-control" name="zine_ord_seq" id="zine_ord_seq" style="display: none;">
+										</select>
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_mclubEventList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_mclubEventDelete();" class="btn btn-danger btn_auth_delete">삭제</a>
+										<a href="javascript:f_mclubEventEdit();" class="btn btn-warning btn_auth_update">수정</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	f_ajaxMclubList($("select[name=noticbd_divn_cd_temp]"));
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	
+	$('select[name=link_noticbd_id]')
+	.on('change', function() {
+		var issue_cpbook_key = "";
+		issue_cpbook_key = $("#link_noticbd_id").data().key;
+		if(issue_cpbook_key !== "cpbook_id") {
+		} else if(issue_cpbook_key === "cpbook_id") {
+			var ctype = $(this).children(":selected").data("item").ctype;
+			var cpbook_id = $(this).children(":selected").data("item").cpbook_id;
+			if(ctype == "CPZINE") {
+				var cpz_contents_data = $('#searchProduct').serializeFormObject();
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.custgp_cl_cpbook_id = cpbook_id;
+				cpz_contents_data.s_type = "CPZINE";
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						if(obj.url_type=="CPBOOK") {
+							$.each(obj.result_list, function(i, item) {
+								options += "<option value='"+item.order_seq+"'>"+item.cpzine_contents_title+"</option>";
+							});
+						}
+							target.html(options);
+					}	
+				});
+			}
+		}
+	})
+	.bind('getData', function(evt, key) {
+		var self = this;
+		var $option = $(self).children(':selected');
+		return $option.data('item')[key || '_'] || '';
+	})
+	.bind('init', function(evt) {
+		var self = this;
+		var _options = $(self).data();
+		$(self).empty().append( $('<option></option>').data('item', {}).val('').text('선택') );
+		$.each(_options['items'] || [], function() {
+			$('<option></option>').data('item', this).val(this[_options['key']]).text(this[_options['label']]).appendTo( $(self) );
+		});
+
+		if (_options['_select'] && $.isFunction(_options['_select'])) {
+			_options['_select'].apply(self);
+			$(self).val($(self).val() || '');
+			delete _options['_select'];
+			$(self).data( _options );
+		}
+		else if (_options['defaultValue']){
+			$(self).val(_options['defaultValue'] || '');
+		}
+		
+		var issue_cpbook_key = "";
+		
+		issue_cpbook_key = $("#link_noticbd_id").data().key;
+		if(issue_cpbook_key === "evnt_id") {
+			var _cpz_ord = $(self).data()._cpz_ord;
+			var ctype = $(this).children(":selected").data("item").ctype;
+			var cpbook_id = $(this).children(":selected").data("item").evnt_id;
+			var cpz_contents_data = $('#searchProduct').serializeFormObject();
+
+			if(ctype == "CPZINE" || ctype == "MLIFE") {
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.custgp_cl_cpbook_id = cpbook_id;
+				cpz_contents_data.s_type = "CPZINE";
+				
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						if(obj.url_type=="CPBOOK") {
+							$.each(obj.result_list, function(i, item) {
+								options += "<option value='"+item.order_seq+"'>"+item.cpzine_contents_title+"</option>";
+							});
+						}
+							target.html(options);
+					}	
+				});
+//					$("#zine_ord_seq").show();
+				$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+				$("#zine_ord_title").val("("+$('select[name=zine_ord_seq] option:selected').text()+")");
+			}else if(ctype == "CRM"){
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.cpbook_id = $(this).children(':selected').data("item").evnt_id;
+				$.ajax({
+					url: api_url+"/backoffice/couponbook/coupon/couponlist",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						
+						$('#zine_ord_seq').show();
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						$.each(obj.coupon_list, function(i, item) {
+							options += "<option value='"+item.coupon_id+"'>"+item.coupon_nm+"</option>";
+						});
+						target.html(options);
+					}	
+				});
+				if(_cpz_ord != "") {
+					$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+				}
+			}
+		}
+	});
+	
+	$.ajax({
+	    url: api_url+"/backoffice/mclub/event/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var objData = obj['data'] || {};
+	    	var ntce_start_hhmi = objData['ntce_start_hhmi'];
+	    	var ntce_end_hhmi = objData['ntce_end_hhmi'];
+	    	$("#reg_date").html(objData['reg_date_name']);
+	    	$("#reg_id").html(objData['reg_id_name']);
+	    	$("#mod_date").html(objData['mod_date_name']);
+	    	$("#mod_id").html(objData['mod_id_name']);
+	    	$("#title").html(objData['title']);
+	    	$("#mclub_event_id").html(objData['mclub_event_id']);
+	    	$("#ntce_period").html(cf_cvtDateFormat(objData['ntce_start_dd'],'yyyy-MM-dd') + ' ' + ntce_start_hhmi.substr(0,2) + ':' + ntce_start_hhmi.substr(2,4) + ' ~ ' + cf_cvtDateFormat(objData['ntce_end_dd'],'yyyy-MM-dd') + ' ' + ntce_end_hhmi.substr(0,2) + ':' + ntce_end_hhmi.substr(2,4));   
+	    	$("#link_method_cd").html(objData['link_method_cd_name']);
+	    	$("#mclub_id").html(objData['mclub_name']);
+	    	$("#view_location").html(objData['view_location_name']);
+	    	$("#mclub_custgp_id").val(objData['lst_custgp_id']);
+	    	
+	    	var custgpId = $("#mclub_custgp_id").val();
+	    	var msgUrl = objData['ot_link_url'];
+	    	var urlType = objData['url_type'];
+	    	
+	    	$("#noticbd_divn_cd_temp").val(urlType);
+			$("#link_url_text").text($("#noticbd_divn_cd_temp option:selected").text());
+	    	
+			if(objData['link_method_cd'] == 'URL'){
+		    	$("#link_url_text").text(objData['ot_link_url']);
+		    }else if (objData['link_method_cd'] == 'APPLIST'){
+	    		var modData = {
+						empno: '${sessionScope.sessionEmpno}', 
+						emp_str_cd: '${sessionScope.sessionStrCd}',
+						hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				 		link_url : urlType,
+				 		lst_custgp_id_list : [custgpId]
+
+				};
+				if(urlType == "EVENTCOK" || urlType == "CHANNELCOK") {
+					var _url = "";
+					var evnt_data = {
+							empno: "${sessionScope.sessionEmpno}", 
+							emp_str_cd: "${sessionScope.sessionStrCd}",
+							hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+							noticbd_divn_cd_temp : urlType
+				
+					};
+					var _event_id = "";
+					if(urlType == "EVENTCOK") {
+						_event_id = msgUrl.substring(msgUrl.indexOf("noticbd_id") + 11);
+						_url = "/backoffice/common/board/issue/event/cok";
+					}else {
+						_event_id = msgUrl.substring(msgUrl.indexOf("media_id") + 9);
+						_url = "/backoffice/common/board/issue/channel/cok";
+					}
+					
+					$.ajax({
+						url: api_url+_url,
+						type: 'GET',
+						async: false,
+						cache: true,
+						data: encodeURI('params='+JSON.stringify(evnt_data)),
+						success: function(obj) {
+							var eventData = obj['data'] || {};
+							$('select[name=link_noticbd_id]').data({'items': eventData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_select': function() { $(this).val(_event_id);}}).triggerHandler('init');
+							$("#issue_cpbook_text").text($('select[name=link_noticbd_id] option:selected').text());
+						},beforeSend:function(){
+							$("select[name=link_noticbd_id] option[value!='']").remove();
+						},error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+					    	return;
+					    }
+					});
+				} else if ( urlType == "MCLUB0000000283" ){	//MCLUB ID
+					$("#link_url_text").text($("#noticbd_divn_cd_temp option:selected").text());
+					
+					var target = $('select[name=link_noticbd_id]');
+					var options = "<option value=''>선택</option>";
+					
+					options +="<option value=CRM>우리아이M클럽 쿠폰</option>";
+					options +="<option value=POLL>우리아이M클럽 설문</option>";
+					options +="<option value=CPZINE>육아 TIP</option>";
+					options +="<option value=STAMP>스탬프 이벤트</option>";
+					
+					target.html(options);
+					$('select[name=link_noticbd_id]').val(objData['link_noticbd_id']).prop("selected", true);
+					
+					if( $("select[name=link_noticbd_id]").val() == "CRM" 
+						|| $("select[name=link_noticbd_id]").val() == "CPZINE"){
+						var data = {
+								empno: "${sessionScope.sessionEmpno}", 
+								emp_str_cd: "${sessionScope.sessionStrCd}",
+								hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+						 		link_url : $("select[name=link_noticbd_id]").val(),
+						 		lst_custgp_id_list : [$("select[name=noticbd_divn_cd_temp] option:selected").attr("club_custgp_id")]		
+						};
+						$.ajax({
+							url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+							type: 'GET',
+							async: false,
+							cache: true,
+							data: encodeURI('params='+JSON.stringify(data)),
+							success: function(obj){
+								$('#zine_ord_seq').show();
+								var obj = obj.data;
+								var target = $('select[name=zine_ord_seq]');
+								var options = '<option value="">선택</option>';
+								$.each(obj.result_list, function(i, item) {
+									options += "<option value='"+item.evnt_id+"'data-mapp-digit='"+item.cpbook_mapp_digit+"'data-cpbook-cd='"+item.ctype+"'data-cpbook-id='"+item.evnt_id+"'data-cpbook-type-cd='"+item.cpbook_type_cd+"'data-cpbook-cptype-cd='"+item.c_type+"'>"+item.evnt_nm+"</option>";
+								});
+								target.html(options);
+							} ,error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+						    	return;
+						    }
+						});
+						
+						if ($('select[name=zine_ord_seq]').val != null) {
+							if($("select[name=link_noticbd_id]").val() == "CPZINE") {
+								$('select[name=zine_ord_seq]').val(objData['ot_link_url'].substring(21,36)).prop("selected", true);
+							} else if($("select[name=link_noticbd_id]").val() == "CRM") {
+								$('select[name=zine_ord_seq]').val(objData['ot_link_url'].substring(45,50)).attr("data-mapp-digit",objData['ot_link_url'].substring(31,35)).prop("selected", true);
+							}
+						$('#issue_cpbook_text').text($('select[name=link_noticbd_id] option:selected').text() + " - " + $("select[name=zine_ord_seq] option:selected").text());
+						} else {
+							$('#issue_cpbook_text').text($('select[name=link_noticbd_id] option:selected').text());
+						}
+					} else {
+						$('#issue_cpbook_text').text($('select[name=link_noticbd_id] option:selected').text());
+					}
+					
+				} else if ( urlType == "MCLUB0000000353" ){	//MCLUB ID
+					$("#link_url_text").text($("#noticbd_divn_cd_temp option:selected").text());
+					
+					var target = $('select[name=link_noticbd_id]');
+					var options = "<option value=''>선택</option>";
+					
+					options +="<option value=DM/LEAFLET>행사상품</option>";
+					options +="<option value=VIC_GUIDE>쇼핑TIP</option>";
+					options +="<option value=STAMP>스탬프 이벤트</option>";
+					options +="<option value=CRM>VIC클럽 쿠폰</option>";
+					
+					target.html(options);
+					
+					$('select[name=link_noticbd_id]').val(objData['link_noticbd_id']).prop("selected", true);
+					
+					if($("select[name=link_noticbd_id]").val() == "DM/LEAFLET"
+						|| $("select[name=link_noticbd_id]").val() == "VIC_GUIDE"){
+						
+						var data = {
+								empno: "${sessionScope.sessionEmpno}", 
+								emp_str_cd: "${sessionScope.sessionStrCd}",
+								hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+						 		mclub_id : urlType,
+						 		view_location : $("select[name=link_noticbd_id]").val()
+						};
+						$.ajax({
+							url: api_url+"/backoffice/mclub/event/list/club",
+							type: 'GET',
+							async: false,
+							cache: true,
+							data: encodeURI('params='+JSON.stringify(data)),
+							success: function(obj){
+								$('#zine_ord_seq').show();
+								var obj = obj.data;
+								var target = $('select[name=zine_ord_seq]');
+								var options = "<option value=''>선택</option>";
+								$.each(obj.event_list, function(i, item) {
+									options += "<option value='"+item.mclub_event_id+"'>"+item.title+"</option>";
+								});
+								target.html(options);
+							} ,error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+						    	return;
+						    }						
+						});
+
+						if ($('select[name=zine_ord_seq]').val != null) {
+							$('select[name=zine_ord_seq]').val(objData['ot_link_url'].substring(28)).prop("selected", true);
+							$('#issue_cpbook_text').text($('select[name=link_noticbd_id] option:selected').text() + " - " + $("select[name=zine_ord_seq] option:selected").text());						
+						} else {
+							$('#issue_cpbook_text').text($('select[name=link_noticbd_id] option:selected').text());
+						}
+					} else if( $("select[name=link_noticbd_id]").val() == "CRM" ){
+						var data = {
+								empno: "${sessionScope.sessionEmpno}", 
+								emp_str_cd: "${sessionScope.sessionStrCd}",
+								hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+						 		link_url : $("select[name=link_noticbd_id]").val(),
+						 		lst_custgp_id_list : [$("select[name=noticbd_divn_cd_temp] option:selected").attr("club_custgp_id")]		
+						};
+						$.ajax({
+							url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+							type: 'GET',
+							async: false,
+							cache: true,
+							data: encodeURI('params='+JSON.stringify(data)),
+							success: function(obj){
+								$('#zine_ord_seq').show();
+								var obj = obj.data;
+								var target = $('select[name=zine_ord_seq]');
+								var options = '<option value="">선택</option>';
+								$.each(obj.result_list, function(i, item) {
+									options += "<option value='"+item.evnt_id+"'data-mapp-digit='"+item.cpbook_mapp_digit+"'data-cpbook-cd='"+item.ctype+"'data-cpbook-id='"+item.evnt_id+"'data-cpbook-type-cd='"+item.cpbook_type_cd+"'data-cpbook-cptype-cd='"+item.c_type+"'>"+item.evnt_nm+"</option>";
+								});
+								target.html(options);
+							} ,error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+						    	return;
+						    }
+						});
+						
+						if ($('select[name=zine_ord_seq]').val != null) {
+							$('select[name=zine_ord_seq]').val(objData['ot_link_url'].substring(45,50)).attr("data-mapp-digit",objData['ot_link_url'].substring(31,35)).prop("selected", true);
+							$('#issue_cpbook_text').text($('select[name=link_noticbd_id] option:selected').text() + " - " + $("select[name=zine_ord_seq] option:selected").text());						
+						} else {
+							$('#issue_cpbook_text').text($('select[name=link_noticbd_id] option:selected').text());
+						}
+					}
+				} else if(urlType == "LIST") {
+		    		var _items = [
+		    			  			{'key': 'MAIN', 'label': '메인'},
+						  			{'key': 'MCOUPON', 'label': 'M쿠폰 - 상품쿠폰'},
+						  			{'key': 'MPRICE', 'label': 'M쿠폰 -금액쿠폰'},
+		    						{'key': 'EVENTCOK', 'label': '이벤트콕'},
+		    						{'key': 'CHANNELCOK', 'label': '채널콕'},
+		    						{'key': 'LIFECOK', 'label': '생활콕'},
+		    						{'key': 'MCLUB', 'label': 'M클럽'},
+		    						{'key': 'LEAFLET', 'label': '행사정보'},
+		    						{'key': 'NOTICE', 'label': '공지사항'},
+		    						{'key': 'FCFS', 'label': '달려라선착순'},
+		    						{'key': 'STAMP', 'label': 'M스탬프'},
+		    						{'key': 'RECEIPT', 'label': '스마트영수증'},
+		    						{'key': 'POLL', 'label': 'POLL'},
+		    						{'key': 'PEVENT', 'label': '걷기'}
+		    			  		];
+		    		var _list_id = objData['link_noticbd_id'];
+					$('select[name=link_noticbd_id]').data({'items': _items, 'key': 'key', 'label': 'label', '_select': function() { $(this).val(_list_id); }}).triggerHandler('init');
+					$("#issue_cpbook_text").text($('select[name=link_noticbd_id] option:selected').text());
+		   		}else {
+					$.ajax({
+						url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+						type: 'GET',
+						async: false,
+						cache: true,
+						datatype: 'json',
+						data: encodeURI('params='+JSON.stringify(modData)),
+						success: function(obj) {
+							var objData = obj['data'] || {};
+							var _cpbook_id = ""; // msgUrl.substring(78,83);
+							var _cpzine_id = ""; // msgUrl.substring(78,83);
+							var _mapp_digit = ""; // msgUrl.substring(129, 133);
+							var _cp_type = "";
+							var _cpz_ord = "";
+							var _cp_id = "";
+							
+							if(objData['url_type'] == "CPZINE") {
+								
+								if(msgUrl.indexOf("mlife") > -1) {
+									_cpbook_id = msgUrl.substring(msgUrl.indexOf("event_id")+9, msgUrl.indexOf("event_id")+24);
+									if(msgUrl.indexOf("active") > -1) {
+										_cpz_ord = msgUrl.substring(msgUrl.length-1);
+									}
+									_cp_type = "CPZINE";
+								}else {
+									if(msgUrl.indexOf("event_id") > -1) {
+										_cpbook_id = msgUrl.substring(msgUrl.indexOf("event_id")+9, msgUrl.indexOf("event_id")+24);
+										if(msgUrl.indexOf("active") > -1) {
+											_cpz_ord = msgUrl.substring(msgUrl.length-1);
+										}
+										_cp_type = "CPZINE";
+									}
+								}
+								
+								$('select[name=link_noticbd_id]')
+								.data({
+									'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+										var self = this;										
+										$(self).children()
+													.filter(function() {
+														if(_cp_type =="CRM") {
+															return $(this).data('item')['evnt_id'] == _cpbook_id
+																	&& $(this).data('item')['cpbook_mapp_digit'] == _mapp_digit;
+														}else {
+															return $(this).data('item')['evnt_id'] == _cpbook_id;
+															
+														}
+													}).prop('selected', 'selected');
+									}
+								})
+								.triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=link_noticbd_id] option:selected').text() + " -  " + $('select[name=zine_ord_seq] option:selected').text());
+							}else if(objData['url_type'] == "CRM") {
+
+								if(msgUrl.indexOf("cpbook_id") > -1) {	// 쿠폰상세
+									_cpbook_id = msgUrl.substring(msgUrl.indexOf("cpbook_id")+10, msgUrl.indexOf("cpbook_id")+15);
+									_mapp_digit = msgUrl.substring(msgUrl.indexOf("cpbook_mapp_digit")+18, msgUrl.indexOf("cpbook_mapp_digit")+22);
+									if(msgUrl.indexOf("__DIGIT__") > -1) {
+										_cpz_ord = msgUrl.substring(msgUrl.length-5);
+									}
+									_cp_type = "CRM";
+
+								}else if(msgUrl.indexOf("#/couponbook?") > -1) { // 쿠폰북 쿠폰 목록
+									_cpbook_id = msgUrl.substring(msgUrl.indexOf("#/couponbook?")+22, msgUrl.indexOf("#/couponbook?")+27);
+									_mapp_digit = msgUrl.substring(msgUrl.indexOf("cpbook_mapp_digit")+18, msgUrl.indexOf("cpbook_mapp_digit")+22);
+								}
+								$('select[name=link_noticbd_id]')
+									.data({
+										'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+											var self = this;											
+											$(self).children()
+												.filter(function() {
+													if(_cp_type =="CRM") {
+														return $(this).data('item')['evnt_id'] == _cpbook_id && $(this).data('item')['cpbook_mapp_digit'] == _mapp_digit;
+													}else {
+														return $(this).data('item')['evnt_id'] == _cpbook_id;		
+													}
+												}).prop('selected', 'selected');
+										}
+									})
+									.triggerHandler('init');
+									$("#issue_cpbook_text").text($('select[name=link_noticbd_id] option:selected').text() + " -  " + $('select[name=zine_ord_seq] option:selected').text());
+							}else if(objData['url_type'] == "STAMP") {
+								var _stamp_id = msgUrl.substring(47);
+								$('select[name=link_noticbd_id]').data({'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_select': function() { $(this).val(_stamp_id);}}).triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=link_noticbd_id] option:selected').text());
+
+							}else if(objData['url_type'] == "FCFS") {
+								var _fcfs_id = msgUrl.substring(43);
+								$('select[name=link_noticbd_id]').data({'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_select': function() { $(this).val(_fcfs_id);}}).triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=link_noticbd_id] option:selected').text());
+								
+							}
+						}	
+					});
+				}
+			}
+	    	
+	    	var tag_img = $("<img>").attr("src",objData['mclub_event_img_list'][0].prvw_url).attr("alt",objData['mclub_event_img_list'][0].img_orgin_file_nm).addClass('img-responsive');
+	    	$("#preview_uploadfile_img").append(tag_img);
+	    	
+	    	objData['mclub_event_img_list'][1] = objData['mclub_event_img_list'][1]==undefined?"" : objData['mclub_event_img_list'][1];
+			if(objData['mclub_event_img_list'][1] != "") {
+				var tag_img_detail = $("<img>").attr("src",objData['mclub_event_img_list'][1].prvw_url).attr("alt",objData['mclub_event_img_list'][1].img_orgin_file_nm).addClass('img-responsive');
+		    	$("#preview_uploadfile_detail_img").append(tag_img_detail);
+			}
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

@@ -1,0 +1,519 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>
+					<span class="title_mclub_name"></span>
+					&nbsp;클럽&nbsp;가입&nbsp;현황
+					</h2>
+				</header>
+				<div class="jarviswidget-editbox"></div>
+				<div>
+					<div class="widget-body">
+						<div id="target_data_stats_grid" class="widget-body no-padding">
+							<div class="col-sm-12 col-md-12 col-lg-12 mt10">
+								<div class="well"
+									 style="padding:10px;background:rgba(198,218,255,.6);border: 4px solid #5985FF;">
+									<div class="row">
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">전체회원수</p>
+												<p class="cs-css-01" id="detail_total_users"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">순 전체회원수</p>
+												<p class="cs-css-01" id="detail_active_users"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">오늘 가입자수</p>
+												<p class="cs-css-01" id="detail_today_joined_users"></p>
+											</div>
+										</div>
+										<div class="col-md-2" style="width:25% !important">
+											<div class="well" style="padding:10px">
+												<p class="cs-css-02">오늘 탈퇴자수</p>
+												<p class="cs-css-01" id="detail_today_leaved_users"></p>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--
+						<div class="form-actions">
+							<div class="row">
+								<div class="form-inline">
+									<div class="input-group pr12">
+									    <input class="form-control datepicker pr12 tac" type="text" id="s_reg_date" name="s_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일" />
+									    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+									</div>
+									<div class="input-group pr12">
+									     <input class="form-control datepicker pr12 tac" type="text" id="e_reg_date" name="e_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일" />
+									     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+									</div>
+									<div class="input-group">
+									   <a href="javascript:f_excel_down('MCLUB_MEMBS_PERIOD_REG');" class="btn btn-sm btn-success">일별 가입/탈퇴 엑셀</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						 -->
+		      		</div>
+				</div>
+			</div>
+		</article>
+	</div>
+
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken"	data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록지점</label>
+									<div class="col-md-3">
+										<select class="form-control" id="str_cd" name="str_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">승인상태</label>
+									<div class="col-md-3">
+										<select class="form-control" id="aprv_sts_cd" name="aprv_sts_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									<label class="col-md-1 control-label">진행상태</label>
+									<div class="col-md-3">
+										<select class="form-control" id="prgs_sts_cd" name="prgs_sts_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">제목</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="evnt_name">
+									</div>
+									<label class="col-md-1 control-label">적용기간</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="start_dd" 
+															name="start_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="end_dd"
+															name="end_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_detailSearch();" class="btn btn-success">
+										<i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"><i class="fa fa-table"></i></span>
+					<h2>
+          <span class="title_mclub_name"></span>
+               &nbsp;클럽&nbsp;신규가입&nbsp;쿠폰북발행목록
+          </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_detail_mclub_grid" class="widget-body no-padding">
+						<table id="detail_mclub_grid"></table>
+						<div id="detail_mclub_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+
+ var start_dd = $('#start_dd');
+ var end_dd = $('#end_dd');
+ var s_reg_date = $('#s_reg_date');
+ var e_reg_date = $('#e_reg_date');
+	
+	f_startDatepicker(start_dd, end_dd);
+	f_endDatepicker(start_dd, end_dd);
+	f_startDatepicker(s_reg_date, e_reg_date);
+	f_endDatepicker(s_reg_date, e_reg_date);
+	
+
+	/** ============================================================================================
+	/* Excel DownLoad
+	/* --------------------------------------------------------------------------------------------
+	/* Grid Data를 엑셀로 저장한다.
+	/* ============================================================================================ */
+	function f_excel_down(gbn){ 
+		
+		// 엑셀 양식 다운로드
+		var stts_xls_dwld_type = gbn;
+		var url = api_url+"/backoffice/mclub/detailMclub/excel/download?";
+		var data = {
+				empno: '${sessionScope.sessionEmpno}', 
+				str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				mclub_id: '<%=LangUtil.replaceInjection(request.getParameter("mclub_id"))%>',
+				stts_xls_dwld_type : gbn
+			};
+		if(gbn === 'MCLUB_MEMBS_PERIOD_REG'){
+			
+			if(s_reg_date.val() === '' || e_reg_date.val() === '' ){
+				alert('조회 일자를 입력해주세요')
+				return;
+			}
+			
+			data.s_reg_date = s_reg_date.val().replace(/\-/g, '');
+			data.e_reg_date = e_reg_date.val().replace(/\-/g, '');
+		}
+		var params = encodeURI('params='+JSON.stringify(data));
+		$.fileDownload(url+params);
+		
+	}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	var frmKeepDataJson = $("#frmKeepData").serializeFormObject();
+	frmKeepDataJson['mclub_id'] = '<%=LangUtil.replaceInjection(request.getParameter("mclub_id"))%>';
+	f_getMclubName(frmKeepDataJson, setMclubName);
+	
+	//클럽 가입탈퇴현황 
+	$.ajax({
+	    url: api_url+"/backoffice/mclub/detailMclub/evnt/show/joinLeaveCnt", 
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify(frmKeepDataJson)),
+	    success: function(obj){
+				$("#detail_total_users").html(obj.data.total_users);
+				$("#detail_active_users").html(obj.data.active_users);
+				$("#detail_today_joined_users").html(obj.data.today_joined_users);
+				$("#detail_today_leaved_users").html(obj.data.today_leaved_users);
+		    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCode($('#str_cd'));
+	
+	// 초기데이터 로드 : 승인상태
+	f_ajaxApprovalStatusCode($('#aprv_sts_cd'));
+	
+	// 초기데이터 로드 : 진행 상태
+	f_ajaxPrgsStatusCode($('#prgs_sts_cd'));
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#detail_mclub_grid").parent().width() - 100;
+
+		jQuery("#detail_mclub_grid").jqGrid({
+			url : api_url+"/backoffice/mclub/detailMclub/evnt/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '등록지점', '제목', '적용시작일', '적용종료일', '쿠폰북발행수', '승인상태', '진행상태', '등록일자', '승인코드','M클럽ID' ],
+			colModel : [
+				{ name : 'rnum', 							index : 'rnum',		 						align : "center",	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'reg_id_str_cd_name',index : 'reg_id_str_cd_name', align : "center",	sortable : false, 	width : (pageWidth*(10/100))	}, 
+				{ name : 'evnt_name', 				index : 'evnt_name', 					align : "center",	sortable : false, 	width : (pageWidth*(34/100)), 	classes:'pointer' }, 
+				{ name : 'start_dd', 					index : 'start_dd', 					align : "center", sortable : false, 	width : (pageWidth*(10/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						return cf_cvtDateFormat(cellvalue,'yyyy-MM-dd');
+					}
+				}, 
+				{ name : 'end_dd', 						index : 'end_dd', 						align : "center", sortable : false, 	width : (pageWidth*(10/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						return cf_cvtDateFormat(cellvalue,'yyyy-MM-dd');
+					}
+				},
+				{ name : 'cpbook_issue_cnt', 	index : 'cpbook_issue_cnt', 	align : "center", 	sortable : false, 	width : (pageWidth*(7/100)) 	},
+				{ name : 'aprv_sts_cd_name',	index : 'aprv_sts_cd_name', 	align : "center", 	sortable : true, 	width : (pageWidth*(7/100)) 	},
+				{ name : 'prgs_sts_cd_name', 	index : 'prgs_sts_cd_name', 	align : "center", 	sortable : false, 	width : (pageWidth*(7/100)) 	},
+				{ name : 'reg_date', 					index : 'reg_date', 					align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'aprv_sts_cd', 			index : 'aprv_sts_cd',	hidden : true, width : 0 },
+				{ name : 'mclub_id', 					index : 'mclub_id', 		hidden : true, width : 0 }
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "evnt_id",
+				root : 		function(obj){ return obj.data.mclub_detail_evnt_list; },				// 루트가 될 데이터 셋 명칭
+				records : function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return "params="+JSON.stringify(postData); },
+			serializeGridData: function(postData) {
+				
+				// 기존 검색 조건 유지 부분
+				var _search = $('#frmKeepData').find('input[name=_search]');
+				var page 		= $('#frmKeepData').find('input[name=page]');
+				var rows 		= $('#frmKeepData').find('input[name=rows]');
+				var sidx 		= $("#frmKeepData").find("input[name=sidx]");
+				var sord		= $("#frmKeepData").find("input[name=sord]");
+				
+				// 기존에 검색 조건이 있었을 경우
+				if(_search.val() == 'true') {
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($('#frmKeepData'),$('#frmSearch'));
+										
+					var searchData = $('#frmSearch').serializeFormObject();	// 검색 폼 데이터 추출
+					postData._search = true;
+					$("#detail_mclub_grid").jqGrid('setGridParam', {search: true});
+					$('#detail_mclub_grid').jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				// 기존에 페이지 정보가 있을 경우
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				// 기존 아이템 로우 정보가 있을 경우
+				if(rows.val() != undefined) {
+					$('#detail_mclub_grid_page_center').find('.ui-pg-selbox').val(rows.val()).attr('selected', 'selected');
+					postData.rows = parseInt(rows.val());
+					$('#detail_mclub_grid').jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				// 기존 Keep Data 삭제
+// 				$('#frmKeepData').empty();
+				
+				return 'params='+encodeURI(JSON.stringify(postData)); 
+			},
+			postData:{ 
+				search_info: '', 
+				empno			: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				mclub_id: '<%=LangUtil.replaceInjection(request.getParameter("mclub_id"))%>',
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#detail_mclub_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+				if(index == 3) {
+					$("#detail_mclub_grid").jqGrid('setGridParam', {'postData' : {'evnt_id':rowid} });
+					var postData = $('#detail_mclub_grid').jqGrid("getGridParam", "postData");
+					
+					var url = "/application/mclub/detailMclub/detailMclubRN.do";
+					var method = "POST";
+					cf_action(url, method, postData);
+			   }
+			},
+			loadComplete: function() {
+			},
+			gridComplete: function() {
+				var postData = $('#detail_mclub_grid').jqGrid("getGridParam", "postData");
+				$('#detail_mclub_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#detail_mclub_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			}
+		});
+		jQuery("#detail_mclub_grid").jqGrid('navGrid', "#detail_mclub_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+					
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#detail_mclub_grid").jqGrid('navButtonAdd','#detail_mclub_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){ 
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					var aprv_cnt = 0;
+					
+					if (select_ids.length < 1) {
+						alert('삭제할 항목을 선택하세요.');
+						return;
+					}
+					
+					for(var i = 0; i < select_ids.length; i++) {
+						var aprv_sts_cd = $('#detail_mclub_grid').jqGrid('getCell', select_ids[i], 'aprv_sts_cd');
+						if(aprv_sts_cd == 'APPROVE') {
+							aprv_cnt++;	
+						}
+					}
+					if(aprv_cnt > 0) {
+						alert('승인상태의 쿠폰북는 삭제가 불가능합니다.');
+						return;
+					}
+					
+					if(confirm("정말 삭제하시겠습니까?")) {
+						var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+						var data = {
+							search_info: "",
+							detail_mclub_evnt_id_list : select_ids,
+							empno: '${sessionScope.sessionEmpno}', 
+							emp_str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+							mclub_id: '<%=LangUtil.replaceInjection(request.getParameter("mclub_id"))%>'
+						};
+						$.ajax({
+							url: api_url + "/backoffice/mclub/detailMclub/evnt/delete",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$("#detail_mclub_grid").trigger("reloadGrid");
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+						    	return;
+						    }
+						});
+					}
+				}
+			});	
+		}
+							
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#detail_mclub_grid").jqGrid('navButtonAdd','#detail_mclub_grid_page',{
+				caption: "행사 등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/mclub/detailMclub/detailMclubWN.do";
+					var method = "POST";
+					var postData = $('#detail_mclub_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		
+		if('${sessionScope.menuAuth.R}' == 'Y') {
+			jQuery("#detail_mclub_grid").jqGrid('navButtonAdd','#detail_mclub_grid_page',{
+				caption: "M클럽목록",
+				id: "cancel_button",
+				buttonicon: "ui-icon-list",
+				onClickButton: function(){
+// 					f_mclubList();
+					var url = "/application/mclub/mclubLN.do";
+					var method = "POST";
+					cf_action(url, method, $("#frmKeepData").serialize());
+				}
+			});	
+		}
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+		
+		$('#detail_mclub_grid').gridCss();
+	  	$("#detail_mclub_grid_cb").css("border-left-width","0");
+	  	$("#detail_mclub_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_detail_mclub_grid_cb").css("padding","7px 0");
+	  	$("#detail_mclub_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  			  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#detail_mclub_grid").jqGrid( 'setGridWidth', $("#target_detail_mclub_grid").width() );
+		});
+	} 
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+</script>
+
+

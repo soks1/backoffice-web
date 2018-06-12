@@ -1,0 +1,137 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ * 앱캐시 관리 : 목록 화면 가기
+ * ==================================================================================
+ */
+function f_appcacheList() {
+	var url = "/application/appcache/appcachePN.do";
+	var method = "POST";
+//	cf_action(url, method, $("#frmKeepData").serialize());
+	cf_action(url, method, "");
+}
+/**
+ * ==================================================================================
+ * 앱캐시 관리 : 등록 화면 가기
+ * ==================================================================================
+ */
+function f_appcacheWN() {
+	var url = "/application/appcache/appcacheWN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+//	cf_action(url, method, "");
+}
+
+/**
+ * ==================================================================================
+ * 앱캐시 관리 : 상세 화면 가기
+ * ==================================================================================
+ */
+function f_appcacheRN() {
+	
+	var _empno = $('#empno').val();
+	var _cache_id = $("#cache_id").val();
+	
+	var postData = {
+			empno : _empno,
+			cache_id : _cache_id
+	}
+	
+	var url = "/application/appcache/appcacheRN.do";
+	var method = "POST";
+	cf_action(url, method, postData);
+}
+
+
+/**
+ * ==================================================================================
+ * 검색 이벤트 : 날짜 조회시 시작일 종료일 모두 존재하는지 체크
+ * ==================================================================================
+ */
+function f_StartDD_EndDD_Both_Use_Check(from,to){
+	var val = 0;
+	if($('#'+from).val() != "" || $('#'+to).val() != ""){
+		if($('#'+from).val() == "" || $('#'+to).val() == ""){
+			alert('날짜 조건 조회시 시작일과 종료일 모두 입력해야 합니다.');
+			val++;
+		}
+	}
+	return val;
+}
+
+/**
+ * ==================================================================================
+ * 앱캐시 목록 grid 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_appcacheSearch() {
+
+	// 초기화 버튼 추가
+	f_appcacheAddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('reg_date_from','reg_date_to');
+	if(val > 0){return;}
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	if((searchData['reg_nm'].length) > 20){
+		alert('20자 이내로 검색해 주세요');
+		return;
+	}
+	
+	// 검색 사용 중으로 변경
+	$("#appcache_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#appcache_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#appcache_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 앱캐시 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_appcacheAddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_appcacheCancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+/**
+ * ==================================================================================
+ * 앱캐시 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_appcacheCancel() {
+	
+	f_appcacheList();
+	
+}
+
+
+
+
+
+
+
+

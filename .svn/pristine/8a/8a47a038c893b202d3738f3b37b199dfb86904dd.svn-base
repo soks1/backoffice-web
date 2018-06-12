@@ -1,0 +1,108 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>가맹점 반려사유</h2>
+				</header>
+				<div class="jarviswidget-editbox"></div>
+				<div class="widget-body">
+					<form class="form-horizontal" method="post" id="frmLifekok" name="frmLifekok">
+						<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+						<fieldset>
+							<div class="form-group">
+								<div class="col-md-12">
+<!-- 									<input class="form-control" type="text" name="category_nm" data-valid-use="true" data-valid-symbol="false" data-valid-max="500" data-valid-title="반려사유" placeholder="반려 사유를 입력해주세요"> -->
+									<textarea rows="6" cols="75" class="form-control" name="retn_reason" data-valid-use="true" data-valid-symbol="false" data-valid-max="500" data-valid-title="반려사유" placeholder="반려 사유를 입력해주세요"></textarea>
+								</div>
+							</div>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantReturnCancel();" class="btn btn-default">취소</a>
+										<a href="javascript:f_tenantReturnSubmit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+var dialog_pagefunction = function(){
+	
+};
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_tenantReturnSubmit() {
+	if($('#frmLifekok').formValid() ){
+		var data = $('#frmLifekok').serializeFormObject();
+		
+		data['retn_reason'] = $("textarea[name=retn_reason]").val();
+		
+		if(confirm("적용 시 app에 즉시 반영됩니다. 반려하시겠습니까?")){
+			
+			$.ajax({
+			    url: api_lifekok_url+'/backoffice/lifekok/tenant/reject',
+// 			    url: api_lifekok_img_url+'/backoffice/lifekok/tenant/reject',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+					$('#input_return_reason').dialog("close");
+					var url = "/application/cooperateService/tenant/tenantRN.do";
+			    	var method = "GET";
+			    	var postData ={
+			    			tenant_cd : $("input[name=tenant_cd]").val(),
+			    			empno	  : '${sessionScope.sessionEmpno}'
+			    	}; 
+			    	cf_action(url, method, postData);
+					
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});	
+		}
+	} else {
+		return;
+	}
+}
+
+function f_tenantReturnCancel(){
+	$('#input_return_reason').dialog("close");
+}
+
+
+</script>

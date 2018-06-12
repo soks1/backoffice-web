@@ -1,0 +1,174 @@
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%
+	String use_divn_cd = request.getParameter("use_divn_cd") == null ? "" : (String)request.getParameter("use_divn_cd");
+%>
+
+<style>
+
+img { max-width:100%; }
+
+/* Container */
+.container-fluid {
+    background: #FFFFFF;
+    margin: 40px auto 10px;
+    padding: 20px 40px 0;
+    max-width: 960px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+
+/* Carousel Control */
+.control-box {
+    text-align: right;
+    width: 100%;
+    }
+    .carousel-control{
+        background: #666;
+        border: 0px;
+        border-radius: 0px;
+        display: inline-block;
+        font-size: 34px;
+        font-weight: 200;
+        line-height: 18px;
+        opacity: 0.5;
+        padding: 4px 10px 0px;
+        position: static;
+        height: 30px;
+        width: 30px;
+        }
+
+.item{
+	padding-top: 10px;
+}
+
+
+.carousel-inner{
+	min-height:455px;
+}
+
+.thumbnail {
+	margin-bottom:5px;
+}
+</style>
+
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="carousel slide" id="myCarousel">
+				<div class="carousel-inner">
+				    
+		        </div>
+		        <div class="control-box">                            
+		            <a data-slide="prev" href="#myCarousel" class="carousel-control left">‹</a>
+		            <a data-slide="next" href="#myCarousel" class="carousel-control right">›</a>
+		        </div>   
+		                              
+		    </div>
+		</article>
+	</div>
+</section>
+<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+<script type="text/javascript">
+
+pageSetUp();
+
+var pagefunction = function() {
+	
+	var getTemplateItem = function (itemData,i) {
+		
+// 		var div_img = $('<div>').addClass('thumbnail');
+		var div_img = $('<div>').addClass('thumbnail').attr('style','width:50%;');
+		var tag_img = $('<img>').attr('src',itemData.prvw_url).attr('alt',itemData.img_view_nm).addClass('img-responsive');
+		div_img.append(tag_img);
+		
+		var div_radio = $('<div>').addClass('ta-c');
+		
+		var input = $('<input>').attr('type','radio');
+		input.attr('name','template_list');
+		input.attr('img_view_nm',itemData.img_view_nm);
+		input.attr('img_local_nm',itemData.img_local_nm);
+		input.attr('img_path',itemData.prvw_url);
+		input.attr('thum_path',itemData.thum_url);
+		input.val(itemData.template_id);
+		
+		var label = $('<label>').addClass('radio radio-inline').append(input);
+		label.append(input);
+		label.append(itemData.img_view_nm);
+		div_radio.append(label);
+		
+		var item = $('<div>').addClass('col-md-3');
+		item.append(div_img);
+		item.append(div_radio);
+			
+        return item;
+    };
+	
+	var s = {};
+	s["search_info"] = "";
+	s["empno"] = $("input[name=empno]").val();
+	s["emp_str_cd"] = $("input[name=emp_str_cd]").val();
+	s["hq_base_yn"] = $("input[name=hq_base_yn]").val();
+	s["use_divn_cd"] = "<%=use_divn_cd %>"; // 템플릿 사용구분코드[필수]
+	s["_search"] = false;
+	s["rows"] = "10";
+	s["page"] = 1;
+	s["sidx"] = "reg_date";
+	s["sord"] = "desc";
+	s["list_all_yn"] = "Y";
+	
+	$.ajax({
+	    url: api_url+"/backoffice/branch/benefit/template/list", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(s)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var target = $(".carousel-inner");
+	    	var per_4obj;
+	    	var per_8obj;
+	    	$.each(obj.data.template_list, function(i, item) {
+	    		if( (i%12) == 0 ) {
+	    			if(i == 0) {
+	    				per_8obj = $("<div>").addClass("item active");	
+	    			} else {
+	    				per_8obj = $("<div>").addClass("item");
+	    			}
+	    			target.append(per_8obj);
+	    		}
+	    		if( (i%4) == 0 ) {
+	    			per_4obj = $("<div>").addClass("row pb30");
+	    			per_8obj.append(per_4obj); 
+	    		}
+	    		
+	    		per_4obj.append(getTemplateItem(this,i));
+	    		
+	    		if(i > 0 && (i%12) == 0 ) {
+	    			target.append(per_8obj);
+	    		}
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    },
+	    complete: function() {
+	    	$('.carousel').carousel({
+				interval : false,
+				cycle : false
+			});
+	    }
+	});
+	
+};
+
+
+pagefunction();
+
+</script>

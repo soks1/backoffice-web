@@ -1,0 +1,625 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<%@ page import="java.awt.Image" %>
+<%@ page import="javax.swing.ImageIcon" %>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>그룹 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmLifekok" name="frmLifekok">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="file_divn_cd" value="">
+							<input type="hidden" name="excel_strge_nm" value="">
+							<input type="hidden" name="excel_orgin_nm" value="">
+							<input type="hidden" name="strge_nm" value="">
+							<input type="hidden" name="orgin_nm" value="">
+							<input type="hidden" name="main_strge_nm" value="">
+							<input type="hidden" name="main_orgin_nm" value="">
+							<input type="hidden" name="_templ_kind_cd" value="TENANTIMG">
+							<input type="hidden" name="templ_yn" value="N">
+							
+							<fieldset>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">그룹명 <sup>*</sup></label>
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="tenant_nm" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="그룹명">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-2 control-label cs-css-05">등록지점 <sup>*</sup></label>
+										<div class="col-md-2" style="width:120px;">
+											<span class="btn btn-success fileinput-button">
+												<i class="glyphicon glyphicon-plus"></i>
+											    <span>Excel 업로드</span>
+<!-- 											    <input type="file" id="uploadfile" name="uploadfile"> -->
+											    <input type="file" id="uploadfile" name="uploadfile" onchange="getCmaFileView(this,'all')">
+											</span>
+										</div>
+										<div class="col-md-4">
+											<span class="form-control cs-css-03" id="file_nm"></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">대표자명 <sup>*</sup></label>
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="presid_nm" data-valid-use="true" data-valid-symbol="false" data-valid-max="50" data-valid-title="대표자명">
+									</div>
+								</div>
+								
+								<div class="form-group">							
+									<label class="col-md-2 control-label cs-css-05">가맹점 이미지 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile1" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile1" name="uploadfile1">
+										</span>
+										<a href="javascript:f_lifekokOpenTenantEventTemplatesLD();" class="btn btn-primary btn-sm">이미지 선택</a>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p id="_img_msg"><i class="fa fa-info-circle" ></i> '가맹점 이미지' 등록시, 사이즈:720px X 260px / 파일종류:jpg,gif,png / 최대파일용량:150kb</p>
+									</div>
+								</div>
+								
+								<div class="form-group">							
+									<label class="col-md-2 control-label cs-css-05">가맹점 메인노출<br/>이미지 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile2" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile2" name="uploadfile2">
+										</span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p id="_img_msg"><i class="fa fa-info-circle" ></i> '가맹점 메인 노출 이미지', 사이즈:214px X 214px / 파일종류:jpg,gif,png / 최대파일용량:150kb</p>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-2 control-label cs-css-05">카테고리/업종 <sup>*</sup></label>
+										<div class="col-md-4" style="width:150px">
+											<select class="form-control" id="cate_" name="cate_">
+												<option value="">선택</option>
+											</select>
+										</div>
+										<div class="col-md-4 _work_kind" style="width:250px; display:none;" id="_k01">
+											<select class="form-control _kind" id="kind01" name="kind01">
+												<option value="">선택</option>
+											</select>
+										</div>
+										<div class="col-md-4 _work_kind" style="width:250px; display:none;" id="_k02">
+											<select class="form-control _kind" id="kind02" name="kind02">
+												<option value="">선택</option>
+											</select>
+										</div>
+										<div class="col-md-4 _work_kind" style="width:250px; display:none;" id="_k03">
+											<select class="form-control _kind" id="kind03" name="kind03">
+												<option value="">선택</option>
+											</select>
+										</div>
+										<div class="col-md-4 _work_kind" style="width:250px; display:none;" id="_k04">
+											<select class="form-control _kind" id="kind04" name="kind04">
+												<option value="">선택</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantGroupList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_tenantGroupWNsubmit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="templates_sd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 업종 선택 컨트롤
+ * ==================================================================================
+ */
+ $('select[name=cate_]').change(function(){
+	if($('select[name=cate_]').val() == '01'){
+		$('._work_kind').hide();
+		$('._kind').val("");
+		$('#_k01').show();
+	}else if($('select[name=cate_]').val() == '02'){
+		$('._work_kind').hide();
+		$('._kind').val("");
+		$('#_k02').show();
+	}else if($('select[name=cate_]').val() == '03'){
+		$('._work_kind').hide();
+		$('._kind').val("");
+		$('#_k03').show();
+	}else if($('select[name=cate_]').val() == '04'){
+		$('._work_kind').hide();
+		$('._kind').val("");
+		$('#_k04').show();
+	}else{
+		$('._work_kind').hide();
+		$('._kind').val("");
+	}
+ });
+/**
+ * ==================================================================================
+ * 템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 템플릿 이미지 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=templ_list]:checked");
+			
+			$('input[name=templ_yn]').val('Y');			
+// 			$('input[name=orgin_nm]').val(chk_obj.attr('img_view_nm'));
+// 			$('input[name=strge_nm]').val(chk_obj.attr('img_local_nm'));
+			
+			var v_nm = chk_obj.attr('img_view_nm');
+// 			var img_path = chk_obj.attr('img_path').replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+			var img_path = chk_obj.attr('img_path');
+			var str_nm = chk_obj.attr('img_local_nm');
+			
+			$('#preview_uploadfile1').find('img').attr('src',img_path);			
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile1').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_uploadfile1');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_tenantGroup_image_fileDelete('uploadfile1')").text('파일삭제');						
+			var templ_id = $('<input>').attr('type', 'hidden').attr('name', 'templ_id').val(chk_obj.val());
+			span.append(aTag);
+			span.append(templ_id);
+			
+			var btn_div = $("#uploadfile1").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#templates_sd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+/* ============================================================================================
+/* 그룹 엑셀 파일 업로드
+/* ============================================================================================ */
+ 
+function getCmaFileInfo(obj,stype) {
+   var fileObj, pathHeader , pathMiddle, pathEnd, allFilename, fileName, extName;
+   if(obj == "[object HTMLInputElement]") {
+       fileObj = obj.value
+   } else {
+       fileObj = document.getElementById(obj).value;
+   }
+   if (fileObj != "") {
+           pathHeader = fileObj.lastIndexOf("\\");
+           pathMiddle = fileObj.lastIndexOf(".");
+           pathEnd = fileObj.length;
+           fileName = fileObj.substring(pathHeader+1, pathMiddle);
+           extName = fileObj.substring(pathMiddle+1, pathEnd);
+           allFilename = fileName+"."+extName;
+           
+           if(extName != "xlsx"){
+        	   alert("엑셀 파일을 등록해주세요.(확장자 xlsx)");
+        	   $('#uploadfile').val("");
+        	   $('#file_nm').text("");
+        	   return;
+           }
+
+           if(stype == "all") {
+                   return allFilename; // 확장자 포함 파일명
+           } else if(stype == "name") {
+                   return fileName; // 순수 파일명만(확장자 제외)
+           } else if(stype == "ext") {
+                   return extName; // 확장자
+           } else {
+                   return fileName; // 순수 파일명만(확장자 제외)
+           }
+   } else {
+           alert("파일을 선택해주세요");
+           return;
+   }
+    // getCmaFileView(this,'name');
+    // getCmaFileView('upFile','all');
+}
+ 
+function getCmaFileView(obj,stype) {
+    var s = getCmaFileInfo(obj,stype);
+    $('#file_nm').text(s);
+}
+
+/**
+ * 파일 삭제
+ * @param name
+ */
+function f_lifekok_group_fileDelete(name) {
+	
+	$('input[name=excel_strge_nm]').val("");
+	$('input[name=excel_orgin_nm]').val("");
+	$('span[id=file_nm]').html("");
+	var btn_span = $('.btn_del_'+name).parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_'+name).remove();
+}
+/* ============================================================================================
+/* 이미지 파일 업로드
+/* --------------------------------------------------------------------------------------------
+/* 파일 업로드 이벤트 핸들러
+/* ============================================================================================ */
+$('#uploadfile1').change(function (e) {
+	
+	var limitWidth  = 720,
+		limitHeight = 260,
+		limitSize 	= 150;
+	
+	var intpuFile = $(this);
+	var file = this.files[0];
+    var reader = new FileReader();
+    var image  = new Image();
+	var boolFile = true;
+ 
+	reader.readAsDataURL(file);  
+    
+	reader.onload = function(_file) {
+        image.src    = _file.target.result;              // url.createObjectURL(file);
+        image.onload = function() {
+            var w = this.width,
+                h = this.height,
+                t = file.type,                           // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size/1024) +'KB';
+            
+            if(w > limitWidth || h > limitHeight){
+            	alert("제한 사이즈를 초과하셨습니다.( "+limitWidth+" * "+limitHeight+" )\n너비 : " + w + " 높이 : " + h);
+            }else if(s > limitSize){
+            	alert("제한 파일용량을 초과하셨습니다.( "+limitSize+" kb )\n파일용량 : " + s);
+            }else{
+            	f_tenantGroup_image_fileUpload(intpuFile, "LKOKTENANT");
+            }
+        };
+        image.onerror= function() {
+        	alert("유효한 파일타입이 아닙니다. 이미지 파일(jpg,png,gif)을 등록해 주세요");
+//             alert('Invalid file type: '+ file.type);
+        };
+    };
+});
+
+$('#uploadfile2').change(function (e) {
+	
+	var limitWidth  = 214,
+		limitHeight = 214,
+		limitSize 	= 150;
+	
+	var intpuFile = $(this);
+	var file = this.files[0];
+    var reader = new FileReader();
+    var image  = new Image();
+	var boolFile = true;
+ 
+	reader.readAsDataURL(file);  
+    
+	reader.onload = function(_file) {
+        image.src    = _file.target.result;              // url.createObjectURL(file);
+        image.onload = function() {
+            var w = this.width,
+                h = this.height,
+                t = file.type,                           // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size/1024);
+//                 s = ~~(file.size/1024) +'KB';
+            
+            if(w > limitWidth || h > limitHeight){
+            	alert("제한 사이즈를 초과하셨습니다.( "+limitWidth+" * "+limitHeight+" )\n너비 : " + w + " 높이 : " + h);
+            }else if(s > limitSize){
+            	alert("제한 파일용량을 초과하셨습니다.( "+limitSize+" kb )\n파일용량 : " + s);
+            }else{
+            	f_tenantGroup_image_fileUpload(intpuFile, "LKOKTENANTMAIN","main");
+            }
+        };
+        image.onerror= function() {
+        	alert("유효한 파일타입이 아닙니다. 이미지 파일(jpg,png,gif)을 등록해 주세요");
+//             alert('Invalid file type: '+ file.type);
+        };
+    };
+});
+//---------------------------------------------------------------------------------------------------------------------------------------------------//
+
+/**
+ * 이미지 파일 업로드
+ * @param inputFile
+ * @param divnCd
+ */
+function f_tenantGroup_image_fileUpload(inputFile, divnCd, inputSuffix) {
+	
+	if (inputSuffix == null) { 
+		inputSuffix = ""; 
+	}
+	var fileData = inputFile.get(0).files[0];
+	var formData = new FormData();
+
+	var preview = $('#preview_'+inputFile.attr('id'));
+	
+	if(preview.find('img').attr('src') != noImgPath) {
+		alert('기존 파일을 삭제하고 업로드 하시기 바랍니다.');
+		return;
+	}
+	
+	formData.append('file', fileData, encodeURI(fileData.name));
+	formData.append('file_divn_cd', divnCd);
+	formData.append('empno', $('#frmKeepData').find('input[name=empno]').val() );
+	
+	$.ajax({
+
+		//로컬
+// 		url: api_lifekok_img_url+"/lifekok/common/file/upload",
+		
+		//개발
+		url: api_lifekok_url +"/lifekok/common/file/upload",
+		
+		type: 'POST',
+		data: formData,
+        preprocessData: false,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(obj) {
+			
+			var _prvw_url = obj.data.prvw_url;
+			if(inputSuffix == "main"){
+				$('input[name=main_strge_nm]').val(obj.data.strge_nm);
+				$('input[name=main_orgin_nm]').val(fileData.name);
+				
+			}else{
+				$('input[name=strge_nm]').val(obj.data.strge_nm);
+				$('input[name=orgin_nm]').val(fileData.name);
+				
+			}
+// 				$('input[name=file_divn_cd]').val(obj.data.file_divn_cd);
+			
+			//로컬
+// 			var _delivery_prvw_url = _prvw_url.replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+			
+			//개발
+			var _delivery_prvw_url = _prvw_url;
+			
+			preview.find('img').attr('src',_delivery_prvw_url);
+			
+			var fName = '<p class="alert alert-info bd0">'+fileData.name+'</p>';
+			preview.parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_'+inputFile.attr('id'));
+			var aTag = $('<a>')
+						.addClass('btn btn-danger btn-sm')
+						.attr('href','javascript:f_tenantGroup_image_fileDelete(\''+inputFile.attr('id')+'\')')
+						.text('파일삭제');
+			
+			span.append(aTag);
+			// TODO: 추 후 필요한 정보는 더 추가 하여 입력 한다.
+			
+			var btn_div = inputFile.parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;       
+		}
+	});
+}
+/**
+ * 파일 삭제
+ * @param name
+ */
+function f_tenantGroup_image_fileDelete(name) {
+	
+	if(name == "uploadfile1"){
+		$('input[name=strge_nm]').val("");
+		$('input[name=orgin_nm]').val("");
+		$('input[name=templ_id]').val("");
+		$('input[name=img_templ_id]').val("");
+		$('input[name=templ_yn]').val('N');
+	}else if(name == "uploadfile2"){
+		$('input[name=main_strge_nm]').val("");
+		$('input[name=main_orgin_nm]').val("");
+	}else{
+		$('input[name=excel_strge_nm]').val("");
+		$('input[name=excel_orgin_nm]').val("");
+	}
+	
+	var preview = $('#preview_'+name);
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_'+name).parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_'+name).remove();
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------//
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_tenantGroupWNsubmit() {
+	
+
+		
+	if($('#frmLifekok').formValid() ){
+		
+		if($('#file_nm').text() == ""){
+			alert("가맹점 목록 엑셀파일을 등록해 주세요.");
+			return;
+		}
+		
+		if($('input[name=templ_yn]').val()=="Y"){
+			if($('input[name=templ_id]').val() == "" || $('input[name=templ_id]').val() == null){
+				alert("가맹점 이미지를 등록해 주세요");
+				return;
+			}
+		}else if($('input[name=templ_yn]').val()=="N"){
+			if($('input[name=strge_nm]').val() == "" || $('input[name=strge_nm]').val() == null){
+				alert("가맹점 이미지를 등록해 주세요");
+				return;
+			}
+		}
+		if($('input[name=main_strge_nm]').val() == ""){
+			alert("가맹점 메인노출 이미지를 등록해 주세요");
+			return;
+		}
+		if($('#kind01').val()+$('#kind02').val()+$('#kind03').val()+$('#kind04').val() == ""){
+			alert("카테고리/업종을 선택해 주세요");
+			return;
+		}
+		
+		
+		var data = $('#frmLifekok').serializeFormObject();
+		var fileData = $('#uploadfile').get(0).files[0];
+		var formData = new FormData();
+// 		formData.append('file', fileData);
+		formData.append('file', fileData, encodeURI(fileData.name));
+		formData.append('biz_cate_cd', $('#kind01').val()+$('#kind02').val()+$('#kind03').val()+$('#kind04').val());
+		formData.append('empno',		data.empno);
+		formData.append('tenant_nm',	data.tenant_nm);
+		formData.append('presid_nm',	data.presid_nm);
+		formData.append('main_orgin_nm',data.main_orgin_nm);
+		formData.append('main_strge_nm',data.main_strge_nm);
+		formData.append('templ_yn',		data.templ_yn);
+		formData.append('templ_id',		data.templ_id);
+		formData.append('orgin_nm',		data.orgin_nm);
+		formData.append('strge_nm',		data.strge_nm);
+		
+		$.ajax({
+			//로컬
+// 			url: api_lifekok_img_url+"/backoffice/lifekok/tenant/group/create",
+			
+			//개발
+	 		url: api_lifekok_url+"/backoffice/lifekok/tenant/group/create",
+			
+			type: 'POST',
+			data: formData,
+	        preprocessData: false,
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function(obj) {
+				alert(obj.message);
+				f_tenantGroupList();
+			},
+			error: function(obj) {
+				var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;       
+			}
+		});
+	}
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+
+	f_ajaxBizCateCode("cate_");
+	f_ajaxBizCateCode("kind01");
+	f_ajaxBizCateCode("kind02");
+	f_ajaxBizCateCode("kind03");
+	f_ajaxBizCateCode("kind04");
+	
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

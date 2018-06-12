@@ -1,0 +1,202 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>제휴 배너 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" name="noticbd_divn_cd" value="BANNER">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">설명 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="contentB"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">게시기간 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ntce_period"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">게시상태 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ntce_sts_cd"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">연결방법 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="link_method_cd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >페이지경로 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ot_title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">배너이미지 : </label>
+									<div class="col-md-11" id="banner_img">
+									</div>
+								</div>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내용이미지 : </label>
+									<div class="col-md-11" id="content_img">
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_bannerList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_bannerEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_bannerDelete();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/board/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	$("#reg_date").html(obj.data.reg_date_name);
+	    	$("#reg_id").html(obj.data.reg_id_name);
+	    	$("#mod_date").html(obj.data.mod_date_name);
+	    	$("#mod_id").html(obj.data.mod_id_name);
+	    	$("#title").html(obj.data.title);
+	    	$("#contentB").html((obj.data.content).replaceAll("\\n","<br/>"));
+	    	$("#noticbd_id").html(obj.data.noticbd_id);
+	    	$("#ntce_period").html(obj.data.ntce_start_dd + " ~ " + obj.data.ntce_end_dd );
+	    	$("#ntce_sts_cd").html(obj.data.ntce_sts_cd_name); //게시상태값 현재 누락되어있음
+	    	$("#link_method_cd").html(obj.data.link_method_cd_name);
+	    	
+	    	if (obj.data.link_method_cd == 'APPLIST') 
+	    		if(obj.data.sel_noticbd_divn_cd_name == "") {
+			    	$("#ot_title").html(obj.data.sel_title);
+	    		}else {
+			    	$("#ot_title").html("("+obj.data.sel_noticbd_divn_cd_name+") "+obj.data.sel_title);
+	    		}
+			else if (obj.data.link_method_cd == 'URL')
+		    	$("#ot_title").html(obj.data.ot_link_url);
+			else 
+				$("#ot_title").html("없음");
+
+    		//내용 이미지
+	    	var tag_img2 = $("<img>").attr("src",obj.data.noticbd_img_list[0].prvw_url).attr("alt",obj.data.noticbd_img_list[0].img_orgin_file_nm).addClass('img-responsive');
+	    	$("#banner_img").append(tag_img2);
+	    	
+    		var tag_img1 = $("<img>").attr("src",obj.data.noticbd_img_list[1].prvw_url).attr("alt",obj.data.noticbd_img_list[1].img_orgin_file_nm).addClass('img-responsive');
+	    	$("#content_img").append(tag_img1);
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

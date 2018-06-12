@@ -1,0 +1,360 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ * 공통 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_pedometerList() {
+	var url = "/application/event/pedometer/pedometerEventLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_pedometerEdit() {
+	var url = "/application/event/pedometer/pedometerEventEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 삭제
+ * ==================================================================================
+ */
+function f_pedometerDel() {
+	if($('#aprv_sts_cd').val() == 'APPROVE') {
+		alert("승인상태의 이벤트는 삭제가 불가능합니다.");
+		return;
+	}
+	
+	if(confirm("정말 삭제하시겠습니까?")) {
+		var select_ids = [$("#frmKeepData").find("input[name=evnt_id]").val()];
+		var data = {
+			empno: $("#frmKeepData").find("input[name=empno]").val(), 
+			emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+			evnt_id_list : select_ids
+		};
+		
+		$.ajax({
+			url: api_url + "/backoffice/event/pedometer/delete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_pedometerList();
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCampaignSD() {
+	$.ajax({
+		url: "/application/groupbuy/campaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#pedometer_campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#pedometer_campaign_sd').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 승인 요청
+ * ==================================================================================
+ */
+function f_approve_ask() {
+	if(confirm("승인요청 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/pedometer/approval/ask",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/event/pedometer/pedometerEventRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 승인 처리
+ * ==================================================================================
+ */
+function f_approve() {
+	if(confirm("승인 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/pedometer/approve",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/event/pedometer/pedometerEventRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 반려
+ * ==================================================================================
+ */
+function f_reject() {
+	if(confirm("반려 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/pedometer/reject",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/event/pedometer/pedometerEventRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+// 강제 달성 처리
+function f_forceComplete() {
+	if(confirm("달성자 모두에게 보상쿠폰이 발행됩니다.\n강제 달성 처리 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/event/pedometer/forcecomplete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/event/pedometer/pedometerEventRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 쿠폰별 쿠폰북 정보 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponBookSD() {
+	$.ajax({
+		url: "/application/common/couponBookSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#pedometer_couponbook_sd');
+			$target.html(data);
+		}	
+	});
+	$('#pedometer_couponbook_sd').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#pedometer_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#pedometer_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#pedometer_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#s_prgs_dd, #e_prgs_dd" ).datepicker( "option", {minDate: null, maxDate: null});
+	
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+	
+	$("#pedometer_grid").jqGrid('setGridParam', {search: false});
+	$("#pedometer_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#pedometer_grid").jqGrid('setGridParam', {'postData' : {'search_info':$("#frmSearch").serializeFormObject()} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#s_prgs_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#e_prgs_dd').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#e_prgs_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#s_prgs_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/**
+ * ==================================================================================
+ * 시간 설정
+ * ==================================================================================
+ */
+function f_setTimeStr() {
+	for(var h=0; h<24; h++) {
+		var hour = h+"";
+		if(hour.length < 2) {
+			hour = "0" + hour;
+		}
+		
+		$('#evnt_start_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		$('#evnt_end_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		
+		$('#limit_start_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		$('#limit_end_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		
+		$('#boost_start_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		$('#boost_end_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+	}
+	
+	for(var m=0; m<60; m++) {
+		var min = m+"";
+		if(min.length < 2) {
+			min = "0" + min;
+		}
+		
+		$('#evnt_start_min').append("<option value='"+min+"'>"+min+"</option>");
+		$('#evnt_end_min').append("<option value='"+min+"'>"+min+"</option>");
+		
+		$('#limit_start_min').append("<option value='"+min+"'>"+min+"</option>");
+		$('#limit_end_min').append("<option value='"+min+"'>"+min+"</option>");
+		
+		$('#boost_start_min').append("<option value='"+min+"'>"+min+"</option>");
+		$('#boost_end_min').append("<option value='"+min+"'>"+min+"</option>");
+	}
+	
+	$('#limit_start_hour').attr("disabled", "disabled");
+	$('#limit_end_hour').attr("disabled", "disabled");
+	$('#limit_start_min').attr("disabled", "disabled");
+	$('#limit_end_min').attr("disabled", "disabled");
+	
+	$('#boost_start_hour').attr("disabled", "disabled");
+	$('#boost_end_hour').attr("disabled", "disabled");
+	$('#boost_start_min').attr("disabled", "disabled");
+	$('#boost_end_min').attr("disabled", "disabled");
+}

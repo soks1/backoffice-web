@@ -1,0 +1,307 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%> 
+<section id="widget-grid" class=""> 
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" 
+				data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>거래내역상세정보</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<input type="hidden" id="saved_end_hhmm" name="saved_end_hhmm">
+							<input type="hidden" id="evnt_id">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05 ">N-PMT 주문 ID :</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05 ">고객전화번호:</label>
+									<div class="col-md-6">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">온라인몰 주문번호 :</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-04" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">금액 :</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-04" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">거래구분 :</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-04" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">금융기관명 :</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">금융기관 가맹점 ID :</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">결제수단:</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-0">전문추적번호 :</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-0">승인번호 :</label>
+									<div class="col-md-6">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">요청일시 :</label>
+									<div class="col-md-3" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인일시 :</label>
+									<div class="col-md-3" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">취소일시 :</label>
+									<div class="col-md-3" id="">
+										<span class="form-control cs-css-03" id="">
+											<a href="javascript:f_paymentRealCancel();" class="btn btn-default" style="display:none">취소</a>
+										</span>
+									</div>
+								</div>
+								
+							</fieldset>
+													
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_paymentRealList();" class="btn btn-default">목록</a>
+									</div>
+								</div>
+							</div>	
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+	
+	// 쿠폰진 컨텐츠 상세 데이터 추출
+	f_paymentRealDetail();
+};
+
+
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 상세 데이터 처리
+ * ----------------------------------------------------------------------------------
+ * 상세 화면의 데이터 처리
+ * ==================================================================================
+ */
+function f_paymentRealDetail() {
+	$.ajax({
+	    url: api_url+'/backoffice/transaction/real/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	detailData = resultData.data;
+	    	// 게시물 상태 :  승인완료
+	    	if(detailData["aprv_sts_cd"] == 'APPROVE') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	// 게시물 상태 : 승인대기중
+	    	else if(detailData["aprv_sts_cd"] == 'STANDBY') {
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_stop').remove();
+	    		$('.btn_auth_delete').remove();
+	    		$('#joint_area').hide();
+	    	}
+	    	// 게시물 상태 : 승인 요청전
+	    	else if(detailData["aprv_sts_cd"] == 'REQUEST') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_stop').remove();
+	    		$('#joint_area').hide();
+	    	}
+	    	// 게시물 상태 : 반려
+	    	else if(detailData["aprv_sts_cd"] == 'REJECT') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_stop').remove();
+	    		$('#joint_area').hide();
+	    	}
+	    	
+	    	// 종료 상태인 경우 시간연장 버튼 숨김
+	    	if(detailData["prgs_sts_cd"] == 'END' || detailData["prgs_sts_cd"] == 'CPSNEND') {
+	    		$('.btn_auth_stop').remove();
+	    	}
+	    	
+// 	    	detailData
+			$("#nomem_evnt_title").html(detailData["nomem_evnt_title"]);
+			$("#nomem_evnt_desc").html(detailData["nomem_evnt_desc"].replaceAll('\\n','<br/>'));
+			
+			$("#cpbook_gbn_nm").html(detailData["cpbook_gbn_nm"]);
+	    	$("#cpbook_size_type_cd").html(detailData["cpbook_size_type_cd"] + " 타입");
+			
+			$("#open_dd").html(cf_cvtTimeFormat(detailData["open_dd"]));
+			$("#apply_start_date").html(cf_cvtTimeFormat(detailData["apply_start_date"]));
+			$("#apply_end_date").html(cf_cvtTimeFormat(detailData["apply_end_date"]));
+	    	
+			var tag_img = $('<img>').attr('src',detailData["thum_img_prvw_url"]).attr('alt',detailData["thum_img_view_nml"]).addClass('img-responsive');
+	    	$("#thum_img").append(tag_img);
+			
+	    	$("#evnt_id").val(detailData["nomem_evnt_id"]);
+// 	    	$("#campaign_id").html(detailData["campaign_id"]);
+// 	    	$("#campaign_dy").html(cf_changeDateFormat(detailData["campaign_info"]["campaign_start_dy"],'yy-mm-dd')+" ~ "+cf_changeDateFormat(detailData["campaign_info"]["campaign_end_dy"],'yy-mm-dd'));
+// 	    	$("#custgp_list_cnt").html(detailData["campaign_info"]["custgp_list"].length);
+// 	    	$("#campaign_nm").html(detailData["campaign_info"]["campaign_nm"]);
+// 	    	var custgp_list = "";
+// 	    	$.each(detailData["campaign_info"]["custgp_list"], function(i,items){
+// 	    		if(i !=0 ){
+// 	    			custgp_list += ", ";  
+// 	    		}
+// 	    		custgp_list += items["lst_custgp_id"]+"-"+items["custgp_nm"];
+// 	    	});
+// 	    	$("#custgp_list").html(custgp_list);
+// 	    	$("#cpzine_title").html(detailData["cpzine_title"]);
+// 	    	$("#cpzine_desc").html(detailData["cpzine_desc"]);
+// 	    	$("#from_open_date").html("D-" + detailData["from_open_date"]);
+
+// 	    	$("#cpbook_gbn").html(detailData["cpbook_gbn_nm"]);
+// 	    	//$("#apply_start_dd").html(cf_changeDateFormat(detailData["apply_start_dd"],'yy-mm-dd'));
+// 	    	//$("#apply_end_dd").html(cf_changeDateFormat(detailData["apply_end_dd"],'yy-mm-dd'));
+// 	    	$("#apply_start_dd").html(cf_cvtTimeFormat(detailData["apply_start_dd"]));
+// 	    	$("#apply_end_dd").html(cf_cvtTimeFormat(detailData["apply_end_dd"]));
+	    	
+// 	    	var tag_img = $('<img>').attr('src',detailData["thum_img_prvw_url"]).attr('alt',detailData["thum_img_view_nml"]).addClass('img-responsive');
+// 	    	$("#thum_img").append(tag_img);
+	    	
+// 	    	// 레시피
+	    	
+// 	    	if (detailData['recipe_use_yn'] == 'Y') {
+// 	    		$('#recipe_use_yn').prop('checked', true);
+	    		
+// 	    		var $recipeContainer = $('#recipe_container');
+// 	    		$('<img />', {'src': detailData['recipe_img_prvw_url']}).appendTo( $('#recipe_image') );
+// 	    		$recipeContainer.show();
+	    		
+// 	    	}
+	    	
+	    	var tempCouponzineGroup = $("fieldset.couponzine_group").html();
+	    	
+	    	$.each(detailData["cpzine_composition"], function(i, items1){
+	    		var cpzineTag = [];
+	    		if(i != 0){
+	    			$("fieldset.couponzine_group").append(tempCouponzineGroup);
+	    		}
+	    		cpzineTag.push("<tr>");
+	    		cpzineTag.push("<td class='ta-c'>"+items1["cpzine_contents_subject"]+"</td>");	
+	    		cpzineTag.push("<td class='ta-c'>"+items1["cpzine_contents_title"]+"</td>");	
+	    		cpzineTag.push("<td class='ta-c'>"+items1["cpzine_contents_cat_nm"]+"</td>");
+	    		cpzineTag.push("<td class='ta-c'>"+ cf_changeDateFormat(items1["cpzine_contents_regdate"],'yy-mm-dd') +"</td>");
+	    		cpzineTag.push("</tr>");
+	    		$("fieldset.couponzine_group tbody[name=coupon_zine_contents]:last").append(cpzineTag.join(""));
+	    		
+	    		if (items1["bsis_yn"] == "Y") {
+					$("fieldset.couponzine_group .form-group:last").prev(".form-group").find("label").append('<i class="fa fa-check-circle text-danger" style="font-size:2em;"></i>');
+	    		}
+	    		
+	    		var cpbookTag = [];	
+	    		$.each(items1["cpbook_list"], function(j, items2){
+	    			cpbookTag.push("<tr>");	
+	    			cpbookTag.push("<td class='ta-c'>"+items2["cpbook_id"]+"</td>");	
+	    			cpbookTag.push("<td class='ta-c'>"+items2["cpbook_nm"]+"</td>");	
+	    			cpbookTag.push("<td class='ta-c'>"+items2["cpbook_type_cd_name"]+"</td>");	
+	    			cpbookTag.push("<td class='ta-c'>"+items2["coupon_cnt"]+"</td>");
+	    			cpbookTag.push("</tr>");
+	    		});
+	    		$("fieldset.couponzine_group tbody[name=coupon_book]:last").append(cpbookTag.join(""));
+	    	});
+	    	
+			
+	    	
+		},
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }	
+	});
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+// loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+pagefunction();
+</script>

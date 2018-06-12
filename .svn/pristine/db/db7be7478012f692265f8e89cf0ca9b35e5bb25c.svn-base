@@ -1,0 +1,363 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div class="widget-body">
+					<form id="frmSearch" class="form-horizontal">
+						<fieldset>
+							<div class="form-group">
+								<label class="col-md-1 control-label">제목</label>
+								<div class="col-md-3">
+									<input class="form-control" type="text" name="msgTitle">
+								</div>
+								<label class="col-md-1 control-label">내용</label>
+								<div class="col-md-7">
+									<input class="form-control" type="text" name="msgContent">
+								</div>								
+							</div>
+							<div class="form-group">
+								<label class="col-md-1 control-label">상태</label>
+								<div class="col-md-3">
+									<select class="form-control" name="msgSts">
+										<option value="">전체</option>
+										<option value="1">전송완료</option>
+										<option value="0">전송대기</option>
+										<option value="2">전송취소</option>
+										<option value="3">오류</option>
+									</select>
+								</div>								
+								<label class="col-md-1 control-label">일자</label>
+								<div class="col-md-3">
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="input-group">
+												<input class="form-control datepicker" placeholder="시작일" type="text" id="s_reg_date" name="s_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="input-group">
+												<input class="form-control datepicker" placeholder="종료일" type="text" id="e_reg_date" name="e_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<label class="col-md-1 control-label">전송구분</label>
+								<div class="col-md-3">
+									<select class="form-control" id="scdlId" name="scdlId">
+										<option value="">전체</option>
+										<option value="0">즉시</option>
+										<option value="1">예약</option>
+									</select>
+								</div>		
+							</div>
+						</fieldset>
+						<div class="form-actions">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="javascript:void(0);" id="btn_sample_search" onclick="f_s_sample();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" data-widget-editbutton="false" data-widget-deletebutton="false">	
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> Push 발송이력 </h2>
+				</header>
+				<div id="mcoupon_jqgrid_section" class="no-padding" style="width:100%;border:0;">
+					<table id="mcoupon_jqgrid"></table>
+					<div id="mcoupon_jqgrid_page"></div>
+				</div>
+			</div>	
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 페이지 정보 설정
+ * ----------------------------------------------------------------------------------
+ * 초기 설정 및 필요 UI 컴포넌트 셋팅
+ * ==================================================================================
+ */
+var pagefunction = function() {
+	
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', mcoupon_jqgrid_function);
+
+	function mcoupon_jqgrid_function() {
+		// grid resize target object (don't remove!)
+		var jqgrid_section = $('#mcoupon_jqgrid_section');
+
+		var pageWidth = $('#mcoupon_jqgrid').parent().width() - 100;
+		
+		// grid send post data (don't remove!)
+		var post_data = {
+				search_info : '',
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}' 
+		};
+		$("#mcoupon_jqgrid").jqGrid({
+			colNames: ['No','아이디', '전송구분', '제목', '내용', '상태', '예약시간', '전송시간', '전송개수', '성공개수', '등록일','전송구분값','상태값'],
+			colModel: [
+				{ name : 'rnum',		index:'rnum',			sortable:false,	width:(pageWidth*(5/100)), 	align:'center' 	},
+				{ name : 'msgid',		index:'msgid',			sortable:false,	width:(pageWidth*(5/100)), 	align:'center', 	classes:'pointer',hidden:true		}, 
+				{ name : 'senddivn',	index:'senddivn',		sortable:false,	width:(pageWidth*(5/100)), 	align:'center' 							},  
+				{ name : 'msgtitle',	index:'msgtitle',		sortable:false,	width:(pageWidth*(20/100)),	classes:'ui-ellipsis' 					},
+				{ name : 'msgcontent',	index:'msgcontent',		sortable:false,	width:(pageWidth*(30/100)) ,	classes:'ui-ellipsis'					}, 
+				{ name : 'msgsts',		index:'msgsts',			sortable:false,	width:(pageWidth*(5/100)), 	align:'center' 							}, 
+				{ name : 'scdltm',		index:'scdltm',			sortable:false,	width:(pageWidth*(10/100)),	classes:'ui-ellipsis'					}, 
+				{ name : 'sendstarttm',	index:'sendstarttm',	sortable:false,	width:(pageWidth*(10/100)),	classes:'ui-ellipsis'					}, 
+				{ name : 'sendtotncnt',	index:'sendtotncnt',	sortable:false,	width:(pageWidth*(5/100)), 	align:'center'							}, 
+				{ name : 'scssncnt',	index:'scssncnt',		sortable:false,	width:(pageWidth*(5/100)),		align:'center'							},
+				{ name : 'gendate',		index:'gendate',		sortable:false,	width:(pageWidth*(10/100)), 	align:'center' 							},
+				{ name : 'scdlid',		index:'scdlid',			sortable:false,	width:(pageWidth*(10/100)), 	align:'center' 	,hidden:true			},
+				{ name : 'msgstsval',	index:'msgstsval',		sortable:false,	width:(pageWidth*(10/100)), 	align:'center' 	,hidden:true			}
+			],
+			url: api_url+'/backoffice/push/mcoupon/list',
+			mtype: 'GET',
+			datatype : 'json',
+		    contentType: 'application/json;charset=utf-8',
+			postData: post_data,
+			serializeRowData : function(postData) { return encodeURI('params='+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				var _search = $('#frmKeepData').find('nput[name=_search]');
+				var page 	= $("#frmKeepData").find("input[name=page]");
+				var rows 	= $("#frmKeepData").find("input[name=rows]");
+
+				if(_search.val() == 'true') {
+					
+					// 기존 검색 데이터 등록(특이 사항은 별로 코딩 하세요.)
+					cf_keepDataLoader('#frmKeepData', '#frmSearch');
+					
+					// 특이 사항은 별로 코딩 영역
+					// TODO : 이 영역을 지우고 코딩 하세요.
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $('#frmSearch').serializeFormObject();
+					postData._search = true;
+					$('#mcoupon_jqgrid').jqGrid('setGridParam', { search:true } );
+					$('#mcoupon_jqgrid').jqGrid('setGridParam', {'postData' : { 'search_info' : searchData } } );
+
+					// 검색 취소 버튼 추가
+					f_bc_sample();
+				}
+				
+//				$('#mcoupon_jqgrid').jqgridRestoreParam('#frmKeepData', postData);
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#mcoupon_jqgrid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#mcoupon_jqgrid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+
+				
+				return encodeURI("params="+JSON.stringify(postData));  
+			},
+			jsonReader: {
+				repeatitems: false,
+				id: 'col_1',
+				root:	function(obj){ return obj.data.content_list; },			// 루트가 될 데이터 셋 명칭
+				records:function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page: 	function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total: 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+
+// 			pager: '#mcoupon_jqgrid_page',
+// 			sortname: 'sendstarttm',
+// 			sortorder: "desc",
+// 			multiselect: true,			// 멀티 셀렉트 적용
+// 			shrinkToFit : true,			// 가로 스펙 픽스
+// 			footerrow: false, 			// 풋터 로우 옵션
+// 			userDataOnFooter: false,	// 풋터 로우 옵션
+			
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : $('#mcoupon_jqgrid_page'),
+			sortname : 'sendstarttm',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : 'left',
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			
+			onCellSelect: function(rowId, index, contents, event) {
+				
+			},
+			loadComplete: function(){
+				// 풋터 로우
+				/* 
+				var sum = $('#mcoupon_jqgrid').jqGrid('getCol', 'col_13', false, 'sum');
+				$('#mcoupon_jqgrid').jqGrid('footerData', 'set', {createName:'합계', 'col_8':sum});
+				 */
+			},
+			gridComplete: function(){
+				var postData = $('#mcoupon_jqgrid').jqGrid('getGridParam', 'postData');
+				$('#mcoupon_jqgrid').jqGrid('sortGrid', postData.sidx, false, postData.sord);
+			}
+
+		});
+		
+		$('#mcoupon_jqgrid').jqGrid('navGrid', '#mcoupon_jqgrid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		
+		// btn_create
+/*
+		$('#mcoupon_jqgrid').jqGrid('navButtonAdd','#mcoupon_jqgrid_page',{
+			caption: '엑셀다운',
+			id: 'btn_download',
+			buttonicon: 'ui-icon-excel',
+			onClickButton: function(){
+
+				var postData = $("#frmSearch").serializeFormObject();
+				$.extend(postData, {
+						empno: '${sessionScope.sessionEmpno}', 
+						emp_str_cd: '${sessionScope.sessionStrCd}',
+						hq_base_yn: '${sessionScope.sessionHqBaseYn}' 
+				   });
+
+				
+				var url = api_url+"/backoffice/push/mcoupon/excel/download?";
+				var params = encodeURI('params='+JSON.stringify(postData));
+				
+				$.fileDownload(url + params);			
+			}
+		});
+*/		
+		// btn_delete
+		$('#mcoupon_jqgrid').jqGrid('navButtonAdd','#mcoupon_jqgrid_page',{
+			caption: '예약취소',
+			id: 'btn_delete',
+			buttonicon: 'ui-icon-trash',
+			onClickButton: function(){
+				
+				var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');	
+				var chk_cnt = 0;				
+				var del_ids = "dummy";
+				
+				
+				for(var i = 0; i < select_ids.length; i++) {
+					
+					var scdl_cnt = $("#mcoupon_jqgrid").jqGrid('getCell', select_ids[i], 'scdlid');
+					var msgsts_cnt = $("#mcoupon_jqgrid").jqGrid('getCell', select_ids[i], 'msgstsval');
+					
+					del_ids += "," + scdl_cnt;
+					
+					if(msgsts_cnt == 1) {
+						chk_cnt++;	
+					}
+					if(msgsts_cnt == 2) {
+						chk_cnt++;	
+					}
+					
+				}				
+				if(chk_cnt > 0) {
+					alert("전송되지 않은 알림만 예약 취소가 가능합니다.");
+					return;
+				}
+				f_mcoupon_cancel(del_ids);
+				
+			}
+		});
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+		
+		// jqgrid css setting (don't remove!)
+// 		$('#mcoupon_jqgrid').jqgridStyle();
+	  	$('#mcoupon_jqgrid').gridCss();
+	  	$('#mcoupon_jqgrid_cb').css('border-left-width','0');
+	  	$('#mcoupon_jqgrid').css('padding-left','4px');
+	  	$('#jqgh_mcoupon_jqgrid_cb').css('padding','7px 0');	  	
+	  	$('#mcoupon_jqgrid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+		
+	    // jqgrid resizing (don't remove!)
+		$(window).on('resize.jqGrid', function () {
+			$('#mcoupon_jqgrid').setGridWidth(jqgrid_section.width(), true);
+		});
+		
+	};
+	
+	
+	
+};
+
+
+function excelDown(){
+	
+	var f = document.form1;
+	f.action="/application/sample/sampleList.do";
+	f.submit();
+	
+}
+	
+
+/**
+ * ==================================================================================
+ * 페이지 셋업 (don't remove!)
+ * ----------------------------------------------------------------------------------
+ * 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행
+ * ==================================================================================
+ */
+pageSetUp();
+
+
+/**
+ * ==================================================================================
+ * 페이지 정보 설정 로드
+ * ----------------------------------------------------------------------------------
+ * 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+ * ==================================================================================
+ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+
+</script>
+

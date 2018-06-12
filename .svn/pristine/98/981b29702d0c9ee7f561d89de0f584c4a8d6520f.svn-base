@@ -1,0 +1,16 @@
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script src="${pageContext.request.contextPath}/resources/js/application/merchant.js"></script>
+<div id="targetHtml">
+<%
+	if("R".equals(request.getParameter("p"))) {
+%>
+	<jsp:include page="/WEB-INF/jsp/application/merchant/merchant/merchantRN.jsp" flush="false" />
+<%
+	} else {
+%>
+	<jsp:include page="/WEB-INF/jsp/application/merchant/merchant/merchantLN.jsp" flush="false" />
+<%
+	}
+%>
+
+</div>

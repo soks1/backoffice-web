@@ -1,0 +1,3 @@
+.checkbox-inline input , .checkbox-inline span {
+	z-index:2 !important;
+}

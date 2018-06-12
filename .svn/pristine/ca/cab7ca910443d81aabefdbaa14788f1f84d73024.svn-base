@@ -1,0 +1,943 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>개인화쿠폰북 수정</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="editCpbookFrm" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}" />
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}" />
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}" />
+							
+							<input type="hidden" name="cpbook_type_cd" />
+							<input type="hidden" name="issue_quipmnt_cd_pc_yn" />
+							<input type="hidden" name="issue_quipmnt_cd_mobile_yn" />
+							<input type="hidden" name="lmart_issue_yn" />
+							<input type="hidden" name="tru_issue_yn" />
+							<input type="hidden" name="vic_issue_yn" />
+							<input type="hidden" name="use_brnch_info_all_yn" />
+							<input type="hidden" name="upld_seq_no" />
+							<input type="hidden" name="file_change_yn" value="N" />
+							<input type="hidden" name="upld_view_name" id="upld_view_name" />
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 유형 <sup>*</sup></label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="cpbook_type_cd_name"></span>
+									</div>
+									<label class="col-md-1 control-label">온라인몰, 매장 <sup>*</sup></label>
+									<div class="col-md-3">
+										<select class="form-control" name="issue_chanel_cd" data-valid-use="true" data-valid-title="온라인몰, 매장">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<label class="col-md-2 control-label">롯데마트몰 발행기기</label>
+									<div class="col-md-2">
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" id="s_issue_quipmnt_cd_pc_yn" name="s_issue_quipmnt_cd_pc_yn" value="N" disabled="disabled">
+											  <span>PC</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" id="s_issue_quipmnt_cd_mobile_yn" name="s_issue_quipmnt_cd_mobile_yn" value="N" disabled="disabled">
+											  <span>모바일</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">브랜드 <sup>*</sup></label>
+									<div class="col-md-3">
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="s_lmart_issue_yn" value="N">
+											  <span>롯데마트</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="s_tru_issue_yn" value="N">
+											  <span>토이저러스</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="s_vic_issue_yn" value="N">
+											  <span>빅마켓</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">사용지점 <sup>*</sup></label>
+									<div class="col-md-6">
+										<input type="hidden" id="use_brnch_info_list" name="use_brnch_info_list" value="">
+									</div>
+									<div class="col-md-1">
+										<label class="checkbox-inline" >
+											  <input type="checkbox" class="checkbox style-2" id="s_use_brnch_info_all_yn" name="s_use_brnch_info_all_yn" value="N">
+											  <span>전체선택</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">App노출지점 <sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="use_psbt_brnch_yn" value="Y" data-valid-use="true" data-check-only="true" data-valid-title="App노출지점">
+											사용가능매장 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="use_psbt_brnch_yn" value="N" data-valid-use="true" data-check-only="true" data-valid-title="App노출지점">
+											사용제외매장 </label>
+									</div>
+									<div class="col-md-4">
+										<input class="form-control" name="use_psbt_excp_brnch_content" type="text" data-valid-use="true" data-valid-symbol="true" data-valid-title="App노출지점내용">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북명 <sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="cpbook_nm" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="쿠폰북명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 설명</label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="cpbook_desc_content" data-valid-symbol="true" data-valid-max="108" data-valid-title="쿠폰북 설명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 유효기간 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_start_dd" name="vali_term_start_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yyyy-mm-dd" data-valid-title="쿠폰북 유효기간 시작일" placeholder="쿠폰북 유효기간 시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_end_dd" name="vali_term_end_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yyyy-mm-dd" data-valid-title="쿠폰북 유효기간 종료일" placeholder="쿠폰북 유효기간 종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 노출 타입<sup>*</sup></label>
+									<div class="col-md-8">
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_size_type_cd" value="S" checked="checked" data-valid-use="false" data-check-only="true">
+													S타입
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_size_type_cd" value="M" data-valid-use="false" data-check-only="true">
+													M타입
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_size_type_cd" value="L" data-valid-use="false" data-check-only="true">
+													L타입
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">롯데마트몰 <sup>*</sup></label>
+									<div class="col-md-3">
+										<a href="javascript:f_openTemplateSD();" class="btn btn-primary btn-sm">표지템플릿 선택</a>
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 표지템플릿 선택을 클릭하시면, 이미 제작된 쿠폰북 표지에서 선택하여 쿠폰북 이미지로 사용할 수 있습니다.</p>
+										<p><i class="fa fa-info-circle"></i> 직접등록 시, 사이즈: 1040px X 380px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB </p>
+									</div>
+								</div>
+								<input type="hidden" name="template_use_yn" value="N">
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">M쿠폰앱 <sup>*</sup></label>
+									<div class="col-md-3">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile2" name="uploadfile2">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile2" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 표지템플릿 선택을 클릭하시면, 이미 제작된 쿠폰북 표지에서 선택하여 쿠폰북 이미지로 사용할 수 있습니다.</p>
+										<p><i class="fa fa-info-circle"></i> 직접등록 시, 사이즈: 1040px X 380px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB </p>
+									</div>
+								</div>
+								<input type="hidden" name="template_use_yn2" value="N">
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">데이터 파일<sup>*</sup></label>
+									<div class="col-md-2">
+										<input class="form-control" type="text" data-valid-symbol="true" name="file_name" id="file_name" data-valid-title="파일명" disabled="disabled" />
+									</div>
+									<div class="col-md-3">
+										<span class="btn btn-success fileinput-button" id="dat_span" style="display:none">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="file" name="file">
+										</span>
+									</div>
+									<div class="col-md-8">
+										<span class="form-control cs-css-04"></span>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_personalCouponBookList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="coupon_book_rd" style="display:none;"></div>
+<div id="templates_sd" style="display:none;"></div>
+<div id="excel_upload_wd" style="display:none;"></div>
+<div id="dataPop" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+<input type="hidden" id="up_aprv_sts_cd" name="up_aprv_sts_cd">
+</form>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+//	 && $('#selectPersonalCouponBook_tbody').tableRowValid()
+	if($('#editCpbookFrm').formValid()) {
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		
+		// 이미지1
+		if($('input[name=template_id]').val() != undefined) {
+			if($('input[name=template_id]').val() == '') {
+				alert('이미지는 필수 입력 값입니다.');
+				return;
+			}
+		}
+	
+		// 온라인몰, 매장이 온라인 또는 온/오프라인일때 롯데마트몰 발행기기 확인
+		if( $('select[name=issue_chanel_cd]').children("option:selected").val() != 'OFFLINE' ) {
+			var s_issue_quipmnt_cd_pc_yn = 0;
+			if( $('input[name=s_issue_quipmnt_cd_pc_yn]').is(':checked') ) {
+				s_issue_quipmnt_cd_pc_yn++;
+			}
+			if( $('input[name=s_issue_quipmnt_cd_mobile_yn]').is(':checked') ) {
+				s_issue_quipmnt_cd_pc_yn++;
+			}
+			if(s_issue_quipmnt_cd_pc_yn < 1) {
+				alert('롯데마트몰 발행기기는 1개 이상 선택하셔야 합니다.');
+				return;
+			}
+		}
+		
+		// 발행처 3개중 1개는 무조건 선택 해야 함.
+		var issue_yn_cnt = 0;
+		if( $('input[name=s_lmart_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		if( $('input[name=s_tru_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		if( $('input[name=s_vic_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		if(issue_yn_cnt < 1) {
+			alert('발행 채널은 1개 이상 선택하셔야 합니다.');
+			return;
+		}
+		
+				
+		// 사용지점 전체 선택이 아닐때 지점 등록 확인
+		if( $('input[name=s_use_brnch_info_all_yn]').is(':checked') != true ) {
+			if( $('#use_brnch_info_list').select2('data').length < 1 ) {
+				alert('사용 지점을 등록해 주세요.');
+				return;
+			}
+		}
+		
+		
+
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+	
+		// 전점 사용여부
+		if( $('input[name=s_use_brnch_info_all_yn]').is(':checked') == true ) {
+			$('input[name=use_brnch_info_all_yn]').val("Y");
+		}else {
+			$('input[name=use_brnch_info_all_yn]').val("N");
+		}
+      	
+      	// 롯데마트몰 발행기기 값 setting.       	
+      	if( $('select[name=issue_chanel_cd]').children("option:selected").val() != 'OFFLINE' ) {
+			if( $('input[name=s_issue_quipmnt_cd_pc_yn]').is(':checked') ) {
+				$('input[name=issue_quipmnt_cd_pc_yn]').val("Y");
+			}else {
+				$('input[name=issue_quipmnt_cd_pc_yn]').val("N");
+			}
+			if( $('input[name=s_issue_quipmnt_cd_mobile_yn]').is(':checked') ) {
+				$('input[name=issue_quipmnt_cd_mobile_yn]').val("Y");
+			}else {
+				$('input[name=issue_quipmnt_cd_mobile_yn]').val("N");
+			}
+			
+		}
+      	
+      	// 브랜드 값 setting.
+      	// 롯데마트
+      	if( $('input[name=s_lmart_issue_yn]').is(':checked') ) {
+			$('input[name=lmart_issue_yn]').val("Y");
+		}else{
+			$('input[name=lmart_issue_yn]').val("N");
+		}
+      	// 토이저러스
+      	if( $('input[name=s_tru_issue_yn]').is(':checked') ) {
+			$('input[name=tru_issue_yn]').val("Y");
+		}else {
+			$('input[name=tru_issue_yn]').val("N");
+		}
+      	// 빅마켓
+      	if( $('input[name=s_vic_issue_yn]').is(':checked') ) {
+			$('input[name=vic_issue_yn]').val("Y");
+		}else {
+			$('input[name=vic_issue_yn]').val("N");
+		}
+      	
+		$('input[name=vali_term_start_dd]').val($('input[name=vali_term_start_dd]').val().replaceAll("-", ""));
+		$('input[name=vali_term_end_dd]').val($('input[name=vali_term_end_dd]').val().replaceAll("-", ""));
+		
+		if($('input[name=file_name]').val() == "") {
+			alert("데이터 파일은 필수 입니다.");
+			return false;
+		}
+// 		console.log(JSON.stringify($('#editCpbookFrm').serializeFormObject()));
+
+		
+		// 실제 데이터 전송
+		$('#editCpbookFrm').ajaxSubmit({
+			url: api_url+'/backoffice/personalcoupon/update',
+		    type: 'POST',
+		    datatype: 'json',
+		    beforeSend: function() {
+		    	$("#dataPop").dialog('open');
+		    },
+		    success: function(obj){
+		    	$("#dataPop").dialog('close');
+		    	alert(obj.message);
+		    	f_personalCouponBookList();
+		    },
+		    error: function(obj) {
+		    	$("#dataPop").dialog('close');
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+}
+/* ============================================================================================
+/* 등록/수정 화면 : 달력 컨트롤
+/* ============================================================================================ */
+
+$('#vali_term_start_dd').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#vali_term_end_dd").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#vali_term_end_dd').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#vali_term_start_dd").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+/* ============================================================================================
+/* 쿠폰별 쿠폰북 정보 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 맵핑수 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+$('#couponbook_info_rd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 쿠폰별 쿠폰북 정보 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 쿠폰북 상세 다이얼로그
+ * ==================================================================================
+ */
+$('#coupon_book_rd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 상세 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+/**
+ * ==================================================================================
+ * 상세 화면 : 쿠폰북 상세 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponBookRD(id) {
+	$.ajax({
+		url: '/application/coupon/campaign/couponBookRD.do',
+		type: 'GET',
+		async: false,
+		cache: true,
+		data: {cpbook_id:id},
+		success: function(data) {
+			var $target = $('#coupon_book_rd');
+			$target.empty();
+			$target.html(data);
+		},
+		complete: function() {
+			$('#coupon_book_rd').dialog('open');
+		}
+	});
+}
+
+/* ============================================================================================
+/* 엑셀 업로드 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 리스트상의 엑셀 업로드 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+
+$('#file').change(function (e) {
+	var fileData = $(this).get(0).files[0];
+	var fileNm = fileData.name;
+	
+	if($.inArray(fileNm.substring(fileNm.lastIndexOf(".")+1), ["dat"]) >= 0) {
+		$('input[name=file_name]').val(fileNm);
+		$('input[name=upld_view_name]').val(fileNm);
+		var span = $('<span>').addClass('btn_del_file_dat');
+		var aTag = $('<a>')
+					.addClass('btn btn-danger btn-sm')
+					.attr('href','javascript:cf_datFileDelete()')
+					.text('파일삭제');
+		span.append(aTag);
+		var btn_div = $('#file').parent().parent();
+		btn_div.find("a").attr("disabled", true);
+		btn_div.find("span").attr("disabled", true);
+		btn_div.append(span);
+		
+	}else {
+		alert("dat 파일만 등록 가능합니다.");
+		return false;
+	}
+	
+});
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 롯데마트몰 발행기기 선택 이벤트
+ * ==================================================================================
+ */
+$("select[name=issue_chanel_cd]").change(function(){
+	if($.trim($(this).val()) == '' ) {
+		$("#s_issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#s_issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#s_issue_quipmnt_cd_pc_yn").attr("disabled", true);
+		$("#s_issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	}
+	else if($(this).val() !== 'OFFLINE') {
+		$("#s_issue_quipmnt_cd_pc_yn").attr("disabled", false);
+		$("#s_issue_quipmnt_cd_mobile_yn").attr("disabled", false);
+	}
+	else {
+		$("#s_issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#s_issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#s_issue_quipmnt_cd_pc_yn").attr("disabled", true);
+		$("#s_issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	}
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 파일 업로드
+ * ==================================================================================
+ */
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this),'IMG_COUPONBOOK_LIST');
+});
+$('#uploadfile2').change(function (e) {
+	cf_fileUpload($(this),'IMG_COUPONBOOK_LIST', "2");
+});
+
+/* ============================================================================================
+/* 사용지점 전체선택 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 체크 TRUE	: 미션 수행 지점 입력박스 disalbe
+/* 체크 FALSE	: 미션 수행 지점 입력박스 enable
+/* ============================================================================================ */
+$('input[name=s_use_brnch_info_all_yn]').click(function(){
+    if($(this).is(':checked')){
+        $('#use_brnch_info_list').select2('enable', false);
+    } else {
+        $('#use_brnch_info_list').select2('enable', true);
+        
+    }
+});
+
+
+/* ============================================================================================
+/* 사용지점 셀렉트 박스
+/* --------------------------------------------------------------------------------------------
+/* 미션수행지점 INPUT BOX 값으로 검색 결과 리스트 갱신
+/* ============================================================================================ */
+$('#use_brnch_info_list').select2({
+	placeholder: '사용 지점 검색',
+    width: '100%',
+    multiple: true,
+    ajax: {
+        url: api_url + '/backoffice/common/branch/list',
+        dataType: 'json',
+        cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            var data = {
+                sys_type : 'BACKOFFICE',
+                svc_type : 'CPBOOK',
+                empno: '${sessionScope.sessionEmpno}',
+                hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+                use_type : 'USE_BRANCH',
+                str_cd : '${sessionScope.sessionStrCd}',
+                str_nm: term
+            };
+            return encodeURI('params='+JSON.stringify(data));
+        },
+        results: function (obj, page) {
+            var results = [];
+            $.each(obj.data.brnch_list, function(index, item){
+                results.push({
+                    id: item.str_cd,
+                    text: item.str_nm
+				});
+            });
+            return {
+                results: results
+            };
+        }
+    }
+});
+
+function cf_datFileDelete() {
+	var btn_span = $('.btn_del_file_dat').parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('input[name=file_name]').val("");
+	$('input[name=upld_view_name]').val("");
+	$('input[name=file_change_yn]').val("Y");
+	$('.btn_del_file_dat').remove();
+}
+function cf_imgFileDelete(name) {
+	var preview = $('#preview_'+name);
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_'+name).parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('input[name=img_strge_file_nm]').remove();
+	$('input[name=img_orgin_file_nm]').remove();
+	$('.btn_del_'+name).remove();
+}
+function cf_imgFileDelete2(name) {
+	var preview = $('#preview_'+name);
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_'+name).parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('input[name=img_strge_file_nm2]').remove();
+	$('input[name=img_orgin_file_nm2]').remove();
+	$('.btn_del_'+name).remove();
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	// 초기데이터 로드 : 온라인몰, 매장
+	f_ajaxPublerCode($('select[name=issue_chanel_cd]'));
+	
+	// 쿠폰북 기본 정보
+	$.ajax({
+	    url: api_url+"/backoffice/personalcoupon/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var objData = obj.data;
+	    	$("#cpbook_type_cd_name").html(objData.cpbook_type_cd_name);
+ 			$('input[name=cpbook_type_cd]').val(objData.cpbook_type_cd);
+ 			$('input[name=upld_seq_no]').val(objData.upld_seq_no);
+ 			$('input[name=cpbook_id]').val(objData.cpbook_id);
+	    	
+	    	// 발행 채널
+	    	$("select[name=issue_chanel_cd]").val(objData.issue_chanel_cd).attr("selected", "selected");
+	    	 
+	    	// 발행 채널에 따른 롯데마트몰 발행기기 설정
+	    	if(objData.issue_chanel_cd == '' ) {
+    			$("#s_issue_quipmnt_cd_pc_yn").attr("checked", false);
+    			$("#s_issue_quipmnt_cd_mobile_yn").attr("checked", false);
+    			$("#s_issue_quipmnt_cd_pc_yn").attr("disabled", true);
+    			$("#s_issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+    		}
+    		else if(objData.issue_chanel_cd !== 'OFFLINE') {
+    			$("#s_issue_quipmnt_cd_pc_yn").attr("disabled", false);
+    			$("#s_issue_quipmnt_cd_mobile_yn").attr("disabled", false);
+    			
+    			if(objData.issue_quipmnt_cd_pc_yn == 'Y') {
+    	    		$('input[name=s_issue_quipmnt_cd_pc_yn]').prop('checked',true);
+    	    		$('input[name=issue_quipmnt_cd_pc_yn]').val('Y');
+    	    	}
+    			if(objData.issue_quipmnt_cd_mobile_yn == 'Y') {
+    				$('input[name=s_issue_quipmnt_cd_mobile_yn]').prop('checked',true);
+    				$('input[name=s_issue_quipmnt_cd_mobile_yn]').val('Y');
+    			}
+    		}
+    		else {
+    			$("#s_issue_quipmnt_cd_pc_yn").attr("checked", false);
+    			$("#s_issue_quipmnt_cd_mobile_yn").attr("checked", false);
+    			$("#s_issue_quipmnt_cd_pc_yn").attr("disabled", true);
+    			$("#s_issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+    		}
+	    	
+	    	// 발행처 설정	    	
+	    	if(objData.lmart_issue_yn == 'Y') {
+	    		$('input[name=s_lmart_issue_yn]').prop('checked',true);
+	    		$('input[name=s_lmart_issue_yn]').val('Y');
+	    	}
+			if(objData.tru_issue_yn == 'Y') {
+				$('input[name=s_tru_issue_yn]').prop('checked',true);
+				$('input[name=s_tru_issue_yn]').val('Y');
+			}
+			if(objData.vic_issue_yn == 'Y') {
+				$('input[name=s_vic_issue_yn]').prop('checked',true);
+				$('input[name=s_vic_issue_yn]').val('Y');
+			}
+	    	
+			// 사용지점 정보
+			if(objData.use_brnch_info_all_yn == 'Y') {
+				$('input[name=s_use_brnch_info_all_yn]').prop('checked',true);
+				$('input[name=use_brnch_info_all_yn]').val('Y');
+				$('#use_brnch_info_list').select2('enable', false);
+			}
+			else {
+				if(objData.use_brnch_info_list.length > 0) {
+					var info_data = [];
+					$.each(objData.use_brnch_info_list, function(i, item) {
+						var items = {};
+						items["id"] = item.str_cd;
+						items["text"] = item.str_nm;
+						info_data[i] = items;
+					});
+					$('#use_brnch_info_list').select2("data",info_data);
+					$('input[name=use_brnch_info_all_yn]').val('N');
+				}
+			}
+			
+			// App 노출지점
+			if(objData.use_psbt_brnch_yn == 'Y') {
+				$("input[name=use_psbt_brnch_yn]:radio[value=Y]").prop('checked',true);
+			}
+			else {
+				$("input[name=use_psbt_brnch_yn]:radio[value=N]").prop('checked',true);
+			}
+			
+			// App 노출지점 설명
+			$('input[name=use_psbt_excp_brnch_content]').val(objData.use_psbt_excp_brnch_content);
+			
+			// 쿠폰북명
+			$('input[name=cpbook_nm]').val(objData.cpbook_nm);
+			
+			// 쿠폰북 설명
+			$('input[name=cpbook_desc_content]').val(objData.cpbook_desc_content);
+			
+			// 쿠폰북 유효기간
+			$('#vali_term_start_dd').val(cf_cvtDateFormat(objData.vali_term_start_dd,'yyyy-MM-dd'));
+	    	$('#vali_term_end_dd').val(cf_cvtDateFormat(objData.vali_term_end_dd,'yyyy-MM-dd'));
+	    	
+	    	// 쿠폰북 노출 타입
+	    	$("input[name=cpbook_size_type_cd]:radio[value='"+obj.data.cpbook_size_type_cd+"']").prop('checked',true);
+			
+			// 이미지
+			var preview = $('#preview_uploadfile');
+			preview.find('img').attr('src',obj.data.prvw_url);			
+			var fName = '<p class="alert alert-info bd0">'+obj.data.img_orgin_file_nm+'</p>';
+			preview.parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_uploadfile');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr('href','javascript:cf_imgFileDelete(\'uploadfile\')').text('파일삭제');						
+			var input_file_divn_cd = $('<input>').attr('type', 'hidden').attr('name', 'file_divn_cd').val(obj.data.file_divn_cd);			
+			var input_local_file_name = $('<input>').attr('type', 'hidden').attr('name', 'img_strge_file_nm').val(obj.data.img_strge_file_nm);			
+			var input_atch_file_nm = $('<input>').attr('type', 'hidden').attr('name', 'img_orgin_file_nm').val(obj.data.img_orgin_file_nm);
+
+			span.append(aTag);
+			span.append(input_file_divn_cd);
+			span.append(input_local_file_name);
+			span.append(input_atch_file_nm);
+			
+			var btn_div = $("#uploadfile").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+
+			// 이미지2
+			preview = $('#preview_uploadfile2');
+			preview.find('img').attr('src',obj.data.thum_url);			
+			fName = '<p class="alert alert-info bd0">'+obj.data.thum_orgin_file_nm+'</p>';
+			preview.parent().append(fName); 
+			
+			span = $('<span>').addClass('btn_del_uploadfile2');
+			aTag = $('<a>').addClass('btn btn-danger btn-sm').attr('href','javascript:cf_imgFileDelete2(\'uploadfile2\')').text('파일삭제');			
+			input_file_divn_cd = $('<input>').attr('type', 'hidden').attr('name', 'file_divn_cd2').val(obj.data.file_divn_cd);			
+			input_local_file_name = $('<input>').attr('type', 'hidden').attr('name', 'img_strge_file_nm2').val(obj.data.thum_strge_file_nm);			
+			input_atch_file_nm = $('<input>').attr('type', 'hidden').attr('name', 'img_orgin_file_nm2').val(obj.data.thum_orgin_file_nm);
+			span.append(aTag);
+			span.append(input_file_divn_cd);
+			span.append(input_local_file_name);
+			span.append(input_atch_file_nm);
+			
+			btn_div = $("#uploadfile2").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			// dat file
+			$('input[name=file_name]').val(objData.upld_view_name);
+			
+			var _proc_data = {
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			};
+						
+			$.ajax({
+				url: api_url + '/backoffice/personalcoupon/check/processing',
+				type: 'GET',
+				async: true,
+				cache: true,
+				data: encodeURI('params='+JSON.stringify(_proc_data)),
+				success: function(obj) {
+					if(obj.data.processing_cnt == 0) {
+						$("#dat_span").show();
+						console.log(obj.data.processing_cnt);
+						console.log(obj.data.processing_cnt == 0);
+						var span = $('<span>').addClass('btn_del_file_dat');
+						var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr('href','javascript:cf_datFileDelete()').text('파일삭제');
+
+						span.append(aTag);
+						
+						var btn_div = $("#file").parent().parent();
+						btn_div.find("a").attr("disabled", true);
+						btn_div.find("span").attr("disabled", true);
+						btn_div.append(span);
+					}
+				}
+			});
+			
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+	
+	// 저장 시 대기창
+	$('#dataPop').dialog({
+		autoOpen : false,
+		bgiframe: true,
+		width : 300,
+		minHeight: 0,
+		resizable : false,
+		modal : true,
+		disable: true,
+		title : "<h1 class='ajax-loading-animation'><i class='fa fa-cog fa-spin'></i> 파일 업로드중 입니다.</h1>"
+			
+	});
+};
+/**
+ * ==================================================================================
+ * 쿠폰북 표지템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 표지템플릿 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=template_list]:checked");
+
+			var v_nm = chk_obj.attr('img_view_nm');
+			//var l_nm = chk_obj.attr('img_local_nm');
+			var img_path = chk_obj.attr('img_path');
+			var thum_path = chk_obj.attr('thum_path');			
+			
+			
+			// 이미지1
+			$('#preview_uploadfile').find('img').attr('src',img_path);			
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_uploadfile');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateFileDelete()").text('파일삭제');						
+			var template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			$('input[name=template_use_yn]').val('Y');			
+			var btn_div = $("#uploadfile").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			// 이미지2
+			f_templateFileDelete2();
+			$('#preview_uploadfile2').find('img').attr('src',thum_path);			
+			fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile2').parent().append(fName); 
+			
+			span = $('<span>').addClass('btn_del_uploadfile2');
+			aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateFileDelete2()").text('파일삭제');			
+			template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id2').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			$('input[name=template_use_yn2]').val('Y');			
+			var btn_div = $("#uploadfile2").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);			
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>

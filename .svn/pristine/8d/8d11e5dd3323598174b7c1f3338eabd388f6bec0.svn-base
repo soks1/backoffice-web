@@ -1,0 +1,412 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록지점</label>
+									<div class="col-md-3">
+										<select class="form-control" id="str_cd" name="str_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									
+									<label class="col-md-1 control-label">승인상태</label>
+									<div class="col-md-3">
+										<select class="form-control" id="aprv_sts_cd" name="aprv_sts_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									
+									<label class="col-md-1 control-label">진행상태</label>
+									<div class="col-md-3">
+										<select class="form-control" id="prgs_sts_cd" name="prgs_sts_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">행사번호</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text"  id="fcfs_evnt_id" name="fcfs_evnt_id">
+									</div>
+									
+									<label class="col-md-1 control-label">행사제목</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text"  id="evt_title" name="evt_title">
+									</div>
+									
+									<label class="col-md-1 control-label">행사일자</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="s_prgs_dd" name="s_prgs_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="e_prgs_dd" name="e_prgs_dd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">종료상태</label>
+									<div class="col-md-3">
+										<select class="form-control" id="fcfs_sell_sts_cd" name="fcfs_sell_sts_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">캠페인명</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="campaign_nm">
+									</div>
+									<label class="col-md-1 control-label">고객군명</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="lst_custgp_nm">
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 조회 결과 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					
+					<div id="target_groupbuy_grid" class="widget-body no-padding">
+						<table id="groupbuy_grid"></table>
+						<div id="groupbuy_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 리스트 화면 : 달력 포멧 사용 정의
+ * ==================================================================================
+ */
+$('#s_prgs_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#e_prgs_dd").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#e_prgs_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#s_prgs_dd").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */	
+var pagefunction = function() {
+/*	
+	$('#s_prgs_dd').val(cf_toDate());
+	$('#e_prgs_dd').val(cf_toDate());
+*/
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCode($("#str_cd"));
+	// 초기데이터 로드 : 승인상태	
+	f_ajaxApprovalStatusCode($("#aprv_sts_cd"));
+	// 초기데이터 로드 : 진행상태
+	f_ajaxPrgsStatusCode($("#prgs_sts_cd"));
+	// 초기데이터 로드 : 종료상태
+	f_ajaxSellStatusCode($("#fcfs_sell_sts_cd"));
+
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#groupbuy_grid").parent().width() - 100;
+
+		jQuery("#groupbuy_grid").jqGrid({
+			url : api_url+"/backoffice/event/jointpurchase/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '등록지점', '행사번호', '행사제목', '캠페인명', '고객군명', '행사일자', '승인상태', '진행상태', '종료상태', '등록일자', '승인코드' ],
+			colModel : [
+				{ name : 'rnum', 					index : 'rnum',		 				align : "center",	sortable : false, 	width : (pageWidth*(4/100))		},
+				{ name : 'reg_id_str_nm', 			index : 'str_nm', 					align : "center",	sortable : false, 	width : (pageWidth*(5/100))	 	}, 
+				{ name : 'fcfs_evnt_id', 			index : 'fcfs_evnt_id',				align : "center",	sortable : false, 	width : (pageWidth*(12/100)), 	classes : 'pointer'	}, 
+				{ name : 'evt_title', 				index : 'evt_title', 				align : "center", 	sortable : false, 	width : (pageWidth*(22/100)), 	classes : 'pointer'	},
+				{ name : 'campaign_nm', 			index : 'campaign_nm', 				align : "center",	sortable : false, 	width : (pageWidth*(12/100))	},
+				{ name : 'custgp_nm',				index : 'custgp_nm',				align : "center",	sortable : false, 	width : (pageWidth*(15/100))	},
+				{ name : 'prgs_dd', 				index : 'prgs_dd', 					align : "center", 	sortable : true, 	width : (pageWidth*(8/100)) 	}, 
+				{ name : 'aprv_sts_cd_name', 		index : 'aprv_sts_cd_name',			align : "center", 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'prgs_sts_cd_name', 		index : 'prgs_sts_cd_name', 		align : "center", 	sortable : false, 	width : (pageWidth*(6/100)) 	},
+				{ name : 'fcfs_sell_sts_nm',		index : 'fcfs_sell_sts_nm',			align : "center", 	sortable : false, 	width : (pageWidth*(8/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						if(rowObject.prgs_sts_cd === 'END') {
+							return cellvalue;
+						} else {
+							return '-';
+						}
+					}
+				},
+				{ name : 'reg_date', 				index : 'reg_date', 				align : "center", 	sortable : false, 	width : (pageWidth*(8/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						return cf_cvtDateFormat(cellvalue,'yyyy-MM-dd');
+					}
+				},
+				{ name : 'aprv_sts_cd', index : 'aprv_sts_cd', hidden : true }
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "fcfs_evnt_id",
+				root :		function(obj){ return obj.data.jointpurchase_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#groupbuy_grid").jqGrid('setGridParam', {search: true});
+					$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#groupbuy_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#groupbuy_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+				
+				return encodeURI("params="+JSON.stringify(postData));
+			},
+			postData:{ 
+				search_info: $("#frmSearch").serializeFormObject(), 
+				empno: '${sessionScope.sessionEmpno}',
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			},
+			//search : true,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#groupbuy_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){ },
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 3 || index == 4) {
+					$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'fcfs_evnt_id':rowid} });
+					var postData = $('#groupbuy_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					
+					var url = "/application/groupbuy/groupbuyRN.do";
+					var method = "POST";
+					cf_action(url, method, postData);
+			   }
+			},
+			gridComplete: function() {
+				var postData = $('#groupbuy_grid').jqGrid("getGridParam", "postData");
+				$('#groupbuy_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#groupbuy_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			}
+		});
+		jQuery("#groupbuy_grid").jqGrid('navGrid', "#groupbuy_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#groupbuy_grid").jqGrid('navButtonAdd','#groupbuy_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){ 
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					var aprv_cnt = 0;
+					
+					for(var i = 0; i < select_ids.length; i++) {
+						var aprv_sts_cd = $('#groupbuy_grid').jqGrid('getCell', select_ids[i], 'aprv_sts_cd');
+						if(aprv_sts_cd == 'APPROVE') {
+							aprv_cnt++;	
+						}
+					}
+					
+					if(aprv_cnt > 0) {
+						alert('승인된 건은 삭제할 수 없습니다.');
+						$("#groupbuy_grid").trigger("reloadGrid");
+						return;
+					}
+					
+					if(select_ids.length < 1) {
+						alert("삭제할 이벤트를 먼저 선택해 주십시오.");
+					} else {
+						if(confirm(select_ids.length + "개의 이벤트를 삭제하시겠습니까?")) {
+							
+							var data = {
+								// search_info: "",
+								fcfs_evnt_id_list : select_ids,
+								empno: '${sessionScope.sessionEmpno}', 
+								emp_str_cd: '${sessionScope.sessionStrCd}',
+								hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+							};
+
+							$.ajax({
+								url: api_url + "/backoffice/event/jointpurchase/delete",
+								type: "POST",
+								contentType: "application/json;charset=utf-8", // POST 일때만 사용
+								async: false,
+								cache: true,
+								data: JSON.stringify(data),
+								success: function(obj) {
+									alert(obj.message);
+									$("#groupbuy_grid").trigger("reloadGrid");
+								},
+								error: function(obj) {
+							    	var serverObj = obj.responseJSON;
+							    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+							    	return;
+							    }
+							});
+						}
+					}
+				}
+			});	
+		}
+					
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#groupbuy_grid").jqGrid('navButtonAdd','#groupbuy_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/groupbuy/groupbuyWN.do";
+					var method = "POST";
+					var postData = $('#groupbuy_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#groupbuy_grid").gridCss();
+	  	$("#groupbuy_grid_cb").css("border-left-width","0");
+	  	$("#groupbuy_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_groupbuy_grid_cb").css("padding","7px 0");
+	  	$("#groupbuy_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  			  
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#groupbuy_grid").jqGrid( 'setGridWidth', $("#target_groupbuy_grid").width() );
+		});
+	} 
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

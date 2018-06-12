@@ -1,0 +1,771 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>사업자 가맹점 Push 상세</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="form-horizontal" id="frmLifekok">
+						<input type="hidden" id="empno"			name="empno"		value="${sessionScope.sessionEmpno}">						
+						<input type="hidden" id="event_mst_id"	name="event_mst_id" value="">
+						<input type="hidden" id="serial_no"		name="serial_no"	value="">
+						<input type="hidden" id="scdl_id"		name="scdl_id"		value="">
+						<input type="hidden" id="msg_id"		name="msg_id"		value="">
+						<input type="hidden" id="camp_id" 		name="camp_id" 		value="">
+						<input type="hidden" id="cust_gp_id" 	name="cust_gp_id"	value="">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important">등록일자 : </label>
+									<div class="col-md-2" style="width:135px">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >등록자 : </label>
+									<div class="col-md-2"  >
+										<span class="form-control cs-css-03" id="reg_nm"  style="width:220px;"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >승인일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >승인자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important">승인상태 : </label>
+									<div class="col-md-2" style="width:135px">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_nm"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >전송상태 : </label>
+									<div class="col-md-2"  >
+										<span class="form-control cs-css-03" id="msg_sts"  style="width:220px;"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important">등록지점 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="str_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important">사업자 가맹점 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="tenant_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important">제목 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="msg_title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important">Push 내용(이미지) </label>
+									<div class="col-md-10" id="tenantPush_img">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important">Push 내용(텍스트) </label>
+									<div class="col-md-8">
+										<textarea class="form-control" rows="8" id="msg_content" name="msg_content" readonly="readonly"></textarea>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important">희망전송  &nbsp;<br/>요청일자 : </label>
+										<div class="col-md-3">
+											<span class="form-control cs-css-03" id="tran_hope_dy"></span>
+										</div>
+								</div>
+								<div class="form-group" id="reject_display" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important;">반려사유 :</label>
+										<div class="col-md-8">
+											<textarea class="form-control cs-css-03" rows="5" id="retn_reason" readonly="readonly"></textarea>
+<!-- 											<span class="form-control cs-css-03" id="retn_reason"></span> -->
+										</div>
+								</div>
+								
+								<div class="form-group" id="campaign_custgp" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important;">캠페인/고객군</label>
+									<div class="col-md-10">
+										<div class="form-group" id="cmp_cust_btns">
+											<a href="javascript:f_openTenantPushCampaignSD();" id="btn_campaign" class="btn btn-primary btn-sm">선택</a>
+											<a href="javascript:f_tenantPushDelCampaign();" class="btn btn-danger btn-sm">삭제</a>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_id"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-3">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_term"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-1">
+												<span class="form-control cs-css-03" id="groupbuy_custgp_cnt"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_nm"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-04" id="groupbuy_custgp_nm"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group"  id="scdl_display" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important;">발송일 : </label>
+									<div class="col-md-4half">
+										<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="scdl_tm" name="scdl_tm" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="발송일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="scdl_tm_h" name="scdl_tm_h" data-valid-use="false" data-valid-title="발송시간 : 시">
+											<option value="">시</option>
+										</select>
+									</div>
+									<div class="col-md-1">
+										<select class="form-control" id="scdl_tm_m" name="scdl_tm_m" data-valid-use="false" data-valid-title="발송시간 : 분">
+											<option value="">분</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group"  id="scdl_display_span" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05" style="width:145px !important;">발송일 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-04" id="scdl_full_text"></span>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenant_push_input_return_reason()" class="btn btn-danger"  id="reject_btn" 			style="display:none;">반려</a>
+										<a href="javascript:f_tenant_push_approve_request()" 	 class="btn btn-primary" id="request_btn" 			style="display:none;">승인요청</a>
+										<a href="javascript:f_tenant_push_approve()"			 class="btn btn-primary" id="approve_btn" 			style="display:none;">승인</a>
+										<a href="javascript:f_tenant_push_modify()"				 class="btn btn-success" id="modify_btn" 			style="display:none;">수정</a>
+										<a href="javascript:f_tenant_push_modify_submit()"		 class="btn btn-primary" id="modify_submit_btn" 	style="display:none;">수정완료</a>
+										<a href="javascript:f_tenant_push_modify_cencel()"		 class="btn btn-default" id="modify_cencel_btn" 	style="display:none;">취소</a>
+										<a href="javascript:f_tenantPushLN();"					 class="btn btn-default" id="list_btn"							 >목록</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="tenantPush_return_sd" style="display:none;"></div>
+<div id="tenantPush_campaignCustgp_sd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+/* ============================================================================================
+/* 등록 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#scdl_tm').datepicker(
+    $.extend({
+    	minDate:0,
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* PUSH 수정
+/* ============================================================================================ */
+function f_tenant_push_modify(){
+	//수정 제한시간
+	var set_minute = 10; //발송시간 10분전부터 수정할 수 없음
+	var vali_date = new Date();
+	vali_date.setMinutes(vali_date.getMinutes()+set_minute);
+	var _vali_date = vali_date.getFullYear()+"";
+	_vali_date += ""+((vali_date.getMonth()+1)<10?"0"+(vali_date.getMonth()+1):(vali_date.getMonth()+1));
+	_vali_date += ""+(vali_date.getDate()<10?"0"+vali_date.getDate():vali_date.getDate());
+	_vali_date += ""+(vali_date.getHours()<10?"0"+vali_date.getHours():vali_date.getHours());
+	_vali_date += ""+(vali_date.getMinutes()<10?"0"+vali_date.getMinutes():vali_date.getMinutes());
+	
+	var _set_date = $('#scdl_tm').val().replace(/-/gi,'')+""+$('#scdl_tm_h').val()+""+$('#scdl_tm_m').val()+"";
+	if(_vali_date > _set_date){
+		alert("10분 이내 발송예정인 push는 수정할 수 없습니다.");
+		return;
+	}
+	
+	$('#scdl_display').show(); 			//발송일 선택 select box
+	$('#scdl_display_span').hide();		//발송일 text
+	$('#cmp_cust_btns').show();			//고객군 선택,삭제 버튼
+	$('#modify_btn').hide();			//고객군 선택,삭제 버튼
+	$('#modify_submit_btn').show();			//고객군 선택,삭제 버튼
+	$('#modify_cencel_btn').show();			//고객군 선택,삭제 버튼
+}
+/* ============================================================================================
+/* PUSH 수정 완료
+/* ============================================================================================ */
+function f_tenant_push_modify_submit(){
+	var _data = $('#frmLifekok').serializeFormObject();
+	var data = {
+		empno : _data.empno,
+		event_mst_id : _data.event_mst_id,
+		serial_no : _data.serial_no,
+		scdl_id : _data.scdl_id,
+		msg_id : _data.msg_id,
+		campaign_id : $("#groupbuy_campaign_id").text(),
+		campaign_nm : $("#groupbuy_campaign_nm").text(),
+		campaign_start_dy : $("#groupbuy_campaign_term").text().substring(0,10),
+		campaign_end_dy : $("#groupbuy_campaign_term").text().substring(13,23),
+		custgp_id : $('#cust_gp_id').val(),
+		custgp_nm : $("#groupbuy_custgp_nm").text(),
+		s_campaign_start_dy : cf_cvtDateFormat(_data.scdl_tm,'yyyy-MM-dd'),
+		evt_end_hour : _data.scdl_tm_h,
+		evt_end_min : _data.scdl_tm_m
+	};
+	
+	//발송일 : 한시간 이내 설정 불가
+	var vali_date = new Date();
+	vali_date.setMinutes(vali_date.getMinutes()+61);
+	var _vali_date = vali_date.getFullYear()+"";
+	_vali_date += ""+((vali_date.getMonth()+1)<10?"0"+(vali_date.getMonth()+1):(vali_date.getMonth()+1));
+	_vali_date += ""+(vali_date.getDate()<10?"0"+vali_date.getDate():vali_date.getDate());
+	_vali_date += ""+(vali_date.getHours()<10?"0"+vali_date.getHours():vali_date.getHours());
+	_vali_date += ""+(vali_date.getMinutes()<10?"0"+vali_date.getMinutes():vali_date.getMinutes());
+	
+	var _set_date = _data.scdl_tm+""+_data.scdl_tm_h+""+_data.scdl_tm_m+"";
+	if(_vali_date > _set_date){
+		alert("발송일 : 60분 이내 혹은 과거로 설정할 수 없습니다");
+		return;
+	}
+	if(confirm("적용 시 app에 즉시 반영됩니다. 승인요청 하시겠습니까?")){
+		 $.ajax({
+			    url: api_lifekok_url+"/backoffice/lifekok/push/modify",
+			    type: "POST",
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	var url = "/application/cooperateService/tenantPush/tenantPushRN.do";
+			    	var method = "POST";
+			    	var postData ={
+			    			empno	  	 : '${sessionScope.sessionEmpno}',
+			    			event_mst_id : $("input[name=event_mst_id]").val(),
+			    			serial_no 	 : $("input[name=serial_no]").val()
+			    	}; 
+			    	cf_action(url, method, postData);
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			}); 
+	 }else{ 
+		 alert("취소되었습니다");
+		 return;
+	 }
+}
+/* ============================================================================================
+/* PUSH 수정 취소
+/* ============================================================================================ */
+function f_tenant_push_modify_cencel(){
+	var postData = {
+		empno : '${sessionScope.sessionEmpno}',
+		event_mst_id : $('input[name=event_mst_id]').val(),
+		serial_no : $('input[name=serial_no]').val()
+	}
+	var url = "/application/cooperateService/tenantPush/tenantPushRN.do";
+	var method = "POST";
+	cf_action(url, method, postData);
+}
+
+/**
+ * ==================================================================================
+ * 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openTenantPushCampaignSD() {
+	$.ajax({
+		url: "/application/cooperateService/tenantPush/tenantPushCampaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#tenantPush_campaignCustgp_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#tenantPush_campaignCustgp_sd').dialog('open');
+		}
+	});
+}
+/**
+ * ==================================================================================
+ * 캠페인 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#tenantPush_campaignCustgp_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인/고객군 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 취소",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			var check_items_cnt = 0;
+			var custgroup_text = "";
+			var today_date = cf_toDate().replace(/\-/g,'');
+			
+			if(cf_getTrElementCount($("#custgroup_tbody")) < 1) {
+				alert("고객군 항목을 조회해 주십시오.");
+				return;
+			} else {
+				$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+					if($(this).is(":checked") == true) {
+						check_items_cnt++;
+					}
+				});
+			}
+			
+			if(check_items_cnt < 1) {
+				alert("고객군 항목을 선택해 주십시오.");
+				return;
+			} 
+			else if(check_items_cnt > 1) {
+				alert("하나만 체크하세요.");
+				return;
+			} 
+			else {
+				$("input[name=lst_custgp_id]").remove();
+			}
+			
+			
+			$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+				if($(this).is(":checked")) {
+					var row = $(this).parent().parent();
+					var key = "";
+					var tag_input = "";
+					
+					// 루프문을 돌면서 Append 할 Tag 생성, index가 2인 위치에서 Key가 될 값 추출
+					row.find("td").each(function(idx){
+						// 각 셀 데이터 생성
+						if(idx < 4) {
+							if(idx == 2) {
+								key = $(this).text();
+								tag_input += "<input type='hidden' name='lst_custgp_id' value='"+key+"'>";
+								custgroup_text += key;
+							}
+							if(idx == 3) {
+								custgroup_text += "-" + $(this).text() + ",&nbsp;";
+							}
+						}
+					});
+					
+					$('#campaign_custgp').append(tag_input);
+				}
+			});
+			
+			if( today_date > $("#campaign_end_dy_tmp").val() ) {
+				alert("선택한 캠페인의 캠페인기간이 행사기간으로 설정하기 부적합 합니다.\n\n다시한번 확인해 주세요.");
+				$("input[name=lst_custgp_id]").remove();
+				return;
+			}
+			
+			$("input[name=camp_id]").val($("#campaign_id_tmp").val());
+			$("input[name=cust_gp_id]").val($("#custgp_id_tmp").val());
+			
+			$("#groupbuy_campaign_id").text($("#campaign_id_tmp").val());
+			$("#groupbuy_campaign_term").text(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+			$("#groupbuy_custgp_cnt").text($("input[name=lst_custgp_id]").length);
+			$("#groupbuy_campaign_nm").text($("#campaign_nm_tmp").val());
+			custgroup_text = custgroup_text.replace(',&nbsp;', '');
+			$("#groupbuy_custgp_nm").html(custgroup_text);
+
+			$(this).dialog("close");
+		}
+	}]
+});
+/**
+ * ==================================================================================
+ * 캠페인/고객군 삭제 버튼 클릭시 호출되는 메소드
+ * ==================================================================================
+ */
+function f_tenantPushDelCampaign() {
+	$("input[name=camp_id]").val('');
+	$("input[name=cust_gp_id]").val('');
+	$("input[name=lst_custgp_id]").remove();
+	$("#groupbuy_custgp_nm").text('');
+	$("#groupbuy_campaign_id").text('');
+	$("#groupbuy_campaign_term").text('');
+	$("#groupbuy_custgp_cnt").text('');
+	$("#groupbuy_campaign_nm").text('');
+	$("#groupbuy_custgp").text('');
+}
+/**
+ * ==================================================================================
+ * 가맹점 PUSH 상세 : 승인 요청 처리
+ * ==================================================================================
+ */
+function f_tenant_push_approve_request(){
+	var _data = $('#frmLifekok').serializeFormObject();
+	var data = {
+		empno : _data.empno,
+		event_mst_id : _data.event_mst_id,
+		serial_no : _data.serial_no
+	};
+	if(confirm("적용 시 app에 즉시 반영됩니다. 승인요청 하시겠습니까?")){
+		 $.ajax({
+			    url: api_lifekok_url+"/backoffice/lifekok/push/request",
+			    type: "POST",
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	var url = "/application/cooperateService/tenantPush/tenantPushRN.do";
+			    	var method = "POST";
+			    	var postData ={
+			    			event_mst_id : $("input[name=event_mst_id]").val(),
+			    			empno	  	 : '${sessionScope.sessionEmpno}',
+			    			serial_no 	 : $("input[name=serial_no]").val(),
+			    			aprv_sts_cd	 : "STANDBY"
+			    	}; 
+			    	cf_action(url, method, postData);
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			}); 
+	 }else{ 
+		 alert("승인요청이 취소되었습니다");
+		 return;
+	 }
+}
+/**
+ * ==================================================================================
+ * 가맹점 PUSH 상세 : 승인 처리
+ * ==================================================================================
+ */
+function f_tenant_push_approve(){
+	 
+	var _data = $('#frmLifekok').serializeFormObject();
+	
+	var data = {
+			empno : _data.empno,
+			event_mst_id : _data.event_mst_id,
+			serial_no : _data.serial_no,
+			campaign_id : _data.camp_id,
+			custgp_id : _data.cust_gp_id,
+			campaign_nm : $("#groupbuy_campaign_nm").text(),
+			campaign_start_dy : cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd'),
+			campaign_end_dy : cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'),
+			custgp_nm : $("#groupbuy_custgp_nm").text(),
+			s_campaign_start_dy : cf_cvtDateFormat(_data.scdl_tm,'yyyy-MM-dd'),
+			evt_end_hour : _data.scdl_tm_h,
+			evt_end_min : _data.scdl_tm_m
+	};
+	if(_data.camp_id == ""){
+		alert("캠페인/고객군을 설정해 주세요.");
+		return;
+	}
+	if(_data.scdl_tm == "" || _data.scdl_tm_h == "" || _data.scdl_tm_m == "" ){
+		alert("발송일 및 발송 시간을 입력해 주세요.");
+		return;
+	}
+	
+	//발송일 : 한시간 이내 설정 불가
+	var vali_date = new Date();
+	vali_date.setMinutes(vali_date.getMinutes()+61);
+	var _vali_date = vali_date.getFullYear()+"";
+	_vali_date += ""+((vali_date.getMonth()+1)<10?"0"+(vali_date.getMonth()+1):(vali_date.getMonth()+1));
+	_vali_date += ""+(vali_date.getDate()<10?"0"+vali_date.getDate():vali_date.getDate());
+	_vali_date += ""+(vali_date.getHours()<10?"0"+vali_date.getHours():vali_date.getHours());
+	_vali_date += ""+(vali_date.getMinutes()<10?"0"+vali_date.getMinutes():vali_date.getMinutes());
+	
+	var _set_date = _data.scdl_tm+""+_data.scdl_tm_h+""+_data.scdl_tm_m+"";
+	if(_vali_date > _set_date){
+		alert("발송일 : 60분 이내 혹은 과거로 설정할 수 없습니다");
+		return;
+	}
+	
+	
+	if(confirm("적용 시 app에 즉시 반영됩니다. 입력한 내용이 모두 맞습니까?")){
+		 $.ajax({
+			    url: api_lifekok_url+"/backoffice/lifekok/push/approve",
+			    type: "POST",
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	var url = "/application/cooperateService/tenantPush/tenantPushRN.do";
+			    	var method = "POST";
+			    	var postData ={
+			    			event_mst_id : $("input[name=event_mst_id]").val(),
+			    			empno	  	 : '${sessionScope.sessionEmpno}',
+			    			serial_no 	 : $("input[name=serial_no]").val(),
+			    			aprv_sts_cd  : 'APPROVE'
+			    	}; 
+			    	cf_action(url, method, postData);
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			}); 
+	 }else{ 
+		 alert("취소되었습니다");
+		 return;
+	 }
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 PUSH 상세 : 반려 사유 등록 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_tenant_push_input_return_reason(){
+	$.ajax({
+		url		: "/application/cooperateService/tenantPush/tenantPushReturnSD.do",
+		type	: 'POST',
+		cache	: false,
+		success	: function(data){
+			var $target = $('#tenantPush_return_sd');
+			$target.empty();
+			$target.html(data);
+		}
+	});
+	$('#tenantPush_return_sd').dialog('open');
+}
+//--------------카테고리 추가 다이얼로그 화면 구문-----------------//
+$('#tenantPush_return_sd').dialog({
+	autoOpen : false,
+	width : 450,
+	minHeight: 100,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 반려 사유 </h6></div>",
+});
+
+/**
+ * ==================================================================================
+ * 가맹점 PUSH 상세 : 캠페인 / 고객군 설정 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_tenantPushCampaignCustgp_sd(){
+	$.ajax({
+		url		: "/application/cooperateService/tenantPush/tenantPushCampaignCustgpSD.do",
+		type	: 'POST',
+		cache	: false,
+		success	: function(data){
+			var $target = $('#tenantPush_campaignCustgp_sd');
+			$target.empty();
+			$target.html(data);
+		}
+	});
+	//엔터키 사용불가
+	$("#tenantPush_campaignCustgp_sd").keypress(function(e){
+		if(e.keyCode ==13) e.preventDefault();
+	});
+	
+	$("#tenantPush_campaignCustgp_sd").keypress(function(e){ if(e.keyCode == 13)  return false;});
+	$('#tenantPush_campaignCustgp_sd').dialog('open');
+}
+//--------------카테고리 추가 다이얼로그 화면 구문-----------------//
+$('#tenantPush_campaignCustgp_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인 / 고객군 설정 </h6></div>",
+});
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	
+	var append_hour = "";
+	var append_minute = "";
+	
+	for(var i = 0 ; i < 24 ; i++){
+		if(i<10){i = "0"+i; }
+		append_hour = "<option value='"+i+"'>"+i+"시</option>";
+		$('#scdl_tm_h').append(append_hour);
+	}
+	for(var j = 0 ; j < 60 ; j++){
+		if(j<10){j = "0"+j; }
+		append_minute = "<option value='"+j+"'>"+j+"분</option>"; 
+		$('#scdl_tm_m').append(append_minute);
+	}
+	
+	$.ajax({
+	    url: api_lifekok_url+'/backoffice/lifekok/push/show', //this is the submit URL
+// 	    url: api_lifekok_img_url+'/backoffice/lifekok/push/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	var detailData = obj.data;
+	    	$("input[name=event_mst_id]").val(detailData['event_mst_id']);
+	    	$("input[name=serial_no]").val(detailData['serial_no']);
+	    	$("input[name=scdl_id]").val(detailData['scdl_id']);
+	    	$("input[name=msg_id]").val(detailData['msg_id']);
+	    	
+	    	$("#reg_date").html(detailData['reg_date']);			//등록일자
+	    	$("#reg_nm").html(detailData['reg_nm']);				//등록자
+	    	$("#aprv_date").html(detailData['aprv_date']);			//승인일자
+	    	$("#aprv_nm").html(detailData['aprv_nm']);				//승인자
+	    	$("#aprv_sts_cd_nm").html(detailData['aprv_sts_cd_nm']);//승인상태
+	    	
+	    	$("#str_nm").html(detailData['str_nm']);				//등록지점
+	    	$("#tenant_nm").html(detailData['tenant_nm']);			//등록지점
+	    	$("#msg_title").html(detailData['msg_title']);			//제목
+	    	$("#retn_reason").html(detailData['retn_reason']);			//제목
+	    
+	    	var tag_img = "";
+	    	if(detailData['prvw_url'] != ""){
+// 	    		var _url = detailData['prvw_url'].replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+	    		var _url = detailData['prvw_url'];
+	    		if(_url.indexOf("null/null") == -1){
+	    			tag_img = $('<img>').attr('src',_url).addClass('img-responsive');
+	    		}else{
+	    			tag_img = $('<img>').attr('src',"${pageContext.request.contextPath}/resources/img/noPreview.png").addClass('img-responsive');
+	    		}
+	    	}
+	    	$("#tenantPush_img").append(tag_img);
+	    	
+	    	$("#tran_hope_dy").html(detailData['tran_hope_dy']);	//전송희망일자
+	    	$('textarea[id=msg_content]').html(detailData['msg_content']);
+	    	
+	    	var _msg_sts = "";
+	    	if(detailData['msg_sts'] == "9"){_msg_sts = '전송중';}
+	    	else if(detailData['msg_sts'] == "0"){_msg_sts = '전송대기';}
+	    	else if(detailData['msg_sts'] == "1"){_msg_sts = '전송완료';}
+	    	else if(detailData['msg_sts'] == "2"){_msg_sts = '전송취소';};
+	    	$("#msg_sts").html(_msg_sts);
+	    	
+	    	var _aprv_sts_cd = detailData['aprv_sts_cd'];
+	    	if(_aprv_sts_cd=="REQUEST"){
+				$('#reject_btn').show();
+				$('#request_btn').show();
+	    	}else if(_aprv_sts_cd=="STANDBY"){
+				$('#campaign_custgp').show();
+				$('#scdl_display').show();
+				$('#approve_btn').show();
+	    	}else if(_aprv_sts_cd=="REJECT"){
+				$('#reject_display').show();
+	    	}else if(_aprv_sts_cd=="APPROVE"){
+	    		$("#groupbuy_campaign_id").html(detailData['campaign_id']);			//캠페인아이디
+		    	$("#groupbuy_campaign_nm").html(detailData['campaign_nm']);			//캠페인이름
+		    	$("#groupbuy_custgp_nm").html(detailData['custgp_nm']);				//고객군명
+		    	$("#groupbuy_custgp_cnt").html('1');						//고객군 수
+		    	$("#groupbuy_campaign_term").html(detailData['campaign_start_dd'] + " ~ " + detailData['campaign_end_dd']);			//켐페인 기간
+		    	$("#cust_gp_id").val(detailData['custgp_id']);			//고객군ID
+		    	$("#camp_id").val(detailData['campaign_id']);			//고객군ID
+	    		
+		    	$('#scdl_tm').val(detailData['tran_rserv_dy']);
+		    	$('#scdl_tm_h').val(detailData['tran_rserv_hh']);
+		    	$('#scdl_tm_m').val(detailData['tran_rserv_minut']);
+		    	
+				$('#campaign_custgp').show();
+				$('#scdl_display').hide();
+				$('#cmp_cust_btns').hide();
+				if(detailData['msg_sts']=="0"){
+					$('#modify_btn').show();
+				}
+				$('#scdl_display_span').show();
+				$("#scdl_full_text").text(detailData['scdl_tm']);			//발송일자
+	    	}
+	    	
+	    	//권한별 버튼노출
+	    	if('${sessionScope.menuAuth.A}' == 'N'){
+	    		$('#reject_btn').hide();
+	    		$('#approve_btn').hide();
+	    	}
+	    	if('${sessionScope.menuAuth.U}' == 'N'){
+	    		$('#modify_btn').hide();
+	    	}
+		}
+	});
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

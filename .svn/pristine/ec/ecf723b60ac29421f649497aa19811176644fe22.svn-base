@@ -1,0 +1,835 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>PUSH 상세</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="searchProduct">
+							<fieldset>
+
+								<div class="form-group" id="campaign_custgp">
+									<label class="col-md-2 control-label">캠페인/고객군</label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_id"><%=request.getParameter("campaignid") %></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_term"><%=request.getParameter("campaignstartdd") + " ~ " + request.getParameter("campaignenddd") %></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_custgp_cnt">1</span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_nm"><%=request.getParameter("campaignnm") %></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">고객군ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_custgp"><%=request.getParameter("custgpid") %></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군명 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_custgpnm"><%=request.getParameter("custgpnm") %></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">등록자 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="regNm"></span>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">전송일자 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="scdlTm"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">전송상태 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="msgSts"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">등록일자 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="genDate"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">전송요청 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="sendTotNcnt"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">성공갯수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="scssNcnt"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">확인갯수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="view_cnt"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">승인상태 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="aprv_sts_cd_name"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">승인일자 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="aprv_date"></span>
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">제목</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="crm_title"></span>
+										<input type="hidden" id="empno" name="empno" value="${sessionScope.sessionEmpno}">
+										<input type="hidden" id="emp_str_cd" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+										<input type="hidden" id="hq_base_yn" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+										<input type="hidden" name="msg_id" id="msg_id" value="<%=request.getParameter("msgid") %>"/>
+										<input type="hidden" name="scdl_id" id="scdl_id" value="<%=request.getParameter("scdlId") %>"/>
+										<input type="hidden" name="campaign_id" id="campaign_id" value="<%=request.getParameter("campaignid") %>"/>
+										<input type="hidden" name="lst_campaign_id" id="lst_campaign_id" value="<%=request.getParameter("campaignid") %>"/>
+										<input type="hidden" name="lst_custgp_id" id="lst_custgp_id" value="<%=request.getParameter("custgpid") %>"/>
+										<input type="hidden" name="imgYn" id="imgYn" value="" />
+										
+										<input type="hidden" name="campaign_nm_val" id="campaign_nm_val" value="<%=request.getParameter("campaignnm") %>" />
+										<input type="hidden" name="campaign_start_dy" id="campaign_start_dy" value="<%=request.getParameter("campaignstartdd") %>" />
+										<input type="hidden" name="campaign_end_dy" id="campaign_end_dy" value="<%=request.getParameter("campaignenddd") %>" />
+										<input type="hidden" name="msgstsval" id="msgstsval" value="<%=request.getParameter("msgstsval") %>" />
+										<input type="hidden" name="custgpnm" id="custgpnm" value="<%=request.getParameter("custgpnm") %>" />
+
+									</div>								
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">관리 제목</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="view_title"></span>
+
+									</div>								
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">유형</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="userYn"></span>
+									</div>											
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">내용</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-04" id="crm_desc"></span>
+									</div>
+								</div>
+
+								<fieldset id="img">
+									<legend></legend>
+									<div class="form-group">
+										<label class="col-md-2 control-label cs-css-05">이미지</label>
+										<div class="col-md-10" id="preview_uploadfile2">
+										</div>
+									</div>
+								</fieldset>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">링크사용</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="linkYn"></span>
+									</div>											
+								</div>
+
+								<div class="form-group" id="link_hide">
+									<label class="col-md-2 control-label cs-css-05">URL 선택</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="link_url_text"></span>
+									</div>
+									<div class="col-md-8" id="inside_url">
+										<span class="form-control cs-css-03" id="issue_cpbook_text"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">발송일</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="s_campaign_start_dt"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">화면켜짐</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="expose"></span>
+									</div>											
+								</div>
+								
+							</fieldset>							
+
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+
+										<a id="crm_del" href="javascript:f_resv_calcel();" class="btn btn-danger btn_auth_delete">예약취소</a>
+										<a href="javascript:f_reject();" class="btn btn-danger btn_auth_approve">반려</a>
+										<a href="javascript:f_approve();" class="btn btn-primary btn_auth_approve">승인</a>
+										<a href="javascript:f_approve_ask();" class="btn btn-info btn_auth_create">승인요청</a>
+										<a href="javascript:f_mCouponList();" class="btn btn-default">목록</a>
+										<a id="crm_mod" href="javascript:f_crm_mod();" class="btn btn-warning btn_auth_update">수정</a>
+
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="beaconLL">
+		
+	</div>
+</section>
+
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		//out.println("<input type=\"text\" value=\""+LangUtil.replaceInjection(key)+"\" />");
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+function f_selectUrlText(url_type) {
+	var url_text = "";
+	
+	if(url_type == "LIST") {
+		url_text = "목록";
+	} else if(url_type == "CRM") {
+		url_text = "쿠폰북";
+	} else if(url_type == "CPZINE") {
+		url_text = "쿠폰진";
+	} else if(url_type == "STAMP") {
+		url_text = "스탬프";
+	} else if(url_type == "EVENTCOK") {
+		url_text = "이벤트콕";
+	} else if(url_type == "CHANNELCOK") {
+		url_text = "채널콕";
+	} else if(url_type == "FCFS") {
+		url_text = "달려라선착순";
+	} else if(url_type == "OUTSIDE") {
+		url_text = "외부링크";
+	}
+	
+	return url_text;
+}
+
+function f_linkUrlSelect(urlType, msg_url, custgpId) {
+	
+	var post_data = {
+				empno : "${sessionScope.sessionEmpno}",
+				emp_str_cd : "${sessionScope.sessionStrCd}",
+				hq_base_yn : "${sessionScope.sessionHqBaseYn}"
+	};
+	
+	if(urlType == "LIST") {
+		var _list_id = '';
+		
+		if(msg_url.indexOf("index") > -1) { //금액 목록
+			_list_id = "M쿠폰 - 금액쿠폰";	
+		}
+		else if(msg_url.indexOf("couponbooklist") > -1) {
+			_list_id = "M쿠폰 - 상품쿠폰";
+		}
+		//else if(msg_url.indexOf("mlifelist") > -1) { //Mlife
+		//	_list_id = "MLIFE";	
+		//}
+		else if(msg_url.indexOf("eventlist") > -1) { //이벤트콕
+			_list_id = "이벤트콕";	
+		}
+		else if(msg_url.indexOf("channelkokmain") > -1) { //채널콕
+			_list_id = "채널콕";	
+		}
+		else if(msg_url.indexOf("lifekokmain") > -1) { //라이프콕
+			_list_id = "생활콕";	
+		}
+		else if(msg_url.indexOf("mclubList") > -1) { //클럽
+			_list_id = "M클럽";	
+		}
+		else if(msg_url.indexOf("notice") > -1) { //공지
+			_list_id = "공지사항";
+		}
+		else if(msg_url.indexOf("leaflet") > -1) { //스전
+			_list_id = "행사정보";	
+		}
+		else if(msg_url.indexOf("stampMainLN") > -1) {
+			_list_id = "M스탬프";
+		}
+		else if(msg_url.indexOf("withMainLN") > -1) {
+			_list_id = "달려라선착순";
+		}
+		else if(msg_url.indexOf("pollMainLN") > -1) {
+			_list_id = "POLL";
+		}
+		else if(msg_url.indexOf("pedometerMainLN") > -1) {
+			_list_id = "걷기";
+		}
+		else if(msg_url.indexOf("receiptMainLN") > -1) {
+			_list_id = "스마트영수증";
+		}
+		else {
+			_list_id = "메인";
+		}
+	
+		$("#issue_cpbook_text").text( _list_id );
+	}
+	else if(urlType == "OUTSIDE") {
+		
+		$("#issue_cpbook_text").text( msg_url );
+	}
+	else if(urlType == "EVENTCOK" || urlType == "CHANNELCOK" ) {
+		var msgUrlArray = msg_url.split("=");
+		var linkUrl = msgUrlArray[0];
+		var _event_id = msgUrlArray[1];
+		
+		var _url = "";
+		
+		if(urlType == "EVENTCOK") {
+			_url = "/backoffice/common/board/issue/event/cok";
+		}else {
+			_url = "/backoffice/common/board/issue/channel/cok";
+		}
+		
+		post_data["noticbd_divn_cd_temp"] = urlType;
+		
+		$.ajax({
+			url: api_url+_url,
+			type: 'GET',
+			async: false,
+			cache: true,
+			data: encodeURI('params='+JSON.stringify(post_data)),
+			success: function(obj) {
+				
+				//var out_each = true;
+				$.each(obj.data.result_list, function(i, item) {
+					 
+					if(item.evnt_id == _event_id) {
+						
+						$("#issue_cpbook_text").text(item.evnt_nm );
+						return false;
+					}
+				});
+				
+			},beforeSend:function(){
+				
+			},error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+	else {
+		post_data["link_url"] = urlType;
+		post_data["lst_custgp_id_list"] = [custgpId];
+		
+		$.ajax({
+			url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+			type: 'GET',
+			async: false,
+			cache: true,
+			datatype: 'json',
+			data: encodeURI('params='+JSON.stringify(post_data)),
+			success: function(obj) {
+				
+				var _cpbook_id = ""; // msgUrl.substring(78,83);
+				var _cpzine_id = ""; // msgUrl.substring(78,83);
+				var _mapp_digit = ""; // msgUrl.substring(129, 133);
+				var _cp_type = "";
+				var _cpz_ord = "";
+				var _cp_id = "";
+				if(obj.data.url_type == "CPZINE") {
+					
+					var msgUrlArray = msg_url.split("?");
+					var urlParamArray = msgUrlArray[1].split("&");
+					var event_id = urlParamArray[0].split("=")[1];
+					var active = urlParamArray[1].split("=")[1];
+					
+					$.each(obj.data.result_list, function(i, item) {
+						 
+						if(item.evnt_id == event_id) {
+							
+							$("#issue_cpbook_text").text( item.evnt_nm );
+							return false;
+						}
+					});
+					
+					if(msg_url.indexOf("mlife") > -1) {
+						_cpbook_id = event_id;
+						if(msg_url.indexOf("active") > -1) {
+							_cpz_ord = active;
+						}
+						
+						_cp_type = "CPZINE";
+					}else {
+						if(msg_url.indexOf("event_id") > -1) {
+							_cpbook_id = event_id;
+							if(msgUrl.indexOf("active") > -1) {
+								_cpz_ord = active;
+							}
+							_cp_type = "CPZINE";
+						}
+					}
+					
+					var cpz_contents_data = {
+							empno : "${sessionScope.sessionEmpno}",
+							custgp_cl_cpbook_id : _cpbook_id,
+							s_type : _cp_type
+					};
+						
+					$.ajax({
+						url: api_url+"/backoffice/common/board/issue/cpzine/list",
+						type: 'GET',
+						async: false,
+						cache: true,
+						data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+						success: function(obj){
+							
+							$.each(obj.data.result_list, function(i, item) {
+								if(item.order_seq == _cpz_ord) {
+									//<span class="btn btn-danger btn_auth_stop disabled">게시중단</span>
+									$("#issue_cpbook_text").append( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ item.cpzine_contents_title );
+									return false;
+								}
+							});
+						}	
+					});
+				}
+				else if(obj.data.url_type == "CRM") {
+					
+					var msgUrlArray = msg_url.split("?");
+					var urlParamArray = msgUrlArray[1].split("&");
+					var coupon_id = urlParamArray[0].split("=")[1];
+					var cpbook_mapp_digit = urlParamArray[1].split("=")[1];
+					
+					var cpbook_id = "";
+					var issue_coupon_no_digit = "";
+					if(urlParamArray[2] != undefined) {
+						cpbook_id = urlParamArray[2].split("=")[1];
+						issue_coupon_no_digit = urlParamArray[3].split("=")[1];
+					}
+					
+					$.each(obj.data.result_list, function(i, item) {
+						 
+						if(item.evnt_id == cpbook_id) {
+							
+							$("#issue_cpbook_text").text( item.evnt_nm );
+							return false;
+						}
+						
+						if(item.evnt_id == coupon_id) {
+							
+							$("#issue_cpbook_text").text( item.evnt_nm );
+							return false;
+						}
+					});
+
+					if(msg_url.indexOf("cpbook_id") > -1) {	// 쿠폰상세
+						//_cpbook_id = msg_url.substring(msg_url.indexOf("cpbook_id")+10, msg_url.indexOf("cpbook_id")+15);
+						//_mapp_digit = msg_url.substring(msg_url.indexOf("cpbook_mapp_digit")+18, msg_url.indexOf("cpbook_mapp_digit")+22);
+						_cpbook_id = cpbook_id;
+						_mapp_digit = cpbook_mapp_digit;
+						if(msg_url.indexOf("__DIGIT__") > -1) {
+							//_cpz_ord = msg_url.substring(msg_url.length-5);
+							_cpz_ord = coupon_id
+						}
+						_cp_type = "CRM";
+
+					}else if(msg_url.indexOf("#/couponbook?") > -1) { // 쿠폰북 쿠폰 목록
+						//_cpbook_id = msg_url.substring(msg_url.indexOf("#/couponbook?")+22, msg_url.indexOf("#/couponbook?")+27);
+						//_mapp_digit = msg_url.substring(msg_url.indexOf("cpbook_mapp_digit")+18, msg_url.indexOf("cpbook_mapp_digit")+22);
+						_cpbook_id = coupon_id;
+						_mapp_digit = cpbook_mapp_digit;
+					}
+					
+					var cpz_contents_data = {
+							empno : "${sessionScope.sessionEmpno}",
+							cpbook_id : _cpbook_id
+					}
+					
+					$.ajax({
+						url: api_url+"/backoffice/couponbook/coupon/couponlist",
+						type: 'GET',
+						async: false,
+						cache: true,
+						data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+						success: function(obj){
+							
+							$.each(obj.data.coupon_list, function(i, item) {
+								if(item.coupon_id == _cpz_ord) {
+									
+									//<span class="btn btn-danger btn_auth_stop disabled">게시중단</span>
+									//var span = $('<input/>').addClass("form-control").val(item.coupon_nm);
+									//$(span).addClass("btn").addClass("btn-dange").addClass("disabled");
+									$("#issue_cpbook_text").append( "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + item.coupon_nm );
+									return false;
+								}
+							});
+						}	
+					});
+					if(_cpz_ord != "") {
+						//$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+						//$("#zine_ord_title").val("("+$('select[name=zine_ord_seq] option:selected').text()+")");
+					}
+					//$("#issue_cpbook_text").text(  );
+				}else if(obj.data.url_type == "STAMP" || obj.data.url_type == "FCFS") {
+					
+					var msgUrlArray = msg_url.split("?");
+					var stamp_id = msgUrlArray[1].split("=")[1];
+					//console.log("stamp_id : "+stamp_id);
+					$.each(obj.data.result_list, function(i, item) {
+						 
+						if(item.evnt_id == stamp_id) {
+							
+							$("#issue_cpbook_text").text( item.evnt_nm );
+							return false;
+						}
+					});
+				}
+			//	else if(obj.data.url_type == "FCFS") {
+			//		var _fcfs_id = msgUrl.substring(73);
+			//		$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_select': function() { $(this).val(_fcfs_id);}}).triggerHandler('init');
+			//		$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+			//	}	
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData["responseJSON"];
+		    	$("#issue_cpbook_text").text( "" );
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+var pagefunction = function() {
+
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+
+	
+		var send_data = {
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				msgId : $("#msg_id").val(),
+				scdlId : $("#scdl_id").val()
+		};
+		
+		
+		$.ajax({
+		    url: api_url+"/backoffice/push/crm/show", 
+			type: 'GET',
+			async: true,
+			cache: true,
+			datatype: 'json',
+			data: encodeURI("params="+JSON.stringify(send_data)),
+			success: function(data) {
+
+				////////////////////////////////
+				// 버튼 Visible관리 Start
+				////////////////////////////////
+				
+		    	// 게시물 상태 :  승인완료
+		    	if(data.data.push_list[0].aprv_sts_cd == 'APPROVE') {
+		    		$('.btn_auth_approve').remove();
+		    		$('.btn_auth_create').remove();
+		    		$('.btn_auth_update').remove();
+		    		$('.btn_auth_delete').remove();
+		    	}
+		    	// 게시물 상태 : 승인대기중
+		    	else if(data.data.push_list[0].aprv_sts_cd == 'STANDBY') {
+		    		$('.btn_auth_create').remove();
+		    		$('.btn_auth_update').remove();
+		    		$('.btn_auth_delete').remove();
+		    	}
+		    	// 게시물 상태 : 승인 요청전
+		    	else if(data.data.push_list[0].aprv_sts_cd == 'REQUEST' || data.data.push_list[0].aprv_sts_cd == '') {
+		    		$('.btn_auth_approve').remove();
+		    	}
+		    	// 게시물 상태 : 반려
+		    	else if(data.data.push_list[0].aprv_sts_cd == 'REJECT') {
+		    		$('.btn_auth_approve').remove();
+		    		$('.btn_auth_create').remove();
+		    	}
+		    	
+		    	
+				////////////////////////////////
+				// 버튼 Visible관리 End
+				////////////////////////////////
+
+				
+				// 전송상태별 버튼 권한 설정
+				if(data.data.push_list[0].msgsts != "전송대기") {
+					$("#crm_mod").hide();
+					$("#crm_del").hide();
+					$('.btn_auth_create').remove();
+					$('.btn_auth_update').remove();
+					$('.btn_auth_delete').remove();
+					$('.btn_auth_approve').remove();
+				}
+
+				// 스케줄상태별 버튼 권한 설정
+				if(data.data.push_list[0].scdl_sts != "0") {
+					$("#crm_mod").hide();
+				}
+
+				$("#crm_title").text(data.data.push_list[0].msgtitle.replaceAll("\\n","<br/>").replaceAll("&gt;", ">").replaceAll("&lt;", "<"));
+				$("#view_title").text(data.data.push_list[0].view_title);
+				$("#crm_desc").html(data.data.push_list[0].msgcontent.replaceAll("\\n","<br/>").replaceAll("&gt;", ">").replaceAll("&lt;", "<"));
+				var date_val = data.data.push_list[0].scdltm;
+				var date = date_val.substring(0,10);
+				var time = date_val.substring(11,13);
+				var minut = date_val.substring(14,16);
+				var msgType = data.data.push_list[0].msgtype;
+				var urlType = data.data.push_list[0].urltype;
+				var custgpId = data.data.push_list[0].custgpid;
+				//var msgUrl = data.data.push_list[0].msgurl;
+				//console.log(msgUrl);
+				var expose = data.data.push_list[0].expose;
+						
+				var regNm = data.data.push_list[0].reg_id_name;
+				var scdlTm = data.data.push_list[0].scdltm;
+				var msgSts = data.data.push_list[0].msgsts;
+				var genDate = data.data.push_list[0].gendate;
+				var sendTotNcnt = data.data.push_list[0].sendtotncnt;
+				var scssNcnt = data.data.push_list[0].scssncnt;
+				var aprv_sts_cd_name = data.data.push_list[0].aprv_sts_cd_name;
+				var aprv_date = data.data.push_list[0].aprv_date;
+				var view_cnt = data.data.push_list[0].view_cnt;
+				var msg_url = data.data.push_list[0].msgurl;
+				var img_view_nm = data.data.push_list[0].imgviewnm;
+				//console.log(msg_url);
+				
+				$("#regNm").text(regNm);
+				$("#scdlTm").text(scdlTm);
+				$("#msgSts").text(msgSts);
+				$("#genDate").text(genDate);
+				$("#sendTotNcnt").text(sendTotNcnt);
+				$("#scssNcnt").text(scssNcnt);
+				$("#view_cnt").text(view_cnt);
+				$("#aprv_sts_cd_name").text(aprv_sts_cd_name);
+				$("#aprv_date").text(aprv_date);
+				
+				$("#issue_cpbook_text").text(msg_url);
+				
+				$("#link_url_text").text(f_selectUrlText(urlType));
+				
+ 				$("#s_campaign_start_dt").text(date + " " + time + ":" + minut);
+ 				
+				var template_id = data.data.push_list[0].template_id;
+
+				if(expose =="Y") {
+					$("#expose").text("예");
+				}else{
+					$("#expose").text("아니오");
+				}
+				
+				
+				if(msgType == "1"){ // link 없는 text
+					$("#userYn").text("텍스트");
+					$('#img').hide();
+					$('#preview_uploadfile').hide();
+					$("#linkYn").text("아니오");
+					$("#link_hide").hide();
+					
+				}else if(msgType == "2"){ // link 없는 img
+					if(template_id != "") {
+						$("#userYn").text("이미지생성");
+					}
+					else {
+						$("#userYn").text("이미지");
+					}
+					
+					$('#img').show();
+					$('#preview_uploadfile').show();
+					
+					//$('#preview_uploadfile2').attr('src', data.data.push_img_path);
+					var tag_img = $('<img>').attr('src',data.data.push_img_path).attr('alt', img_view_nm).addClass('img-responsive');
+			    	$('#preview_uploadfile2').append(tag_img);
+					
+					$("#linkYn").text("아니오");
+					$("#link_hide").hide();
+				}else if(msgType == "3") { // link 있는 text
+					$("#userYn").text("텍스트");
+					$('#img').hide();
+					
+					$("#linkYn").text("예");
+					
+					f_linkUrlSelect(urlType, msg_url, custgpId);
+					
+				}else if(msgType == "4"){ // link 있는 img
+					if(template_id != "") {
+						$("#userYn").text("이미지생성");
+					}
+					else {
+						$("#userYn").text("이미지");
+					}
+					
+					$('#img').show();
+					$('#preview_uploadfile').show();
+					
+					var msgUrlArray = msg_url.split("|");
+					var linkUrl = msgUrlArray[0];
+					var imgUrl = msgUrlArray[1];
+					
+					
+					//$('#preview_uploadfile2').attr('src', imgUrl);
+					var tag_img = $('<img>').attr('src', imgUrl).attr('alt', img_view_nm).addClass('img-responsive');
+			    	$('#preview_uploadfile2').append(tag_img);
+					
+					$("#linkYn").text("예");
+					$("#link_hide").show();
+					
+					f_linkUrlSelect(urlType, linkUrl, custgpId);
+				}
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData["responseJSON"];
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+			/* 
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    } */
+		});
+	
+};
+
+
+/**
+* ==================================================================================
+* PUSH CRM 이미지 추가
+* --------------------------------------------------------------------------------------------
+* 이미지 등록/변경시 호출되는 이벤트
+* ============================================================================================ 
+*/
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this), "IMG_PUSH");
+});
+
+/**
+ * 예약취소
+ */
+function f_resv_calcel()
+{
+	var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');				
+	var chk_cnt = 0;				
+	var del_ids = "dummy";
+	
+	var scdl_cnt = $("#scdl_id").val();
+	var msgsts_cnt = $("#msgstsval").val();
+		
+	del_ids += "," + scdl_cnt;
+	if (msgsts_cnt > 0) {
+		chk_cnt++;	
+	}					
+	
+	if(chk_cnt > 0) {
+		alert("전송대기 상태의 PUSH만 예약 취소할 수 있습니다.");
+		return;
+	}
+	
+	var rslt = f_crm_cancel(del_ids);
+
+	if(rslt.status == "200") {
+		$("#crm_mod").hide();
+		$("#crm_del").hide();
+		$('.btn_auth_create').remove();
+		$('.btn_auth_update').remove();
+		$('.btn_auth_delete').remove();
+		$('.btn_auth_approve').remove();
+	}
+	
+}
+
+function f_crm_mod()
+{
+	var scdlId = $("#scdl_id").val();
+	var msg_id = $("#msg_id").val();
+	var custgpId = $("#lst_custgp_id").val();
+	var campaignId = $("#campaign_id").val();
+	var custgpnm = $("#custgpnm").val();
+	var campaignnm = $("#campaign_nm_val").val();
+	var campaignstartdd = $("#campaign_start_dy").val();
+	var campaignenddd = $("#campaign_end_dy").val();
+	var msgstsval = $("#msgstsval").val();
+
+	var postData = {
+			scdl_info : scdlId
+			,msg_info : msg_id
+			,custgpId : custgpId
+			,campaignId : campaignId
+			,custgpnm : custgpnm
+			,campaignnm : campaignnm
+			,campaignstartdd : campaignstartdd
+			,campaignenddd : campaignenddd
+			,msgstsval : msgstsval
+	};
+
+	if(msgstsval == 0){
+		var url = '/application/push/crm/crmEN.do';
+		var method = 'POST';
+		cf_action(url, method, postData);
+	
+	} else {
+		alert("전송완료, 전송취소 상태의 PUSH는 수정할 수 없습니다.");
+	}
+}
+
+
+	pageSetUp();
+	pagefunction();
+</script>

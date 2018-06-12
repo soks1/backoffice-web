@@ -1,0 +1,813 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>M스탬프 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<input type="hidden" id="evnt_id">
+							<fieldset>
+								<legend>스탬프 상세</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">승인일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_id_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">승인상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_name" style="color: #ff0000;"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">진행상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="prgs_sts_cd_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사번호 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="stamp_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">게시구분 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rserv_ntce_yn"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">행사기간 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="evt_term_dd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">참여인원 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="stamp_card_issue_cnt"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">스탬프 유형 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="stamp_divn_cd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">행사유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="affiliate_yn"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">제휴사 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="ven_cd"></span>
+									</div>
+								</div>
+								
+								<div id="campaign_layout" style="display: none;">
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+										<div class="col-md-5">
+											<span class="form-control cs-css-03" id="stamp_campaign_id"></span>
+										</div>
+										<label class="col-md-1 control-label cs-css-05">캠페인기간 : </label>
+										<div class="col-md-3">
+											<span class="form-control cs-css-03" id="stamp_campaign_term"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+										<div class="col-md-5">
+											<span class="form-control cs-css-03" id="stamp_campaign_nm"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+										<div class="col-md-10">
+											<span class="form-control cs-css-04" id="stamp_custgp"></span>
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="evt_title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 설명 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="evt_desc"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">미션수행지점 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="stamp_mison_str_list"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">APP노출지점 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="stamp_use_psbt_brnch"></span>
+									</div>
+								</div>
+							<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이미지 : </label>
+									<div class="col-md-11" id="stamp_img">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 이미지 : </label>
+									<div class="col-md-11" id="evt_img">
+									</div>
+								</div>
+							<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">꼭! 읽어주세요 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-04" id="note_content"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">행사 안내 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-04" id="evt_info"></span>
+									</div>
+								</div>
+
+							</fieldset>
+							<fieldset>
+								<legend>미션정보</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">  </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered" id="prod_table">
+												<thead>
+													<tr>
+														<th class='ta-c'>미션유형</th>
+														<th class='ta-c'>미션수행채널</th>
+														<th class='ta-c'>미션횟수</th>
+														<th class='ta-c'>미션 대상/금액</th>
+														<th class='ta-c'>구매금액 행사설명</th>
+													</tr>
+												</thead>
+												<tbody id="mission_info">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend>보상정보</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">  </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class='ta-c'>보상</th>
+														<th class='ta-c'>안내문구</th>
+														<th class='ta-c'>쿠폰북 번호</th>
+														<th class='ta-c'>쿠폰북명</th>
+														<th class='ta-c'>쿠폰북 유형</th>
+														<th class='ta-c'>쿠폰수</th>
+														<th class='ta-c'>유효기간</th>
+														<th class='ta-c'>쿠폰북구분</th>
+													</tr>
+												</thead>
+												<tbody id="compensation_info">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12" >
+										<a href="javascript:f_stampReject();" id="btn_reject" class="btn btn-danger btn_auth_approve">반려</a>
+										<a href="javascript:f_stampApprovalAsk();" class="btn btn-success btn_auth_create">승인요청</a>
+										<a href="javascript:f_stampApprove();" id="btn_approve" class="btn btn-primary btn_auth_approve">승인</a>										
+										<%-- <a href='javascript:f_openRequestCheckSD($("#evnt_id").val(),"${sessionScope.sessionEmpno}","1");' id="btn_approve" class="btn btn-primary btn_auth_approve">승인</a> --%>
+										<%-- <a href='javascript:f_openRequestCheckSD($("#evnt_id").val(),"${sessionScope.sessionEmpno}","0");' id="btn_ask" class="btn btn-info btn_auth_create">승인요청</a> --%>
+										
+										<!-- 상품중복방지 체크 필요 Object Start -->
+										<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+										<!-- common_dialog_script.js 해당 화면에 공통 다이얼로그가 선언되어있는지 확인 필요 -->
+										<div id="request_check" style="display:none;"></div>
+										<input type="hidden" id="dupCheck" name="dupCheck" value="0">
+										<!-- Callback 함수 -->
+										<script>
+										 function f_approve_proc(gbn){
+											 if(gbn == "0"){
+												 f_stampApprovalAsk();
+											 }else if(gbn == "1"){
+												 f_stampApprove();
+											 }
+										 }
+										</script>
+										<!-- 상품중복방지 체크 필요 Object End -->
+										
+										
+										<a href="javascript:f_stampList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_stampEdit();" id="btn_modify" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_stampDelete();" id="btn_delete" class="btn btn-danger btn_auth_delete">삭제</a>
+										<a href="javascript:f_stampForcejoin();" id="btn_forcejoin" class="btn btn-danger" style="display:none;">스탬프카드 강제발행</a>
+										<!--  
+										<a href="javascript:f_stampForcejoin();" id="btn_forcejoin" class="btn btn-danger" style="display:none;">스탬프카드 강제발행</a>
+										-->
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="stamp_product_rd" style="display:none;"></div>
+<div id="stamp_category_rd" style="display:none;"></div>
+<div id="coupon_book_rd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 미션상품 상세정보 다이얼로그 껍데기 레이아웃
+/* ============================================================================================ */
+$('#stamp_product_rd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 미션 상품 상세 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 미션상품 상세정보 다이얼로그 껍데기 레이아웃
+/* ============================================================================================ */
+$('#stamp_category_rd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 미션 카테고리 상세 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ==================================================================================
+/* 상세 화면 : 쿠폰북 상세 다이얼로그
+/* ================================================================================== */
+$('#coupon_book_rd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 상세 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 미션상품 상세정보 다이얼로그 호출
+/* --------------------------------------------------------------------------------------------
+/* 미션정보 지정상품에 미션대상 클릭시 다이얼로그 호출.
+/* 미션상품 상세 레이아웃 화면을 다이얼로그에 뿌린다.
+/* @param bsis_mison_yn : 'Y' = 기본미션, 'N' = 특별미션
+/* ============================================================================================ */
+function f_openStampProductRD(bsis_mison_yn) {
+	$("#stamp_category_rd").empty();
+	var stamp_id = $("#frmKeepData").find("input[name=stamp_id]").val();
+	var mison_yn = bsis_mison_yn;
+	$.ajax({
+		url: "/application/stamp/stamp/stampProductRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data : {stamp_id : stamp_id, mison_yn : mison_yn},
+		success: function(data) {
+			var $target = $('#stamp_product_rd');
+			$target.html(data);
+		}	
+	});
+	$('#stamp_product_rd').dialog('open');
+}
+
+/* ============================================================================================
+/* 미션카테고리 상세정보 다이얼로그 호출
+/* --------------------------------------------------------------------------------------------
+/* 미션정보 지정상품에 미션대상 클릭시 다이얼로그 호출.
+/* 미션상품 상세 레이아웃 화면을 다이얼로그에 뿌린다.
+/* @param bsis_mison_yn : 'Y' = 기본미션, 'N' = 특별미션
+/* ============================================================================================ */
+function f_openStampCategoryRD(bsis_mison_yn) {	
+	$("#stamp_product_rd").empty();
+	var stamp_id = $("#frmKeepData").find("input[name=stamp_id]").val();
+	var mison_yn = bsis_mison_yn;
+	$.ajax({
+		url: "/application/stamp/stamp/stampCategoryRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data : {stamp_id : stamp_id, mison_yn : mison_yn},
+		success: function(data) {
+			var $target = $('#stamp_category_rd');
+			$target.html(data);
+		}	
+	});
+	$('#stamp_category_rd').dialog('open');
+}
+
+/* ============================================================================================
+/* 상세화면 : 게시구분 표시
+/* --------------------------------------------------------------------------------------------
+/* 게시구분 코드값을 한글로 표시
+/* 예약게시일 경우 예약일도 표시
+/* @param rserv_ntce_yn : 'Y' = 예약게시, 'N' = 즉시게시
+/* @param rserv_ntce_dd : 예약일
+/* ============================================================================================ */
+function f_rtnstrRservNotice(rserv_ntce_yn, rserv_ntce_dd) {
+	yn = rserv_ntce_yn;
+	if(yn == 'N') {
+		yn = '즉시게시';
+	} else {
+		yn = '예약게시('+ rserv_ntce_dd +')';
+	}
+	return yn;
+}
+
+/* ============================================================================================
+/* 상세화면 : 스탬프 유형 표시
+/* --------------------------------------------------------------------------------------------
+/* 스탬프 유형 코드값이 'GROUP' 이면 정원이 몇명인지 표시
+/* @param stamp_divn_cd : 'PERSONAL' = 개인스탬프, 'GROUP' = 그룹스탬프
+/* @param stamp_divn_cd_name : 스탬프 유형 코드 이름
+/* @param stamp_psbt_user_cnt : 정원수
+/* ============================================================================================ */
+function f_rtnstrStampDivn(stamp_divn_cd, stamp_divn_cd_name, stamp_psbt_user_cnt) {
+	var divn_cd = stamp_divn_cd;
+	if(divn_cd == 'PERSONAL' || divn_cd == 'CRM') {
+		divn_cd = stamp_divn_cd_name;
+	} else {
+		divn_cd = stamp_divn_cd_name+"(정원"+ stamp_psbt_user_cnt +"명)";
+	}
+	return divn_cd;
+}
+
+/* ============================================================================================
+/* 상세화면 : 행사유형 표시
+/* --------------------------------------------------------------------------------------------
+/* 행사유형 코드값을 한글로 표시
+/* 행사유형 값이 '제휴' 이면 제휴사코드, 제휴사명을 화면에 표시
+/* @param affiliate_yn	: 'Y' = 제휴, 'N' = 비제휴
+/* @param ven_cd		: 제휴사 코드
+/* @param ven_cd_name	: 제휴사 명
+/* ============================================================================================ */
+function f_rtnstrAffiliate(affiliate_yn, ven_cd, ven_cd_name) {
+	yn = affiliate_yn;
+	if(yn == 'Y') {
+		yn = '제휴';
+		$("#ven_cd").html(ven_cd+"("+ven_cd_name+")");
+	} else {
+		yn = '비제휴';
+	}
+	return yn;
+}
+
+/* ============================================================================================
+/* 상세화면 : 미션수행지점 표시
+/* --------------------------------------------------------------------------------------------
+/* 미션수행 값이 'ALL' 이면 전점선택, 'ALL' 이 아니면 등록된 미션수행지점 표시
+/* ============================================================================================ */
+function f_missionStrList(obj) {
+	var missionStr = "";
+	var all_str_yn = false;
+	$.each(obj.data.stamp_mison_str_list, function(i, item) {
+		missionStr += item.str_nm+", ";
+		if(item.str_cd === 'ALL') {
+			all_str_yn = true;
+		}
+	});
+	missionStr = missionStr.substring(0, (missionStr.length-2));
+
+	if (all_str_yn) {
+		$("#stamp_mison_str_list").html(missionStr);
+	} else{
+		$("#stamp_mison_str_list").html("("+obj.data.stamp_mison_str_list.length+"개 지점) "+missionStr);
+	}
+}
+
+/* ============================================================================================
+/* 상세화면 : APP노출지점 표시
+/* --------------------------------------------------------------------------------------------
+/* 행사유형 코드값을 한글로 표시
+/* 행사유형 값이 '제휴' 이면 제휴사코드, 제휴사명을 화면에 표시
+/* @param brnch_yn			: 'Y' = 사용가능지점, 'N' = 사용제외지점
+/* @param brnch_content		: APP노출지점 표시 내용
+/* ============================================================================================ */
+function f_rtnstrUsePsbtBranch(brnch_yn, brnch_content) {
+	yn = brnch_yn;
+	if(yn == 'Y') {
+		yn = '사용가능매장 : ' + brnch_content;
+	} else {
+		yn = '사용제외매장 : ' + brnch_content;
+	}
+	return yn;
+}
+
+/* ============================================================================================
+/* 상세화면 : 스탬프 미션 정보 표시
+/* --------------------------------------------------------------------------------------------
+/* 이벤트 등록할 때 지정한 미션에 정보를 table 형식으로 표시
+/* @param obj		: mission 정보 data
+/* ============================================================================================ */
+function f_createMissionTable(obj) {
+	$.each(obj.data.mission_list, function(i, item) {
+		var stamp_mison_target_cd = item.stamp_mison_target_cd;
+		var stamp_apply_to_cd_name = item.stamp_apply_to_cd_name;
+		var stamp_apply_to_cd = item.stamp_apply_to_cd;
+		var stamp_mison_desc = item.stamp_mison_desc;
+		
+		if (stamp_mison_desc == "" || stamp_mison_desc == null || stamp_mison_desc == undefined) {
+			stamp_mison_desc = "-";
+		}
+		
+		if (stamp_apply_to_cd == "MIX") {
+			stamp_apply_to_cd_name = "지정상품";
+		}
+		
+		if (stamp_mison_target_cd == "CATEGORY") {			
+			stamp_apply_to_cd_name += "[" + stamp_mison_target_cd + "]";
+		} else if (stamp_mison_target_cd == "PRODUCT"){
+			stamp_apply_to_cd_name += "[" + stamp_mison_target_cd + "]";
+		}
+		
+		if (stamp_apply_to_cd == "MIX") {
+			stamp_apply_to_cd_name += " + 구매금액";
+		}
+		
+		var tag_td = "";
+		//tag_td += "<td class='ta-c'>" + f_basicMissionMark(item.bsis_mison_yn) + item.stamp_apply_to_cd_name + "</td>";
+		tag_td += "<td class='ta-c'>" + f_basicMissionMark(item.bsis_mison_yn) + stamp_apply_to_cd_name + "</td>";
+		tag_td += "<td class='ta-c'>" + item.fulfill_chanel_cd_name + "</td>";
+		tag_td += "<td class='ta-c'>" + item.stamp_mison_base_cnt + "</td>";
+		
+		//대상/금액
+		if(stamp_apply_to_cd === 'PRICE') {
+			tag_td += "<td class='ta-c'>" + cf_setComma(item.base_buy_amt) + "\t 원</td>";
+		} else if (stamp_apply_to_cd === 'JOIN') {
+			tag_td += "<td class='ta-c'>" + item.stamp_mison_base_cnt + " 회</td>";
+		} else if (stamp_apply_to_cd === 'MIX'){
+			if (stamp_mison_target_cd == "CATEGORY") {
+				tag_td += "<td class='ta-c'>" + f_missionCondition(item.stamp_apply_to_cd, item.bsis_mison_yn, this) + " / " + cf_setComma(item.base_buy_amt) + "\t 원</td>";
+			} else {
+				tag_td += "<td class='ta-c'>" + f_missionCondition(item.stamp_apply_to_cd, item.bsis_mison_yn, this) + " / " + cf_setComma(item.base_buy_amt) + "\t 원</td>";
+			}
+		} else {
+			if (stamp_mison_target_cd == "CATEGORY") {
+				tag_td += "<td class='ta-c'>" + f_missionCondition(item.stamp_apply_to_cd, item.bsis_mison_yn, this) + "</td>";
+			} else {
+				tag_td += "<td class='ta-c'>" + f_missionCondition(item.stamp_apply_to_cd, item.bsis_mison_yn, this) + "</td>";	
+			}
+			
+		}
+		//구매금액 설명
+		if(stamp_apply_to_cd === 'PRICE') {
+			stamp_mison_desc = "일정구매금액 " + cf_setComma(item.base_buy_amt) + "\t 원";
+		} 
+		
+		tag_td += "<td class='ta-c'>" + stamp_mison_desc + "</td>";
+		console.log("..... " + tag_td);
+		$("#mission_info").append("<tr>" + tag_td + "</tr>");
+	});
+}
+
+/* ============================================================================================
+/* 상세화면 : 등록된 미션이 기본미션인지 표시
+/* --------------------------------------------------------------------------------------------
+/* @param bsis_mison_yn	: 'Y' = 기본미션, 'N' = 특별미션
+/* ============================================================================================ */
+function f_basicMissionMark(bsis_mison_yn) {
+	var rtnhtml = "";
+	if(bsis_mison_yn == 'Y') {
+		rtnhtml = "<span class='label label-success' style='font-size: 90%'>기본</span> &nbsp;";
+	}
+	return rtnhtml;
+}
+
+/* ============================================================================================
+/* 상세화면 : 스탬프 미션 조건 표시
+/* --------------------------------------------------------------------------------------------
+/* 미션 정보 table에 미션 조건을 '지정상품구매'일 경우 갯수를 표시하고 클릭시 상세정보 다이얼로그 호출
+/* @param stamp_apply_to_cd		: 스탬프 적용 대상
+/* @param bsis_mison_yn			: 기본미션여부
+/* ============================================================================================ */
+function f_missionCondition(stamp_apply_to_cd, bsis_mison_yn, obj) {
+	var rtnhtml = "";
+	var stamp_mison_target_cd = obj.stamp_mison_target_cd;
+	console.log("stamp_mison_target_cd : " + stamp_mison_target_cd);
+	if(stamp_apply_to_cd == 'PRODUCT' || stamp_apply_to_cd == 'MIX') {
+		if (stamp_mison_target_cd == "PRODUCT") {
+			rtnhtml = "<a href=javascript:f_openStampProductRD('"+ bsis_mison_yn +"');>"+obj.mison_prod_list.length + "개";
+		} else {
+			rtnhtml = "<a href=javascript:f_openStampCategoryRD('"+ bsis_mison_yn +"');>"+obj.mison_category_list.length + "개";
+		}
+		
+	} else if(stamp_apply_to_cd == 'ZONE') {
+		$.each(obj.mison_zone_list, function(i, item) {
+			rtnhtml += item.zone_id+" ("+item.zone_nm+")";
+		});
+	}
+	
+	return rtnhtml;
+}
+
+/* ============================================================================================
+/* 상세화면 : 보상 쿠폰북 정보 표시
+/* --------------------------------------------------------------------------------------------
+/* 이벤트 등록할 때 지정한 보상 쿠폰북에 정보를 table 형식으로 표시
+/* @param obj		: 보상 정보 data
+/* ============================================================================================ */
+function f_createRewardTable(obj) {
+	$.each(obj.data.reward_cpbook_list, function(i, item) {
+		var compensation_type = "";
+		var tag_td = "";
+		if(item.cpbook_type == 'M') {
+			compensation_type = '중간보상';
+			tag_td += "<td class='ta-c'>" + compensation_type + "(" + item.stamp_ncnt + ")</td>";
+		} else if(item.cpbook_type == 'F') {
+			compensation_type = '완료보상';
+			tag_td += "<td class='ta-c'>" + compensation_type + "</td>";
+		}
+		tag_td += "<td class='ta-c'>" + item.reward_info_text + "</td>";
+		tag_td += "<td class='ta-c'>" + item.cpbook_id + "</td>";
+		tag_td += '<td class="ta-c"><a href="javascript:f_openCouponBookRD(\''+item.cpbook_id+'\');">'+item.cpbook_nm+'</a></td>\n';
+		tag_td += "<td class='ta-c'>" + item.cpbook_type_cd_name + "</td>";
+		tag_td += "<td class='ta-c'>" + item.coupon_cnt + "</td>";
+		//tag_td += "<td class='ta-c'>" + cf_cvtDateFormat(item.vali_term_start_dd, 'yyyy-MM-dd') + " ~ " + cf_cvtDateFormat(item.vali_term_end_dd, 'yyyy-MM-dd') + "</td>";
+		tag_td += "<td class='ta-c'>" + cf_cvtTimeFormat(item.vali_term_start_dd) + " ~ " + cf_cvtTimeFormat(item.vali_term_end_dd) + "</td>";
+		tag_td += "<td class='ta-c'>" + item.cpbook_gbn_nm + "</td>";
+		
+		$("#compensation_info").append("<tr>" + tag_td + "</tr>");
+	});
+}
+
+/* ==================================================================================
+/* 상세 화면 : 쿠폰북 상세 다이얼로그 호출
+/* ================================================================================== */
+function f_openCouponBookRD(id) {
+	$.ajax({
+		url: '/application/coupon/campaign/couponBookRD.do',
+		type: 'GET',
+		async: false,
+		cache: true,
+		data: {cpbook_id:id},
+		success: function(data) {
+			var $target = $('#coupon_book_rd');
+			$target.empty();
+			$target.html(data);
+		},
+		complete: function() {
+			$('#coupon_book_rd').dialog('open');
+		}
+	});
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+
+	//버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+
+	$.ajax({
+	    url: api_url+"/backoffice/stamp/show",
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	$('#aprv_sts_cd').val(obj.data.aprv_sts_cd);
+	    	
+	    	// 게시물 상태 :  승인완료
+	    	if(obj.data.aprv_sts_cd == 'APPROVE') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	// 게시물 상태 : 승인대기중
+	    	else if(obj.data.aprv_sts_cd == 'STANDBY') {
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	// 게시물 상태 : 승인 요청전
+	    	else if(obj.data.aprv_sts_cd == 'REQUEST') {
+	    		$('.btn_auth_approve').remove();
+	    	}
+	    	// 게시물 상태 : 반려
+	    	else if(obj.data.aprv_sts_cd == 'REJECT') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    	}
+	    	
+	    	// 진행중 상태 이면 스탬프카드 강제발행 버튼 표시
+	    	if (obj.data.prgs_sts_cd == "PROGRES") {
+	    		loadScript("${pageContext.request.contextPath}/resources/js/plugin/moment/moment.min.js", function() {
+	    			
+	    			var force_join_time = obj.data.force_join_time;	    			
+	    			if (force_join_time != null) {
+	    				
+	    	    		var forced = moment(force_join_time, "YYYYMMDDhhmmss");
+	    				var now = moment(); 
+	    				if (now.diff(forced, 'hours') < 1) { // 강제발행을 1시간 이내에 한 경우 버튼 disabled
+	    					$("#btn_forcejoin").attr("disabled", "disabled");
+	    				}
+	    			}
+	    			
+	    			$("#btn_forcejoin").show();
+	    		});
+	    		
+	    	} else $("#btn_forcejoin").remove();
+	    	
+
+	    	$("#reg_date").html(obj.data.reg_date);
+	    	$("#reg_id_name").html(obj.data.reg_id_name);
+	    	$("#mod_date").html(obj.data.mod_date);
+	    	$("#mod_id_name").html(obj.data.mod_id_name);
+	    	$("#aprv_date").html(obj.data.aprv_date);
+	    	$("#aprv_id_name").html(obj.data.aprv_id_name);
+	    	$("#aprv_sts_cd_name").html(obj.data.aprv_sts_cd_name);
+	    	$("#prgs_sts_cd_name").html(obj.data.prgs_sts_cd_name);
+	    	
+	    	$("#stamp_id").html(obj.data.stamp_id);
+	    	$("#evnt_id").val(obj.data.stamp_id);
+	    	$("#rserv_ntce_yn").html(f_rtnstrRservNotice(obj.data.rserv_ntce_yn, cf_cvtDateFormat(obj.data.rserv_ntce_dd, 'yyyy-MM-dd')));
+	    	$("#evt_term_dd").html(cf_cvtDateFormat(obj.data.evt_term_start_dd, 'yyyy-MM-dd') + " ~ " + cf_cvtDateFormat(obj.data.evt_term_end_dd, 'yyyy-MM-dd'));
+	    	$("#stamp_card_issue_cnt").html(obj.data.stamp_card_issue_cnt);
+	    	
+	    	$("#stamp_divn_cd").html(f_rtnstrStampDivn(obj.data.stamp_divn_cd, obj.data.stamp_divn_cd_name, obj.data.stamp_psbt_user_cnt));
+	    	$("#affiliate_yn").html(f_rtnstrAffiliate(obj.data.affiliate_yn, obj.data.ven_cd, obj.data.ven_cd_name));
+	    	
+	    	if(obj.data.stamp_divn_cd == 'CRM') {
+	    		var custgpStr = "";
+	    		$("#campaign_layout").show();
+	    		
+	    		$("#stamp_campaign_id").html(obj.data.campaign_id + " (고객군수 "+ obj.data.stamp_custgp_list.length +") ");
+	    		$("#stamp_campaign_term").html(cf_cvtDateFormat(obj.data.campaign_start_dy,'yyyy-MM-dd')+" ~ "+cf_cvtDateFormat(obj.data.campaign_end_dy,'yyyy-MM-dd') );
+	    		$("#stamp_campaign_nm").html(obj.data.campaign_nm);
+	    		
+	    		$.each(obj.data.stamp_custgp_list, function(i, items) {
+	    			if(i == 0) {
+	    				custgpStr += items.lst_custgp_id + " - " + items.custgp_nm;
+	    			} else {
+	    				custgpStr += "&nbsp;│&nbsp;" + items.lst_custgp_id + " - " + items.custgp_nm;
+	    			}
+	    		});
+	    		$("#stamp_custgp").html(custgpStr);
+	    	}
+	    	
+	    	$("#evt_title").html(obj.data.evt_title);
+	    	$("#evt_desc").html(obj.data.evt_desc);
+	    	
+	    	// 미션수행지점 표시
+	    	f_missionStrList(obj);
+	    	
+	    	// APP노출지점 표시
+	    	$("#stamp_use_psbt_brnch").html(f_rtnstrUsePsbtBranch(obj.data.use_psbt_brnch_yn, obj.data.use_psbt_excp_brnch_content));
+	    	
+	    	// 꼭! 읽어주세요 표시
+	    	$("#note_content").html((obj.data.note_content).replaceAll("\\n","<br/>"));
+	    	
+	    	// 행사안내 
+	    	$("#evt_info").html((obj.data.evt_info).replaceAll("\\n","<br/>"));
+	    	// 이미지 불러왔을때 작업	    	
+	    	var tag_img = $('<img>').attr('src',obj.data.prvw_url).attr('alt',obj.data.img_orgin_file_nm).addClass('img-responsive');
+		    $('#stamp_img').append(tag_img);
+		    
+		    //행사이미지 
+		    if (obj.data.prvw_url2.indexOf("lmscp/") != -1) {
+		    	var tag_img = $('<img>').attr('src',obj.data.prvw_url2).attr('alt',obj.data.img_orgin_file_nm2).addClass('img-responsive');
+			    $('#evt_img').append(tag_img);
+		    }
+		    
+	    	
+	    	f_createMissionTable(obj);
+	    	
+	    	f_createRewardTable(obj);
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

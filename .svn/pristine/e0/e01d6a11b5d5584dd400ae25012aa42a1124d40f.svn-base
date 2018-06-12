@@ -1,0 +1,336 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<input type="hidden" id="evnt_cd" name="evnt_cd" value="<%=LangUtil.replaceInjection(request.getParameter("evnt_cd"))%>">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div>
+				<div class="widget-body">
+					<div id="chart_detail_canvas_txt_1" align="right"></div>
+					<div id="div_canvas_detail_container_1"><canvas id="chart_canvas_detail_1" height="200"></canvas></div>
+					<div id="legend_chart_canvas_detail_1"></div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" style="margin-top: 10px;">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div id="target_data_stats_detail_grid" class="widget-body" style="max-height: 400px; overflow-y:auto; overflow-x:hidden;">
+				<table id="data_stats_detail_grid"></table>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+pageSetUp();
+
+var _url_detail = api_url+"/backoffice/statistics/coupon/event/detail/show";
+//API list object 추출
+var _list_detail = function(obj){
+	return obj.data.list;
+};
+var _chart_list_detail = function(obj){
+	return obj.data.graph_list;
+};
+// request param settting : api call, excel call
+var _data_detail = function(){
+	var searchData = $("#frmSearch").serializeFormObject();
+				
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}', 
+		_search : true,
+		rows : 100,
+		page : 1,
+		evnt_cd : $('#evnt_cd').val(),
+		sidx : 'evt_title',
+		sord : 'asc',
+		search_info : searchData
+	};
+	return data;
+};
+var pageDailogfunction = function() {
+	// 서버 통신
+	f_ajaxSubmit(); 
+};
+/* ============================================================================================
+/* Server와 통신 
+/* ============================================================================================ */
+function f_ajaxSubmit() {
+	// 실제 데이터 전송
+	$.ajax({
+		url : _url_detail,
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(_data_detail())),
+	    success: function(obj){
+	    	var chart_list_detail = _chart_list_detail(obj);
+	    	var grid_list_detail = _list_detail(obj);
+	    	// 차트 텍스트 세팅
+	    	f_setChartDetailTxt();
+	    	// chart
+	    	drawChartDetail(chart_list_detail);
+	    	// grid	   
+	    	run_jqgrid_detail_function(grid_list_detail);	   
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+} 
+/* ============================================================================================
+/* Grid Data 생성
+/* ============================================================================================ */
+function run_jqgrid_detail_function(jsonData) { 
+	$('#data_stats_detail_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#data_stats_detail_grid").parent().width() - 100;
+	var addData = null;
+	jQuery("#data_stats_detail_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['이벤트명', '행사시작일', '시작시간', '행사종료일', '종료시간', '쿠폰북명', '상품형', '금액형', '교환형', '상품형', '금액형', '교환형', '상품형', '금액형', '교환형'],
+		colModel : [
+			{ name : 'evt_title', 		index : 'evt_title',		align : "center",	sortable : false, 	width : (pageWidth*(20/100))	},
+			{ name : 'start_dd', 		index : 'start_dd',			align : "center",	sortable : false, 	width : (pageWidth*(11/100))	},
+			{ name : 'start_time',		index : 'start_time',		align : "center",	sortable : false, 	width : (pageWidth*(12/100))	},
+			{ name : 'end_dd',			index : 'end_dd',			align : "center",	sortable : false, 	width : (pageWidth*(11/100))	},
+			{ name : 'end_time', 		index : 'end_time',			align : "center",	sortable : false, 	width : (pageWidth*(12/100))	},
+			{ name : 'cpbook_nm', 		index : 'cpbook_nm',		align : "center",	sortable : false, 	width : (pageWidth*(21/100))	},
+			{ name : 'prod_type_issue_cnt',		index : 'prod_type_issue_cnt', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(8/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'amt_type_issue_cnt', 		index : 'amt_type_issue_cnt', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(8/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'exch_type_issue_cnt', 	index : 'exch_type_issue_cnt', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(8/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'prod_type_use_cnt',		index : 'prod_type_use_cnt', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(8/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'amt_type_use_cnt', 		index : 'amt_type_use_cnt', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(8/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'exch_type_use_cnt', 		index : 'exch_type_use_cnt', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(8/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'prod_type_issue_ratio',	index : 'prod_type_issue_ratio', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(9/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					if(cellvalue.toString().indexOf('%') == -1){
+						cellvalue =  cf_setComma(cf_mathRound(cellvalue)) + ' %';
+					} 
+					return cellvalue;
+				}
+			},
+			{ name : 'amt_type_issue_ratio',	index : 'amt_type_issue_ratio', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(9/100)),	
+				formatter : function(cellvalue, options, rowObject) {
+					if(cellvalue.toString().indexOf('%') == -1){
+						cellvalue =  cf_setComma(cf_mathRound(cellvalue)) + ' %';
+					} 
+					return cellvalue;
+				}
+			},
+			{ name : 'exch_type_issue_ratio',	index : 'exch_type_issue_ratio', align : "center", sortable : true, sorttype:"float", width : (pageWidth*(9/100)),	
+				formatter : function(cellvalue, options, rowObject) {
+					if(cellvalue.toString().indexOf('%') == -1){
+						cellvalue =  cf_setComma(cf_mathRound(cellvalue)) + ' %';
+					} 
+					return cellvalue;
+				}
+			}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  
+		shrinkToFit : true,
+		onSortCol: function (index, columnIndex, sortOrder) {
+			addData = jQuery("#data_stats_detail_grid").jqGrid('getRowData',1);
+			$("#data_stats_detail_grid").jqGrid('delRowData', '1');
+		},
+		loadComplete : function() {
+			var colModel = $("#data_stats_detail_grid").jqGrid('getGridParam', 'colModel');
+			
+			// 전체값 Grid 상위 설정 및 font bold 처리
+			if(addData != null){
+				$("#data_stats_detail_grid").jqGrid('addRowData', '1', addData, "first");
+			}	
+			var rowData = $("#data_stats_detail_grid").jqGrid('getRowData', 1);
+			for(var nCol=0; nCol < Object.keys(rowData).length; nCol++){
+                $('#data_stats_detail_grid').setCell(1,nCol,'',{'font-weight':'bold'});
+			}
+			
+			if($("#evnt_cd").val() === "FCFS" ){
+				jQuery("#data_stats_detail_grid").jqGrid("setLabel", colModel[1]['name'], "행사일자");
+			}
+		},
+		gridComplete: function(data){}
+	});
+	
+	jQuery("#data_stats_detail_grid").jqGrid('setGroupHeaders', {
+		useColSpanStyle: true, 
+		groupHeaders:[
+			{startColumnName: 'prod_type_issue_cnt', numberOfColumns: 3, titleText: '쿠폰발행수'},
+			{startColumnName: 'prod_type_use_cnt', numberOfColumns: 3, titleText: '쿠폰사용수'},
+			{startColumnName: 'prod_type_issue_ratio', numberOfColumns: 3, titleText: '발행대비 사용률'}
+		]
+	});
+	
+
+	if($("#evnt_cd").val() == "FCFS" ){
+		jQuery("#data_stats_detail_grid").jqGrid("hideCol", "end_dd");
+		jQuery("#data_stats_detail_grid").jqGrid( 'setGridWidth', $("#target_data_stats_detail_grid").width() );
+	} else {
+		jQuery("#data_stats_detail_grid").jqGrid("hideCol", "start_time");
+		jQuery("#data_stats_detail_grid").jqGrid("hideCol", "end_time");
+		jQuery("#data_stats_detail_grid").jqGrid( 'setGridWidth', $("#target_data_stats_detail_grid").width() );
+	}
+
+  	$("#data_stats_detail_grid").gridCss();
+  	$("#data_stats_detail_grid_cb").css("border-left-width","0");
+  	$("#data_stats_detail_grid_cb").css("padding-left","4px");
+  	$("#jqgh_data_stats_detail_grid_cb").css("padding","7px 0");
+  	
+  	
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#data_stats_detail_grid").jqGrid( 'setGridWidth', $("#target_data_stats_detail_grid").width() );
+	});
+    
+    $("#data_stats_detail_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	    
+}
+/* ============================================================================================
+/* Chart 생성
+/* ============================================================================================ */
+function drawChartDetail(dataset){
+	var _label = [];
+	var _data1 = [];
+	var _data2 = [];
+	var _data3 = [];
+	var _data4 = [];
+	var _data5 = [];
+	var _data6 = [];
+	for(var nRow=0; nRow<dataset.length; nRow++){
+		// Chart 데이터 처리 시작 =========================
+		_label[nRow] = dataset[nRow].evt_title;
+		_data1[nRow] = dataset[nRow].prod_type_issue_cnt;
+		_data2[nRow] = dataset[nRow].prod_type_use_cnt;
+		_data3[nRow] = dataset[nRow].amt_type_issue_cnt;
+		_data4[nRow] = dataset[nRow].amt_type_use_cnt;
+		_data5[nRow] = dataset[nRow].exch_type_issue_cnt;
+		_data6[nRow] = dataset[nRow].exch_type_use_cnt;
+		// Chart 데이터 처리 시작 =========================
+	}
+	//_label[0] = 'AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA AAAAAAAAAA';
+	
+    var chart1_detail_data = {
+	 	labels: _label,
+        datasets: [
+	 		{
+	            label: "상품형 발행수",
+	            fillColor: "rgba(79,129,189,1)",
+	            strokeColor: "rgba(79,129,189,1)",
+	            highlightFill: "rgba(79,129,189,0.8)",
+	            highlightStroke: "rgba(79,129,189,0.8)",
+	            //data: [270, 220, 130, 150, 70]
+	 			data: _data1
+	        },
+	        {
+	            label: "상품형 사용수",
+	            fillColor: "rgba(192,80,77,1)",
+	            strokeColor: "rgba(192,80,77,1)",
+	            highlightFill: "rgba(192,80,77,0.8)",
+	            highlightStroke: "rgba(192,80,77,0.8)",
+	            //data: [140, 170, 96, 65, 60]
+	        	data: _data2
+	        },
+	        {
+	            label: "금액형 발행수",
+	            fillColor: "rgba(155,187,89,1)",
+	            strokeColor: "rgba(155,187,89,1)",
+	            highlightFill: "rgba(155,187,89,0.8)",
+	            highlightStroke: "rgba(155,187,89,0.8)",
+	            //data: [140, 170, 96, 65, 60]
+	        	data: _data3
+	        },
+	        {
+	            label: "금액형 사용수",
+	            fillColor: "rgba(128,73,255,1)",
+	            strokeColor: "rgba(128,73,255,1)",
+	            highlightFill: "rgba(128,73,255,0.8)",
+	            highlightStroke: "rgba(128,73,255,0.8)",
+	            //data: [140, 170, 96, 65, 60]
+	        	data: _data4
+	        },
+	        {
+	            label: "교환형 발행수",
+	            fillColor: "rgba(176,239,37,1)",
+	            strokeColor: "rgba(176,239,37,1)",
+	            highlightFill: "rgba(176,239,37,0.8)",
+	            highlightStroke: "rgba(176,239,37,0.8)",
+	            //data: [140, 170, 96, 65, 60]
+	        	data: _data5
+	        },
+	        {
+	            label: "교환형 사용수",
+	            fillColor: "rgba(27,212,249,1)",
+	            strokeColor: "rgba(27,212,249,1)",
+	            highlightFill: "rgba(27,212,249,0.8)",
+	            highlightStroke: "rgba(27,212,249,0.8)",
+	            //data: [140, 170, 96, 65, 60]
+	        	data: _data6
+	        }
+	        
+        ]
+	};
+    
+    var chart1_detail_options = {
+    		scaleBeginAtZero : true,
+		    scaleShowGridLines : true,
+		    scaleGridLineColor : "rgba(0,0,0,.05)",
+		    scaleGridLineWidth : 1,
+		    barShowStroke : true,
+		    barStrokeWidth : 1,
+		    barValueSpacing : 20,
+		    barDatasetSpacing : 1,
+		    labelLength: 20,
+	        responsive: true
+	    };
+
+	if (window.bar_detail_chart1){ 
+        window.bar_detail_chart1.destroy();
+    }
+    var bar_detail_chart1 = document.getElementById("chart_canvas_detail_1").getContext("2d");
+    bar_detail_chart1 = new Chart(bar_detail_chart1).Bar(chart1_detail_data, chart1_detail_options);
+    legend($("#legend_chart_canvas_detail_1"), chart1_detail_data);
+	
+	// ---------------------- 지점별 쿠폰 데이터 그리드 ---------------------- //
+}
+/* ============================================================================================
+/* Chart 좌상단 Text Setting
+/* ============================================================================================ */
+function f_setChartDetailTxt(){
+	// 발행일 기준 text setting
+	var vdate = $('#s_mod_date').val() + " ~ " + $('#e_mod_date').val();
+	$('#chart_detail_canvas_txt_1').html('※ 발행일 기준: ' + vdate);
+}
+
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/chartjs/chart.min.js", pageDailogfunction);
+</script>

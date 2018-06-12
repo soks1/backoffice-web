@@ -1,0 +1,332 @@
+/**
+ * ==================================================================================
+ * 통계 공통: 검색  이벤트
+ * ==================================================================================
+ */
+function f_search() {	
+	if($('#frmSearch').formValid() && checkValidation()){
+
+		// TODO : 검색 조건에 대한 밸리데이션 체크!
+		$("#btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+		$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+		f_resetGrid();
+		f_ajaxSubmit();	
+	}
+}
+
+/**
+ * ==================================================================================
+ * 통계 공통: 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+	if ($("#s_mod_date").length > 0) {
+		f_setCalendar();		
+	}
+	// 월일시 버튼 있는 경우 Reset
+	if ($("#cond_monthly").length > 0) {
+		$("#cond_monthly").removeClass("bg-color-blueDark");
+		$("#cond_monthly").addClass("bg-color-blue");
+		$("#cond_daily").removeClass("bg-color-blue");
+		$("#cond_daily").addClass("bg-color-blueDark");
+		$("#cond_time").removeClass("bg-color-blue");
+		$("#cond_time").addClass("bg-color-blueDark");	
+		$("#view_type").val("M");
+		$('input[name=s_mod_date]').val(cf_termDate(-91));		
+		$('input[name=e_mod_date]').val(cf_termDate(-1));	
+	}
+	
+	// 캠페인 선택 버튼 있는 경우 Reset
+	if ($("#btn_campaign").length > 0) {
+		$("#btn_campaign").attr('disabled', 'disabled');
+		$("input[name=cmp_cd]:radio[value='ALL']").prop('checked','checked');
+
+		$("#campaign_nm").html("");
+	}
+	// 중복제외 버튼 있는 경우 Value Reset
+	if($('#ovlp_ers_yn').length > 0) {
+		$('#ovlp_ers_yn').val('N');
+	}
+	f_resetGrid();
+	f_ajaxSubmit();	
+	$("#btn_cancel").remove();
+}
+
+/**
+ * ==================================================================================
+ * 월간,일간,시간 조회 버튼 관련 control function
+ * ==================================================================================
+ */
+$('a').click(function(){
+	var vbtn_id = $(this).attr('id');
+	if(vbtn_id=='cond_monthly'){
+		$("#cond_monthly").removeClass("bg-color-blueDark");
+		$("#cond_monthly").addClass("bg-color-blue");
+		$("#cond_daily").removeClass("bg-color-blue");
+		$("#cond_daily").addClass("bg-color-blueDark");
+		$("#cond_time").removeClass("bg-color-blue");
+		$("#cond_time").addClass("bg-color-blueDark");
+		$("#view_type").val("M");
+		$('input[name=s_mod_date]').val(cf_termDate(-91));
+		$('input[name=e_mod_date]').val(cf_termDate(-1));
+		f_search();
+	} else if(vbtn_id=='cond_daily'){
+		$("#cond_monthly").removeClass("bg-color-blue");
+		$("#cond_monthly").addClass("bg-color-blueDark");
+		$("#cond_daily").removeClass("bg-color-blueDark");
+		$("#cond_daily").addClass("bg-color-blue");
+		$("#cond_time").removeClass("bg-color-blue");
+		$("#cond_time").addClass("bg-color-blueDark");
+		$("#view_type").val("D");
+		// 일별 검색시 날짜 셋팅 부분
+		$('input[name=s_mod_date]').val(cf_termDate(-7));
+		$('input[name=e_mod_date]').val(cf_termDate(-1));
+		f_search();
+	} else if(vbtn_id=='cond_time'){
+		$("#cond_monthly").removeClass("bg-color-blue");
+		$("#cond_monthly").addClass("bg-color-blueDark");
+		$("#cond_daily").removeClass("bg-color-blue");
+		$("#cond_daily").addClass("bg-color-blueDark");
+		$("#cond_time").removeClass("bg-color-blueDark");
+		$("#cond_time").addClass("bg-color-blue");
+		$("#view_type").val("H");
+		f_search();
+	}
+});
+// campaign button 제어
+$('input[name=cmp_cd]').click(function() {  //click 함수
+    if($(this).val() == 'ALL'){
+    	$('#campaign_id').val('');
+    	$("#campaign_nm").html('');
+    	$("#btn_campaign").attr('disabled', 'disabled');
+    } else {
+    	$("#btn_campaign").removeAttr('disabled');
+    }
+});
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('input[name=s_mod_date]').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('input[name=e_mod_date]').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('input[name=e_mod_date]').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('input[name=s_mod_date]').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/**
+ * ==================================================================================
+ * 날짜 사이 특수문자 제거
+ * ----------------------------------------------------------------------------------
+ * 예: 2014-12-05 -> 20141205
+ * ==================================================================================
+ */
+function f_uncomma(str){
+	return (str).replace(/\,/g,"");
+}
+/**
+ * ==================================================================================
+ * 년월일 기간으로 들어온 데이터를 월로만 표시
+ * ----------------------------------------------------------------------------------
+ * 2015.01.01 ~ 2015.01.31 -> 1월
+ * ==================================================================================
+ */
+function sliceMonthStr(terms_str){ 
+	var returnVal = "";
+	if($('#view_type').val() == 'H'){
+		returnVal = terms_str;
+	} else {
+		if(terms_str.length > 9){
+			if($('#view_type').val() == 'M'){
+				returnVal = terms_str.substring(5,7);
+				if(returnVal*1 < 10) {
+					returnVal = returnVal.substring(1,2);
+				}
+				returnVal = returnVal + "월";
+			} else if($('#view_type').val() == 'D'){
+				returnVal = terms_str.substring(5,7) + "월" + terms_str.substring(8,10) + "일";			
+			}
+		}	
+	}
+
+	return returnVal;
+}
+
+/**
+ * ==================================================================================
+ * grid reset function
+ * ==================================================================================
+ */
+function f_resetGrid(){
+	$('#target_data_stats_grid').empty();
+	$('#target_data_stats_grid').append('<table id="data_stats_grid"></table>');
+	
+	$('#target_coupon_use_stats_grid').empty();
+	$('#target_coupon_use_stats_grid').append('<table id="coupon_use_stats_grid"></table>');
+	
+	$('#target_coupon_user_stats_grid').empty();
+	$('#target_coupon_user_stats_grid').append('<table id="coupon_user_stats_grid"></table>');
+	
+	$('#target_coupon_use_stats_grid').empty();
+	$('#target_coupon_use_stats_grid').append('<table id="coupon_use_stats_grid"></table>');
+	
+	$('#target_uv_stats_grid').empty();
+	$('#target_uv_stats_grid').append('<table id="uv_stats_grid"></table>');
+	
+	$('#target_uv_monthly_stats_grid').empty();
+	$('#target_uv_monthly_stats_grid').append('<table id="uv_monthly_stats_grid"></table>');
+}
+/**
+ * ==================================================================================
+ * calendar reset function
+ * ----------------------------------------------------------------------------------
+ * datepicker reset / 달력 minDate, maxDate 값을 초기화
+ * ==================================================================================
+ */
+function f_resetCalendar(){
+	$( "#s_mod_date, #e_mod_date" ).datepicker( "option", {minDate: null, maxDate: null});
+	$('input[name=s_mod_date]').val(cf_termDate(-31));
+	$('input[name=e_mod_date]').val(cf_termDate(-1));
+}
+/**
+ * ==================================================================================
+ * 시작일 종료일 기간차 구하는 함수
+ * ----------------------------------------------------------------------------------
+ * param1 : yyyy-mm-dd 
+ * param1 : yyyy-mm-dd 
+ * ==================================================================================
+ */
+function f_intervalDate(date1, date2){
+	var interval = date2 - date1;
+	var day = 1000*60*60*24;	
+	return parseInt(interval/day);
+}
+
+/*
+ * ==================================================================================
+ * 엔터시 조회 함수
+ * ==================================================================================
+ */
+$("input[type=text]").keydown(function(e){
+    if(e.keyCode == 13){
+        e.cancelBubble = true;
+        $("#btn_search").click();
+        return false;
+    }
+});
+
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+/**
+ * ==================================================================================
+ * 캠페인 선택 다이얼로그 화면 구문
+ * ----------------------------------------------------------------------------------
+ * Used couponOfCampaignSN / completeSN 
+ * ==================================================================================
+ */
+$('#coupon_campaign_sd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+/**
+ * ==================================================================================
+ * 등록 화면 : 캠페인 선택 다이얼로그 호출 (쿠폰 > 고객군별 쿠폰통계에 사용)
+ * ----------------------------------------------------------------------------------
+ * Used couponOfCampaignSN / completeSN 
+ * ==================================================================================
+ */
+function f_openCouponCampaignSD() {
+
+	$.ajax({
+		url: "/application/stats/coupon/couponCampaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#coupon_campaign_sd');
+			$target.html(data);
+		}
+	});
+	$('#coupon_campaign_sd').dialog('open');
+}
+/** ============================================================================================
+/* Excel DownLoad
+/* --------------------------------------------------------------------------------------------
+/* Grid Data를 엑셀로 저장한다.
+/* ============================================================================================ */
+function excel_down(){ 
+	// 엑셀 양식 다운로드
+	var url = api_url+"/backoffice/common/excel/statistics/download?";
+	var data = _data();
+	var params = encodeURI('params='+JSON.stringify(data));
+	$.fileDownload(url + params);
+	
+}
+
+
+/** ============================================================================================
+/* Excel DownLoad 실적장표 엑셀 다운로드용 추가 [2015-08-18] by mcloud9
+/* --------------------------------------------------------------------------------------------
+/* Grid Data를 엑셀로 저장한다. 
+/* ============================================================================================ */
+function excel_down2(){ 
+	// 엑셀 양식 다운로드
+	var url = api_url+"/backoffice/common/excel/statistics/download?";
+	var data = _data2();
+	var params = encodeURI('params='+JSON.stringify(data));
+	$.fileDownload(url + params);
+	
+}/**
+ * ==================================================================================
+ * 통계 공통: 검색  이벤트
+ * ==================================================================================
+ */
+function f_searchUV() {	
+	if($('#frmSearch').formValid() && checkValidation()){
+
+		// TODO : 검색 조건에 대한 밸리데이션 체크!
+		$("#btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+		$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+		f_resetGrid();
+		f_ajaxSubmit();	
+	}
+	
+	f_uvGridShow();
+}

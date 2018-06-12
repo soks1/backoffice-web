@@ -1,0 +1,289 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> ZONE 기본 정보 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">지점명 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="l_str_nm"> </span>
+									</div>
+									
+									<label class="col-md-1 control-label">지점번호</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="l_str_cd"> </span>
+									</div>
+									
+									<label class="col-md-1 control-label">층 번호</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="l_floor_no"> </span>
+									</div>
+									
+									<label class="col-md-1 control-label">층 이름</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="l_floor_nm"> </span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">ZONE 명</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="l_zone_nm"> </span>
+									</div>
+									<label class="col-md-1 control-label">ZONE 상태</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="use_yn_nm"> </span>
+										</select> 
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 이벤트 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_zone_desc_grid" class="widget-body no-padding">
+						<table id="zone_desc_grid"></table>
+						<div id="zone_desc_grid_page"></div>
+					</div>
+				</div>
+			</div>
+			<div class="form-actions">
+				<div class="row">
+					<div class="col-md-12">
+						<!-- <a href="javascript:f_closedown();" class="btn btn-danger btn_auth_delete">즉시중단</a> -->
+						<a href="javascript:f_lpotZoneList();" class="btn btn-default">목록</a>
+					</div>
+				</div>
+			</div>
+		</article>		
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	$.ajax({
+		url : api_url + "/backoffice/lpot/zone/show",
+		type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var objData = obj['data']['zone_info'];
+	    	
+	    	$("#l_str_nm").html(objData['l_str_nm']);
+	    	$("#l_str_cd").html(objData['l_str_cd']);
+	    	$("#l_floor_nm").html(objData['l_floor_nm']);
+	    	$("#l_floor_no").html(objData['l_floor_no']);
+	    	$("#l_zone_nm").html(objData['l_zone_nm']);
+	    	$("#l_zone_no").html(objData['l_zone_no']);
+	    	$("#use_yn_nm").html(objData['use_yn_nm']);
+	    }
+	});
+
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#zone_desc_grid").parent().width() - 100;
+
+		jQuery("#zone_desc_grid").jqGrid({
+			url : api_url+"/backoffice/lpot/zone/show/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['이벤트ID', '구분', '진행 상태', '이벤트명', '고객군명', 'WAKE-UP', '쿠폰북/POPUP ID', '행사시작일', '행사종료일', '이벤트 즉시종료', 'ZONE번호'],
+			colModel : [
+				{ name : 'l_event_id', 				index : 'l_event_id', 				align : "center",	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'target_type', 			index : 'target_type', 				align : "center",	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'prgs_sts_cd_nm', 			index : 'prgs_sts_cd_nm',			align : "center",	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'l_evnt_title', 			index : 'l_evnt_title', 			align : "center",	sortable : false, 	width : (pageWidth*(15/100))	}, 
+				{ name : 'lst_custgp_id', 			index : 'lst_custgp_id', 			align : "center", 	sortable : false, 	width : (pageWidth*(10/100))	},				
+				{ name : 'wake_up_yn', 				index : 'wake_up_yn', 				align : "center",	sortable : false, 	width : (pageWidth*(7/100))		}, 
+				{ name : 'target_id', 				index : 'target_id', 				align : "center",	sortable : false, 	width : (pageWidth*(10/100))	}, 	
+				{ name : 'prgs_start_date', 		index : 'prgs_start_date',			align : "center", 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'prgs_end_date', 			index : 'prgs_end_date', 			align : "center", 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'cpsn_end_yn', 			index : 'cpsn_end_yn', 				align : "center", 	sortable : false, 	width : (pageWidth*(7/100)), 
+					formatter: function (cellvalue, options, rowObject) {
+						console.log("cpsn_end_yn : ", rowObject.cpsn_end_yn);
+							var _evnt_id = rowObject.l_event_id;
+							var _zone_no = rowObject.l_zone_no;
+
+						if(rowObject.cpsn_end_yn == 'Y') {
+							var stoppageButton = "<span> 즉시종료 </span>";
+							return stoppageButton;							
+						} else if (rowObject.cpsn_end_yn == 'N') {
+							var stoppageButton = "<input id='btn_stop_page' type='button' value='즉시종료' class='btn btn-danger btn-sm' onclick=f_lpotClosedown('"+_evnt_id+"','"+_zone_no+"')>";
+							return stoppageButton;
+						}
+					}
+				},
+				{ name : 'l_zone_no', 				index : 'l_zone_no',				width : 0,	 		hidden : true	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "l_event_id",
+				root : 		function(obj){ return obj.data.l_str_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},	            
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 부분 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();	// 검색 폼 데이터 추출
+					postData._search = true;
+					$("#zone_desc_grid").jqGrid('setGridParam', {search: true});
+					$("#zone_desc_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#zone_desc_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#zone_desc_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+// 				$("#frmKeepData").empty();
+				
+				return encodeURI("params="+JSON.stringify(postData));
+			},
+			postData:{ 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				l_zone_no: '<%=LangUtil.replaceInjection(request.getParameter("l_zone_no"))%>'
+			},
+			search : false,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#zone_desc_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			recordpos : "left",
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function() {
+								
+				var postData = $('#zone_desc_grid').jqGrid("getGridParam", "postData");
+				$('#zone_desc_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#zone_desc_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			},
+			onSortCol: function(columnName, columnIndex, sortOrder) {
+				//$('.s-ico').find("span[sort='asc']").addClass('ui-state-disabled');
+				//$('.s-ico').find("span[sort='desc']").addClass('ui-state-disabled');
+			}
+		});
+		jQuery("#zone_desc_grid").jqGrid('navGrid', "#zone_desc_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+		
+	  	$("#zone_desc_grid").gridCss();
+	  	$("#zone_desc_grid_cb").css("border-left-width","0");
+	  	$("#zone_desc_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_zone_desc_grid_cb").css("padding","7px 0");
+	  	$("#zone_desc_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  			  
+	    /* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#zone_desc_grid").jqGrid( 'setGridWidth', $("#target_zone_desc_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

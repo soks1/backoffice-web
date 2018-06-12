@@ -1,0 +1,544 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 메뉴얼 업로드 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmLifekok" name="frmLifekok">
+						<input type="hidden" name="empno" id="empno" value="${sessionScope.sessionEmpno}">
+						<input type="hidden" name="strge_nm" value="">
+						<input type="hidden" name="orgin_nm" value="">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">파일 업로드</label>
+										<div class="col-md-3">
+											<span class="btn btn-success fileinput-button">
+												<i class="glyphicon glyphicon-plus"></i>
+											    <span>파일 업로드</span>
+											    <input type="file" id="uploadfile" name="uploadfile">
+											</span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">파일명</label>
+										<div class="col-md-10">
+											<span class="form-control cs-css-03" id="file_nm"></span>
+										</div>
+									</div>
+								</div>
+								
+								</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_lifekok_manual_upload()" id="btn_regist" class="btn btn-success"><i class="fa fa-search"></i> 등록 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 공지사항 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<input type="hidden" name="title" value="">
+							<input type="hidden" name="reg_nm" value="">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">등록일자</label>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="reg_date_from" name="reg_date_from" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="reg_date_to" name="reg_date_to" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>	
+										
+										<label class="col-md-1 control-label">키워드</label>
+										<div class="col-md-2">
+											<select class="form-control" id="keytype" name="keytype">
+												<option value="">선택</option>
+												<option value="_title">제목</option>
+												<option value="_reg_nm">등록자</option>
+											</select>
+										</div>
+										<div class="col-md-4" id="keyword_display_none" style="display:none">
+											<input class="form-control" type="text" id="keyword" name="keyword" data-valid-max="100" data-valid-title="키워드">
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_notice_grid_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+								
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>	
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 공지사항 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_notice_grid" class="widget-body no-padding">
+						<table id="notice_grid"></table>
+						<div id="notice_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 조회 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#reg_date_from').datepicker(
+    $.extend({
+    	onSelect: function(selected) {
+            $("#reg_date_to").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#reg_date_to').datepicker(
+    $.extend({
+    	onSelect: function(selected) {
+            $("#reg_date_from").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+/* ============================================================================================
+/* 키워드 select
+/* ============================================================================================ */
+$('select[name=keytype]').change(function(){
+		$('input[name=keyword]').val("");
+	
+	if($('select[name=keytype]').val() == "_title"){
+		$('#keyword_display_none').show();
+		
+		//등록자 벨류값 지워주기
+		$('input[name=reg_nm]').val("");
+	}else if($('select[name=keytype]').val() == "_reg_nm"){
+		$('#keyword_display_none').show();
+		//제목 벨류값 지워주기
+		$('input[name=title]').val("");
+		
+	}else{
+		$('#keyword_display_none').hide();
+		$('#keyword_display_none').val("");
+		//등록자.제목 벨류값 지워주기
+		$('input[name=title]').val("");
+		$('input[name=reg_nm]').val("");
+	}
+});
+/* ============================================================================================
+/* 매뉴얼 등록 버튼
+/* ============================================================================================ */
+function f_lifekok_manual_upload(){
+	var data = $('#frmLifekok').serializeFormObject();
+	
+	if($('input[name=orgin_nm]').val() == ""){
+		alert("매뉴얼 파일을 업로드 한 후 등록해 주세요.");
+		return;
+	}
+	var auth_c = '${sessionScope.menuAuth.C}';
+	if(auth_c != 'Y'){
+		alert("권한이 없습니다. ");
+		return;
+	}
+	
+	if(confirm("매뉴얼을 등록하시겠습니까?")){
+		
+		 $.ajax({
+		    url: api_lifekok_url+"/backoffice/lifekok/notice/manual/upload",
+// 		    url: api_lifekok_img_url+"/backoffice/lifekok/notice/manual/upload",
+		    type: "POST",
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_lifekok_manual_fileDelete('uploadfile');
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		}); 
+		 
+	}else{
+		alert("등록이 취소되었습니다.");
+	}
+	
+	
+}
+/* ============================================================================================
+/* 파일 업로드
+/* ============================================================================================ */
+$('input[name*=uploadfile]').change(function (e) {
+	
+	f_lifekok_manual_fileUpload($(this), 'LKOKTEMPL');
+});
+/**
+ * 파일 업로드 - 생활콕-매뉴얼
+ * @param inputFile
+ * @param divnCd
+ */
+function f_lifekok_manual_fileUpload(inputFile, divnCd, inputSuffix) {
+	
+	if (inputSuffix == null) { 
+		inputSuffix = ""; 
+	}
+	
+	var fileData = inputFile.get(0).files[0];
+	var formData = new FormData();
+
+	var preview = $('#preview_'+inputFile.attr('id'));
+	
+	formData.append('file', fileData, encodeURI(fileData.name));
+	formData.append('file_divn_cd', divnCd);
+	formData.append('empno', $('input[name=empno]').val() );
+	
+	$.ajax({
+
+		//로컬
+// 		url: api_lifekok_img_url+"/lifekok/common/file/upload",
+		
+		//개발
+		url: api_lifekok_url+"/lifekok/common/file/upload",
+		
+		type: 'POST',
+		data: formData,
+        preprocessData: false,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(obj) {
+			
+			var _prvw_url = obj.data.prvw_url;
+			$('input[name=strge_nm]').val(obj.data.strge_nm);
+			$('input[name=file_divn_cd]').val(obj.data.file_divn_cd);
+			$('input[name=orgin_nm]').val(fileData.name);
+			$('span[id=file_nm]').html(fileData.name);
+			
+			var span = $('<span>').addClass('btn_del_'+inputFile.attr('id'));
+			var aTag = $('<a>')
+						.addClass('btn btn-danger btn-sm')
+						.attr('href','javascript:f_lifekok_manual_fileDelete(\''+inputFile.attr('id')+'\')')
+						.text('파일삭제');
+			span.append(aTag);
+			// TODO: 추 후 필요한 정보는 더 추가 하여 입력 한다.
+			
+			var btn_div = inputFile.parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;       
+		}
+	});
+}
+/**
+ * 파일 삭제
+ * @param name
+ */
+function f_lifekok_manual_fileDelete(name) {
+	
+	$('input[name=strge_nm]').val("");
+	$('input[name=orgin_nm]').val("");
+	$('span[id=file_nm]').html("");
+	var btn_span = $('.btn_del_'+name).parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_'+name).remove();
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+ 
+var pagefunction = function() {
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", notice_grid_function);
+	function notice_grid_function() {
+		
+		var pageWidth = $("#notice_grid").parent().width() - 100;
+
+		jQuery("#notice_grid").jqGrid({
+			url : api_lifekok_url+"/backoffice/lifekok/notice/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '제목', '게시시작일', '게시종료일', '게시상태', '등록자', '등록일자','게시판ID' ],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 		align : 'center',	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'title', 			index : 'title', 			align : 'center', 	sortable : false, 	width : (pageWidth*(30/100)), 	classes:'pointer toooltip'  },
+				{ name : 'post_start_dd', 	index : 'post_start_dd', 	align : 'center',	sortable : false, 	width : (pageWidth*(8/100))		}, 
+				{ name : 'post_end_dd', 	index : 'post_end_dd', 		align : 'center',	sortable : false, 	width : (pageWidth*(8/100))		},
+				{ name : 'post_status', 	index : 'post_status',		align : 'center', 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'reg_nm', 			index : 'reg_nm', 			align : 'center', 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'reg_date',		index : 'reg_date',			align : 'center', 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'board_id',		index : 'board_id',			hidden: true,	 	width : 0 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "board_id",
+				root :		function(obj){ return obj.data.list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#notice_grid").jqGrid('setGridParam', {search: true});
+					$("#notice_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#notice_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#notice_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				rows: '10',
+				page: '1'			
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#notice_grid_page',
+			sortname : 'notice_id',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+				if('${sessionScope.menuAuth.R}' == 'Y') {
+					if(index == 2) {
+						$("#notice_grid").jqGrid('setGridParam', {'postData' : {'board_id':rowid} });
+						var postData = $('#notice_grid').jqGrid("getGridParam", "postData");
+						var url = "application/cooperateService/notice/noticeRN.do";
+						var method = "POST";
+						cf_action(url, method, postData);
+				   } 
+				}
+			},
+			gridComplete: function() {	
+				
+				var postData = $('#notice_grid').jqGrid("getGridParam", "postData");				
+				$('#notice_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#notice_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+				
+			}
+		});
+		
+		jQuery("#notice_grid").jqGrid('navGrid', "#notice_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+				
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#notice_grid").jqGrid('navButtonAdd','#notice_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					if(select_ids.length < 1) {
+						alert('삭제할 공지사항을 선택해 주세요.');
+						return;
+					} 
+					
+					var notice_del_list = [];
+					for (var i = 0; i < select_ids.length; i++) {
+						var del_item = {};
+						del_item['board_id'] = select_ids[i];
+						notice_del_list.push(del_item);
+					}
+	
+					var data = {
+						board_list : notice_del_list,
+						empno : '${sessionScope.sessionEmpno}'
+					};
+					
+					if(confirm("정말 삭제하시겠습니까?")) {
+						
+						$.ajax({
+							url: api_lifekok_url + "/backoffice/lifekok/notice/delete",
+// 							url: api_lifekok_img_url + "/backoffice/lifekok/notice/delete",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$("#notice_grid").trigger("reloadGrid");
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+						    	return;
+						    }
+						});
+					}
+				}
+			});
+		}
+					
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#notice_grid").jqGrid('navButtonAdd','#notice_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/cooperateService/notice/noticeWN.do";
+					var method = "POST";
+					var postData = $('#notice_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#notice_grid").gridCss();
+	  	$("#notice_grid_cb").css("border-left-width","0");
+	  	$("#notice_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_notice_grid_cb").css("padding","7px 0");
+	  	$("#notice_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#notice_grid").jqGrid( 'setGridWidth', $("#target_notice_grid").width() );
+		});
+	}
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

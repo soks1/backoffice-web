@@ -1,0 +1,2577 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row"> 
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>M쿠폰 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmCoupon">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰명 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="coupon_nm" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="쿠폰명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰설명 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="coupon_desc_content" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="쿠폰설명">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰 유형 <sup>*</sup></label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_cls_cd" value="A" data-check-only="true" checked="checked" />상품형
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_cls_cd" value="B" data-check-only="true" />금액형 (상품선택안함)
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_cls_cd" value="C" data-check-only="true" />교환형
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_cls_cd" value="D" data-check-only="true" />번들
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_cls_cd" value="E" data-check-only="true" />연관
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_cls_cd" value="F" data-check-only="true" />M+N
+										</label>
+									</div>
+								</div>
+								<div class="form-group" id="excahge_hide">
+									<label class="col-md-2 control-label">할인/적립 유형<sup>*</sup></label>
+									<div class="col-md-2">
+										<select class="form-control" id="coupon_type_cd" name="coupon_type_cd" data-valid-use="true" data-valid-title="할인/적립 유형">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<label class="col-md-2 control-label">적용 기준 <sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_apply_cond_cd" value="CNT" data-check-only="true" checked="checked" />수량
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_apply_cond_cd" value="AMT" data-check-only="true" />금액
+										</label>
+									</div>
+									<label class="col-md-2 control-label excahge_hide_label">쿠폰1매당 적용구매 수량</label>
+									<div class="col-md-2">
+										<input class="form-control ta-r" name="coupon_apply_buy_qty" type="text" onkeyup="this.value=cf_fmtComma(this);" data-valid-num="true" data-valid-max="4" data-valid-title="쿠폰 1매당적용 구매수량" placeholder="0">
+									</div>
+								</div>
+								<div class="form-group add_group_info" style="display:none">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 최대 3개까지 등록 가능합니다.</p>
+									</div>
+								</div>
+								<div class="apply_data" id="excahge_hide1">
+									<div class="form-group">
+										<label class="col-md-2 control-label">혜택 적용 단계 <sup>*</sup></label>
+										<div class="col-md-2 coupon_val_input">
+											<div class="col-md-4 control-label text-left prod_mn1" style="display:none"></div>
+											<div class="input-group">
+												<input class="form-control ta-r" name="dc_savu_amt" type="text" onblur="javascript:f_dc_savu_amt_alert();" onkeyup="this.value=f_typeComma(this);" style="display:none" />
+												<input class="form-control ta-r" name="coupon_val" type="text" onblur="javascript:f_dc_savu_amt_alert();" onkeyup="this.value=f_typeComma(this);" placeholder="0" />
+												<span class="input-group-addon" id="unit_type"></span>	
+											</div>
+											<div class="col-md-5 control-label text-left prod-mn-back1" style="display:none"></div>
+											<div class="col-md-5 control-label text-left prod-mn-back3" style="display:none">
+												<select class="form-control" id="cond_base_cd" name="cond_base_cd">
+												  <option value="EQ">-</option>
+												  <option value="GE">이상</option>
+												</select>
+											</div>
+										</div>
+										<div class="col-md-offset-1 col-md-2 cond_val_input" style="display:none">
+											<div class="col-md-5 control-label text-left prod_mn2" style="display:none">
+											</div>
+											<div class="col-md-5 control-label text-left prod_mn3" style="display:none">
+												<select class="form-control" id="apply_base_cd" name="apply_base_cd">
+												  <option value="PER">개당</option>
+												  <option value="TOT">총액</option>
+												</select>
+											</div>
+											<div class="input-group">
+												<input class="form-control ta-r" name="cond_val" type="text" onblur="javascript:f_dc_savu_amt_alert();" onkeyup="this.value=f_typeComma(this);" placeholder="0">
+												<span class="input-group-addon" id="cond_val_unit_type"></span>	
+											</div>
+											<div class="col-md-4 control-label text-left prod-mn-back2" style="display:none"></div>
+										</div>
+										<div class="col-md-offset-1 col-md-2 relation_input" style="display:none">
+											<div class="col-md-5 control-label text-left prod_mn4" style="display:none">
+											</div>
+											<div class="input-group">
+												<input class="form-control ta-r" name="apply_base_cnt" type="text" onblur="javascript:f_dc_savu_amt_alert();" onkeyup="this.value=f_typeComma(this);" placeholder="0">
+												<span class="input-group-addon" id="cp_val_unit_type"></span>	
+											</div>
+											<div class="col-md-3 control-label text-left prod-mn-back4" style="display:none"></div>
+										</div>
+										<div class="col-md-offset-1 col-md-2 add_btn" style="display:none">
+											<p>
+												<a onclick="f_addProduct(this);" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
+											</p>
+										</div>
+									</div>
+								<div id="add_group" style="display:none">
+									<div class="form-group add_group">
+										<label class="col-md-2 control-label"></label>
+										<div class="col-md-2">
+											<div class="col-md-3 control-label text-left prod_mn1" style="display:none"></div>
+											<div class="input-group">
+												<input class="form-control ta-r" name="coupon_val" type="text" onblur="javascript:f_dc_savu_amt_alert();" onkeyup="this.value=f_typeComma(this);" placeholder="0" />
+												<span class="input-group-addon" id="unit_type"></span>	
+											</div>
+											<div class="col-md-5 control-label text-left prod-mn-back1" style="display:none"></div>
+										</div>
+										<div class="col-md-offset-1 col-md-2 ">
+											<div class="col-md-5 control-label text-left prod_mn2" style="display:none"></div>
+											<div class="input-group">
+												<input class="form-control ta-r" name="cond_val" type="text" onblur="javascript:f_dc_savu_amt_alert();" onkeyup="this.value=f_typeComma(this);" placeholder="0">
+												<span class="input-group-addon" id="cond_val_unit_type"></span>	
+											</div>
+											<div class="col-md-4 control-label text-left prod-mn-back2" style="display:none"></div>
+										</div>
+										<div class="col-md-offset-1 col-md-2">
+											<p>
+												<a onclick="f_addProduct(this);" class="btn btn-primary"><i class="glyphicon glyphicon-plus"></i></a>
+												<a onclick="f_deleteProduct(this);" class="btn btn-danger"><i class="glyphicon glyphicon-minus"></i></a>
+											</p>
+										</div>
+									</div>
+								</div>
+								</div>
+								<div class="form-group" id="excahge_hide2" style="display:none">
+									<label class="col-md-2 control-label">사용대상 하한금액</label>
+									<div class="col-md-2">
+										<input class="form-control ta-r" name="use_to_lowst_amt" type="text" disabled="disabled" data-valid-num="true" onkeyup="this.value=cf_fmtComma(this);" data-valid-max="10" data-valid-title="사용대상 하한금액" placeholder="0">
+									</div>
+									<label class="col-md-2 control-label">사용대상 상한금액</label>
+									<div class="col-md-2">
+										<input class="form-control ta-r" name="use_to_uper_amt" type="text" disabled="disabled" data-valid-num="true" onkeyup="this.value=cf_fmtComma(this);" data-valid-max="10" data-valid-title="사용대상 상한금액" placeholder="0">
+									</div>
+									<label class="col-md-2 control-label">할인한도 금액</label>
+									<div class="col-md-2">
+										<input class="form-control ta-r" name="dc_lim_amt" type="text" disabled="disabled" data-valid-num="true" onkeyup="this.value=cf_fmtComma(this);" data-valid-max="10" data-valid-title="할인한도 금액" placeholder="0">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">자/타사 구분 <sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="company_type" value="1" data-check-only="true" checked="checked">자사
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="company_type" value="2" data-check-only="true">타사
+										</label>
+									</div>
+									
+									<div class="company_cp_kind_area" style="display:none;">
+										<label class="col-md-2 control-label">타사 쿠폰 종류</label>
+										<div class="col-md-2">
+											<label class="radio radio-inline">
+												<input type="radio" name="company_cp_kind" value="NCP" data-check-only="true">N쿠폰
+											</label>
+											<label class="radio radio-inline">
+												<input type="radio" name="company_cp_kind" value="ONECP" data-check-only="true">ONE쿠폰
+											</label>
+											<label class="radio radio-inline">
+												<input type="radio" name="company_cp_kind" value="CREDITCP" data-check-only="true">신용카드
+											</label>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">바코드</label>
+									<div class="col-md-2">
+										<input class="form-control ta-r" id="company_barcode" name="company_barcode" type="text" maxlength="13" data-valid-use=false data-valid-num="true" data-valid-title="바코드" disabled />
+									</div>
+									
+									<label class="col-md-2 control-label">업체 분담률 </label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input class="form-control ta-r" id="sharing_rate_company" name="sharing_rate_company" type="text" data-valid-use=false data-valid-num="true" data-valid-max="10" data-valid-title="업체분담률" disabled/>
+											<span class="input-group-addon" id="sharing_rate_company_unit_type"></span>	
+										</div>
+									</div>
+									
+									<label class="col-md-2 control-label">업체 부담 한도</label>
+									<div class="col-md-2">
+										<input class="form-control ta-r" id="company_burden_limit" name="company_burden_limit" type="text" data-valid-use=false data-valid-num="true" data-valid-max="10" maxlength="10" data-valid-title="업체 부담 한도" onkeyup="this.value=cf_fmtComma(this);" placeholder="0" disabled/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">수수료</label>
+									<div class="col-md-2">
+										<input class="form-control ta-r" id="commission" name="commission" type="text" data-valid-use=false data-valid-num="true" data-valid-max="12" data-valid-title="수수료" onkeyup="this.value=cf_fmtComma(this);" placeholder="0" disabled/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">제휴업체 설명</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="partner_desc">
+									</div>
+								</div>
+								
+								<div class="form-group" id="excahge_hide0">
+									<label class="col-md-2 control-label">행사/판매가 상세</label>
+									<div class="col-md-2">
+										<div class="input-group col-md-12">
+											<input class="form-control ta-r" name="dc_savu_desc" type="text" data-valid-max="50" data-valid-title="행사/판매가 상세" placeholder="행사가 원">
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">추가할인</label>
+									<div class="col-md-10">
+										<label class="checkbox-inline" >
+											<input type="checkbox" class="checkbox style-2" id="tags" name="tags">
+											<span>추가할인</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰 노출 타입 <sup>*</sup></label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_size_type_cd" value="S" data-check-only="true" checked="checked" />S타입
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_size_type_cd" value="M" data-check-only="true" />M타입
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="coupon_size_type_cd" value="L" data-check-only="true" />L타입
+										</label>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-3" style="padding-left:0;">
+										<img alt="" src="${pageContext.request.contextPath}/resources/img/bo_icon.jpg" width="100%">
+									</div>
+								</div>
+
+							</fieldset>
+							<!-- 적용 대상(상품) -->
+							<fieldset id="area_apply_product">
+								<legend></legend>
+								<div class="form-group prod_cate">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="apply_type" value="PRODUCT" data-check-only="true" checked="checked" />상품
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="apply_type" value="CATEGORY" data-check-only="true" />카테고리
+										</label>
+									</div>
+								</div>
+								<div class="form-group relation_info" style="display:none">
+								  <label class="col-md-2 control-label">&nbsp;</label>
+								  <div class="col-md-10">
+								    <p><i class="fa fa-info-circle"></i> 구매 상품과 할인 상품에 동일한 상품을 선택할 수 없습니다.</p>
+								  </div>
+								</div>
+								<div class="form-group relation_prod_show" style="display:none">
+									<label class="col-md-2 control-label relation_label"></label>
+									<div class="col-md-10">
+										<p>
+											<h7 class="second_prod" style="display:none"></h7>
+											<a href="javascript:f_openProductMultiSD('cond_prod_sell_cd_list');" class="btn btn-primary btn-sm">상품선택</a>
+											<a href="javascript:f_selectProductDelete('cond_prod_sell_cd_list');" class="btn btn-danger btn-sm">선택삭제</a>
+										</p>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">판매코드</th>
+														<th class="ta-c">상품코드</th>
+														<th class="ta-c">상품명</th>
+														<th class="ta-c">규격</th>
+														<th class="ta-c">업체명</th>
+														<th class="ta-c">원가</th>
+														<th class="ta-c">매가</th>
+														<th class="ta-c">이익율</th>
+														<th class="ta-c">거래형태</th>
+													</tr>
+												</thead>
+												<tbody id="cond_prod_sell_cd_list" data-valid-title="적용대상">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group apply_prod_show">
+									<label class="col-md-2 control-label apply_prod_label">적용대상 <sup>*</sup></label>
+									<div class="col-md-10">
+										<p>
+											<h7 class="first_prod" style="display:none"></h7>
+											<a href="javascript:f_openProductMultiSD('prod_sell_cd_list');" class="btn btn-primary btn-sm">상품선택</a>
+											<a href="javascript:f_selectProductDelete('prod_sell_cd_list');" class="btn btn-danger btn-sm">선택삭제</a>
+										</p>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">판매코드</th>
+														<th class="ta-c">상품코드</th>
+														<th class="ta-c">상품명</th>
+														<th class="ta-c">규격</th>
+														<th class="ta-c">업체명</th>
+														<th class="ta-c">원가</th>
+														<th class="ta-c">매가</th>
+														<th class="ta-c">이익율</th>
+														<th class="ta-c">거래형태</th>
+													</tr>
+												</thead>
+												<tbody id="prod_sell_cd_list" data-valid-title="적용대상">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group apply_cate_show" style="display:none">
+									<label class="col-md-2 control-label">적용대상 <sup>*</sup></label>
+									<div class="col-md-10">
+										<label class="col-md-1 control-label">대분류<sup>*</sup></label>
+										<div class="col-md-2">
+											<select class="form-control" id="category_top" name="category_top">
+												<option value="">선택</option>
+											</select>
+										</div>
+										<label class="col-md-1 control-label">중분류</label>
+										<div class="col-md-2">
+											<select class="form-control" id="category_middle" name="category_middle">
+												<option value="">선택</option>
+											</select>
+										</div>
+										<label class="col-md-1 control-label">소분류</label>
+										<div class="col-md-2">
+											<select class="form-control" id="category_low" name="category_low">
+												<option value="">전체</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="form-group apply_cate_show" style="display:none">
+									<label class="col-md-2 control-label"></label>
+									<label class="col-md-1 control-label">적용 대상 문구<sup>*</sup></label>
+									<div class="col-md-2">
+										<input class="form-control" id="apply_tgt_msg" name="apply_tgt_msg" type="text" />
+									</div>
+								</div>
+							</fieldset>
+							<fieldset id="area_upload_image">
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지 <sup>*</sup></label>
+									<div class="col-md-3">
+										<h6 class="third_prod" style="display:none">구매상품</h6>
+										<div class="col-md-6">
+											<label class="checkbox-inline" >
+												<input type="checkbox" class="checkbox style-2" id="rep_img_sel_yn" name="rep_img_sel_yn" value="N">
+												<span>대표이미지 선택</span>
+											</label>
+										</div>
+										<div class="col-md-6">
+											<select class="form-control" id="rep_prod_sell_cd" name="rep_prod_sell_cd" disabled="disabled" data-valid-title="대표이미지">
+												<!-- <option value="">선택</option> -->
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="form-group" id="area_upload_represent_image">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2" id="uploadfile_div">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10" id="image_precautions">
+										<p><i class="fa fa-info-circle"></i> 대표이미지를 선택하신 후 판매코드를 선택하시면 해당 상품의 이미지가 쿠폰이미지로 선택됩니다.</p>
+										<p><i class="fa fa-info-circle"></i> 직접등록 시, 사이즈: 550px X 550px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB</p>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset id="exchange_variety" style="display:none;">
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">교환구분  <sup>*</sup></label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="exch_gbn" value="goods" data-check-only="true" checked="checked">물품
+										</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="exch_gbn" value="lpoint" data-check-only="true">L.POINT
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">교환품<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="exch_goods" data-valid-max="100" data-valid-title="교환품">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰이미지 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div id="preview_coupon_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="coupon_uploadfile" name="coupon_uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10" id="image_precautions">
+										<p><i class="fa fa-info-circle"></i> 대표이미지를 선택하신 후 판매코드를 선택하시면 해당 상품의 이미지가 쿠폰이미지로 선택됩니다.</p>
+										<p><i class="fa fa-info-circle"></i> 직접등록 시, 사이즈: 550px X 550px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">안내문구</label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="5" name="exch_guide" data-valid-max="1000" data-valid-title="안내문구"></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-2">
+										<div id="preview_exchage_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="exchage_uploadfile" name="exchage_uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 대표이미지를 선택하신 후 판매코드를 선택하시면 해당 상품의 이미지가 쿠폰이미지로 선택됩니다.</p>
+										<p><i class="fa fa-info-circle"></i> 직접등록 시, 사이즈: 550px X 550px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB</p>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">교환종류</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="exch_kind" data-valid-max="1000" data-valid-title="교환종류">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">교환상세</label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="5" name="exch_desc" data-valid-max="1000" data-valid-title="교환품"></textarea>
+									</div>
+								</div>
+								<div class="form-group exchange_lpoint1" style="display:none;">
+									<label class="col-md-2 control-label">적립포인트 <sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="input-group">
+											<input class="form-control ta-r" id="exch_point_amt" type="text" data-valid-use=false data-valid-num="true" data-valid-max="12" data-valid-title="적립포인트" onkeyup="this.value=cf_fmtComma(this);" placeholder="0" />
+										</div>
+									</div>									
+								</div>	
+								<div class="form-group exchange_lpoint1" style="display:none;">
+									<label class="col-md-2 control-label">자동적립 <sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="input-group">
+											<select class="form-control" id="coupon_auto_use_yn" name="coupon_auto_use_yn">
+											  <option value="N">수동</option>
+											  <option value="Y">자동</option>
+											</select>
+										</div>
+									</div>								
+								</div>
+								<div class="form-group exchange_lpoint1" style="display:none;">
+									<label class="col-md-2 control-label">안내문구</label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="5" name="exch_lpoint_guide" data-valid-max="1000" data-valid-title="안내문구"></textarea>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset id="area_use_day" style="display:none;">
+								<div class="form-group">
+									<label class="col-md-2 control-label">사용가능일자 <sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="use_day" name="use_day" data-dateformat='yy-mm-dd' placeholder="사용일자">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<a href="javascript:f_addUseDay();" class="btn btn-primary btn-sm">추가</a>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<input class="form-control tagsinput" id="use_day_list" value="" data-role="tagsinput">
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">꼭! 읽어주세요</label>
+									<div class="col-md-10">
+										<!-- &#13;&#10; -->
+										<textarea class="form-control" placeholder="Textarea" rows="5" name="note_content" data-valid-max="1000" data-valid-title="꼭! 읽어주세요">
+&middot; 타 쿠폰과 중복사용이 불가능합니다.
+&middot; 반품, 교환, 환불 시 본 쿠폰은 돌려드리지 않습니다.</textarea>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_couponList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="product_multi_sd" style="display:none;"></div>
+<!--신규개발 적용 시 주석 해제.-->
+<!-- <div id="coupon_category_info_ld" style="display:none;"></div> -->
+<!-- <div id="coupon_category_info_wd" style="display:none;"></div> -->
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+// 타사 관련 레이아웃 초기화
+function f_init_company_layout() {
+	$(".company_cp_kind_area").hide();
+	$("input[name=company_cp_kind]").prop("checked", false);
+	$("input[name=company_barcode]").attr("disabled", true);
+	$("input[name=company_barcode]").val("");
+	$("input[name=sharing_rate_company]").attr("disabled", true);
+	$("input[name=sharing_rate_company]").val("");
+	$("input[name=company_burden_limit]").attr("disabled", true);
+	$("input[name=company_burden_limit]").val("");
+	$("input[name=commission]").attr("disabled", true);
+	$("input[name=commission]").val("");
+}
+/**
+* ==================================================================================
+* 자/타사 구분 라디오 버튼 클릭 이벤트 컨트롤러
+* ==================================================================================
+*/
+$("input[name=company_type]").change(function() {
+	var company_type_val = $(this).val();
+	var apply_to_type_cd = $("input[name=apply_to_type_cd]:checked").val();
+	var coupon_cls_cd = $(':radio[name="coupon_cls_cd"]:checked').val();
+	
+	if (company_type_val == "1") {
+		// 타사관련 레이아웃 초기화(비활성화)
+		f_init_company_layout();
+	}
+	else {
+		$(".company_cp_kind_area").show();
+		$("input[name=company_barcode]").attr("disabled", false);
+		$("input[name=sharing_rate_company]").attr("disabled", false);
+		$("input[name=company_burden_limit]").attr("disabled", false);
+		$("input[name=commission]").attr("disabled", false);
+		
+		if(apply_to_type_cd == "PRODUCT" || coupon_cls_cd == "A") {
+			$("input[name=company_cp_kind]:radio[value=NCP]").prop("checked", true);
+			
+			$("input[value=NCP]").attr("disabled", false);
+			$("input[value=ONECP]").attr("disabled", false);
+			
+			$("input[value=CREDITCP]").attr("disabled", true);
+		}
+		else if(apply_to_type_cd == "PRICE" || coupon_cls_cd == "B") {
+			$("input[name=company_cp_kind]:radio[value=CREDITCP]").prop("checked", true);
+			
+			$("input[value=CREDITCP]").attr("disabled", false);
+			
+			$("input[value=NCP]").attr("disabled", true);
+			$("input[value=ONECP]").attr("disabled", true);
+		}
+		else if(apply_to_type_cd == "EXCHANGE") {
+			$("input[name=company_cp_kind]:radio[value=NCP]").prop("checked", true);
+			
+			$("input[value=NCP]").attr("disabled", false);
+			$("input[value=ONECP]").attr("disabled", false);
+			$("input[value=CREDITCP]").attr("disabled", false);
+		}
+	}
+});
+
+/**
+* ==================================================================================
+* 쿠폰등록시 대표상품 이미지 변경 노출
+* ==================================================================================
+*/
+$("select[name=rep_prod_sell_cd]").change(function(){
+	
+	var data = {
+			rep_prod_img_use_yn : $("input[name=rep_img_sel_yn]").val(),
+			rep_prod_sell_cd : $(this).val(),
+			empno: $.getSessionData()['empno'], 
+			emp_str_cd: $.getSessionData()['str_cd']
+	};
+	
+	$.ajax({
+	    url: api_url+'/backoffice/coupon/create/image',
+	    type: 'GET',
+	    async: true,
+	    datatype: 'json',
+	    contentType: 'application/json;charset=utf-8',
+	    data: "params=" + JSON.stringify(data),
+	    success: function(obj){
+			$('#uploadfile').attr('disabled', true);
+	    	$('#area_upload_represent_image').show();
+			$("#preview_uploadfile img").attr("src",obj.data.prvwurl).attr("alt",obj.data.file_nm);
+	    },
+	    error: function(obj) {
+	    	$('#area_upload_represent_image').hide();
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+});
+
+/**
+* ==================================================================================
+* 쿠폰유형이 [정률할인]일 경우 할인율에 50% 이상이 입력될 경우 Alert 출력
+* 2015-06-17(고객정보팀 요청)
+* ==================================================================================
+*/
+function f_dc_savu_amt_alert() {
+	
+	var coupon_type	= $("#coupon_type_cd :selected").val();
+	var dc_savu_amt	= "";
+	var coupon_cls_cd = $(':radio[name="coupon_cls_cd"]:checked').val();
+	if(coupon_cls_cd != "C") {
+		if(coupon_cls_cd == "A") {
+			dc_savu_amt = $("input[name=coupon_val]").val();
+		}else if(coupon_cls_cd == "D") {
+			dc_savu_amt = $("input[name=cond_val]").val();
+		}else if(coupon_cls_cd == "E") {
+			dc_savu_amt = $("input[name=apply_base_cnt]").val();
+		}else {
+			dc_savu_amt	= $("input[name=dc_savu_amt]").val();
+		}
+		if(coupon_type == 'A' || coupon_type == 'J' || coupon_type == 'P' || coupon_type == 'F' || coupon_type == 'L' || coupon_type == 'T') {
+			if(dc_savu_amt >= 50){
+				alert("50% 이상 할인율로 등록하셨습니다.\n판매가와 할인가를 한번 더 점검하세요!");
+			}
+		}	
+	}
+	
+	
+}
+/**
+ * ==================================================================================
+ * 등록/수정 : 태그즈 인풋
+ * ==================================================================================
+ */
+$('.tagsinput').tagsinput({
+	itemValue: 'id',
+	itemText: 'text',
+	typeaheadjs: {
+		displayKey: 'text'
+	}
+});
+/* ============================================================================================
+/* 적용 대상 유형에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 적용대상 유형 값에 따라 쿠폰유형 정보를 변경 함.
+/* 	- A (상품형)		: 정률할인/정액할인/정률적립/정액적립/정액할인(포인트쿠폰)/균일가
+/* 	- B (금액형)		: 정률할인/정액할인/정률적립/정액적립
+/* 	- C (교환형) 		: 
+/* 	- D (번들) 			: 정률할인/정액할인/정률적립/정액할인/균일가
+/* 	- E (연관) 			: 정률할인/정액할인/정률적립/정액할인/균일가
+/* 	- F (M+N) 			: 무상(균일가)
+/* ============================================================================================ */
+$('input[name=coupon_cls_cd]').change(function(){	
+	var _cls_cd = $(this).val();
+	fn_data_reset();
+	if(_cls_cd == 'A') {
+		// 적용 기준
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+		$('input[name=coupon_apply_cond_cd]').attr("disabled", true);
+		
+		$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+		
+		//정상/할인액 상세 설정
+		$('input[name=dc_savu_desc]').attr('disabled', false);
+		// 화면 활성화
+		cls_cd_ui(_cls_cd);
+
+		// 쿠폰유형 데이터 리로드
+		f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'W', _cls_cd);
+		
+	}else if(_cls_cd == 'B'){
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", false);
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", true);
+		
+		$('input[name=coupon_apply_cond_cd]').attr("disabled", true);
+		
+		//정상/할인액 상세 설정
+		$('input[name=dc_savu_desc]').attr('disabled', true);
+		// 할인한도금액 설정
+		$('input[name=dc_lim_amt]').attr('disabled', false);
+		// 사용대상 하한금액 설정
+		$('input[name=use_to_lowst_amt]').attr('disabled', false);
+		// 사용대상 상한금액 설정
+		$('input[name=use_to_uper_amt]').attr('disabled', false);
+		// 쿠폰 1매당 적용구매 수량 설정
+		$('input[name=coupon_apply_buy_qty]').attr('disabled', true);
+		cls_cd_ui(_cls_cd);
+		// 쿠폰유형 데이터 리로드
+		f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'W', $(this).val());
+
+	}else if(_cls_cd == 'C') {
+		var exchLpointGuideMsg = '<div style="margin-top: 0.625rem; font-weight: bold; font-size: 1.125rem; color: #009bfa;">고객님! 축하드립니다!</div>'
+								+ '<div style="margin: 1.25rem 1.25rem 0; text-align: left; font-size: 0.875rem; color: #737373; line-height: 1.3;">'
+								+ '본 쿠폰은 발행 후 1시간 내에 LPOINT가 적립됩니다. <br>포인트 적립 여부는 M쿠폰 및 엘포인트(앱 또는 사이트)에서 확인 가능합니다.'
+								+ '</div>';
+		$('textarea[name=exch_lpoint_guide]').val(exchLpointGuideMsg);
+		
+		$('textarea[name=exch_guide]').val('<div style="text-align:center"><span style="font-size:1.2em;font-weight:bold">롯데마트 매장 <span style="color:#d92c2c">도와드립니다</span>에</br>본 화면을 제시해주세요.</span></div>');
+		
+		//정상/할인액 상세 설정
+		$('input[name=dc_savu_desc]').attr('disabled', true);
+		
+		// 할인한도금액 설정
+		$('input[name=dc_lim_amt]').attr('disabled', false);
+		
+		// 사용대상 하한금액 설정
+		$('input[name=use_to_lowst_amt]').attr('disabled', false);
+		
+		// 사용대상 상한금액 설정
+		$('input[name=use_to_uper_amt]').attr('disabled', false);
+		
+		// 쿠폰 1매당 적용구매 수량 설정
+		$('input[name=coupon_apply_buy_qty]').attr('disabled', true);
+		$('input[name=coupon_apply_buy_qty]').val('');
+		
+		// 적용대상, 이미 영역 리셋
+		$('#rep_prod_sell_cd').attr('disabled', true);
+		$('#rep_img_sel_yn').prop('checked',false);
+		
+		// 할인/적립(금액/율) 데이터 리셋
+		$('input[name=dc_savu_amt]').val('');
+		$('#unit_type').html('');
+				
+		cls_cd_ui(_cls_cd);
+		// 쿠폰유형 데이터 리로드
+		f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'W', _cls_cd);
+		$("select[name='coupon_type_cd'] option[value='1']").remove();
+		$("select[name='coupon_type_cd'] option[value='2']").remove();
+		$('select[name=coupon_type_cd]').val("Z");
+	} else if(_cls_cd == 'D') {
+		
+		//정상/할인액 상세 설정
+		$('input[name=dc_savu_desc]').attr('disabled', true);
+		
+		$(".relation_label").text("");
+		$(".apply_prod_label").text("적용대상 *");
+		$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+		
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+		$('input[name=coupon_apply_cond_cd]').attr("disabled", false);
+		
+		cls_cd_ui(_cls_cd);
+		
+		f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'W', _cls_cd);
+		
+		$("#unit_type").html("개");
+		$("#cond_val_unit_type").html("원");
+		
+	}else if(_cls_cd == 'E') {
+		
+		//정상/할인액 상세 설정
+		$('input[name=dc_savu_desc]').attr('disabled', true);
+		
+		$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+		
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+		$('input[name=coupon_apply_cond_cd]').attr("disabled", false);
+
+		
+		$("#unit_type").html("개");
+		$("#cond_val_unit_type").html("개");
+		$("#cp_val_unit_type").html("원");
+		cls_cd_ui(_cls_cd);
+		
+		f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'W', _cls_cd);
+	}else if(_cls_cd == 'F') {
+
+		//정상/할인액 상세 설정
+		$('input[name=dc_savu_desc]').attr('disabled', true);
+				
+		$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+		
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+		$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+		
+		$('input[name=coupon_apply_cond_cd]').attr('disabled', true);
+		
+		$(".relation_prod_show").show();
+		$(".relation_label").text("적용대상 *");
+		$(".apply_prod_label").text("");
+
+		
+		$(".prod_cate").hide();
+		$(".add_group_info").hide();
+		$(".add_btn").hide();
+		
+		// 화면 활성화
+		cls_cd_ui(_cls_cd);
+		
+		$(".prod_mn1").show();
+		$(".prod_mn1").text("구매상품");
+		$(".prod-mn-back1").show();
+		$(".prod-mn-back1").text("구매 시");
+		$(".prod_mn2").show();
+		$(".prod_mn2").text("무상 상품");
+		$(".prod-mn-back2").show();
+		$(".prod-mn-back2").text("무상 제공");
+		
+		$(".prod_mn3").hide();
+		$(".prod-mn-back3").hide();
+		$(".prod_mn4").hide();
+		$(".prod_mn4").text("");
+		$(".prod-mn-back4").hide();
+		$(".prod-mn-back4").text("");
+		$(".first_prod").show();
+		$(".second_prod").show();
+		$(".first_prod").text("무상 상품");
+		$(".second_prod").text("구매 상품");
+		
+		$("#unit_type").html("개");
+		$("#cond_val_unit_type").html("개");
+		$("#cp_val_unit_type").html("원");
+		
+		
+		f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'W', _cls_cd);
+		
+		$('select[name=coupon_type_cd] option:eq(1)').html('무상');
+		$('select[name=coupon_type_cd] option:eq(2)').html('무상(반복사용금지)');
+	} 
+	
+});
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 쿠폰 노출 타입에 따라 이미지 사이즈 문구 변경
+ * ==================================================================================
+ */
+/*  
+ $("input[name=coupon_size_type_cd]").change(function(){
+	 var coupon_size = $("input[name=coupon_size_type_cd]:checked").val();
+	 $("#image_precautions p:nth-child(2)").empty();
+	 if  (coupon_size == "M") {
+	 	$("#image_precautions p:nth-child(2)").append("<i class='fa fa-info-circle'></i>").append(" 직접등록 시, 사이즈: 400px X 400px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB");
+	 } else if  (coupon_size == "L") {
+	 	$("#image_precautions p:nth-child(2)").append("<i class='fa fa-info-circle'></i>").append(" 직접등록 시, 사이즈: 684px X 370px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB");
+	 } else {
+		$("#image_precautions p:nth-child(2)").append("<i class='fa fa-info-circle'></i>").append(" 직접등록 시, 사이즈: 350px X 350px  /  파일종류: jpg, gif, png  / 최대파일용량: 400KB");
+	 }
+ });
+ */
+/**
+ * ==================================================================================
+ * 등록/수정 : 금액형 유형에 따른 UI 컨트롤
+ * ==================================================================================
+ */
+$('#coupon_type_cd').change(function(){
+	var _type_cd = $(this).val();
+	var _cls_cd = $(':radio[name="coupon_cls_cd"]:checked').val();
+	var _apply_cond_cd = $(':radio[name="coupon_apply_cond_cd"]:checked').val();
+	fn_data_reset();
+	$('#rep_img_sel_yn').attr("disabled", false);
+	$(".apply_data .add_group:not(:last)").remove();
+	$(".add_btn").hide(); 		// 추가 버튼 숨김
+	$(".prod_mn1").hide();
+	$(".prod-mn-back1").hide();
+	$(".prod_mn2").hide();
+	$(".prod-mn-back2").hide();
+	$(".add_group_info").hide();
+	$(".relation_prod_show").hide();
+	$(".third_prod").hide();
+	
+	$("input:radio[name=apply_type]:input[value='PRODUCT']").prop("checked", true);
+	$("input:radio[name=apply_type]:input[value='CATEGORY']").prop("checked", false);
+	
+	if(_type_cd == "A" || _type_cd == "F" || _type_cd == "J" || _type_cd == "L" || _type_cd == "P" || _type_cd == "T" || _type_cd == "X") {
+		$('#unit_type').html('%');
+	} else if(_type_cd == 'B' || _type_cd == 'G' || _type_cd == "K" || _type_cd == "M" || _type_cd == 'Q' || _type_cd == 'U') {
+		$('#unit_type').html('원');
+	} else if(_type_cd == 'C' || _type_cd == 'H' || _type_cd == "N" || _type_cd == 'R' || _type_cd == 'V') {
+		$('#unit_type').html('배');
+	} else if(_type_cd == 'D' || _type_cd == 'I' || _type_cd == "E" || _type_cd == "O" || _type_cd == 'S' || _type_cd == 'W' || _type_cd == 'Y') {
+		$('#unit_type').html('P');
+	} else if(_type_cd == '1' || _type_cd == '2') {
+		$('#unit_type').html('개');
+	} else {
+		$('#unit_type').html('');
+	}
+	
+	
+	if( _type_cd == 'L' || _type_cd == 'M' || _type_cd == 'N' || _type_cd == 'O' ) {
+		$('#area_use_day').show();
+	}
+	else {
+		$('#area_use_day').hide();
+		$('#use_day').val('');
+		$('.tagsinput').tagsinput('removeAll');
+		$('.tagsinput').tagsinput('refresh');
+	}
+	
+	if(_cls_cd == "B" || _cls_cd == "C") {}
+	else {
+		$('#area_upload_image').show();	// 상품 이미지
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+	}
+	
+	
+	if(_cls_cd == "A") {
+		$(".apply_data .add_group:not(:last)").remove();
+		$(".cond_val_input").hide();
+		$(".prod_cate").show();
+		if(_type_cd == "1" || _type_cd == "2") {
+
+			$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+			$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+			$('input[name=coupon_apply_cond_cd]').attr("disabled", true);
+
+			$(".prod_mn1").hide();
+			$(".prod_mn2").show();
+			$(".prod-mn-back1").show();
+			$(".prod-mn-back1").text("구매 시");
+			
+			$(".prod_mn2").text("개당");
+			$(".prod_mn2").show();
+			$(".cond_val_input").show();
+			$(".prod-mn-back2").hide();
+			
+			$("#cond_val_unit_type").html("원");
+			
+			$(".apply_cate_show").show();
+			$(".apply_prod_show").hide();
+			
+			$('#prod_sell_cd_list').empty();
+			$('#cond_prod_sell_cd_list').empty();
+			$('#rep_prod_sell_cd').empty();
+			$('#rep_img_sel_yn').prop('checked',false);
+			$('#rep_img_sel_yn').attr("disabled", true);
+			$('#rep_img_sel_yn').val('N');
+			cf_fileDelete('uploadfile');
+			
+			
+			$(".prod_cate").hide();
+			$(".apply_prod_show").show();
+			$(".apply_cate_show").hide();
+		}else if(_type_cd == "D" || _type_cd == "S" || _type_cd == "Y") {// 상품:정액적립
+			$('input[name=coupon_apply_cond_cd]').attr("disabled", false);
+			$(".apply_prod_label").text("적용대상 *");
+			
+			
+			if(_apply_cond_cd == "AMT") {
+				$(".add_group_info").show();
+				$(".prod_mn1").hide();
+				$(".prod_mn2").hide();
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back2").show();
+				$(".prod-mn-back1").text("이상 구매 시");
+				$(".prod-mn-back2").text("적립");
+				$(".cond_val_input").show();
+				
+				$(".add_btn").show();
+				
+				$("#unit_type").html("원");
+				$("#cond_val_unit_type").html("P");
+			} else {
+				$(".add_group_info").hide();
+				$(".prod_mn1").show();
+				$(".prod_mn1").text("개당");
+				$(".prod_mn2").hide();
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back1").text("적립");
+				$(".prod-mn-back2").hide();
+				$(".cond_val_input").hide();
+			}
+			
+			$(".prod_cate").show();
+			$(".apply_prod_show").show();
+			$(".apply_cate_show").hide();
+		}else {
+			$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+			$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+			$('input[name=coupon_apply_cond_cd]').attr("disabled", true);
+			// 상품 적용단계 문구
+			if(_type_cd == 'A' || _type_cd == 'B' || _type_cd == 'E' || _type_cd == 'J' || _type_cd == 'K' || _type_cd == 'P' || _type_cd == 'Q') {
+				$(".prod_mn1").text("개당");
+				$(".prod-mn-back1").text("할인");
+			}else if(_type_cd == 'C' || _type_cd == 'X' || _type_cd == 'R') {
+				$(".prod_mn1").text("개당");
+				$(".prod-mn-back1").text("적립");
+			}
+			
+			$(".prod_mn1").show();
+			$(".prod-mn-back1").show();
+			
+			$(".prod_cate").show();
+			$(".apply_prod_show").show();
+			$(".apply_cate_show").hide();
+		}
+	}else if(_cls_cd == "D") {
+		$(".add_group_info").show();
+		if(_type_cd == "1" || _type_cd == "2") {
+			$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+			$("input:radio[name=apply_type]:input[value='PRODUCT']").prop("checked", true);
+			$("input:radio[name=apply_type]:input[value='CATEGORY']").prop("checked", false);
+			
+			$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+			$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+			$('input[name=coupon_apply_cond_cd]').attr("disabled", true);
+			
+			$(".prod_mn1").hide();
+			$(".prod_mn2").show();
+			$(".prod_mn3").hide();
+			$(".prod_mn2").text("구매 시 개당");
+			$(".prod-mn-back1").hide();
+			$(".prod-mn-back2").hide();
+			$(".prod-mn-back3").show();
+			$(".prod-mn-back1").text("");
+			$(".prod-mn-back2").text("");
+			$(".cond_val_input").show();
+			$("#cond_val_unit_type").html("원");
+			$(".add_group").find(".prod-mn-back1").text($('select[name="cond_base_cd"] option:selected').text());
+			$(".add_group").find(".prod-mn-back1").show();
+			
+			$(".add_btn").show();
+			
+			$(".apply_cate_show").show();
+			$(".apply_prod_show").hide();
+			
+			$(".prod_cate").show();
+			$(".apply_prod_show").show();
+			$(".apply_cate_show").hide();
+			
+		}else {
+			$('input[name=coupon_apply_cond_cd]').attr("disabled", false);
+			var cd_unit_type = "";
+			var bg2_mn = "할인";
+			
+			if(_type_cd == "A" || _type_cd == "J") {
+				cd_unit_type = "%";
+			}else if(_type_cd == "C" || _type_cd == "X") {
+				cd_unit_type = "배";
+				bg2_mn = "적립";
+			}else if(_type_cd == "D" || _type_cd == "Y") {
+				cd_unit_type = "P";
+				bg2_mn = "적립";
+			}else{
+				cd_unit_type = "원";
+			}
+			
+			$('input[name=coupon_apply_cond_cd]').attr("disabled", false);
+			if(_apply_cond_cd == "AMT") {
+				
+				$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+				$(".prod_mn1").hide();
+				$(".prod_mn2").hide();
+				$(".prod_mn3").show();
+				if(_type_cd == "A" || _type_cd == "J" || _type_cd == "C" ||_type_cd == "X") {
+					$('select[name=apply_base_cd]').val("PER");
+					$('select[name=apply_base_cd]').attr('disabled', true);
+				}else {
+					$('select[name=apply_base_cd]').attr('disabled', false);
+				}
+				$(".prod_mn2").text("");
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back2").show();
+				$(".prod-mn-back1").text("이상 구매 시");
+				$(".prod-mn-back2").text(bg2_mn);
+				$(".prod-mn-back3").hide();
+				$(".cond_val_input").show();
+				
+				$(".add_btn").show();
+
+				$("#unit_type").html("원");
+				$("#cond_val_unit_type").html(cd_unit_type);
+			} else {
+				$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+				$(".prod_mn1").hide();
+				$(".prod_mn2").show();
+				$(".prod_mn2").text("개당");
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back2").show();
+				$(".prod-mn-back1").text("이상 구매 시");
+				$(".prod-mn-back2").text(bg2_mn);
+				$(".prod-mn-back3").hide();
+				$(".cond_val_input").show();
+				
+				$(".add_btn").show();
+				$("#unit_type").html("개");
+				$("#cond_val_unit_type").html(cd_unit_type);
+			}
+		}
+	}else if(_cls_cd == "E") {
+		$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+		
+		if(_type_cd == "1" || _type_cd == "2") {
+			$("input:radio[name=apply_type]:input[value='PRODUCT']").prop("checked", true);
+			$("input:radio[name=apply_type]:input[value='CATEGORY']").prop("checked", false);
+			
+			$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+			$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+			$('input[name=coupon_apply_cond_cd]').attr("disabled", true);
+			
+			
+			$(".add_group_info").hide();
+			$(".add_btn").hide();
+			$(".prod_cate").hide();
+			$("#excahge_hide").show();
+			$("#excahge_hide1").show();
+			$("#excahge_hide2").hide();
+			$(".cond_val_input").show();
+			$(".prod_mn1").show();
+			$(".prod_mn1").text("구매상품");
+			$(".prod-mn-back1").show();
+			$(".prod-mn-back1").text("구매 시");
+			$(".prod_mn2").show();
+			$(".prod_mn2").text("할인상품");
+			$(".prod_mn4").show();
+			$(".prod-mn-back4").hide();
+			$(".prod_mn4").text("개당");
+			$(".prod-mn-back4").text("");
+			
+			$("#cp_val_unit_type").html("원");
+			
+		}else {
+			var cp_unit_type = "";
+			var bg2_mn = "할인";
+			var unit_type = "";
+			
+			if(_type_cd == "A" || _type_cd == "J") {
+				cp_unit_type = "%";
+			}else if(_type_cd == "C" || _type_cd == "X") {
+				cp_unit_type = "배";
+				bg2_mn = "적립";
+			}else if(_type_cd == "D" || _type_cd == "Y") {
+				cp_unit_type = "P";
+				bg2_mn = "적립";
+			}else{
+				cp_unit_type = "원";
+			}
+			if(_apply_cond_cd == "AMT") {
+				unit_type = "원";
+			}else{
+				unit_type = "개";
+			}
+			
+			if(_apply_cond_cd == "AMT") {
+				$("#excahge_hide").show();
+				$("#excahge_hide1").show();
+				$("#excahge_hide2").hide();
+				$(".cond_val_input").show();
+				$(".prod_mn1").show();
+				$(".prod_mn1").text("구매상품");
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back1").text("이상 구매 시");
+				$(".prod_mn2").show();
+				$(".prod_mn2").text("할인상품");
+				$(".prod_mn4").show();
+				$(".prod_mn4").text("개당");
+				$(".prod-mn-back4").show();
+				$(".prod-mn-back4").text(bg2_mn);
+				
+				$("#unit_type").html(unit_type);
+				$("#cond_val_unit_type").html("개");
+				$("#cp_val_unit_type").html(cp_unit_type);
+			}else {
+				
+				$("#excahge_hide").show();
+				$("#excahge_hide1").show();
+				$("#excahge_hide2").hide();
+				$(".cond_val_input").show();
+				$(".prod_mn1").show();
+				$(".prod_mn1").text("구매상품");
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back1").text("구매 시");
+				$(".prod_mn2").show();
+				$(".prod_mn2").text("할인상품");
+				$(".prod_mn4").show();
+				$(".prod_mn4").text("개당");
+				$(".prod-mn-back4").show();
+				$(".prod-mn-back4").text(bg2_mn);
+				
+				$("#unit_type").html(unit_type);
+				$("#cp_val_unit_type").html(cp_unit_type);
+			}
+		}
+			$("#cond_val_unit_type").html("개");
+			$(".relation_prod_show").show();
+			$(".third_prod").show();
+	}else if(_cls_cd == "F") {
+		$(".third_prod").show();
+		$(".add_group_info").hide();
+		$(".add_btn").hide();
+		$(".prod_cate").hide();
+		$("#excahge_hide").show();
+		$("#excahge_hide1").show();
+		$("#excahge_hide2").hide();
+		$(".cond_val_input").show();
+		$(".prod_mn1").show();
+		$(".prod_mn1").text("구매상품");
+		$(".prod-mn-back1").show();
+		$(".prod-mn-back1").text("구매 시");
+		$(".prod_mn2").show();
+		$(".prod_mn2").text("무상 상품");
+		$(".prod-mn-back2").show();
+		$(".prod-mn-back2").text("무상 제공");
+		$(".prod_mn4").hide();
+		$(".prod-mn-back4").hide();
+		$(".prod_mn4").text("");
+		$(".prod-mn-back4").text("");
+		$(".relation_prod_show").show();
+		
+		$("#unit_type").html("개");
+		$("#cond_val_unit_type").html("개");
+		
+		$('#prod_sell_cd_list').empty();
+		$('#cond_prod_sell_cd_list').empty();
+		$('#rep_prod_sell_cd').empty();
+		$('#rep_img_sel_yn').prop('checked',false);
+		$('#rep_img_sel_yn').attr("disabled", true);
+		$('#rep_img_sel_yn').val('N');
+		cf_fileDelete('uploadfile');
+		
+		
+		$('#prod_sell_cd_list').empty();
+		$('#cond_prod_sell_cd_list').empty();
+	}
+
+});
+
+//적용 기준에 따른 UI 컨트롤
+$('input[name=coupon_apply_cond_cd]').change(function(){
+	
+	$('#prod_sell_cd_list > tr').remove();
+	
+	var _apply_cond_cd = $(this).val();
+	var _cls_cd = $(':radio[name="coupon_cls_cd"]:checked').val(); // 쿠폰유형
+	var _type_cd = $('select[name="coupon_type_cd"]').val(); // 할인 적립유형
+	$(".apply_data .add_group:not(:last)").remove();
+	$(".add_group_info").hide();
+	if(_cls_cd == "A") {
+		if(_type_cd == "D" || _type_cd == "S" || _type_cd == "Y") {// 상품:정액적립
+			if(_apply_cond_cd == "AMT") {
+				$(".add_group_info").show();
+				$(".prod_mn1").hide();
+				$(".prod_mn2").hide();
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back2").show();
+				$(".prod-mn-back1").text("이상 구매 시");
+				$(".prod-mn-back2").text("적립");
+				$(".cond_val_input").show();
+				
+				$(".add_btn").show();
+				
+				$("#unit_type").html("원");
+				$("#cond_val_unit_type").html("P");
+			} else {
+				$(".prod_mn1").show();
+				$(".prod_mn1").text("개당");
+				$(".prod_mn2").hide();
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back1").text("적립");
+				
+				$(".add_btn").hide();
+				$(".prod-mn-back2").hide();
+				$(".cond_val_input").hide();
+				
+				$("#unit_type").html("P");
+			}
+		}
+	}else if(_cls_cd == "D") {
+		var bg2_mn = "할인";
+		
+		if(_type_cd == "C" || _type_cd == "X") {
+			cd_unit_type = "배";
+			bg2_mn = "적립";
+		}else if(_type_cd == "D" || _type_cd == "Y") {
+			cd_unit_type = "P";
+			bg2_mn = "적립";
+		}
+		
+		$(".add_group_info").show();
+		if(_apply_cond_cd == "CNT") {
+			$(".prod_mn1").hide();
+			$(".prod_mn2").show();
+			$(".prod_mn3").hide();
+			$(".prod_mn2").text("개당");
+			$(".prod-mn-back1").show();
+			$(".prod-mn-back2").show();
+			$(".prod-mn-back1").text("이상 구매 시");
+			$(".prod-mn-back2").text(bg2_mn);
+			$(".cond_val_input").show();
+			
+			$(".add_btn").show();
+			
+			$("#unit_type").html("개");
+		}else {
+			$(".prod_mn1").hide();
+			$(".prod_mn2").hide();
+
+			$(".add_group").find(".prod_mn2").text($('select[name="apply_base_cd"] option:selected').text());
+			$(".add_group").find(".prod_mn2").show();
+			$(".prod_mn3").show();
+			if(_type_cd == "A" || _type_cd == "J" || _type_cd == "C" ||_type_cd == "X") {
+				$('select[name=apply_base_cd]').val("PER");
+				$('select[name=apply_base_cd]').attr('disabled', true);
+			}else {
+				$('select[name=apply_base_cd]').attr('disabled', false);
+			}
+			$(".prod-mn-back1").show();
+			$(".prod-mn-back2").show();
+			$(".prod-mn-back1").text("이상 구매 시");
+			$(".prod-mn-back2").text(bg2_mn);
+			$(".cond_val_input").show();
+			
+			$(".add_btn").show();
+			
+			$("#unit_type").html("원");
+		}
+		
+	}else if(_cls_cd == "E") {
+		var bg2_mn = "할인";
+		var cd_unit_type = "원";
+		if(_type_cd == "A" || _type_cd == "J") {
+			cd_unit_type = "%";
+		}else if(_type_cd == "C" || _type_cd == "X") {
+			cd_unit_type = "배";
+			bg2_mn = "적립";
+		}else if(_type_cd == "D" || _type_cd == "Y") {
+			cd_unit_type = "P";
+			bg2_mn = "적립";
+		}
+		
+		if(_apply_cond_cd == "AMT") {
+			$('input[name=coupon_apply_buy_qty]').attr('disabled', false);
+			$("#excahge_hide").show();
+			$("#excahge_hide1").show();
+			$("#excahge_hide2").hide();
+			$(".cond_val_input").show();
+			$(".prod_mn1").show();
+			$(".prod_mn1").text("구매상품");
+			$(".prod-mn-back1").show();
+			$(".prod-mn-back1").text("이상 구매 시");
+			$(".prod_mn2").show();
+			$(".prod_mn2").text("할인상품");
+			$(".prod_mn4").show();
+			$(".prod_mn4").text("개당");
+			$(".prod-mn-back4").show();
+			$(".prod-mn-back4").text(bg2_mn);
+			/* 
+			if(_type_cd == "A" || _type_cd == "J") {
+				$("#cp_val_unit_type").html("%");
+			}else {
+				$("#cp_val_unit_type").html("원");
+			}
+			 */
+			$("#cp_val_unit_type").html(cd_unit_type);
+			$("#unit_type").html("원");
+			$("#cond_val_unit_type").html("개");
+		}else {
+			$("#excahge_hide").show();
+			$("#excahge_hide1").show();
+			$("#excahge_hide2").hide();
+			$(".cond_val_input").show();
+			$(".prod_mn1").show();
+			$(".prod_mn1").text("구매상품");
+			$(".prod-mn-back1").show();
+			$(".prod-mn-back1").text("구매 시");
+			$(".prod_mn2").show();
+			$(".prod_mn2").text("할인상품");
+			$(".prod_mn4").show();
+			$(".prod_mn4").text("개당");
+			$(".prod-mn-back4").show();
+			$(".prod-mn-back4").text(bg2_mn);
+			
+			
+			$("#unit_type").html("개");
+			$("#cond_val_unit_type").html("개");
+			$("#cp_val_unit_type").html("원");
+		}
+	}
+});
+
+$('select[name=apply_base_cd]').change(function(){
+	if($(this).val() == "TOT") {
+			$(".add_group").find('.prod_mn2').text($('select[name="apply_base_cd"] option:selected').text());
+	}else{
+		$(".add_group").find('.prod_mn2').text($('select[name="apply_base_cd"] option:selected').text());
+	}
+	
+});
+$('select[name=cond_base_cd]').change(function(){
+	if($(this).val() == "GE") {
+			$(".add_group").find('.prod-mn-back1').text($('select[name="cond_base_cd"] option:selected').text());
+	}else{
+		$(".add_group").find('.prod-mn-back1').text($('select[name="cond_base_cd"] option:selected').text());
+	}
+	
+});
+/**
+ * ==================================================================================
+ * 등록/수정 : 적용대상에 따른 UI 컨트롤
+ * ==================================================================================
+ */
+ $('input[name=apply_type]').change(function(){
+	var _type = $(this).val();
+	if(_type == "PRODUCT") {
+		$(".apply_prod_show").show();
+		$(".apply_cate_show").hide();
+		
+		$('#rep_img_sel_yn').prop('checked',false);
+		$('#rep_img_sel_yn').attr("disabled", false);
+		cf_fileDelete('uploadfile');
+		f_ajaxProductCategoryCode($('#category_top'), '', 'TGRP');
+		f_ajaxProductCategoryCode($('#category_middle'), '', 'MGRP');
+		f_ajaxProductCategoryCode($('#category_low'), '', 'SGRP');
+		f_ajaxProductCategoryCode($('#cate_detail'), '', 'SUBGRP');
+		$("input[name=apply_tgt_msg]").val("");
+		
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+	}else if(_type == "CATEGORY"){
+		$(".apply_cate_show").show();
+		$(".apply_prod_show").hide();
+		
+		
+		$('#prod_sell_cd_list').empty();
+		$('#cond_prod_sell_cd_list').empty();
+		$('#rep_prod_sell_cd').empty();
+		$('#rep_img_sel_yn').prop('checked',false);
+		$('#rep_img_sel_yn').attr("disabled", true);
+		$('#rep_img_sel_yn').val('N');
+		cf_fileDelete('uploadfile');
+		
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+	}
+	
+});
+ /* ============================================================================================
+ /* 상품 카테고리 선택 이벤트
+ /* --------------------------------------------------------------------------------------------
+ /* 대분류 - 중분류/소분류/세분류 리셋
+ /* 중분류 - 소분류/세분류 리셋
+ /* 소분류 - 세분류 리셋
+ /* ============================================================================================ */
+$("#category_top").change(function(){
+ 	$('#category_low').resetSelectBox('SGRP');
+ 	$('#cate_detail').resetSelectBox('SUBGRP');
+ 	f_ajaxProductCategoryCode($('#category_middle'), $(this).val(), 'MGRP');
+ });
+
+ $("#category_middle").change(function (e) {
+ 	$('#cate_detail').resetSelectBox('SUBGRP');
+ 	f_ajaxProductCategoryCode($('#category_low'), $(this).val(), 'SGRP');
+ });
+
+ $("#category_low").change(function (e) {
+ 	f_ajaxProductCategoryCode($('#cate_detail'), $(this).val(), 'SUBGRP');
+ });
+
+
+
+
+//교환구분 선택에 따른 화면 처리 
+$('input[name=exch_gbn]').change(function() {
+	if ($(this).val() == "lpoint") { // L.POINT 교환
+		$("#exchange_variety div.form-group:gt(0)").hide();
+		$("#exchange_variety div.exchange_lpoint1").show();
+		
+	} else { // 물품 교환
+		$("#exchange_variety div.form-group:gt(0)").show();
+		$("#exchange_variety div.exchange_lpoint1").hide();
+	}
+});
+
+
+/* ============================================================================================
+/* 대표이미지 선택 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 체크 TRUE 	: 이미지 선택 영역 숨기
+/* 체크 FALSE 	: 이미지 선택 영역 보임
+/* ============================================================================================ */
+$('#rep_img_sel_yn').click(function() {
+	var checkedF = $('#rep_img_sel_yn').is(':checked');
+	
+	if (checkedF) {
+		var btn_span = $('#uploadfile').parent(); 
+		if(btn_span.attr('disabled') == 'disabled') {
+			cf_fileDelete('uploadfile');
+		}
+		//$('#area_upload_represent_image').hide();
+		$('#rep_prod_sell_cd').attr('disabled', false);
+		$(this).val('Y');
+		if($(this).val('Y')) {
+			var data = {
+					rep_prod_img_use_yn : $(this).val(),
+					rep_prod_sell_cd : $("select[name=rep_prod_sell_cd]").val(),
+					empno: $.getSessionData()['empno'], 
+					emp_str_cd: $.getSessionData()['str_cd']
+			};			
+			$.ajax({
+			    url: api_url+'/backoffice/coupon/create/image',
+			    type: 'GET',
+			    async: true,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: "params=" + JSON.stringify(data),
+			    success: function(obj){
+					$('#uploadfile_div').hide();
+					$('#area_upload_represent_image').show();
+					$("#preview_uploadfile img").attr("src",obj.data.prvwurl).attr("alt",obj.data.file_nm);
+			    },
+			    error: function(obj) {
+			    	$('#area_upload_represent_image').hide();
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		}
+	} else {
+		$('#uploadfile_div').show();
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+		$(this).val('N');
+		if($(this).val('N')) {
+			$('#uploadfile').attr('disabled', false);
+			$('#preview_uploadfile img').attr("src", "${pageContext.request.contextPath}/resources/img/noPreview.png");
+		}
+	}
+});
+
+
+/* ============================================================================================
+/* 파일 업로드
+/* --------------------------------------------------------------------------------------------
+/* 파일 업로드 이벤트 핸들러
+/* ============================================================================================ */
+    
+$('input[name*=uploadfile]').change(function (e) {
+	if($(this).attr("id") == "uploadfile"){
+		cf_fileUpload($(this), 'IMG_COUPON_LIST');
+	}else{
+		cf_multiFileUpload($(this), 'IMG_COUPON_LIST');
+	}
+});
+
+
+/* ============================================================================================
+/* 쿠폰 유형에 따른 콤마표기
+/* --------------------------------------------------------------------------------------------
+/* 	- 정률할인			: 콤마 미표기
+/* 	- 정액할인			: 콤마 표기
+/* 	- 정률적립			: 콤마 미표기
+/* 	- 정액할인 			: 콤마 표기
+/* 	- 정액할인(포인트쿠폰)	: 콤마 표기
+/* ============================================================================================ */
+function f_typeComma(obj) {
+	
+	var val = $('#coupon_type_cd option:selected').val();
+	
+	if(val == 'A' || val == 'F' || val == 'C' || val == 'H' || val == 'J' || val == 'L' 
+			|| val == 'N' || val == 'P' || val == 'T' || val == 'R' || val == 'V') {
+		return $(obj).val();
+	}
+	else {
+		return cf_fmtComma(obj);
+	}
+}
+
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	
+	if($('#frmCoupon').formValid()) {
+		var applyType = $(':radio[name="apply_type"]:checked').val();
+		var _cls_cd = $('input[name=coupon_cls_cd]:checked').val();
+		var cp_type_val = $('#coupon_type_cd option:selected').val();
+		var _cp_cond_cd = $(':radio[name="coupon_apply_cond_cd"]:checked').val();
+			
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		//교환형이 아닐경우 필수체크
+		if(_cls_cd == 'B') {
+			if($("input[name=dc_savu_amt]").val() == ""){
+				alert("할인/적립(금액/율)은(는) 필수 입력(선택) 항목 입니다.");
+				return;
+			}
+		} else if (_cls_cd == 'C'){ // 교환형일경우 필수체크
+			
+			var exchGbn = $('input[name=exch_gbn]:checked').val();
+			var exchGoods = $('input[name=exch_goods]').val();
+			var exchGuide = $('textarea[name=exch_lpoint_guide]').val();
+			var exchPoint = $('#exch_point_amt').val();
+// 			if (exchGbn == "2") { // L.POINT 교환
+			if (exchGbn == "lpoint") { // L.POINT 교환
+				if (exchPoint <= 0) { alert("적립포인트는 필수입력값입니다."); return false; } 			
+				$("input[name=dc_savu_amt]").val(exchPoint);
+				$('input[name=exch_goods]').val("L.POINT");
+				$('textarea[name=exch_guide]').val(exchGuide);
+			} else { // 물품 교환
+				if (exchGoods == "") { alert("교환품은 필수입력값입니다."); return false; } 			
+				if (exchGoods == "L.POINT") { alert("교환품에 'L.POINT' 는 입력할 수 없습니다."); return false; }				
+				if ($('input[name=img_strge_file_nm_coupon_uploadfile]').val() == undefined || $('input[name=img_strge_file_nm_coupon_uploadfile]').val() == '') {
+					alert("쿠폰이미지는 필수입력입니다.");
+					return;
+				}
+				$("input[name=dc_savu_amt]").val("0");
+			}			
+		}else {
+			var valFlag = true;
+			var _coupon_val = $("input[name=coupon_val]").val();
+			var cond_val = $("input[name=cond_val]").val();
+			var apply_base_cnt = $("input[name=apply_base_cnt]").val();
+			
+			if(_cls_cd == 'A') {
+				if(_cp_cond_cd == 'CNT') {
+					if(cp_type_val == '1' || cp_type_val == '2') {
+						if(_coupon_val == "" || cond_val == "") {
+							alert("혜택 적용 단계은(는) 필수 입력(선택) 항목 입니다.");
+							return false;
+						}
+					}else {
+						if(_coupon_val == "") {
+							alert("혜택 적용 단계은(는) 필수 입력(선택) 항목 입니다.");
+							return false;
+						}
+					}
+				}else {
+					if($(".apply_data").find(".add_group").length == 1) {
+						if(_coupon_val == "" || cond_val == "") {
+							alert("혜택 적용 단계은(는) 필수 입력(선택) 항목 입니다.");
+							return false;
+						}
+					}else {
+						$.each($(".apply_data .form-group"), function(i,items){
+							if(i < $(".apply_data .form-group").length-1) {
+								if($(".apply_data .add_group:not(:last)").find("input[name=coupon_val]").eq(i).val() == "" || $(".apply_data .add_group:not(:last)").find("input[name=cond_val]").eq(i).val() == ""){
+									alert("혜택 적용 단계은(는) 필수 입력(선택) 항목 입니다.");
+									valFlag = false;
+									return false;
+								}
+							}
+						});
+						
+						if(!valFlag) {
+							return false;
+						}
+					}
+				}
+			}else  if(_cls_cd == 'D') {
+				if($(".apply_data .form-group").length-1 == 1) {
+					if($("input[name=coupon_val]").val() == "" || $("input[name=cond_val]").val() == "") {
+						alert("혜택 적용 단계은(는) 필수 입력(선택) 항목 입니다.");
+						return false;
+					}
+				}else {
+					$.each($(".apply_data .form-group"), function(i,items){
+						if(i < $(".apply_data .form-group").length-1) {
+							if($(".apply_data .add_group:not(:last)").find("input[name=coupon_val]").eq(i).val() == "" || $(".apply_data .add_group:not(:last)").find("input[name=cond_val]").eq(i).val() == ""){
+								alert("혜택 적용 단계은(는) 필수 입력(선택) 항목 입니다.");
+								valFlag = false;
+								return false;
+							}
+						}
+					});
+					
+					if(!valFlag) {
+						return false;
+					}
+				}
+			}else  if(_cls_cd == 'E') {
+				if(_coupon_val == "" || cond_val == "" || apply_base_cnt == "") {
+					alert("혜택 적용 단계은(는) 필수 입력(선택) 항목 입니다.");
+					return false;
+				}
+			}else if(_cls_cd == 'F') {
+				if(_coupon_val == "" || cond_val == "") {
+					alert("혜택 적용 단계은(는) 필수 입력(선택) 항목 입니다.");
+					return false;
+				}
+			}
+			
+		}
+		
+		// 쿠폰유형이 상품형 선택시 적용대상 필수 체크
+		if(_cls_cd == 'A' || _cls_cd == 'D' || _cls_cd == 'E' || _cls_cd == 'F') {
+			var _top = $("#category_top option:selected").val();
+			if(applyType != "CATEGORY") {
+				if($('#prod_sell_cd_list').tableRowValid() != true ) {
+					return;
+				}
+				if(_cls_cd == 'E' || _cls_cd == 'F') {
+					if($('#cond_prod_sell_cd_list').tableRowValid() != true ) {
+						return;
+					}
+				}
+			}else {
+				if(_top == "") {
+					alert("대분류은(는) 필수 입력(선택) 항목 입니다.");
+					return;
+				}
+				if($("#apply_tgt_msg").val() == "") {
+					alert("적용 대상 문구은(는) 필수 입력(선택) 항목 입니다.");
+					return;
+				}
+			}
+			
+			// 대표이미지 체크시 셀렉트 박스 데이터 체크 아닐 시 이미지 필수 체크
+			if( $('#rep_img_sel_yn').is(':checked') ) {
+				if( $('#rep_prod_sell_cd').isEmpty() != true ) {
+					return;
+				}
+			} else {
+				if($('input[name=img_strge_file_nm]').val() == undefined || $('input[name=img_strge_file_nm]').val() == '') {
+					alert('이미지는 필수 입력 값입니다.');
+					return;
+				}
+			}
+		}
+				
+		// 쿠폰유형에 따른 체크
+		if( cp_type_val == 'L' || cp_type_val == 'M' || cp_type_val == 'N' || cp_type_val == 'O' ) {
+			if( $('.tagsinput').tagsinput('items').length < 1) {
+				alert('사용 가능일자는 필수로 입력 하셔야 합니다.');
+				return;
+			}
+		}
+
+		// 쿠폰 이미지 사이즈 체크
+		if ( _cls_cd != 'B' ) {
+			if ($('input:radio[name="coupon_size_type_cd"]').val() == '' ) {
+				alert('이미지 타입은 선택해 주셔야 합니다.');
+				return;
+			}	
+		}
+		
+		// 타사 선택시 체크
+		if( $("input[name=company_type]:checked").val() == "2" ) {
+			
+			if( cp_type_val == "A" || cp_type_val == "B"  || cp_type_val == "J" || cp_type_val == "K"
+					|| cp_type_val == "F"  || cp_type_val == "G" ){}
+			else {
+				//alert('문제 있을까봐 막았습니다.');
+				alert('정액할인, 정률할인  선택 가능 합니다.');
+				$("input[name=company_type]").focus();
+				return;
+			}
+			
+			if( $("#company_barcode").val().length < 13 ) {
+				alert('바코드 자리수는 13자리만 되는거 아닌가요!!!??');
+				// alert('바코드 자리수가 올바르지 않습니다.');
+				$("#company_barcode").focus();
+				return;
+			}
+		}
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		var data = $('#frmCoupon').serializeFormObject();
+       	var use_day_list = $('.tagsinput').tagsinput('items');
+       	if($("input[name=dc_savu_amt]").val() != "") {
+			data.dc_savu_amt = $("input[name=dc_savu_amt]").val().replace(/\,/g,"");
+		}
+       	data["use_day_list"] = use_day_list;
+		
+		if($('input[name=coupon_cls_cd]:checked').val() == 'C') {
+			//교환형 쿠폰이미지
+			data["img_strge_file_nm"] = data["img_strge_file_nm_coupon_uploadfile"];
+			data["img_orgin_file_nm"] = data["img_orgin_file_nm_coupon_uploadfile"];
+				
+			//교환형 교환이미지
+			data["img_strge_file_nm2"] = data["img_strge_file_nm_exchage_uploadfile"];
+			data["img_orgin_file_nm2"] = data["img_orgin_file_nm_exchage_uploadfile"];
+		}
+		
+		data.tags = ($("#tags").is(":checked") ? "add" : "");
+		
+		// cond_base_cd, apply_base_cd 셋팅
+		var coupon_type	= $("#coupon_type_cd :selected").val();
+		var _apply_cond_cd = $(':radio[name="coupon_apply_cond_cd"]:checked').val();
+		var cond_info_list = [];
+		var cate_cd_list = [];
+		if(_cls_cd == "A") {	// 상품형
+			if(coupon_type == "1" || coupon_type == "2") { // 균일가 
+				cond_info_list.push({
+					coupon_val : $("input[name=cond_val]").val().replace(/\,/g,""),
+					cond_val : $("input[name=coupon_val]").val().replace(/\,/g,""),
+					cond_base_cd : "EQ" ,
+					apply_base_cd : "PER" ,
+					apply_base_cnt : $("input[name=coupon_val]").val().replace(/\,/g,"")
+				});
+
+			}else if(coupon_type == "D" || coupon_type == "S" || coupon_type == "Y") { // 정액적립
+				if(_apply_cond_cd == "AMT") { // 금액형
+					$.each($(".apply_data .form-group"), function(i,items){
+						if(i < $(".apply_data .form-group").length-1) {
+							cond_info_list.push({
+								coupon_val : $(items).find("input[name=cond_val]").val().replace(/\,/g,""),
+								cond_val : $(items).find("input[name=coupon_val]").val().replace(/\,/g,""),
+								cond_base_cd : "GE" ,
+								apply_base_cd : "TOT" ,
+								apply_base_cnt : 0
+							});
+						}
+					});
+					
+				}else { // 수량
+					cond_info_list.push({
+						coupon_val : $("input[name=coupon_val]").val().replace(/\,/g,""),
+						cond_val : 1,
+						cond_base_cd : "GE",
+						apply_base_cd : "PER",
+						apply_base_cnt : 0
+					});
+				}
+			}else {
+				cond_info_list.push({
+					coupon_val : $("input[name=coupon_val]").val().replace(/\,/g,""),
+					cond_val : 1,
+					cond_base_cd : "GE",
+					apply_base_cd : "PER",
+					apply_base_cnt : 0
+				});
+			}
+		}else if(_cls_cd == "D") { // 번들 
+// 			/* 
+			var _apply_base_cd = $('select[name="apply_base_cd"] option:selected').val();
+			var _cond_base_cd = $('select[name="cond_base_cd"] option:selected').val();
+			if(coupon_type == "1" || coupon_type == "2") { // 균일가 
+				$.each($(".apply_data .form-group"), function(i,items){
+					if(i < $(".apply_data .form-group").length-1) {
+						cond_info_list.push({
+							coupon_val : $(items).find("input[name=cond_val]").val().replace(/\,/g,""),
+							cond_val : $(items).find("input[name=coupon_val]").val().replace(/\,/g,""),
+							cond_base_cd : _cond_base_cd ,
+							apply_base_cd : "PER" ,
+							apply_base_cnt : 0
+						});
+					}
+				});
+// 				cond_info_list.push({
+// 					coupon_val : $("input[name=cond_val]").val().replace(/\,/g,""),
+// 					cond_val : $("input[name=coupon_val]").val().replace(/\,/g,""),
+// 					cond_base_cd : "EQ" ,
+// 					apply_base_cd : "PER" ,
+// 					apply_base_cnt : $("input[name=coupon_val]").val().replace(/\,/g,"")
+// 				});
+
+			}else if(_apply_cond_cd == "AMT") { // 금액형
+// 			*/
+					$.each($(".apply_data .form-group"), function(i,items){
+						if(i < $(".apply_data .form-group").length-1) {
+							cond_info_list.push({
+								coupon_val : $(items).find("input[name=cond_val]").val().replace(/\,/g,""),
+								cond_val : $(items).find("input[name=coupon_val]").val().replace(/\,/g,""),
+								cond_base_cd : "GE" ,
+								apply_base_cd : _apply_base_cd ,
+								apply_base_cnt : 0
+							});
+						}
+					});
+				
+			}else { // 수량
+				$.each($(".apply_data .form-group"), function(i,items){
+					if(i < $(".apply_data .form-group").length-1) {
+						cond_info_list.push({
+							coupon_val : $(items).find("input[name=cond_val]").val().replace(/\,/g,""),
+							cond_val : $(items).find("input[name=coupon_val]").val().replace(/\,/g,""),
+							cond_base_cd : "GE",
+							apply_base_cd : _apply_base_cd,
+							apply_base_cnt : 0
+						});
+					}
+				});
+			}
+		
+		}else if(_cls_cd == "E") {	//연관
+			if(_apply_cond_cd == "AMT") { // 금액형
+				cond_info_list.push({
+					coupon_val : $("input[name=apply_base_cnt]").val().replace(/\,/g,""),
+					cond_val : $("input[name=coupon_val]").val().replace(/\,/g,""),
+					cond_base_cd : "GE" ,
+					apply_base_cd : "PER" ,
+					apply_base_cnt : $("input[name=cond_val]").val().replace(/\,/g,"")
+				});
+			}else { // 수량
+				cond_info_list.push({
+					coupon_val : $("input[name=apply_base_cnt]").val().replace(/\,/g,""),
+					cond_val : $("input[name=coupon_val]").val().replace(/\,/g,""),
+					cond_base_cd : "EQ",
+					apply_base_cd : "PER",
+					apply_base_cnt : $("input[name=cond_val]").val().replace(/\,/g,"")
+					
+				});
+			}
+		}else if(_cls_cd == "F") {	//연관
+			cond_info_list.push({
+				coupon_val : 0,
+				cond_val : $("input[name=coupon_val]").val().replace(/\,/g,""),
+				cond_base_cd : "EQ",
+				apply_base_cd : "PER",
+				apply_base_cnt : $("input[name=cond_val]").val().replace(/\,/g,"")
+				
+			});
+		}
+		
+		
+		data['cond_info_list'] = cond_info_list;
+		
+		// 상품 선택 카테고리 추가.
+		if(_cls_cd != "B" || _cls_cd != "C") {
+			if(applyType == "CATEGORY") {
+				var cate_cd = new Array();
+				_top = $("#category_top option:selected").val();
+				var _middle = $("#category_middle option:selected").val();
+				var _low = $("#category_low option:selected").val();
+				
+				if(_top == "") {
+					alert("대분류은(는) 필수 입력(선택) 항목 입니다.");
+					return;
+				}else {
+					if(_top != "" && _middle == "") {
+						cate_cd = _top;
+					}else if(_top != "" && _middle != "" && _low == "") {
+						cate_cd = _middle;
+					}else {
+						cate_cd = _low;
+					}
+				}
+				if($("#apply_tgt_msg").val() == "") {
+					alert("적용 대상 문구은(는) 필수 입력(선택) 항목 입니다.");
+					return;
+				}
+				cate_cd_list.push({
+					cate_cd : cate_cd, 
+					apply_tgt_msg : $("#apply_tgt_msg").val()
+				});
+				data["cate_cd_list"] = cate_cd_list;
+			}
+		}
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/coupon/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_couponList();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n'+'data:'+cf_msg(serverObj.data));
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰등록 혜택 적용단계 한건추가
+ * ==================================================================================
+ */
+function f_addProduct(positionCheck) {
+	var parentPosition = "";
+	var _apply_cond_cd = $(':radio[name="coupon_apply_cond_cd"]:checked').val();
+	
+	var _cls_cd = $(':radio[name="coupon_cls_cd"]:checked').val(); // 쿠폰유형
+	var _type_cd = $('select[name="coupon_type_cd"]').val(); // 할인 적립유형
+	
+	if($(".add_group").length >= 3) {
+		alert("최대 3개까지 등록 가능 합니다.");
+		return;
+	}else {
+		parentPosition = $(positionCheck).parents("div.form-group");
+		parentPosition.after(temp_div_product_group);
+		
+		if(_cls_cd == "A") {// 상품:정액적립
+			if(_type_cd == "D" || _type_cd == "S" || _type_cd == "Y") {
+				if(_apply_cond_cd == "AMT") {
+					$(".prod_mn1").hide();
+					$(".prod_mn2").hide();
+					$(".prod-mn-back1").show();
+					$(".prod-mn-back2").show();
+					$(".prod-mn-back1").text("이상 구매 시");
+					$(".prod-mn-back2").text("적립");
+					$(".cond_val_input").show();
+					
+					$(".add_btn").show();
+					
+					$(".add_group #unit_type").html("원");
+					$(".add_group #cond_val_unit_type").html("P");
+				}
+			}
+		}else if(_cls_cd == "D") {
+			if(_type_cd == "1" || _type_cd == "2") {
+				$(".prod_mn1").hide();
+				$(".prod_mn2").show();
+				$(".prod_mn3").hide();
+				$(".prod_mn2").text("구매 시 개당");
+				$(".prod-mn-back1").show();
+				$(".prod-mn-back2").hide();
+				$(".prod-mn-back3").show();
+				$(".prod-mn-back1").text("");
+				$(".add_group").find('.prod-mn-back1').text($('select[name="cond_base_cd"] option:selected').text());
+				$(".cond_val_input").show();
+				
+				$(".add_btn").show();
+				$(".add_group #unit_type").html("개");
+				$(".add_group #cond_val_unit_type").html("원");
+			}else {
+				var cd_unit_type = "";
+				var bg2_mn = "할인";
+				if(_type_cd == "A" || _type_cd == "J") {
+					cd_unit_type = "%";
+				}else if(_type_cd == "C" || _type_cd == "X") {
+					cd_unit_type = "배";
+					bg2_mn = "적립";
+				}else if(_type_cd == "D" || _type_cd == "Y") {
+					cd_unit_type = "P";
+					bg2_mn = "적립";
+				}else{
+					cd_unit_type = "원";
+				}
+				
+				if(_apply_cond_cd == "AMT") {
+					
+					$(".prod_mn1").hide();
+					$(".add_group").find(".prod_mn2").show();
+					$(".add_group").find('.prod_mn2').text($('select[name="apply_base_cd"] option:selected').text());
+					
+					$(".prod-mn-back1").show();
+					$(".prod-mn-back2").show();
+					$(".prod-mn-back1").text("이상 구매 시");
+					$(".prod-mn-back2").text(bg2_mn);
+					$(".cond_val_input").show();
+					
+					$(".add_btn").show();
+					
+					$(".add_group #unit_type").html("원");
+					$(".add_group #cond_val_unit_type").html(cd_unit_type);
+					
+				}else {
+					$(".prod_mn1").hide();
+					$(".prod_mn3").hide();
+					$(".add_group").find(".prod_mn2").show();
+					$(".add_group").find('.prod_mn2').text("개당");
+					
+					$(".prod-mn-back1").show();
+					$(".prod-mn-back2").show();
+					$(".prod-mn-back1").text("이상 구매 시");
+					$(".prod-mn-back2").text(bg2_mn);
+					$(".cond_val_input").show();
+					
+					$(".add_btn").show();
+					
+					$(".add_group #unit_type").html("개");
+					$(".add_group #cond_val_unit_type").html(cd_unit_type);
+				}
+			}
+		}
+	} 
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰등록 혜택 적용단계 한건삭제
+ * ==================================================================================
+ */
+function f_deleteProduct(positionCheck) {
+	var parentPosition = $(positionCheck).parents("div.div_product_group");
+	if(parentPosition.find("div.form-group [data-div-product]").length == 1){
+		alert("상품이 한건일 경우 삭제하실수 없습니다.\n선택삭제를 이용해주세요.");
+		return false;
+	}
+	
+	$(positionCheck).parents("div.form-group").remove();
+}
+function fn_data_reset(){
+	$(".apply_data .add_group:not(:last)").remove();
+	
+	$('#prod_sell_cd_list > tr').remove();
+	$('#cond_prod_sell_cd_list > tr').remove();
+	
+	
+	// 데이터 초기화
+	$('#prod_sell_cd_list').empty();
+	$('#cond_prod_sell_cd_list').empty();
+	$('#rep_prod_sell_cd').empty();
+	$('#rep_img_sel_yn').prop('checked',false);
+	$('#rep_img_sel_yn').attr("disabled", false);
+	$('#rep_img_sel_yn').val('N');
+	cf_fileDelete('uploadfile');
+	
+	$('input[name=coupon_apply_buy_qty]').val('');
+	
+	$("input[name=dc_savu_amt]").val("");
+	$("input[name=coupon_val]").val("");
+	$("input[name=cond_val]").val("");
+	$("input[name=apply_base_cnt]").val("");
+	
+	// 할인한도금액 설정
+	$('input[name=dc_lim_amt]').val('');
+	// 사용대상 하한금액 설정
+	$('input[name=use_to_lowst_amt]').val('');
+	// 사용대상 상한금액 설정
+	$('input[name=use_to_uper_amt]').val('');
+	
+	$('input[name=exch_goods]').val('');
+	$('input[name=exch_guide]').val('');
+	$('input[name=exch_kind]').val('');
+	$('textarea[name=exch_guide]').val('');
+	$('textarea[name=exch_desc]').val('');
+	cf_fileDelete('coupon_uploadfile');
+	cf_fileDelete('exchage_uploadfile');
+	
+	$("input[name=apply_tgt_msg]").val("");
+	
+	// 타사 쿠폰 영역 레이아웃 초기화
+	$("input[name=company_type]:radio[value=1]").prop("checked", true);
+	// 타사관련 레이아웃 초기화(비활성화)
+	f_init_company_layout();
+}
+
+function apply_type_ui() {
+	var _type = $(':radio[name="apply_type"]:checked').val();
+	if(_type == "PRODUCT") {
+		
+		$(".apply_prod_show").show();
+		$(".apply_cate_show").hide();
+		
+		
+		$('#rep_prod_sell_cd').empty();
+		$('#rep_img_sel_yn').prop('checked',false);
+		$('#rep_img_sel_yn').attr("disabled", false);
+		$('#rep_img_sel_yn').val('Y');
+		cf_fileDelete('uploadfile');
+		
+	}else if(_type == "CATEGORY"){
+		$(".apply_cate_show").show();
+		$(".apply_prod_show").hide();
+		
+		
+		$('#prod_sell_cd_list').empty();
+		$('#cond_prod_sell_cd_list').empty();
+		$('#rep_prod_sell_cd').empty();
+		$('#rep_img_sel_yn').prop('checked',false);
+		$('#rep_img_sel_yn').attr("disabled", true);
+		$('#rep_img_sel_yn').val('N');
+		cf_fileDelete('uploadfile');
+	}
+}
+
+	
+function cls_cd_ui(val) {
+	f_ajaxProductCategoryCode($('#category_top'), '', 'TGRP');
+	f_ajaxProductCategoryCode($('#category_middle'), '', 'MGRP');
+	f_ajaxProductCategoryCode($('#category_low'), '', 'SGRP');
+	f_ajaxProductCategoryCode($('#cate_detail'), '', 'SUBGRP');
+	$(".relation_info").hide();
+	if(val === "A") {
+		// UI 컨트롤
+		$("input:radio[name=apply_type]:input[value='PRODUCT']").prop("checked", true);
+		$("input:radio[name=apply_type]:input[value='CATEGORY']").prop("checked", false);
+		$('input[name=coupon_apply_cond_cd]').attr("disabled", true);
+		
+		$("#excahge_hide0").show();
+		$("#excahge_hide").show();		// 할인 적립 유형
+		$("#excahge_hide1").show();		// 금액 || 교환 제회 혜택 적용 단계
+		$("#excahge_hide2").hide();		// 금액형 입력 폼
+		
+		$('#area_use_day').hide();		// 금액형 일자 지정
+		
+		$('#exchange_variety').hide();	// 교환품 입력 영역
+		
+		$('#area_upload_image').show();	// 상품 이미지
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+		$(this).val('N');
+		
+		
+		$("input[name=dc_savu_amt]").hide();
+		$("input[name=coupon_val]").show();
+		$("#unit_type").html("");
+		
+		$(".prod_mn1").hide();
+		$(".prod_mn2").hide();
+		$(".prod_mn3").hide();
+		$(".prod_mn4").hide();
+		$("#unit_type").html("");
+		$(".prod-mn-back1").hide();
+		$(".prod-mn-back2").hide();
+		$(".prod-mn-back3").hide();
+		$(".prod-mn-back4").hide();
+		
+		$(".add_group_info").hide();
+		
+		$(".relation_input").hide();	// 연관 3번 input
+		
+		$(".coupon_val_input").show();
+		$(".cond_val_input").hide();
+		$(".relation_input").hide();
+		$(".add_btn").hide();
+		
+		$(".relation_label").text("");
+		$(".apply_prod_label").text("적용대상 *");
+		
+		
+		$(".prod_cate").show();			// 적용대상 상품 or 카테고리 radio
+		$('#area_apply_product').show();// 상품 선택 영역
+		
+		$(".apply_prod_show").show();
+		$(".apply_cate_show").hide();
+		
+		$(".add_group_info").hide();
+		
+		$(".first_prod").hide();                          
+		$(".second_prod").hide();
+		$(".third_prod").hide();
+		$(".add_group_info").hide();                      
+		$(".relation_prod_show").hide();
+		
+		$("input[name=company_type]:eq(1)").attr('disabled', false);
+		
+	}else if(val === "B") {
+		$("input[name=coupon_val]").hide();
+		$("input[name=dc_savu_amt]").show();
+		
+		
+		$(".add_group").hide();
+		$(".cond_val_input").hide();
+		$(".add_btn").hide();
+		
+		$(".prod_mn1").hide();
+		$(".prod_mn2").hide();
+		$(".prod_mn3").hide();
+		$(".prod_mn4").hide();
+		$("#unit_type").html("");
+		$(".prod-mn-back1").hide();
+		$(".prod-mn-back2").hide();
+		$(".prod-mn-back3").hide();
+		$(".prod-mn-back4").hide();
+		$(".add_group_info").hide();
+		
+		// 화면 비활성화
+		$('#area_apply_product').hide();
+		$('#area_upload_image').hide();
+		$('#exchange_variety').hide();
+		$("#excahge_hide").show();
+		$("#excahge_hide1").show();
+		$("#excahge_hide2").show();
+		$(".relation_input").hide();
+		
+		$("input[name=company_type]:eq(1)").attr('disabled', false);
+		
+	}else if(val === "C") {
+		
+		$(".prod_mn1").hide();
+		$(".prod_mn2").hide();
+		$(".prod_mn3").hide();
+		$(".prod_mn4").hide();
+		$("#unit_type").html("");
+		$(".prod-mn-back1").hide();
+		$(".prod-mn-back2").hide();
+		$(".prod-mn-back3").hide();
+		$(".prod-mn-back4").hide();
+		$(".add_group_info").hide();
+		
+		$('#area_apply_product').hide();
+		$('#area_upload_image').hide();
+		$('#exchange_variety').show();
+		$("#excahge_hide").hide();
+		$("#excahge_hide1").hide();
+		$("#excahge_hide2").hide();
+		$(".relation_input").hide();
+		
+		$("input[name=company_type]:eq(1)").attr('disabled', true);
+		
+	}else if(val === "D") {
+		$("input:radio[name=apply_type]:input[value='PRODUCT']").prop("checked", true);
+		$("input:radio[name=apply_type]:input[value='CATEGORY']").prop("checked", false);
+		
+		$(".add_group_info").show();
+		
+		$('#area_apply_product').show();
+		$('#area_upload_image').show();
+		
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+		$(this).val('N');
+		
+		$('#area_use_day').hide();
+		$('#exchange_variety').hide();
+		$("#excahge_hide").show();
+		$("#excahge_hide1").show();
+		$("#excahge_hide2").hide();
+		$(".relation_input").hide();
+		
+		
+		$(".prod_mn1").hide();
+		$(".prod_mn2").show();
+		$(".prod_mn2").text("개당");
+		$(".prod_mn3").hide();
+		$(".prod_mn4").hide();
+		$("#unit_type").html("");
+		$(".prod-mn-back1").show();
+		$(".prod-mn-back1").text("이상 구매 시");
+		$(".prod-mn-back2").show();
+		$(".prod-mn-back2").text("할인");
+		$(".prod-mn-back3").hide();
+		$(".prod-mn-back4").hide();
+		
+		$(".add_group_info").show();
+		$(".cond_val_input").show();
+		
+		$(".prod_cate").show();
+		$(".add_btn").show();
+		
+		$(".prod_cate").show();			// 적용대상 상품 or 카테고리 radio
+		$('#area_apply_product').show();// 상품 선택 영역
+		
+		$(".apply_prod_show").show();
+		$(".apply_cate_show").hide();
+		
+		$(".first_prod").hide();                          
+		$(".second_prod").hide();
+		$(".third_prod").hide();
+		$(".relation_prod_show").hide();
+		
+		$("input[name=company_type]:eq(1)").attr('disabled', true);
+		
+	}else if(val === "E") {
+		$(".prod_cate").hide();
+		$(".add_group_info").hide();
+		$(".apply_cate_show").hide();
+		$(".add_btn").hide();
+		
+		$('#area_apply_product').show();
+		$('#area_upload_image').show();
+		
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+		
+		$('#area_use_day').hide();
+		$('#exchange_variety').hide();
+		$("#excahge_hide").show();
+		$("#excahge_hide1").show();
+		$("#excahge_hide2").hide();
+		$(".relation_input").show();
+		
+		$(".cond_val_input").show();
+		
+		$(".prod_mn1").show();
+		$(".prod_mn1").text("구매상품");
+		$(".prod_mn2").show();
+		$(".prod_mn2").text("할인상품");
+		$(".prod_mn3").hide();
+		$(".prod_mn4").show();
+		$(".prod_mn4").text("개당");
+		$("#unit_type").html("개");
+		$(".prod-mn-back1").show();
+		$(".prod-mn-back1").text("구매 시");
+		$(".prod-mn-back2").hide();
+		$(".prod-mn-back3").hide();
+		$(".prod-mn-back4").show;
+		$(".prod-mn-back4").text("할인");
+		
+		$(".first_prod").show();                          
+		$(".first_prod").text("할인 상품");
+		$(".second_prod").show();
+		$(".second_prod").text("구매 상품");
+		$(".third_prod").show();
+		
+		$(".relation_label").text("");
+		$(".apply_prod_label").text("적용대상 *");
+		
+		$(".apply_prod_show").show();
+		$(".relation_prod_show").show();
+		$(".relation_info").show();
+		
+		$("input[name=company_type]:eq(1)").attr('disabled', true);
+		
+	}else if(val === "F") {
+		$(".relation_label").text("");
+		$(".apply_prod_label").text("적용대상 *");
+		
+		$("#excahge_hide").show();		// 할인 적립 유형
+		$("#excahge_hide1").show();		// 금액 || 교환 제회 혜택 적용 단계
+		$("#excahge_hide2").hide();		// 금액형 입력 폼
+		
+		$('#area_use_day').hide();		// 금액형 일자 지정
+		
+		$('#exchange_variety').hide();	// 교환품 입력 영역
+		
+		$('#area_upload_image').show();	// 상품 이미지
+		
+		$('#area_upload_represent_image').show();
+		$('#rep_prod_sell_cd option:eq(0)').attr('selected', 'selected');
+		$('#rep_prod_sell_cd').attr('disabled', true);
+		
+		
+		$(".relation_input").hide();	// 연관 3번 input
+		
+		$(".coupon_val_input").show();
+		$(".cond_val_input").show();
+		$(".relation_input").hide();
+		$(".add_btn").hide();
+		
+		$('#prod_sell_cd_list').empty();
+		$('#cond_prod_sell_cd_list').empty();
+		$('#rep_prod_sell_cd').empty();
+		$('#rep_img_sel_yn').prop('checked',false);
+		$('#rep_img_sel_yn').attr("disabled", true);
+		$('#rep_img_sel_yn').val('N');
+		cf_fileDelete('uploadfile');
+		
+		$('#prod_sell_cd_list').empty();
+		$('#cond_prod_sell_cd_list').empty();
+		
+		$(".prod_cate").hide();	
+		$(".apply_prod_show").show();
+		$(".relation_prod_show").show();
+		$(".apply_cate_show").hide();
+		
+		$(".third_prod").show();
+		
+		$("input[name=company_type]:eq(1)").attr('disabled', true);
+		
+	}
+	
+	
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	temp_div_product_group = $("#add_group").html();
+	 $('#sharing_rate_company_unit_type').html('%');
+	// 초기데이터 로드 : 쿠폰유형
+	f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'W', $("input[name=coupon_cls_cd]").val());
+	
+	f_ajaxProductCategoryCode($('#category_top'), '', 'TGRP');
+	 
+	$('#use_day').val(cf_termDate(1));
+	$('#use_day').datepicker('option','minDate', cf_toDate());
+	
+	$("input:radio[name=coupon_apply_cond_cd]:input[value='CNT']").prop("checked", true);
+	$("input:radio[name=coupon_apply_cond_cd]:input[value='AMT']").prop("checked", false);
+	$('input[name=coupon_apply_cond_cd]').attr("disabled", true);
+
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

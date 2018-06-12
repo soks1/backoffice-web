@@ -1,0 +1,233 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page import="com.penta.backoffice.web.common.controller.CommonController"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<%@page import="java.util.Map"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2>가맹점 상세정보</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<input type="hidden" id="saved_end_hhmm" name="saved_end_hhmm">
+							<input type="hidden" id="evnt_id">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05 ">가맹점 ID :</label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05 ">대표자 명:</label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">사업자등록번호 :</label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">가맹점 명 :</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">상태구분 :</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">대표전화번호 :</label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">대표 이메일 :</label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">주소:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05"></label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-0">홈페이지 URL :</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">서비스 담당자명 :</label>
+									<div class="col-md-5" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">긴급 전화번호 :</label>
+									<div class="col-md-5" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록자 :</label>
+									<div class="col-md-5" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록일시 :</label>
+									<div class="col-md-5" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">최종수정자 :</label>
+									<div class="col-md-5" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">최종수정일시 :</label>
+									<div class="col-md-5" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">가맹기관 :</label>
+									<div class="col-md-11" id="">
+										<span class="form-control cs-css-03" id=""></span>
+									</div>
+								</div>
+							</fieldset>
+													
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_institutionUpdate();" class="btn btn-default">가맹기관 정보수정</a>
+									</div>
+								</div>
+							</div>	
+						</form>
+					</div>
+					
+					
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2>사용자정보추가</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="widget-body-toolbar">
+							<div class="row">
+								<div class="col-sm-6">
+									<p>총 5명까지 사용자 등록이 가능합니다.</p>
+								</div>
+								<div class="col-sm-6 text-right"">
+									<a href="javascript:f_userUpdate();" class="btn btn-default">사용자 추가</a>
+								</div>
+							</div>
+						</div>
+						
+						<div class="table-responsive">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>사용자명</th>
+										<th>상태</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>MANAGER1</td>
+										<td>홍길동</td>
+										<td>사용가능</td>
+										<td></td>
+									</tr>
+									<tr>
+										<td>MANAGER2</td>
+										<td>김마리</td>
+										<td>사용중지</td>
+										<td><a href="javascript:f_userUpdate();" class="btn btn-default">사용자 정보수정</a></td>
+									</tr>
+									
+								</tbody>
+							</table>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+		
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>
+
+

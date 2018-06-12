@@ -1,0 +1,127 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<div class="form-group">
+	<div class="col-md-2 control-label radio">
+		<label><input type="radio" name="bsis_mison_yn_temp" value="02" onchange="f_basicMissionChange(this.value)"></label>
+		<input type="hidden" id="02" name="bsis_mison_yn_list" data-array-always="true" value="N">
+	</div>
+	<div class="col-md-10">
+		<div class="form-group">
+			<div class="col-md-12">
+				<div>
+					<p class="alert alert-info">상품구매 미션 상세 설정<br/>(상품30개/카테고리 5개 까지 선택 가능하나, 동일기간에 진행중인 다른 스탬프 이벤트와 상품이 중복되지 않도록 유의하십시오.)</p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="col-md-1 control-label ta-l">미션 수행채널</label>
+			<div class="col-md-2">
+				<select class="form-control" id="fulfill_chanel2" name="fulfill_chanel_cd_list" data-array-always="true" data-valid-use="true" data-valid-title="미션 수행채널" onchange="f_missionChannelChange();">
+					<option value="" selected="selected" disabled="disabled">선택</option>
+				</select>
+			</div>
+			<label class="col-md-2 control-label">미션횟수(스탬프수)</label>
+			<div class="col-md-1 ta-l">
+				<input class="form-control ta-r" id="stamp_mison_base_cnt2" name="stamp_mison_base_cnt_list" type="text" data-array-always="true" data-valid-use="true" data-valid-num="true" data-valid-minnum="1" data-valid-maxnum="31" data-valid-title="미션횟수(스탬프수)">
+				<input type="hidden" name="stamp_apply_to_cd_list" value="PRODUCT" data-array-always="true">
+			</div>
+		</div>
+		<!-- 20160428 jsm6125 추가 -->
+		<div class="form-group">
+			<label class="col-md-1 control-label ta-l">대상 유형</label>
+			<div class="col-md-10">
+				<div class="col-md-1 control-label radio ta-l" style="padding-left:15px;">
+					<input type="radio" id="target_prod_2" name="misoin_target_2" value="product" onchange="changeMisonTarget(this.value, 'appoint_2');"/><label for="target_prod_2">상품</label>
+				</div>
+				<div class="col-md-2 control-label radio ta-l" style="margin-left:5px;">
+					<input type="radio" id="target_catg_2" name="misoin_target_2" value="category" onchange="changeMisonTarget(this.value, 'appoint_2');"/><label for="target_catg_2">카테고리</label>
+				</div>
+				<input type="hidden" id="stamp_mison_target_cd_2" name="stamp_mison_target_cd_list" value="PRODUCT" data-array-always="true"/>
+				<!-- <a href="javascript:f_openProductMultiSD('appoint_product_1');" id="appoint01_prod_select" class="btn btn-primary btn-sm">상품선택</a>
+				<a href="javascript:cf_delTableRow('appoint_product_1');" class="btn btn-danger btn-sm">선택삭제</a> -->
+			</div>
+		</div>
+		<!-- 20160428 jsm6125 추가 END -->
+		<div class="form-group">
+			<label class="col-md-1 control-label ta-l" id="product_label_2">대상 상품(<span id="prodCount2">0</span>)</label>
+			<label class="col-md-1 control-label ta-l" id="category_label_2" style="display:none">대상 카테고리(<span id="catgCount2">0</span>)</label>
+			<div id="btn_product_2" class="col-md-10">
+				<a href="javascript:f_openProductMultiSD('appoint_product_2');" id="appoint02_prod_select" class="btn btn-primary btn-sm">상품선택</a>
+				<a href="javascript:cf_stampDelTableRow('appoint_product_2');" class="btn btn-danger btn-sm">선택삭제</a>
+				<!-- <a href="javascript:testValidation();" class="btn btn-danger btn-sm">vali_TEST</a> -->
+			</div>
+			<!-- 20160428 jsm6125 추가 -->
+			<div id="btn_category_2" class="col-md-10" style="display:none">
+				<a href="javascript:addCategoryRow('appoint_category_2');" id="appoint02_category_select" class="btn btn-primary btn-sm" style="width:70px">추가</a>
+				<a href="javascript:cf_stampDelTableRow('appoint_category_2');" class="btn btn-danger btn-sm">선택삭제</a>
+				<!-- <a href="javascript:testValidation();" class="btn btn-danger btn-sm">vali_TEST</a> -->
+			</div>
+			<!-- 20160428 jsm6125 추가 END -->
+			
+		</div>
+		
+		<div id="table_product_2" class="table-responsive" style="max-height:230px; overflow:auto;">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th class="ta-c" style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+						<th class="ta-c">판매코드</th>
+						<th class="ta-c">상품코드</th>
+						<th class="ta-c">상품명</th>
+						<th class="ta-c">규격</th>
+						<th class="ta-c">업체명</th>
+						<th class="ta-c">원가</th>
+						<th class="ta-c">매가</th>
+						<th class="ta-c">이익율</th>
+						<th class="ta-c">거래형태</th>
+					</tr>
+				</thead>
+				<tbody id="appoint_product_2" data-valid-title="대상 상품">
+					
+				</tbody>
+			</table>
+		</div>
+		<!-- 20160428 jsm6125 추가 -->
+		<div id="table_category_2" class="table-responsive" style="max-height:230px; overflow:auto; display:none;">
+			<table class="table table-bordered">
+				<thead>
+					<tr>
+						<th class="ta-c" style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+						<th class="ta-c" style="width:284px;">대분류</th>
+						<th class="ta-c" style="width:284px;">중분류</th>
+						<th class="ta-c" style="width:284px;">소분류</th>
+						<th class="ta-c">적용대상문구</th>						
+					</tr>
+				</thead>
+				<tbody id="appoint_category_2" data-valid-title="대상 카테고리">
+					
+				</tbody>
+			</table>
+		</div>
+		<!-- 20160428 jsm6125 추가 END -->
+	</div>
+</div>
+
+<script>
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var appoint2function = function() {
+	
+	// 초기데이터 로드 : 온라인몰, 매장
+	f_ajaxPublerCode($('#fulfill_chanel2'));
+	$("#target_prod_2").attr("checked", true);
+
+};
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+appoint2function();
+</script>

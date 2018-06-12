@@ -1,0 +1,845 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 비컨 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="alert alert-info no-margin fade in">
+							<div class="form-horizontal">
+								<fieldset>
+									<div class="form-group">
+										<label class="col-md-1 control-label">&middot; 지점</label>
+										<div class="col-md-4">
+											<select class="form-control" id="s_str_cd" name="s_str_cd">
+												<option value="">전체</option>
+											</select>
+										</div>
+									</div>
+								</fieldset>
+							</div>
+						</div>
+					</div>
+					
+					<div id="target_beacon_grid" class="widget-body no-padding">
+						<table id="beacon_grid"></table>
+						<div id="beacon_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="beacon_write_area" data-widget-editbutton="false" data-widget-deletebutton="false" style="display:none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 비컨 등록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmBeaconWrite">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">지점 <sup>*</sup></label>
+									<div class="col-md-4">
+										<select class="form-control" id="str_cd" name="str_cd">
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">UUID <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control notHangul" type="text" name="uu_id" maxlength="36" data-valid-use='true' data-valid-symbol='true' data-valid-title='UUID' />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">MAJOR <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control onlynum" type="text" name="bcon_major_content" maxlength="5" data-valid-use='true' data-valid-symbol='true' data-valid-max="5" data-valid-title='MAJOR' />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">MINOR <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control onlynum" type="text" name="bcon_minor_content" maxlength="5" data-valid-use='true' data-valid-symbol='true' data-valid-max="5" data-valid-title='MINOR' />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">비컨명 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="bcon_nm" data-valid-use='true' data-valid-symbol='true' data-valid-max="50" data-valid-title='비컨명' />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">설명 </label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="10" name="bcon_desc" data-valid-max="200" data-valid-symbol='true' data-valid-title='비컨설명'></textarea>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_cancel('write');" class="btn btn-default">취소</a>
+										<a href="javascript:f_submitWrite();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="jarviswidget jarviswidget-color-blueDark" id="beacon_detail_area" data-widget-editbutton="false" data-widget-deletebutton="false" style="display:none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 비컨 조회 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmBeaconDetail">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="row_id" />
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">지점 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="str_cd_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">비컨ID : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="bcon_id"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">UUID : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="uu_id"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">MAJOR : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="bcon_major_content"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">MINOR : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="bcon_minor_content"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">비컨명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="bcon_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">설명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="bcon_desc"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">그룹 연결상태 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="link_sts"></span>
+									</div>
+								</div>
+								
+								<div class="form-group" id="group_view">
+									<label class="col-md-2 control-label cs-css-05">그룹 ID : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="group_id"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">그룹 명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="group_nm"></span>
+									</div>
+								</div>
+								
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_editForm();" class="btn btn-primary">수정</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+			</div>
+			<div class="jarviswidget jarviswidget-color-blueDark" id="beacon_edit_area" data-widget-editbutton="false" data-widget-deletebutton="false" style="display:none;">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 비컨 수정 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmBeaconEdit">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">지점 <sup>*</sup></label>
+									<div class="col-md-4">
+										<select class="form-control" id="str_cd" name="str_cd">
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">비컨ID : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="bcon_id"></span>
+										<input type="hidden" name="bcon_id" value="">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">UUID : </label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="uu_id"  data-valid-use='true' data-valid-symbol='true' data-valid-title='UUID' />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">MAJOR : </label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="bcon_major_content" data-valid-use='true' data-valid-symbol='true' data-valid-max="50" data-valid-title='MAJOR' />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">MINOR : </label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="bcon_minor_content" data-valid-use='true' data-valid-symbol='true' data-valid-max="50" data-valid-title='MINOR' />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">비컨명 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="bcon_nm" data-valid-use='true' data-valid-symbol='true' data-valid-max="50" data-valid-title='비컨명'>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">설명 </label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="10" name="bcon_desc" data-valid-max="200" data-valid-symbol='true' data-valid-title='비컨설명'></textarea>
+									</div>
+								</div>
+<!-- 								<div class="form-group"> -->
+<!-- 									<label class="col-md-2 control-label cs-css-05">연결상태 : </label> -->
+<!-- 									<div class="col-md-10"> -->
+<!-- 										<span class="form-control cs-css-03" id="link_sts"></span> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+								
+<!-- 								<div class="form-group" id="group_view"> -->
+<!-- 									<label class="col-md-2 control-label cs-css-05">그룹 ID : </label> -->
+<!-- 									<div class="col-md-10"> -->
+<!-- 										<span class="form-control cs-css-03" id="group_id"></span> -->
+<!-- 									</div> -->
+<!-- 									<label class="col-md-2 control-label cs-css-05">그룹 명 : </label> -->
+<!-- 									<div class="col-md-10"> -->
+<!-- 										<span class="form-control cs-css-03" id="group_nm"></span> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+								
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_cancel('edit');" class="btn btn-default">취소</a>
+										<a href="javascript:f_submitEdit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<!-- end widget grid -->
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 지점 선택 셀렉트 박스 변경시 호출되는 이벤트 컨트롤러
+ * ==================================================================================
+ */
+$('#s_str_cd').change(function(){
+	var searchData = {};
+	searchData['str_cd'] = $('#s_str_cd').children("option:selected").val();
+	$("#beacon_grid").jqGrid('setGridParam', {search: true});
+	$("#beacon_grid").jqGrid('setGridParam', {page: 1});
+	$("#beacon_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+});
+/**
+ * ==================================================================================
+ * 등록/수정 취소
+ * ==================================================================================
+ */
+function f_cancel(type) {
+	if(type == "write") {
+		$("#beacon_write_area").hide();
+		$("#beacon_detail_area").hide();
+		$('beacon_write_area input[name=uu_id]').val("");
+    	$('beacon_write_area input[name=bcon_major_content]').val("");
+    	$('beacon_write_area input[name=bcon_minor_content]').val("");
+    	$('beacon_write_area input[name=bcon_nm]').val("");
+    	$('beacon_write_area textarea[name=bcon_desc]').val("");
+	}else {
+		$("#beacon_edit_area").hide();
+		$("#beacon_detail_area").show();
+		$('#frmBeaconEdit input[name=uu_id]').val("");
+    	$('#frmBeaconEdit input[name=bcon_major_content]').val("");
+    	$('#frmBeaconEdit input[name=bcon_minor_content]').val("");
+    	$('#frmBeaconEdit input[name=bcon_nm]').val("");
+    	$('#frmBeaconEdit textarea[name=bcon_desc]').val("");
+	}
+	
+}
+ 
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송 (등록)
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submitWrite() {
+	if($('#frmBeaconWrite').formValid()) {
+		var str_cd = $("#frmBeaconWrite").find("#str_cd").val();
+		if(str_cd == "") {
+			alert("지점을 선택해 주세요.");
+			return;
+		}
+			
+		var data = $('#frmBeaconWrite').serializeFormObject();
+		data.str_cd = str_cd; 
+		
+		var _uuid = $('#frmBeaconWrite input[name=uu_id]').val();
+		if (_uuid.match(/^[{]?[0-9a-fA-F]{8}[-]?([0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}[}]?$/)) {
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/system/device/beacon/create',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),	//JSON.stringify($('#frmBeaconWrite').serializeFormObject()),
+			    success: function(obj){
+			    	$("#beacon_write_area").hide();
+			    	$("#beacon_edit_area").hide();
+			    	$("#beacon_detail_area").hide();
+			    	alert(obj.message);
+			    	$('#frmBeaconWrite input[name=uu_id]').val("");
+			    	$('#frmBeaconWrite input[name=bcon_major_content]').val("");
+			    	$('#frmBeaconWrite input[name=bcon_minor_content]').val("");
+			    	$('#frmBeaconWrite input[name=bcon_nm]').val("");
+			    	$('#frmBeaconWrite textarea[name=bcon_desc]').val("");
+			    	
+			    	$('#beacon_grid').trigger('reloadGrid');
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		}else{
+			alert("UUID형식이 맞지 않습니다.");
+			$('#frmBeaconWrite input[name=uu_id]').focus();
+			return;
+		}
+		
+	} else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송 (수정)
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submitEdit() {
+	if($('#frmBeaconEdit').formValid()) {
+		
+		var str_cd = $("#frmBeaconEdit").find("#str_cd option:selected").val();
+		if(str_cd == "") {
+			alert("지점을 선택해 주세요.");
+			return;
+		}
+		
+		var data = $('#frmBeaconEdit').serializeFormObject();
+		data.str_cd = str_cd;
+		
+		var _uuid = $('#frmBeaconEdit input[name=uu_id]').val();
+		if (_uuid.match(/^[{]?[0-9a-fA-F]{8}[-]?([0-9a-fA-F]{4}[-]?){3}[0-9a-fA-F]{12}[}]?$/)) {
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/system/device/beacon/update',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),//JSON.stringify($('#frmBeaconEdit').serializeFormObject()),
+			    success: function(obj){
+			    	$("#beacon_write_area").hide();
+			    	$("#beacon_edit_area").hide();
+			    	$("#beacon_detail_area").hide();
+			    	alert(obj.message);
+			    	$('#frmBeaconEdit input[name=uu_id]').val("");
+			    	$('#frmBeaconEdit input[name=bcon_major_content]').val("");
+			    	$('#frmBeaconEdit input[name=bcon_minor_content]').val("");
+			    	$('#frmBeaconEdit input[name=bcon_nm]').val("");
+			    	$('#frmBeaconEdit textarea[name=bcon_desc]').val("");
+			    	$('#beacon_grid').trigger('reloadGrid');
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		}else {
+			alert("UUID형식이 맞지 않습니다.");
+			$('#frmBeaconEdit input[name=uu_id]').focus();
+			return;
+		}
+		
+	} else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 비컨 등록용 초기 정보 조회
+/* --------------------------------------------------------------------------------------------
+/* 비컨 신규 등록시 초기 정보를 조회
+/* ============================================================================================ */
+function f_callBeaconInit() {
+	if($("#frmBeaconWrite").find("#str_cd option:last").val() == "") {
+		f_ajaxStrCdCode($("#frmBeaconWrite").find("#str_cd"), "BEACON", "BEACON");
+	}
+	var l_str_cd = $("#s_str_cd").val();
+	if(l_str_cd != "") {
+		f_ajaxStrCdCode($("#frmBeaconWrite").find("#str_cd").val(l_str_cd), "BEACON", "BEACON");
+	}
+	
+	// 본부일때는 지점선택 가능
+	if('${sessionScope.sessionStrCd}' == '999') {
+		$("#frmBeaconWrite").find('#str_cd').attr({"readonly":false,"disabled":false}); // 지점 readonly 설정
+	}
+	else {
+		$("#frmBeaconWrite").find('#str_cd').attr({"readonly":true,"disabled":true}); // 지점 readonly 설정
+	}
+
+}
+/* ============================================================================================
+/* 비컨 수정 Form 호출
+/* --------------------------------------------------------------------------------------------
+/* 비컨 수정시 데이터 로딩
+/* ============================================================================================ */
+function f_editForm() {
+	$("#beacon_write_area").hide();
+	$("#beacon_edit_area").show();
+	$("#beacon_detail_area").hide();
+	var rowid = $("#frmBeaconDetail").find("input[name=row_id]").val();
+	var data = {
+			empno: '${sessionScope.sessionEmpno}',
+			str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			bcon_id: rowid	
+		};
+	$.ajax({
+		url: api_url+"/backoffice/system/device/beacon/show", //this is the submit URL
+		type: "GET", // GET or POST
+		async: true,
+		cache: true,
+		datatype: 'json',
+		data: encodeURI("params="+JSON.stringify(data)),
+		beforeSend : function() {},
+		success: function(obj){
+			f_ajaxStrCdCode($("#frmBeaconEdit").find("#str_cd"), "BEACON", "BEACON");
+			// 본부일때는 지점선택 가능
+			if('${sessionScope.sessionStrCd}' == '999') {
+				$("#frmBeaconEdit").find('#str_cd').attr({"readonly":false,"disabled":false}); // 지점 readonly 설정
+			}
+			else {
+				$("#frmBeaconEdit").find('#str_cd').attr({"readonly":true,"disabled":true}); // 지점 readonly 설정
+			}
+			
+			$("#frmBeaconEdit").find("#str_cd").val(obj.data.str_cd);//.attr('selected', 'selected');
+			$("#frmBeaconEdit").find("#reg_date").html(obj.data.reg_date);
+			$("#frmBeaconEdit").find("#reg_id_name").html(obj.data.reg_id_name);
+			$("#frmBeaconEdit").find("#mod_date").html(obj.data.mod_date);
+			$("#frmBeaconEdit").find("#mod_id_name").html(obj.data.mod_id_name);
+			$("#frmBeaconEdit").find("#bcon_id").html(obj.data.bcon_id);
+                   
+			$("#frmBeaconEdit").find("input[name=uu_id]").val(obj.data.uu_id);
+			$("#frmBeaconEdit").find("input[name=bcon_major_content]").val(obj.data.bcon_major_content);
+			$("#frmBeaconEdit").find("input[name=bcon_minor_content]").val(obj.data.bcon_minor_content);
+			    
+			$("#frmBeaconEdit").find("input[name=bcon_id]").val(obj.data.bcon_id);
+			$("#frmBeaconEdit").find("input[name=str_cd]").val(obj.data.str_cd);							
+			    
+			$("#frmBeaconEdit").find("input[name=bcon_nm]").val(obj.data.bcon_nm);
+			$("#frmBeaconEdit").find("textarea[name=bcon_desc]").val(obj.data.bcon_desc);
+			$("#frmBeaconEdit").find("#group_view").hide();
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+			alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+			return;
+		}
+	});
+}
+$(document).ready(function() {
+	$(".onlynum").keyup(function(){$(this).val( $(this).val().replace(/[^0-9]/g,"") );} );
+	$(".notHangul").bind('keyup', function(event){
+        if (!(event.keyCode >=37 && event.keyCode<=40)) {
+            var inputVal = $(this).val();
+//             $(this).val(inputVal.replace(/[^a-z0-9]/gi,''));
+            $(this).val(inputVal.replace(/[^0-9a-f-]/gi,''));
+        }
+    });
+ 
+});
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	// 초기데이터 로드 : 지점 호출
+	f_ajaxStrCdCode($("#s_str_cd"), "BEACON", "BEACON");
+	var session_str_cd = '${sessionScope.sessionStrCd}' == '999' ? $('#s_str_cd').val() : '${sessionScope.sessionStrCd}';
+	$('#s_str_cd').val(session_str_cd); // 지점 초기값 설정
+	
+	// 본부일때는 지점선택 가능
+	if('${sessionScope.sessionStrCd}' == '999') {
+		$('#s_str_cd').attr({"readonly":false,"disabled":false}); // 지점 readonly 설정
+	}
+	else {
+		$('#s_str_cd').attr({"readonly":true,"disabled":true}); // 지점 readonly 설정
+	}
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#beacon_grid").parent().width() - 100;
+
+		jQuery("#beacon_grid").jqGrid({
+			url : api_url+"/backoffice/system/device/beacon/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '지점명', '비컨ID', '비컨명', '그룹 연결상태', '등록일자'],
+			colModel : [
+				{ name : 'no', 			index : 'no',		 	align : "center",	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'str_cd_name', index : 'str_cd_name',	align : "center",	sortable : false, 	width : (pageWidth*(20/100)) 	},
+				{ name : 'bcon_id', 	index : 'bcon_id', 		align : "center",	sortable : false, 	width : (pageWidth*(20/100)),	classes:'pointer' 	},
+				{ name : 'bcon_nm', 	index : 'bcon_nm', 		align : "center",	sortable : false, 	width : (pageWidth*(20/100)) 	},
+				{ name : 'link_sts', 	index : 'link_sts', 	align : 'center', 	sortable : true, 	width : (pageWidth*(10/100)), 
+					formatter : function(cellvalue, options, rowObject) {
+						if(cellvalue == "Y") {
+							return "연결됨";	
+						} else {
+							return "연결안됨";
+						}
+					}
+				},
+				
+				{ name : 'mod_date', 	index : 'mod_date', 	align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "bcon_id",
+				root : 		function(obj){ return obj.data.beacon_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) {return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {return encodeURI("params="+JSON.stringify(postData)); },
+			postData:{
+				search_info: {str_cd : $('#str_cd').children("option:selected").val()}, 
+				empno: '${sessionScope.sessionEmpno}', 
+				str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}' 
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#beacon_grid_page',
+			sortname : 'reg_date',// 정렬기준 수정
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){ },
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+				if(index == 3) {
+					$("#beacon_write_area").hide();
+					$("#beacon_edit_area").hide();
+					$("#beacon_detail_area").show();
+
+					$("#frmBeaconDetail").find("input[name=row_id]").val(rowid);
+					
+					var data = {
+						empno: '${sessionScope.sessionEmpno}',
+						str_cd: '${sessionScope.sessionStrCd}',
+						hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+						bcon_id: rowid	
+					};
+					$.ajax({
+						url: api_url+"/backoffice/system/device/beacon/show", //this is the submit URL
+						type: "GET", // GET or POST
+						async: true,
+						cache: true,
+						datatype: 'json',
+						data: encodeURI("params="+JSON.stringify(data)),
+						beforeSend : function() {},
+						success: function(obj){
+							$("#frmBeaconDetail").find("#reg_date").html(obj.data.reg_date);
+							$("#frmBeaconDetail").find("#reg_id_name").html(obj.data.reg_id_name);
+							$("#frmBeaconDetail").find("#mod_date").html(obj.data.mod_date);
+							$("#frmBeaconDetail").find("#mod_id_name").html(obj.data.mod_id_name);
+							$("#frmBeaconDetail").find("#str_cd_name").html(obj.data.str_cd_name);
+							$("#frmBeaconDetail").find("#bcon_id").html(obj.data.bcon_id);
+                                
+							$("#frmBeaconDetail").find("#uu_id").html(obj.data.uu_id);
+							$("#frmBeaconDetail").find("#bcon_major_content").html(obj.data.bcon_major_content);
+							$("#frmBeaconDetail").find("#bcon_minor_content").html(obj.data.bcon_minor_content);
+							    
+							$("#frmBeaconDetail").find("#bcon_nm").html(obj.data.bcon_nm);
+							$("#frmBeaconDetail").find("#bcon_desc").html(obj.data.bcon_desc);
+							if(obj.data.link_sts == "N") {
+								$("#frmBeaconDetail").find("#link_sts").html("연결안됨");
+								$("#frmBeaconDetail").find("#group_view").hide();
+							}else {
+								$("#frmBeaconDetail").find("#group_view").show();
+								$("#frmBeaconDetail").find("#link_sts").html("연결됨");
+								$("#frmBeaconDetail").find("#group_id").html(obj.data.group_id);
+								$("#frmBeaconDetail").find("#group_nm").html(obj.data.group_nm);
+							}
+						},
+						error: function(obj) {
+							var serverObj = obj.responseJSON;
+							alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+							return;
+						}
+					});
+				}
+			}
+		});
+		jQuery("#beacon_grid").jqGrid('navGrid', "#beacon_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#beacon_grid").jqGrid('navButtonAdd','#beacon_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					var sts_cnt = 0;
+					
+					if(select_ids.length == 0) {
+						alert("삭제할 항목을 먼저 선택해 주십시오.");
+						return;
+					}
+					
+					for(var i = 0; i < select_ids.length; i++) {
+						var link_sts = $('#beacon_grid').jqGrid('getCell', select_ids[i], 'link_sts');
+						if(link_sts == '연결됨') {
+							sts_cnt++;	
+						}
+					}
+					if(sts_cnt > 0) {
+						alert('연결 상태의 비컨은 삭제할 수 없습니다.\n비컨그룹 연결 해제 후 삭제 가능합니다.');
+						return;
+					}
+					
+					// 삭제 진행
+					if(confirm(select_ids.length + "개의 항목을 삭제하시겠습니까?")) {
+						var data = {
+							bcon_id_list : select_ids,
+							empno: '${sessionScope.sessionEmpno}',
+							str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+						};
+						
+						$.ajax({
+							url: api_url + '/backoffice/system/device/beacon/delete',
+							type: 'POST',
+							contentType: 'application/json;charset=utf-8', // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$('#beacon_grid').trigger('reloadGrid');
+								$("#beacon_write_area").hide();
+								$("#beacon_edit_area").hide();
+								$("#beacon_detail_area").hide();
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+						    	return;
+						    }
+						});
+					}
+				}
+			});	
+		}
+		
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#beacon_grid").jqGrid('navButtonAdd','#beacon_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					$("#beacon_detail_area").hide();
+					$("#beacon_edit_area").hide();
+					$("#beacon_write_area").show();
+					f_callBeaconInit();
+				}
+			});	
+		}
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+	  	
+	  	$('#beacon_grid').gridCss();
+	  	$("#beacon_grid_cb").css("border-left-width","0");
+	  	$("#beacon_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_beacon_grid_cb").css("padding","7px 0");
+	  	$("#beacon_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#beacon_grid").jqGrid( 'setGridWidth', $("#target_beacon_grid").width() );
+		});
+	} 
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+</script>
+
+

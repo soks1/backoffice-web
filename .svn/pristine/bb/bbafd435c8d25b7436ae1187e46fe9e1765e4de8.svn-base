@@ -1,0 +1,155 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<%
+// 	Enumeration<?> e = request.getParameterNames();
+// 	while(e.hasMoreElements()){
+// 		String key = (String)e.nextElement();
+// 		String values[] = request.getParameterValues(key);
+// 		for(int i = 0; i < values.length; i++) {
+// 			out.println("<input type=\"text\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+// 		}
+// 	}
+%>
+
+<% 
+	String img_path = request.getParameter("img_path") == null ? "" : (String)request.getParameter("img_path");
+	String img_view_nm = request.getParameter("img_view_nm") == null ? "" : (String)request.getParameter("img_view_nm");
+	String template_id = request.getParameter("template_id") == null ? "" : (String)request.getParameter("template_id");
+	String gen_content1 = request.getParameter("gen_content1") == null ? "" : (String)request.getParameter("gen_content1");
+	String gen_content2 = request.getParameter("gen_content2") == null ? "" : (String)request.getParameter("gen_content2");
+	String gen_content3 = request.getParameter("gen_content3") == null ? "" : (String)request.getParameter("gen_content3");
+	String gen_content4 = request.getParameter("gen_content4") == null ? "" : (String)request.getParameter("gen_content4");
+	String gen_content5 = request.getParameter("gen_content5") == null ? "" : (String)request.getParameter("gen_content5");
+	String gen_content6 = request.getParameter("gen_content6") == null ? "" : (String)request.getParameter("gen_content6");
+	String gen_content7 = request.getParameter("gen_content7") == null ? "" : (String)request.getParameter("gen_content7");
+	String gen_content8 = request.getParameter("gen_content8") == null ? "" : (String)request.getParameter("gen_content8");
+	String gen_content9 = request.getParameter("gen_content9") == null ? "" : (String)request.getParameter("gen_content9");
+	String gen_content10 = request.getParameter("gen_content10") == null ? "" : (String)request.getParameter("gen_content10");
+
+	gen_content1 = gen_content1.replaceAll("(\r\n|\n)", "<br>");
+	gen_content2 = gen_content2.replaceAll("(\r\n|\n)", "<br>");
+ 	gen_content3 = gen_content3.replaceAll("(\r\n|\n)", "<br>");
+	gen_content4 = gen_content4.replaceAll("(\r\n|\n)", "<br>");
+	gen_content5 = gen_content5.replaceAll("(\r\n|\n)", "<br>");
+	gen_content6 = gen_content6.replaceAll("(\r\n|\n)", "<br>");
+	gen_content7 = gen_content7.replaceAll("(\r\n|\n)", "<br>");
+	gen_content8 = gen_content8.replaceAll("(\r\n|\n)", "<br>");
+	gen_content9 = gen_content9.replaceAll("(\r\n|\n)", "<br>");
+	gen_content10 = gen_content10.replaceAll("\r\n", "<br>");
+%>
+
+<!--
+<html><head>
+<meta name="viewport" content="width=device-width, minimum-scale=0.1">
+<title>bg_template_push_A_01</title>
+</head>
+<body style="margin: 0px;">
+-->
+
+	<div id="preview" class="" style="margin: 0 !important; padding: 0 !important;">
+		<img src="<%=img_path %>" width="800" height="1399">
+
+<%
+	if(template_id.equals("000000000000001"))
+	{
+%>
+  
+		<!--// 이벤트 1 //-->
+		<div id="event1_title" style="position: absolute; top: 119px; left: 48px; width: 734px; height: 67px; ">
+			<div style="font-size: 50px; font-family: '12롯데마트드림Bold'; color: rgb(255, 255, 255); transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content1 %></div>
+		</div>
+		<div id="event1_detail" style="position: absolute; top: 232px; left: 48px; width: 734px; height: 193px; ">
+			<div style="font-size: 35px; font-family: '12롯데마트드림Medium'; line-height: 46px;text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content2 %></div>
+		</div>  
+		
+		<!--// 이벤트 2 //-->
+		<div id="event2_title" style="position: absolute; top: 561px; left: 48px; width: 734px; height: 67px; ">
+			<div style="font-size: 50px; font-family: '12롯데마트드림Bold'; color: rgb(255, 255, 255); transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content3 %></div>
+		</div>
+		<div id="event2_detail" style="position: absolute; top: 672px; left: 48px; width: 734px; height: 193px; ">
+			<div style="font-size: 35px; font-family: '12롯데마트드림Medium'; line-height: 46px;text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content4 %></div>
+		</div> 
+		
+		<!--// 이벤트 3 //-->
+		<div id="event3_title" style="position: absolute; top: 1005px; left: 48px; width: 734px; height: 67px; ">
+			<div style="font-size: 50px; font-family: '12롯데마트드림Bold'; color: rgb(255, 255, 255); transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content5 %></div>
+		</div>
+		<div id="event3_detail" style="position: absolute; top: 1119px; left: 48px; width: 734px; height: 193px; ">
+			<div style="font-size: 35px; font-family: '12롯데마트드림Medium'; line-height: 46px;text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content6 %></div>
+		</div> 
+
+<%
+	}
+%>
+	</div>
+
+	<form class="form-horizontal" id="frmGenImg">
+	    <input type="hidden" id="gen_img_data" name="gen_img_data">
+		<input type="hidden" id="gen_img_view_nm" value="<%=request.getParameter("img_view_nm") %>">
+		<input type="hidden" id="gen_img_path" value="<%=request.getParameter("img_path") %>">
+		<input type="hidden" id="gen_content_type" value="image/png">
+		<input type="hidden" id="gen_img_ext" value="png">
+	</form>
+
+	<div id="canvasImg" class=""></div>
+
+<!--
+</body>
+</html>
+-->
+
+
+<script src="${pageContext.request.contextPath}/resources/js/libs/html2canvas.js"></script>
+<script type="text/javascript">
+html2canvas($('#preview'), {  
+    onrendered: function (canvas) {
+    	
+    	if (typeof FlashCanvas != "undefined") {
+            FlashCanvas.initElement(canvas);
+        }
+    	
+
+		$('#gen_img_data').val(canvas.toDataURL("image/png"));
+		$('#canvasImg').html('<img style="" src="'+$('#gen_img_data').val()+'" title="미리보기 결과">');
+
+ 		$('#preview').hide();
+
+    
+		// 이미지 확장자 체크 및 변경
+		var file_nm1 = changeExtension($('#gen_img_view_nm').val(), "png")
+		$('#gen_img_view_nm').val(file_nm1);
+		
+		var file_nm2 = changeExtension($('#gen_img_path').val(), "png")
+		$('#gen_img_path').val(file_nm1);
+    
+    }
+// 	,logging : true
+});
+
+// 확장자 변경
+function changeExtension(fileName, ext) {
+
+	var newFileName = String.valueOf(fileName);
+
+	if (fileName == null || fileName == "undefined" || fileName.trim() == "") {
+		newFileName = "temp." + ext;
+	}
+	else {
+		var temps = fileName.split(".");
+		var extension = temps[temps.length - 1];
+		if(ext == extension) newFileName = fileName;
+		else {
+			for(var i=0; i<temps.length-1; i++) {
+				newFileName += temps[i] + "."
+			}
+			newFileName += temps[i] + "." + ext;
+		}
+	}
+
+	return newFileName;
+}
+
+
+</script>

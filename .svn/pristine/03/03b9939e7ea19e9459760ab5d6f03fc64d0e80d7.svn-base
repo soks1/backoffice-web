@@ -1,0 +1,441 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+							
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">카테고리</label>
+										<div class="col-md-2">
+											<select class="form-control" id="category_cd" name="category_cd">
+												<option value="">전체</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">제목</label>
+										<div class="col-md-3">
+											<input class="form-control" type="text" id="title" name="title" data-valid-title="제목">
+										</div>
+										<label class="col-md-1 control-label">기간조회</label>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="search_st_date" name="search_st_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="search_ed_date" name="search_ed_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>				
+									</div>				
+								</div>
+								
+							</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_chk_stats_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-4 col-lg-6">
+			<div class="jarviswidget" id="wid-id-2" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회결과 </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div id="target_chk_stats_grid" class="widget-body no-padding" style="max-height: 600px; overflow-y:auto; overflow-x:hidden;">
+						<table id="chk_stats_grid"></table>
+					</div>
+					<div id="chk_stats_grid_page" class="ta-r" style="padding:5px;">
+<!-- 						<a href="javascript:chk_excel_down();" id="btn_excel" class="btn btn-sm btn-success">엑셀 다운로드</a> -->
+					</div>
+					
+				</div>
+			</div>
+		</article>
+		
+		<article class="col-xs-12 col-sm-12 col-md-8 col-lg-6">
+			<div class="jarviswidget" id="wid-id-4" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+					<h2>동영상별 조회수 / 좋아요 수 </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div class="widget-body">
+						<div align="left" id="chart_canvas_txt_1">&middot; 조회결과 중 1건을 선택해주세요.</div>
+						<div align="left" id="chart_canvas_txt_2"></div><hr/>
+						<div id="div_canvas_container_1">
+						<canvas id="chart_canvas_1" height="120"></canvas>
+						</div>
+						<div id="legend_chart_canvas_1"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	
+	
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+var _data = function(){
+	var searchData = $("#frmSearch").serializeFormObject();
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}', 
+		stts_xls_dwld_type : 'PUSH_NOTI',
+		_search : true,
+		sidx : '',
+		sord : 'desc',
+		search_info : searchData
+	};
+	return data;
+};
+
+
+/* ============================================================================================
+/* 조회 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#search_st_date').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#search_ed_date").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#search_ed_date').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#search_st_date").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+ 
+var pagefunction = function() {
+	
+	f_ajaxCategoryCode("category_cd", "");
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCpCode($("#str_cd"));
+	
+	// 초기데이터 로드 : 적용대상유형
+	f_ajaxApplyToTypeCode($("select[name=apply_to_type_cd]"));
+	
+	f_ajaxCommonCode({
+		target:"select[name=process_status_cd]", 
+		cd_divn_id: "PRGS_STS_CD",
+		codeId : "",
+		fnSuccess : ""
+	});
+		
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", chk_stats_grid_function);
+	function chk_stats_grid_function() {
+		
+		var pageWidth = $("#chk_stats_grid").parent().width() - 100;
+		
+		jQuery("#chk_stats_grid").jqGrid({
+			url : api_chkok_url+"/backoffice/chkok/stats/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : [ '카테고리', '동영상 제목', '조회수', '좋아요수','게시시작일시','게시종료일시', '카테고리코드', '동영상ID' ],
+			colModel : [
+				{ name : 'category_cd_nm', 		index : 'category_cd', 		align : 'center', 	sortable : false, 	width : (pageWidth*(15/100))	},
+				{ name : 'title', 				index : 'title', 			align : 'center',	sortable : false, 	width : (pageWidth*(30/100)), 	classes:'pointer'  }, 
+				{ name : 'view_cnt', 			index : 'view_cnt', 		align : 'center',	sortable : false, 	width : (pageWidth*(5/100))		},
+				{ name : 'like_cnt', 			index : 'like_cnt',			align : 'center', 	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'ntce_st_date', 		index : 'search_st_date', 	hidden : true, 		width : 0 },
+				{ name : 'ntce_ed_date', 		index : 'search_ed_date', 	hidden : true, 		width : 0 },
+				{ name : 'category_cd', 		index : 'category_cd', 		hidden : true, 		width : 0 },
+				{ name : 'media_id', 			index : 'media_id', 		hidden : true, 		width : 0 }
+				
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "media_id",
+				root :		function(obj){ return obj.data.media_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#chk_stats_grid").jqGrid('setGridParam', {search: true});
+					$("#chk_stats_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#chk_stats_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#chk_stats_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				rows: '10',
+				page: '1'			
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#chk_stats_grid_page',
+			sortname : 'reg_date',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : false,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index ==1) {
+				   var ret = $("#chk_stats_grid").jqGrid('getRowData', rowid);	
+				   //차트상단 텍스트 부분
+					$('#chart_canvas_txt_1').html('게시기간</br><i class="fa fa-info-circle"></i>&nbsp;<b>' + ret.ntce_st_date + ' ~ ' + ret.ntce_ed_date + '</b>');
+
+					// chart
+					drawChart(ret);   
+			   } 
+			},
+			gridComplete: function() {	
+				var postData = $('#chk_stats_grid').jqGrid("getGridParam", "postData");				
+				$('#chk_stats_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#chk_stats_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+				
+			},
+			
+		});
+		
+		jQuery("#chk_stats_grid").jqGrid('navGrid', "#chk_stats_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#chk_stats_grid").gridCss();
+	  	$("#chk_stats_grid_cb").css("border-left-width","0");
+	  	$("#chk_stats_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_chk_stats_grid_cb").css("padding","7px 0");
+	  	$("#chk_stats_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	}
+	
+//-------------------------카테고리 목록 그리드-------------------------------------------//
+
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#chk_stats_grid").jqGrid( 'setGridWidth', $("#target_chk_stats_grid").width() );
+		});
+};
+
+
+/* ============================================================================================
+/* Chart 생성
+/* ============================================================================================ */
+function drawChart(rowData){
+	var _label = [];
+	var _data1 = [];
+	var _data2 = [];
+	var _data3 = [];
+	if(rowData != null) {
+		
+		var _title = rowData.title;
+		
+		if(_title.length > 22){
+			_title = _title.substr(0,22);
+			_title += "...";
+		}
+		
+		// Chart 데이터 처리 시작 =========================
+		_label[0] = _title;				// 동영상제목
+		_data1[0] = rowData.view_cnt;	// 조회수
+		_data2[0] = rowData.like_cnt;	// 좋아요수
+		
+		// Chart 데이터 처리 시작 =========================
+			
+	 	var chart1_data = {
+	        labels: _label,
+	        datasets: [
+		 		{
+		            label: "조회수",
+		            fillColor: "rgba(79,129,189,1)",
+		            strokeColor: "rgba(79,129,189,1)",
+		            highlightFill: "rgba(79,129,189,0.8)",
+		            highlightStroke: "rgba(79,129,189,0.8)",
+		            //data: [50, 40, 30, 45, 35, 15, 35, 15, 13, 23, 42, 10, 46, 20]
+		 			data: _data1
+		        },
+		        {
+		            label: "좋아요수",
+		            fillColor: "rgba(192,80,77,1)",
+		            strokeColor: "rgba(192,80,77,1)",
+		            highlightFill: "rgba(192,80,77,0.8)",
+		            highlightStroke: "rgba(192,80,77,0.8)",
+		            //data: [25, 15, 10, 5, 13, 15, 12, 2, 3, 5, 30, 1, 42, 26]
+		        	data: _data2
+		        }
+	        ]
+	    };
+		
+	    var chart1_options = {
+		    scaleBeginAtZero : true,
+		    scaleShowGridLines : true,
+		    scaleGridLineColor : "rgba(0,0,0,.05)",
+		    scaleGridLineWidth : 1,
+		    barShowStroke : true,
+		    barStrokeWidth : 1,
+		    barValueSpacing : 100,
+		    barDatasetSpacing : 20,
+		    labelLength: 30,
+	        responsive: true
+	    };
+		    
+    	if (window.barChart1){ 
+            window.barChart1.destroy();
+        }
+
+	    var bar_chart1 = document.getElementById("chart_canvas_1").getContext("2d");
+	    barChart1 = new Chart(bar_chart1).Bar(chart1_data, chart1_options);
+	    legend($("#legend_chart_canvas_1"), chart1_data);
+	} else {
+		$('#chart_canvas_txt_1').html('&middot; 조회결과 중 1건을 선택해주세요.');
+		$('#chart_canvas_txt_2').html('');
+		//f_resetCanvas(1, 120);		// chart 초기화
+    	if (window.barChart1){ 
+            window.barChart1.destroy();
+        }
+		$("#legend_chart_canvas_1").html('');  
+	}
+
+}
+
+/** ============================================================================================
+/* Excel DownLoad
+/* --------------------------------------------------------------------------------------------
+/* Grid Data를 엑셀로 저장한다.
+/* ============================================================================================ */
+function chk_excel_down(){ 
+	// 엑셀 양식 다운로드
+	var url = api_url+"/backoffice/common/excel/statistics/download";
+	var data = _data();
+	
+	var params = encodeURI('params='+JSON.stringify(data));
+	$.fileDownload(url + params);
+	
+}
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

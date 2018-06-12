@@ -1,0 +1,445 @@
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2>조회 조건</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmSearchCoupon">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록지점</label>
+									<div class="col-md-3">
+										<select class="form-control" name="str_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">쿠폰 유형</label>
+									<div class="col-md-3">
+										<select class="form-control" name="coupon_cls_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<div id="div-coupon-type-cd">
+										<label class="col-md-1 control-label">할인/적립 유형</label>
+										<div class="col-md-3">
+											<select class="form-control" name="coupon_type_cd">
+												<option value="">전체</option>
+											</select> 
+										</div>
+									</div>
+									<div id="div-exch-goods" style="display:none;">
+										<label class="col-md-1 control-label">교환구분</label>
+										<div class="col-md-3">
+											<select class="form-control" name="exch_goods">
+												<option value="">전체</option>
+												<option value="GOODS">물품</option>
+												<option value="L.POINT">L.POINT</option>
+											</select> 
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰번호</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="coupon_id" placeholder="쿠폰번호를 입력해 주세요.">
+									</div>
+									<label class="col-md-1 control-label">쿠폰명</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="coupon_nm" placeholder="쿠폰명을 입력해 주세요.">
+									</div>
+									<label class="col-md-1 control-label">할인/적립액</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="dc_savu_amt" placeholder="할인/적립액을 입력해 주세요.">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">판매코드</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="prod_sell_cd" placeholder="판매코드를 입력해 주세요.">
+									</div>
+									<label class="col-md-1 control-label">상품명</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="prod_nm" placeholder="상품명을 입력해 주세요.">
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions" style="margin-top: 0px;">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_searchCoupon();" id="btn_search" class="btn btn-primary">조회</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="bookLL">
+		<!-- 조회결과 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회 결과 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="alert alert-info no-margin fade in">
+							<a href="javascript:cf_addTableRow('from_tbody','to_tbody',1);" class="btn btn-info" style="width:100%">추가&nbsp;&gt;&gt;</a>
+						</div>
+						<div class="table-responsive" style="max-height:417px; overflow: auto;">
+							<table class="table table-bordered table-striped" style="width: 1024px;">
+								<colgroup>
+						            <col width="2%" />
+						            <col width="7%" />
+						            <col width="10%"/>
+						            <col width="7%" />
+						            <col width="7%" />
+						            <col width="7%" />
+						            <col width="10%" />
+						            <col width="10%" />
+						            <col width="7%" />
+						            <col width="7%" />
+						            <col width="7%" />
+						            <col width="5%" />
+						        </colgroup>
+								<thead>
+									<tr>
+										<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+										<th class="ta-c">쿠폰번호</th>
+										<th class="ta-c">쿠폰명</th>
+										<th class="ta-c">쿠폰유형</th>
+										<th class="ta-c">할인/적립 유형</th>
+										<th class="ta-c">적용 기준</th>
+										<th class="ta-c">할인 상품</th>
+										<th class="ta-c">조건 상품</th>
+										<th class="ta-c">할인 적용 단계</th>
+										<th class="ta-c">할인적립(금액/율/개수)</th>
+										<th class="ta-c">사용가능일자</th>
+										<th class="ta-c">쿠폰별 쿠폰북 매핑수</th>
+										<th class="ta-c">등록일</th>
+									</tr>
+								</thead>
+								<tbody id="from_tbody">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<!-- 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>선택항목</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body no-padding">
+						<div class="alert alert-info no-margin fade in">
+							<a href="javascript:cf_delTableRow('to_tbody','from_tbody');" class="btn btn-info" style="width:100%">&lt;&lt;&nbsp;삭제</a>
+						</div>
+						<div class="table-responsive" style="max-height:417px; overflow: auto;">
+							<table class="table table-bordered table-striped" style="width: 1024px;">
+								<colgroup>
+						             <col width="2%" />
+						            <col width="7%" />
+						            <col width="10%"/>
+						            <col width="7%" />
+						            <col width="7%" />
+						            <col width="7%" />
+						            <col width="10%" />
+						            <col width="10%" />
+						            <col width="7%" />
+						            <col width="7%" />
+						            <col width="7%" />
+						            <col width="5%" />
+						        </colgroup>
+								<thead>
+									<tr>
+										<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+										<th class="ta-c">쿠폰번호</th>
+										<th class="ta-c">쿠폰명</th>
+										<th class="ta-c">쿠폰유형</th>
+										<th class="ta-c">할인/적립 유형</th>
+										<th class="ta-c">적용 기준</th>
+										<th class="ta-c">할인 상품</th>
+										<th class="ta-c">조건 상품</th>
+										<th class="ta-c">할인 적용 단계</th>
+										<th class="ta-c">할인적립(금액/율/개수)</th>
+										<th class="ta-c">사용가능일자</th>
+										<th class="ta-c">쿠폰별 쿠폰북 매핑수</th>
+									</tr>
+								</thead>
+								<tbody id="to_tbody">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 적용 대상 유형에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 적용대상 유형 값에 따라 쿠폰유형 정보를 변경 함.
+/* 	- PRICE		: 정률할인/정액할인/정률적립/정액할인
+/* 	- PRODUCT 	: 정률할인/정액할인/정률적립/정액할인/정액할인(포인트쿠폰)
+/* ============================================================================================ */
+$('select[name=coupon_cls_cd]').change(function(){
+	
+	$('#div-coupon-type-cd').show();
+	$("#div-exch-goods").hide().find("select[name=exch_goods]").val("");
+	
+	if($(this).val() == 'F') {
+		// 쿠폰유형 데이터 리로드
+		f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'L', $(this).val());
+		$('select[name=coupon_type_cd] option:eq(1)').html('무상');
+		$('select[name=coupon_type_cd] option:eq(2)').html('무상(반복사용금지)');
+	} else if($(this).val() == 'C') {
+		$('#div-coupon-type-cd').hide().find("select[name=coupon_type_cd]").val("");;
+		$('#div-exch-goods').show();
+	} else {	
+		// 쿠폰유형 데이터 리로드
+		f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'L', $(this).val());
+	}
+});
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addCouponButton() {
+	$("#frmSearchCoupon #btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#frmSearchCoupon #btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancelCoupon();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+	$("#from_tbody").empty()
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancelCoupon() {
+	$("#frmSearchCoupon #btn_cancel").remove();	// 검색 초기화 버튼 삭제
+	$("#frmSearchCoupon").cleanObject(); // 검색 폼의 항목들 초기화
+	
+	$('#div-coupon-type-cd').show();
+	$("#div-exch-goods").hide().find("select[name=exch_goods]").val("");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_searchCoupon() {
+	
+	if($("#frmSearchCoupon").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	f_addCouponButton();
+	
+	var search_info = $("#frmSearchCoupon").serializeFormObject();
+	var data = {};
+	
+	search_info['cpbook_company_type'] = $("#frmCpBook").find("input[name=cpbook_company_type]:checked").val();
+	data["search_info"] = search_info;
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["emp_str_cd"] = '${sessionScope.sessionStrCd}';
+	data["hq_base_yn"] = '${sessionScope.sessionStrCd}';
+	data["_search"] = true;
+	data["rows"] = "10";
+	data["page"] = 1;
+	data["sidx"] = "reg_date";
+	data["sord"] = "desc";
+	data["list_all_yn"] = "Y";
+	data["coupon_size_type_cd"] = $("input:radio[name=cpbook_size_type_cd]:checked").val();
+
+	$.ajax({
+	    url: api_url+"/backoffice/couponbook/coupon/choice/list",
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	console.log(obj);
+	    	$("#from_tbody").empty();
+	    	var coupon_list = obj.data.coupon_list;
+	    	var _coupon_val = "";
+	    	var _cond_val = "";
+	    	var prod_content = "";
+	    	$.each(coupon_list, function(i, item) {
+	    		var _cls_cd = item.coupon_cls_cd;
+	    		var _cp_type = item.coupon_type_cd;
+	    		if(_cls_cd != "B") {
+		    		if(item.prod_content == "") {
+						prod_content = item.cate_content; 
+					}else  {
+						prod_content = item.prod_content;
+					}
+	    		}
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c"><input type="checkbox" value="'+item.coupon_id+'"></td>';
+	    		tag_td += '<td class="ta-c">'+item.coupon_id+'</td>';
+	    		tag_td += '<td class="ta-c">'+item.coupon_nm+'</td>';
+	    		tag_td += '<td class="ta-c">' + item.coupon_cls_cd_name + '</td>';
+	    		tag_td += '<td class="ta-c">'+item.coupon_type_cd_name+'<input type="hidden" name="coupon_type_cd" value="'+item.coupon_type_cd+'"></td>';
+	    		tag_td += '<td class="ta-c">' + item.coupon_apply_cond_cd_name + '</td>';
+	    		tag_td += '<td class="ta-c">' + prod_content + '</td>';
+	    		tag_td += '<td class="ta-c">' + item.cond_prod_content + '</td>';
+	    		
+	    		if(_cls_cd == "C") {
+	    			_cond_val = '-';
+					_coupon_val = '-';
+	    		} 
+	    		var cond_html = '';
+	    		var coupon_html = '';
+    			if((item.cond_info_list || []) != "") {
+		    		$.each(item.cond_info_list, function(i, item2) {
+						_coupon_val = item2.coupon_val_desc;
+						_cond_val = item2.cond_val_desc;
+						
+						if(i == 0) {
+							cond_html  = cond_html +  _cond_val;
+							coupon_html = coupon_html + _coupon_val;
+						}else {
+							cond_html  = cond_html + '<br>' +  _cond_val;
+							coupon_html = coupon_html + '<br>' + _coupon_val;
+						}
+						
+					});
+    				
+    			}
+    			
+    			if(_cls_cd == "B") {
+	    			if(_cp_type == 'A' || _cp_type == 'F' || _cp_type == 'J' || _cp_type == 'L') {             
+	    				cond_html = item.dc_savu_amt + ' %';                                                                 
+	    			} else if(_cp_type == 'B' || _cp_type == 'G' || _cp_type == 'K' || _cp_type == 'M') {      
+	    				cond_html = item.dc_savu_amt + ' 원';                                                                 
+	    			} else if(_cp_type == 'C' || _cp_type == 'H' || _cp_type == 'N') {                               
+	    				cond_html = item.dc_savu_amt + ' 배';                                                                 
+	    			} else if(_cp_type == 'D' || _cp_type == 'I' || _cp_type == 'E' || _cp_type == 'O') {      
+	    				cond_html = item.dc_savu_amt + ' P';                                                                 
+	    			} else {                                                                                                           
+	    				cond_html = item.dc_savu_amt;                                                                                     
+	    			}                                                                                                                  
+	    		}
+    			
+	    		tag_td += '<td class="ta-c">' + cond_html + '</td>';
+	    		tag_td += '<td class="ta-c">' + coupon_html + '</td>';
+	    		if(item.use_day_info != '') {
+	    			var day_info = item.use_day_info;
+	    			var day_lst = day_info.split(",");
+	    			var day_html = '';
+	    			for(var x = 0; x < day_lst.length; x++) {
+	    				if(x != 0 && (x % 2) == 0) {
+	    					day_html = day_html + '<br>' + cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');
+	    				}
+	    				else {
+	    					if(x == 0) {
+	    						day_html = cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');	
+	    					}
+	    					else {
+	    						day_html = day_html + ', ' + cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');	
+	    					}
+	    				}
+	    			}
+	    			tag_td += '<td>'+day_html+'</td>';
+	    		}
+	    		else {
+	    			tag_td += '<td></td>';
+	    		}
+	    		
+// 	    		var coupon_type_cd = item.coupon_type_cd;
+// 	    		var dc_amt = '';
+// 				if(coupon_type_cd == 'A' || coupon_type_cd == 'F' || coupon_type_cd == 'J' || coupon_type_cd == 'L') {
+// 					dc_amt = cf_setComma(item.dc_savu_amt) + ' %';
+// 				} else if(coupon_type_cd == 'B' || coupon_type_cd == 'G' || coupon_type_cd == 'K' || coupon_type_cd == 'M') {
+// 					dc_amt = cf_setComma(item.dc_savu_amt) + ' 원';
+// 				} else if(coupon_type_cd == 'C' || coupon_type_cd == 'H' || coupon_type_cd == 'N') {
+// 					dc_amt = cf_setComma(item.dc_savu_amt) + ' 배';
+// 				} else if(coupon_type_cd == 'D' || coupon_type_cd == 'I' || coupon_type_cd == 'E' || coupon_type_cd == 'O') {
+// 					dc_amt = cf_setComma(item.dc_savu_amt) + ' P';
+// 				} else {
+// 					dc_amt = item.dc_savu_amt;
+// 				}
+	    		
+// 	    		tag_td += '<td class="ta-c">'+dc_amt+'</td>';
+	    		tag_td += '<td class="ta-c"><a href="javascript:f_openCouponBookRD(\''+item.coupon_id+'\');">' + item.mapp_freq_cnt + '</a></td>';
+	    		tag_td += '<td class="ta-c">'+item['reg_date']+'</td>';
+	    		var tag_tr = "<tr>"+tag_td+"</tr>";
+	    		$("#from_tbody").append(tag_tr);
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    },
+	    complete: function() {}
+	});
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	
+	// 등록지점 호출
+	f_ajaxStrCdCpCode($('select[name=str_cd]'));
+	
+	// 초기데이터 로드 : 적용대상유형
+	f_ajaxApplyToTypeCode($('select[name=coupon_cls_cd]'));
+	
+	// 초기데이터 로드 : 쿠폰유형
+	f_ajaxCouponTypeCode($('select[name=coupon_type_cd]'), 'L');
+
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+dialog_pagefunction();
+
+</script>

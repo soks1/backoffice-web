@@ -1,0 +1,350 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">POLL제목</label>
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="poll_title">
+									</div>
+									<label class="col-md-1 control-label">등록일</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="s_reg_date" name="s_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="e_reg_date" name="e_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">POLL속성</label>
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="poll_att">
+									</div>
+									<label class="col-md-1 control-label">POLL유형</label>
+									<div class="col-md-3">
+										<select class="form-control" name="poll_type_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+						<div class="form-actions mt0">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="javascript:void(0);" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> POLL 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_poll_write_grid" class="widget-body no-padding">
+						<table id="poll_write_grid"></table>
+						<div id="poll_write_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#s_reg_date').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#e_reg_date').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#e_reg_date').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#s_reg_date').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 공통코드(설문 유형 코드)
+	f_ajaxCommonCode({
+		target:"select[name=poll_type_cd]", 
+		cd_divn_id: "POLL_TYPE_CD"
+	});
+	
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', poll_write_grid_function);
+
+	function poll_write_grid_function() {
+		var pageWidth = $('#poll_write_grid').parent().width() - 100;
+
+		jQuery('#poll_write_grid').jqGrid({
+			url : api_url+'/backoffice/poll/list',
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['No.', '제목', 'POLL속성', 'POLL유형', '문항수', '등록일자', 'deletable' ],
+			colModel : [
+				{ name : 'no', 				index : 'no', 				align : 'center',	sortable : false, 	width : (pageWidth*(5/100))		},
+				{ name : 'poll_title',		index : 'poll_title', 		align : 'left',		sortable : false, 	width : (pageWidth*(40/100)),	classes:'pointer' }, 
+				{ name : 'poll_att', 		index : 'poll_att',			align : 'center', 	sortable : false, 	width : (pageWidth*(11/100))	}, 
+				{ name : 'poll_type_nm',	index : 'poll_type_nm',		align : 'center', 	sortable : false, 	width : (pageWidth*(11/100))	},
+				{ name : 'poll_qstn_cnt',	index : 'poll_qstn_cnt',	align : 'center', 	sortable : false, 	width : (pageWidth*(11/100))	},
+				{ name : 'reg_date', 		index : 'reg_date',			align : 'center', 	sortable : false, 	width : (pageWidth*(11/100))	},
+				{ name : 'del_yn', 			index : 'del_yn',			align : 'center', 	sortable : false,	width : (pageWidth*(10/100)), hidden:true 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id 		: 'poll_id',
+				root 	: function(obj){ return obj.data.poll_list; },			// 루트가 될 데이터 셋 명칭
+				records : function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page 	: function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total 	: function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData : function(postData) { return encodeURI('params='+JSON.stringify(postData)); },
+			serializeGridData: function(postData) { 
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page 	= $("#frmKeepData").find("input[name=page]");
+				var rows 	= $("#frmKeepData").find("input[name=rows]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"), $("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					
+					postData._search = true;
+					
+					$("#poll_write_grid").jqGrid('setGridParam', {search: true});
+					$("#poll_write_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#poll_write_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#poll_write_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+				
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{ 
+				_search: false,
+				empno: "${sessionScope.sessionEmpno}", 
+				emp_str_cd: "${sessionScope.sessionStrCd}", 
+				search_info: ""
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#poll_write_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : 'left',
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){ },
+			onCellSelect: function(rowid, index, contents, event) {
+				if(index == 2 || index == 3) {
+					$('#poll_write_grid').jqGrid('setGridParam', {'postData' : {'poll_id':rowid} });
+					var postData = $('#poll_write_grid').jqGrid('getGridParam', 'postData');
+					var url = '/application/poll/write/pollWriteRN.do';
+					var method = 'POST';
+					cf_action(url, method, postData);
+				}
+			},
+			loadError: function (obj) {
+				var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+		
+		jQuery('#poll_write_grid').jqGrid('navGrid', '#poll_write_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery('#poll_write_grid').jqGrid('navButtonAdd','#poll_write_grid_page',{
+				caption: '삭제',
+				id: 'delete_button',
+				buttonicon: 'ui-icon-trash',
+				onClickButton: function(){
+					var select_ids = $("#poll_write_grid").jqGrid('getGridParam', 'selarrrow');
+					
+					if(select_ids.length == 0) {
+						alert("삭제할 설문을 선택하세요");
+						return false;
+					}
+					
+					var del_cnt = 0;
+					var deleteData 	  = [];
+					var deleteMessage = "";
+					
+					$.each(select_ids, function(i, items) {
+						if($("#poll_write_grid").getRowData(items)["del_yn"] == "N") {
+							deleteMessage = deleteMessage + "No."+$("#poll_write_grid").getRowData(items)["no"] + " : " + $("#poll_write_grid").getRowData(items)["poll_title"] +"\n";
+							del_cnt ++;
+						}
+						else {
+							deleteData.push(items);
+						}
+						
+						if (select_ids.length == (i+1) && deleteMessage.length != 0) {
+							deleteMessage = deleteMessage + "는(은) 삭제하실수 없습니다\n위 내역을 제외하고 ";
+						}
+					});
+					
+					if(select_ids.length == del_cnt) {
+						alert("삭제 할 수 없습니다");
+						return false;
+					}
+					else {
+						deleteMessage = deleteMessage + "삭제하시겠습니까?";
+					}
+					
+					$.debug = deleteData;
+
+					var data = {
+						poll_id_list : deleteData,
+						empno: '${sessionScope.sessionEmpno}'
+					};
+					
+					if(confirm(deleteMessage)){
+						$.ajax({
+							url: api_url + "/backoffice/poll/delete",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(resultData) {
+								alert(resultData["message"]);
+								$("#poll_write_grid").trigger("reloadGrid");
+							},
+							error: function(resultData) {
+						    	var serverObj = resultData["responseJSON"] || {};
+						    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+						    	return;
+						    }
+						});
+					}
+				}
+			});
+		}
+					
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery('#poll_write_grid').jqGrid('navButtonAdd','#poll_write_grid_page',{
+				caption: '등록',
+				id: 'add_button',
+				buttonicon: 'ui-icon-plus',
+				onClickButton: function(){
+					var url = '/application/poll/write/pollWriteWN.do';
+					var method = 'POST';
+					var postData = $('#poll_write_grid').jqGrid('getGridParam', 'postData'); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$('#poll_write_grid').gridCss();
+	  	$('#poll_write_grid_cb').css('border-left-width','0');
+	  	$('#poll_write_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_poll_write_grid_cb').css('padding','7px 0');	  	
+	  	$('#poll_write_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery('#poll_write_grid').jqGrid( 'setGridWidth', $('#target_poll_write_grid').width() );
+		});
+	} 
+	// end function
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+</script>

@@ -1,0 +1,234 @@
+ <%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="form-group">
+				<fieldset>
+					<div class="form-group">
+						<div class="col-md-12 text-danger ta-l">
+							<i class="fa fa-info-circle"></i> 게시상태가 게시중, 게시전인 배너만 순서를 정렬할 수 있습니다. 실제 APP 노출 시점은 게시시작일 기준입니다.
+						</div>
+						<div class="col-md-12 text-danger ta-l">
+							<i class="fa fa-info-circle"></i> app 적용 시에는 가장 상단에 위치한 배너부터 좌&#45;&gt;우로 배치됩니다.
+						</div>
+					</div>
+				</fieldset>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header id="temp">
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 게시가능 위젯배너 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_banner_sort_grid" class="widget-body no-padding">
+						<table id="banner_sort_grid"></table>
+						<div id="banner_sort_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 배너 순서 이동
+/* ============================================================================================ */
+function banner_order(obj){
+	
+	var row = obj.parents("tr:first");
+    
+	if (obj.hasClass("order_up")) {
+		if(!row.prev().hasClass("jqgfirstrow"))
+			row.insertBefore(row.prev());
+	} else if (obj.hasClass("order_down")) {
+		row.insertAfter(row.next());
+	}
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+	
+var dialog_pagefunction = function() {
+	f_ajaxMainBannerCategoryCode($("select[name=sd_mbanner_cat_cd]"), 'BANNER');
+	f_ajaxMainBannerSubCategoryCode($("select[name=sd_mbanner_sub_cat_cd]"), 'BANNER');
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", banner_grid_function);
+	
+	function banner_grid_function() {
+
+		var pageWidth2 = $("#banner_sort_grid").parent().width() - 100;
+
+		jQuery("#banner_sort_grid").jqGrid({
+			url : api_url + "/backoffice/common/board/banner/sort/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '순서', '제목', '게시시작일', '게시종료일', '게시상태'],
+			colModel : [
+				{ name : 'no',					index : 'no',					align : "center",	sortable : false, 	width : (pageWidth2*(5/100))	},
+				{ name : 'ntce_seq', 		index : 'ntce_seq',		 	align : "center",	sortable : false, 	width : (pageWidth2*(10/100)),
+					  formatter: function(cellvalue, options, rowObject) {
+						  var btn = 
+						  		"<button class='cellbtn order_up' type='button' onclick='banner_order($(this));'>▲</button>&nbsp;"
+						  		+ "<button class='cellbtn order_down' type='button' onclick='banner_order($(this));'>▼</button>&nbsp;"
+						  return btn;
+					  }
+				},
+				{ name : 'title',	 				index : 'title', 					align : "left",		sortable : false, 	width : (pageWidth2*(50/100))	}, 
+				{ name : 'ntce_start_dd', 			index : 'ntce_start_dd',			align : "center",	sortable : false, 	width : (pageWidth2*(10/100)),	},  
+				{ name : 'ntce_end_dd', 			index : 'ntce_end_dd',				align : "center", 	sortable : false, 	width : (pageWidth2*(10/100))	}, 
+				{ name : 'ntce_sts_cd_name', 		index : 'ntce_sts_cd_name', 		align : "center", 	sortable : false, 	width : (pageWidth2*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "noticbd_id",
+				root : function(obj){ return obj.data.bnr_sort_noticbd_list; },	// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+				
+			},	
+			serializeRowData: function (postData) { return "params="+JSON.stringify(postData); },
+			serializeGridData: function(postData) { 
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmCatSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmCatSearch").serializeFormObject();
+					postData._search = true;
+					$("#banner_sort_grid").jqGrid('setGridParam', {search: true});
+					$("#banner_sort_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#banner_sort_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#banner_sort_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+								
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+				
+				return "params="+JSON.stringify(postData);
+			},
+			postData:{ 
+				empno: '${sessionScope.sessionEmpno}',
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				noticbd_divn_cd: "WIDGET"
+			},
+			search: false,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#banner_sort_grid_page',
+			sortname : 'reg_date',
+			sortorder : "asc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			recordpos : "left",
+			autowidth : true,
+			toolbarfilter: true,
+			height : 'auto',
+			shrinkToFit : true,
+			onCellSelect: function(rowid, contents, event) {
+			   if( $(".cbox:checked").length > 10) {
+					alert("10개 이상 선택할 수 없습니다.");
+					$('#banner_sort_grid').jqGrid('setSelection', rowid).prop('checkbox', false);
+				}
+			},
+			onSelectAll: function(rowid, contents, event) {
+				if( $(".cbox:checked").length > 11 ) {
+					alert("10개 이상 선택할 수 없습니다.");
+					$("#banner_sort_grid").jqGrid('resetSelection');
+				}
+			},
+			gridComplete: function(){		
+				jQuery("#banner_sort_grid").jqGrid( 'setGridWidth', $("#target_banner_sort_grid").width() );
+				$("#banner_sort_grid_count").text($("#banner_sort_grid").getRowData().length);
+								
+			}
+		});
+		$('#banner_sort_grid').jqGrid('sortableRows', {
+			update : function( e, html) {
+				console.log( html.itme[0].id);
+			}
+		});
+	
+	  	$("#banner_sort_grid").gridCss();
+	  	$("#banner_sort_grid_cb").css("border-left-width","0");
+	  	$("#banner_sort_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_banner_sort_grid_cb").css("padding","7px 0");
+	  	$("#banner_sort_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  			  
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#banner_sort_grid").jqGrid( 'setGridWidth', $("#target_banner_sort_grid").width() );
+		});
+	}
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+	
+</script>

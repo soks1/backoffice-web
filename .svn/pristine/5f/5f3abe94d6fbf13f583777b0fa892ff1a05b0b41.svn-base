@@ -1,0 +1,378 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-11" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 쿠폰북 상세 </h2>
+				</header>
+				<div id="width_target">
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="cpbook_type_cd_name"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">온라인몰, 매장 : </label>
+									<div class="col-md-2" style="padding-left: 1px;">
+										<span class="form-control cs-css-03" id="issue_chanel_cd_name"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">롯데마트몰 발행기기 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="issue_quipmnt_cd"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">브랜드 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="issue_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">사용지점 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="use_brnch_info_name"></span>
+									</div>
+								</div>
+								<div class="form-group" style="display:none;">
+									<label class="col-md-2 control-label cs-css-05">협력사: </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="ven_info_name"></span>
+									</div>
+								</div>
+								<div class="form-group" style="display:none;">
+									<label class="col-md-2 control-label cs-css-05">최대 선택 쿠폰수: </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="combo_max_sel_cnt"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">APP노출지점 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="use_psbt_brnch"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰북명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="cpbook_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰북 설명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="cpbook_desc_content"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">이미지 : </label>
+									<div class="col-md-10" id="cpbook_img">
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-12" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 대상쿠폰 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_coupon_grid" class="widget-body no-padding" style="overflow: auto;">
+						<table id="coupon_grid"></table>
+						<div id="coupon_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+function f_callCpBook() {
+	
+	var cpbook_data = { 
+		cpbook_id: "<%=LangUtil.replaceInjection(request.getParameter("cpbook_id"))%>", 
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+	};
+	
+	$.ajax({
+	    url: api_url+'/backoffice/couponbook/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(cpbook_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	$('#campaign_seg_cnt').html(obj.data.campaign_seg_cnt);
+	    	$('#cpbook_type_cd_name').html(obj.data.cpbook_type_cd_name);
+	    	$('#issue_chanel_cd_name').html(obj.data.issue_chanel_cd_name);
+	    	
+	    	if(obj.data.use_brnch_info_all_yn == 'Y') {
+	    		$('#use_brnch_info_name').html('전점 사용 가능');
+	    	} else {
+	    		$('#use_brnch_info_name').html('( '+obj.data.use_brnch_info_list.length+'개 지점 ) ' + obj.data.use_brnch_info_name);	
+	    	}
+	    	
+	    	if(obj.data.use_psbt_brnch_yn == 'Y') {
+	    		$('#use_psbt_brnch').html('[사용가능매장] ' + obj.data.use_psbt_excp_brnch_content);	
+	    	} else {
+	    		$('#use_psbt_brnch').html('[사용제외매장] ' + obj.data.use_psbt_excp_brnch_content);
+	    	}
+			
+	    	if(obj.data.cpbook_type_cd == 'B') {
+	    		$('#ven_info_name').parent().parent().show();
+	    		$('#ven_info_name').html(obj.data.ven_info_name);
+	    	}
+	    	
+	    	if(obj.data.smart_combo_coupon_yn == 'Y') {
+	    		$('#combo_max_sel_cnt').parent().parent().show();
+	    		$('#combo_max_sel_cnt').html(obj.data.combo_max_sel_cnt + '개');
+	    	}
+	    	
+	    	$('#issue_name').html(obj.data.issue_name);
+	    	$('#cpbook_nm').html(obj.data.cpbook_nm);
+	    	$('#cpbook_desc_content').html(obj.data.cpbook_desc_content);    	
+	    	
+	    	var chk_quipmnt = false;
+	    	if(obj.data.issue_quipmnt_cd_pc_yn == 'Y') {
+	    		$('#issue_quipmnt_cd').append('PC');
+	    		chk_quipmnt = true;
+	    	}
+			if(obj.data.issue_quipmnt_cd_mobile_yn == 'Y') {
+	    		if(chk_quipmnt) {
+	    			$('#issue_quipmnt_cd').append(' / 모바일');	
+	    		} else {
+	    			$('#issue_quipmnt_cd').append('모바일');
+	    		}
+	    	}
+
+	    	var tag_img = $('<img>').attr('src', obj.data.prvw_url).attr('alt',obj.data.mai_img_view_nm).addClass('img-responsive');
+	    	$('#cpbook_img').append(tag_img);
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	
+	f_callCpBook();
+	
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', run_jqgrid_function);
+
+	function run_jqgrid_function() {
+
+		jQuery('#coupon_grid').jqGrid({
+			url : api_url + '/backoffice/campaign/custgroup/couponbook/coupon/list',
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['No.', '이미지', '쿠폰번호', '쿠폰명', '쿠폰유형', '할인/적립 유형', '적용기준', '할인 상품', '조건 상품', '할인 적용 단계', '할인적립(금액/율/개수)' , '할인한도', '사용대상 하한금액', '사용대상 상한금액', '쿠폰1매당 적용 구매수량', '사용가능 일자', '쿠폰별 쿠폰북 매핑수'],
+			colModel : [
+				{ name : 'rnum', 					index : 'rnum',		 			align : 'center',	sortable : false},
+				{ 
+				  name : 'prvw_url',				index : 'prvw_url',			align : 'center',	sortable : false,
+					formatter: function(cellvalue, options, rowObject) {
+						if(cellvalue != '') {
+							var tag_img = '<img src="'+cellvalue+'" class="img-responsive">'; 
+							return tag_img;	
+						}
+						else {
+							var tag_img = '<img src="'+noImgPath+'" class="img-responsive">'; 
+							return tag_img;
+						}
+					}
+				},
+				{ name : 'coupon_id',					index : 'coupon_id',				align : 'center',	sortable : false	},
+				{ name : 'coupon_nm',					index : 'coupon_nm',				align : 'center',	sortable : false	},
+				{ name : 'coupon_cls_cd_name',			index : 'coupon_cls_cd_name',		align : 'center',	sortable : true		},
+				{ name : 'coupon_type_cd_name',			index : 'coupon_type_cd_name',		align : 'center',	sortable : false	},
+				{ name : 'coupon_apply_cond_cd_name',	index : 'coupon_apply_cond_cd_name',align : 'center',	sortable : false	},
+				{ name : 'prod_content',				index : 'prod_content',				align : 'center',	sortable : false	},
+				{ name : 'cond_prod_content',			index : 'cond_prod_content',		align : 'center',	sortable : false	},
+				{ name : 'cond_info_list',				index : 'cond_info_list',			align : 'center',	sortable : false,	
+					formatter: function(cellvalue, options, rowObject) {
+						var _cls_cd = rowObject['coupon_cls_cd'];
+			    		var _cp_type = rowObject['coupon_type_cd'];
+			    		
+						var cond_info = cellvalue;
+		    			var cond_html = '';
+		    			var _cond_val = "";
+				    		$.each(cond_info, function(i, item) {
+								_cond_val = item.cond_val_desc;
+								if(i == 0) {
+									cond_html  = cond_html +  _cond_val;
+								}else {
+									cond_html  = cond_html + '<br>' +  _cond_val;
+								}
+							});
+				    		if(_cls_cd == "B") {
+				    			if(_cp_type == 'A' || _cp_type == 'F' || _cp_type == 'J' || _cp_type == 'L') {
+				    				cond_html = rowObject.dc_savu_amt + ' %';
+				    			} else if(_cp_type == 'B' || _cp_type == 'G' || _cp_type == 'K' || _cp_type == 'M') {
+				    				cond_html = rowObject.dc_savu_amt + ' 원';
+				    			} else if(_cp_type == 'C' || _cp_type == 'H' || _cp_type == 'N') {
+				    				cond_html = rowObject.dc_savu_amt + ' 배';
+				    			} else if(_cp_type == 'D' || _cp_type == 'I' || _cp_type == 'E' || _cp_type == 'O') {
+				    				cond_html = rowObject.dc_savu_amt + ' P';
+				    			} else {
+				    				cond_html = rowObject.dc_savu_amt;
+				    			}
+				    		}
+		    			return cond_html;
+					}
+				},
+				{ name : 'cond_info_list',			index : 'cond_info_list',		align : 'center',	sortable : true,		
+					formatter: function(cellvalue, options, rowObject) {
+						if(cellvalue != '') {
+							
+							var cond_info = cellvalue;
+			    			var coupon_html = '';
+			    			var _coupon_val = "";
+			    			if(cond_info != "") {
+					    		$.each(cond_info, function(i, item) {
+					    			_coupon_val = item.coupon_val_desc;
+									if(i == 0) {
+										coupon_html  = coupon_html +  _coupon_val;
+									}else {
+										coupon_html  = coupon_html + '<br>' +  _coupon_val;
+									}
+								});
+			    				
+			    			}
+			    			return coupon_html;
+			    			
+						} else {
+							return '';
+						}
+					}
+				},
+				{ name : 'dc_lim_amt',				index : 'dc_lim_amt',			align : 'center',	sortable : false	},
+				{ name : 'use_to_lowst_amt',		index : 'use_to_lowst_amt',		align : 'center',	sortable : false	},
+				{ name : 'use_to_uper_amt',			index : 'use_to_uper_amt',		align : 'center',	sortable : false	},
+				{ name : 'coupon_apply_buy_qty',	index : 'coupon_apply_buy_qty',	align : 'center',	sortable : false	},
+				{ name : 'use_day_info',			index : 'use_day_info',			align : 'center',	sortable : false,	
+					formatter: function(cellvalue, options, rowObject) {
+						if(cellvalue != '') {
+							
+							var day_info = cellvalue;
+			    			var day_lst = day_info.split(",");
+			    			var day_html = '';
+			    			for(var x = 0; x < day_lst.length; x++) {
+			    				if(x != 0 && (x % 2) == 0) {
+			    					day_html = day_html + '<br>' + cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');
+			    				}
+			    				else {
+			    					if(x == 0) {
+			    						day_html = cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');	
+			    					}
+			    					else {
+			    						day_html = day_html + ', ' + cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');	
+			    					}
+			    				}
+			    			}
+			    			return day_html;
+			    			
+						} else {
+							return '';
+						}
+					}
+				},
+				{ name : 'mapp_freq_cnt', 			index : 'mapp_freq_cnt', 			align : 'center', 	sortable : false, }
+
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : 'coupon_id',
+				root : 		function(obj){ return obj.data.coupon_list; 		},	// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; 	},	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; 		}, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; 	}	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return 'params='+encodeURI(JSON.stringify(postData)); },
+			serializeGridData: function(postData) {	return 'params='+encodeURI(JSON.stringify(postData)); },
+			postData:{ 
+				search_info: '', 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				cpbook_id: '<%=LangUtil.replaceInjection(request.getParameter("cpbook_id"))%>'
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#coupon_grid_page',
+			sortname : 'reg_date',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : 'left',
+			multiselect : false,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : false,
+			gridComplete: function(){ }
+		});
+		jQuery('#coupon_grid').jqGrid('navGrid', '#coupon_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		$('#coupon_grid').gridCss();
+	  	$('#coupon_grid_cb').css('border-left-width','0');
+	  	$('#coupon_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_coupon_grid_cb').css('padding','7px 0');
+	  	$('#coupon_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#coupon_grid").jqGrid( 'setGridWidth', $("#target_coupon_grid").width() );
+		});
+	} 
+	// end function
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', dialog_pagefunction);
+</script>

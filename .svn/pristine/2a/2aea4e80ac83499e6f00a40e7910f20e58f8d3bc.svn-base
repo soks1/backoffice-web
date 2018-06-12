@@ -1,0 +1,228 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%> 
+<section id="widget-grid" class=""> 
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 메인 메뉴 노출 수정 </h2>
+				</header>
+				<div>
+				<form id="mainEditFrm">
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_main_control_edit_grid" class="widget-body no-padding">
+						<table id="main_control_edit_grid"></table>
+						<div id="main_control_edit_grid_page"></div>
+					</div>
+				</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<!-- <div id="campaign_info_rd" style="display: none;"></div> -->
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 메인 순서 이동
+/* ============================================================================================ */
+function main_contents_order(obj){
+	
+	var row = obj.parents("tr:first");
+    
+	if (obj.hasClass("order_up")) {
+		if(!row.prev().hasClass("jqgfirstrow"))
+			row.insertBefore(row.prev());
+	} else if (obj.hasClass("order_down")) {
+		row.insertAfter(row.next());
+	}
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', main_grid_function);
+
+	function main_grid_function() {
+		var pageWidth = $('#main_control_edit_grid').parent().width() - 100;
+
+		jQuery('#main_control_edit_grid').jqGrid({
+			url : api_url+'/backoffice/common/main/control/show',
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['No.', '카테고리', '쿠폰노출상태', '사용여부', '순서', '카테고리코드'],
+			colModel : [
+				{ name : 'ord_seq', 			index : 'ord_seq', 				align : 'center',	sortable : false, 	width : (pageWidth*(5/100))		},
+				{ name : 'main_item_nm',		index : 'main_item_nm', 		align : 'center',	sortable : false, 	width : (pageWidth*(20/100))}, 
+				{ name : 'view_yn', 			index : 'view_yn',			align : 'center', 	sortable : false,
+					formatter: function(cellvalue, options, rowObject) {
+						var radio = "";
+						// console.log(cellvalue)
+						if(cellvalue == "Y") {
+							radio = "<input type='radio' data-item='"+rowObject.main_item+"' name='"+rowObject.ord_seq+"_view_yn' value='Y' checked='checked'  /> 노출 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+		  					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='radio' data-item='"+rowObject.main_item+"' name='"+rowObject.ord_seq+"_view_yn' value='N'  /> 미노출";
+						}else {
+							radio = "<input type='radio' data-item='"+rowObject.main_item+"' name='"+rowObject.ord_seq+"_view_yn' value='Y'  /> 노출 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+		  					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='radio' data-item='"+rowObject.main_item+"' name='"+rowObject.ord_seq+"_view_yn' value='N'  checked='checked' /> 미노출";
+						}
+						  
+						  return radio;
+					  }
+				},
+				{ name : 'use_yn', 			index : 'use_yn',			align : 'center', 	sortable : false,
+					formatter: function(cellvalue, options, rowObject) {
+						var radio = "";
+						//console.log(cellvalue)
+						if(cellvalue == "Y") {
+							radio = "<input type='radio' data-item='"+rowObject.main_item+"' name='"+rowObject.ord_seq+"_use_yn' value='Y' checked='checked'  /> 사용 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+		  					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='radio' data-item='"+rowObject.main_item+"' name='"+rowObject.ord_seq+"_use_yn' value='N'  /> 미사용";
+						}else {
+							radio = "<input type='radio' data-item='"+rowObject.main_item+"' name='"+rowObject.ord_seq+"_use_yn' value='Y'  /> 사용 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+		  					+ "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='radio' data-item='"+rowObject.main_item+"' name='"+rowObject.ord_seq+"_use_yn' value='N'  checked='checked' /> 미사용";
+						}
+						
+						return radio;
+					}
+				}, 
+				{ name : 'mod_id_name', 		index : 'mod_id_name',			align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						  var btn = 
+						  		"<button class='cellbtn order_up' type='button' onclick='main_contents_order($(this));'>▲</button>&nbsp;"
+						  		+ "<button class='cellbtn order_down' type='button' onclick='main_contents_order($(this));'>▼</button>&nbsp;"
+						  return btn;
+					  }
+				},
+				{ name : 'main_item', index : 'main_item', hidden : true, width : 0	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : 'ord_seq',
+				root : 		function(obj){ return obj.data.main_info_list; },		// 루트가 될 데이터 셋 명칭
+			},
+			serializeRowData: function (postData) { 
+				return encodeURI('params='+JSON.stringify(postData)); 
+			},
+			serializeGridData: function(postData) { 
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{ 
+				empno: "${sessionScope.sessionEmpno}", 
+				emp_str_cd: "${sessionScope.sessionStrCd}",
+				target_gbn: "M"
+			},
+			pager : '#main_control_edit_grid_page',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : false,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left"
+		});
+		jQuery('#main_control_edit_grid').jqGrid('navGrid', '#main_control_edit_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		
+		$('#main_control_edit_grid').jqGrid('navButtonAdd','#main_control_edit_grid_page',{
+			caption: '취소',
+			id: 'cancel_button',
+			buttonicon: 'ui-icon-excel',
+			onClickButton: function(){
+				f_mainList();
+			}
+		});
+		
+		if('${sessionScope.menuAuth.U}' == 'Y') { 
+			$('#main_control_edit_grid').jqGrid('navButtonAdd','#main_control_edit_grid_page',{
+				caption: '수정',
+				id: 'run_button',
+				buttonicon: 'ui-icon-check',
+				onClickButton: function(){
+					var sort_list = [];
+					for (var i = 1; i < $("#main_control_edit_grid tr").length; i++) {
+						var sort_item = {};
+						sort_item['target_gbn'] = "M";
+						sort_item['main_item'] = $("#main_control_edit_grid tr").eq(i).find($(":radio:checked")).data().item;
+						sort_item['view_yn'] = $("#main_control_edit_grid tr").eq(i).find(":radio:checked").eq(0).val();
+						sort_item['use_yn'] = $("#main_control_edit_grid tr").eq(i).find(":radio:checked").eq(1).val();
+						sort_item['ord_seq'] = i;
+						
+						sort_list.push(sort_item);
+					}
+					
+					var data = {
+						empno: '${sessionScope.sessionEmpno}', 
+						chg_main_list : sort_list,
+					};
+					
+					$.ajax({
+						url: api_url + "/backoffice/common/main/control/update",
+						type: "post",
+						dataType: 'json',
+						contentType: "application/json;charset=utf-8", // POST 일때만 사용
+						data: JSON.stringify(data),
+						success: function(obj) {
+							alert(obj.message);
+							f_mainList();
+						},
+						error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+					    	return;
+					    }
+					});
+				}
+			});
+		}
+
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$('#main_control_edit_grid').gridCss();
+	  	$('#main_control_edit_grid_cb').css('border-left-width','0');
+	  	$('#main_control_edit_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_main_control_edit_grid_cb').css('padding','7px 0');	  	
+	  	$('#main_control_edit_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  	$("#main_control_edit_grid_page_center").hide();
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery('#main_control_edit_grid').jqGrid( 'setGridWidth', $('#target_main_control_edit_grid').width() );
+		});
+	} 
+	// end function
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+</script>

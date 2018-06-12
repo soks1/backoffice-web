@@ -1,0 +1,150 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-12" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 대상쿠폰 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_coupon_grid" class="widget-body no-padding" style="overflow: auto;">
+						<table id="coupon_grid"></table>
+						<div id="coupon_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+function f_callCpBook() {
+	
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+// 	var cpbook_data = { 
+<%-- 		cpbook_id: "<%=LangUtil.replaceInjection(request.getParameter("cpbook_id"))%>",  --%>
+<%-- 		upld_seq_no: "<%=LangUtil.replaceInjection(request.getParameter("upld_seq_no"))%>",  --%>
+// 		empno: '${sessionScope.sessionEmpno}', 
+// 		emp_str_cd: '${sessionScope.sessionStrCd}',
+// 		hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+// 	};
+	
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', run_jqgrid_function);
+
+	function run_jqgrid_function() {
+
+		jQuery('#coupon_grid').jqGrid({
+			url: api_url+"/backoffice/personalcoupon/show", //this is the submit URL
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['No.', '이미지', '쿠폰번호', '쿠폰명', '쿠폰유형', '상품', '할인적립(금액/율)', '할인한도', '사용대상 하한금액', '사용대상 상한금액', '쿠폰1매당 적용 구매수량'],
+			colModel : [
+				{ name : 'rnum', 					index : 'rnum',		 			align : 'center',	sortable : false},
+				{ 
+				  name : 'prvw_url',				index : 'prvw_url',			align : 'center',	sortable : false,
+					formatter: function(cellvalue, options, rowObject) {
+						if(cellvalue != '') {
+							var tag_img = '<img src="'+cellvalue+'" class="img-responsive">'; 
+							return tag_img;	
+						}
+						else {
+							var tag_img = '<img src="'+noImgPath+'" class="img-responsive">'; 
+							return tag_img;
+						}
+					}
+				},
+				{ name : 'coupon_id',				index : 'coupon_id',			align : 'center',	sortable : false	},
+				{ name : 'coupon_nm',				index : 'coupon_nm',			align : 'center',	sortable : false	},
+				{ name : 'apply_to_type_cd_name',	index : 'apply_to_type_cd_name',	align : 'center',	sortable : true	},
+				{ name : 'prod_content',			index : 'prod_content',			align : 'center',	sortable : false	},
+				{ name : 'dc_savu_amt',				index : 'dc_savu_amt',			align : 'center',	sortable : true		},
+				{ name : 'dc_lim_amt',				index : 'dc_lim_amt',			align : 'center',	sortable : false	},
+				{ name : 'use_to_lowst_amt',		index : 'use_to_lowst_amt',		align : 'center',	sortable : false	},
+				{ name : 'use_to_uper_amt',			index : 'use_to_uper_amt',		align : 'center',	sortable : false	},
+				{ name : 'coupon_apply_buy_qty',	index : 'coupon_apply_buy_qty',	align : 'center',	sortable : false	}
+
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : 'coupon_id',
+				root : 		function(obj){ return obj.data.coupon_list; 		},	// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; 	},	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; 		}, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; 	}	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return 'params='+encodeURI(JSON.stringify(postData)); },
+			serializeGridData: function(postData) {	return 'params='+encodeURI(JSON.stringify(postData)); },
+			postData:{ 
+				search_info: '', 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				cpbook_id: '<%=LangUtil.replaceInjection(request.getParameter("cpbook_id"))%>',
+				upld_seq_no: "<%=LangUtil.replaceInjection(request.getParameter("upld_seq_no"))%>"
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#coupon_grid_page',
+			sortname : 'reg_date',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : 'left',
+			multiselect : false,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : false,
+			gridComplete: function(){ }
+		});
+		jQuery('#coupon_grid').jqGrid('navGrid', '#coupon_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		$('#coupon_grid').gridCss();
+	  	$('#coupon_grid_cb').css('border-left-width','0');
+	  	$('#coupon_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_coupon_grid_cb').css('padding','7px 0');
+	  	$('#coupon_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#coupon_grid").jqGrid( 'setGridWidth', $("#target_coupon_grid").width() );
+		});
+	} 
+	// end function
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', dialog_pagefunction);
+</script>

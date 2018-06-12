@@ -1,0 +1,936 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 가맹점 수정 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmLifekok" class="form-horizontal">
+						<input type="hidden" name="empno" id="empno" value="${sessionScope.sessionEmpno}">
+						<input type="hidden" id="tenant_cd" name="tenant_cd" value="">
+						<input type="hidden" id="templ_yn" name="templ_yn" value="">
+						<input type="hidden" id="templ_id" name="templ_id" value="">
+						<input type="hidden" id="strge_nm" name="strge_nm" value="">
+						<input type="hidden" id="orgin_nm" name="orgin_nm" value="">
+						<input type="hidden" id="main_strge_nm" name="main_strge_nm" value="">
+						<input type="hidden" id="main_orgin_nm" name="main_orgin_nm" value="">
+						<input type="hidden" name="_templ_kind_cd" value="TENANTIMG">
+						<input type="hidden" id="biz_cate_cd" name="biz_cate_cd" value="">
+						<input type="hidden" id="login_vali_end_dy" name="login_vali_end_dy" value="">
+						<input type="hidden" id="latt_val" name="latt_val" value="">
+						<input type="hidden" id="lngt_val" name="lngt_val" value="">
+						<input type="hidden" id="tmp_up_addr" name="tmp_up_addr" value="">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">지점</label>
+										<div class="col-md-10">
+										<span class="form-control cs-css-03" id="str_nm"></span>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">이메일주소</label>
+										<div class="col-md-6">
+											<input class="form-control" type="text" id="tenant_user_email" name="tenant_user_email" data-valid-use="true" data-valid-symbol="false" data-valid-max="128" data-valid-title="이메일주소">
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">대표자명</label>
+										<div class="col-md-6">
+											<input class="form-control" type="text" id="presid_nm" name="presid_nm" data-valid-use="true" data-valid-symbol="false" data-valid-max="50" data-valid-title="대표자명">
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">							
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">가맹점 이미지</label>
+										<div class="col-md-2">
+											<div id="preview_uploadfile1" class="files">
+												<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+											</div>
+										</div>
+										<div class="col-md-3">
+											<span class="btn btn-success fileinput-button">
+											    <i class="glyphicon glyphicon-plus"></i>
+											    <span>파일선택</span>
+											    <input type="file" id="uploadfile1" name="uploadfile1">
+											</span>
+											<a href="javascript:f_lifekokOpenTenantEventTemplatesLD();" class="btn btn-primary btn-sm">이미지 선택</a>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label" style="width:140px !important">&nbsp;</label>
+										<div class="col-md-6">
+											<p id="_img_msg"><i class="fa fa-info-circle" ></i> '가맹점 이미지' , 사이즈:720px X 260px / 파일종류:jpg,gif,png / 최대파일용량:150kb</p>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">		
+									<div class="col-md-12">					
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">가맹점 메인노출<br/>이미지</label>
+										<div class="col-md-2">
+											<div id="preview_uploadfile2" class="files">
+												<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+											</div>
+										</div>
+										<div class="col-md-3">
+											<span class="btn btn-success fileinput-button">
+											    <i class="glyphicon glyphicon-plus"></i>
+											    <span>파일선택</span>
+											    <input type="file" id="uploadfile2" name="uploadfile2">
+											</span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label" style="width:140px !important">&nbsp;</label>
+										<div class="col-md-6">
+											<p id="_img_msg"><i class="fa fa-info-circle" ></i> '가맹점 메인 노출 이미지', 사이즈:214px X 214px / 파일종류:jpg,gif,png / 최대파일용량:150kb</p>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">			
+										<label class="col-md-1 control-label cs-css-05"  style="width:140px !important">가맹점명/업종</label>
+										<div class="col-md-10">
+											<span class="form-control cs-css-03" id="tenant_nm_biz_cate_cd_nm"></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">사업자 등록 번호</label>
+										<div class="col-md-2" style="border: 1px solid lightgray; padding:0; margin-left:12px; width:180px;">
+											<div class="col-md-2">
+												<input style="width:50px; padding:0; border:0px;" class="form-control" type="number" name="coregno_1" id="coregno_1" max="999" maxlength="3" oninput="maxLengthCheck(this)">
+											</div>	
+											<label class="col-md-1 control-label cs-css-05" style="width:20px !important">-</label>
+											<div class="col-md-1">
+												<input style="width:40px; padding:0; border:0px;" class="form-control" type="number" name="coregno_2" id="coregno_2" max="99" maxlength="2" oninput="maxLengthCheck(this)">
+											</div>	
+											<label class="col-md-1 control-label cs-css-05" style="width:20px !important">-</label>
+											<div class="col-md-1">
+												<input style="width:55px; padding:0; border:0px;" class="form-control" type="number" name="coregno_3" id="coregno_3" max="99999" maxlength="5" oninput="maxLengthCheck(this)">
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">가맹점 주소</label>
+										<div class="col-md-2">
+											<span class="form-control cs-css-03" id="tenant_post_no"></span>
+										</div>	
+										<div class="col-md-2">
+											<a href="javascript:f_open_find_post_noSD();" class="btn btn-default cs-css-05">우편번호찾기</a>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">상세 주소</label>
+										<div class="col-md-4">
+											<span class="form-control cs-css-03" id="up_addr"></span>
+										</div>
+										<div class="col-md-4">
+											<input class="form-control postcodify_details" type="text" name="dtl_addr" id="dtl_addr" data-valid-use="true" data-valid-symbol="false" data-valid-max="200" data-valid-title="상세주소" placeholder="상세주소를 입력해 주세요">
+										</div>	
+										<div class="col-md-1">
+											<a href="javascript:f_tenantAddr_gMap();" class="btn btn-default cs-css-05">지도에반영하기</a><br/><br/>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">쿠폰비밀번호</label>
+										<div class="col-md-10">
+											<span class="form-control cs-css-03" id="tenant_cpn_use_cd"></span>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">아이디</label>
+										<div class="col-md-10">
+											<span class="form-control cs-css-03" id="tenant_user_id"></span>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">휴대번호</label>
+										<div class="col-md-10">
+											<div class="col-md-4" style="width:190px">
+												<select class="form-control" id="cell_1" name="cell_1">
+													<option value="">선택</option>
+												</select>
+											</div>
+											<div class="col-md-4" style="width:100px;">
+												<input class="form-control _tel_numbers" type="number" name="cell_2" max="9999" maxlength="4" oninput="maxLengthCheck(this)">
+											</div>
+											<div class="col-md-4" style="width:100px;">
+												<input class="form-control _tel_numbers" type="number" name="cell_3" max="9999" maxlength="4" oninput="maxLengthCheck(this)">
+											</div>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">전화번호</label>
+										<div class="col-md-10">
+											<div class="col-md-4" style="width:190px">
+												<select class="form-control" id="tel_1" name="tel_1">
+													<option value="">선택</option>
+												</select>
+											</div>
+											<div class="col-md-4" style="width:100px;">
+												<input class="form-control _tel_numbers" type="number" name="tel_2" max="9999" maxlength="4" oninput="maxLengthCheck(this)">
+											</div>
+											<div class="col-md-4" style="width:100px;">
+												<input class="form-control _tel_numbers" type="number" name="tel_3" max="9999" maxlength="4" oninput="maxLengthCheck(this)">
+											</div>
+										</div>	
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">매장주소지도</label>
+										<div class="col-md-5" style="width:725px">
+											<div id="map_canvas" style="width:720px; height:350px;"></div>
+										</div>	
+										<div class="col-md-1">
+											<a href="javascript:f_tenantGroupChildEN_map_modify_submit();" class="btn btn-primary cs-css-05" style="width:100px">수정</a><br/><br/>
+											<a href="javascript:f_tenantGroupChildEN_map_modify_cancel();" class="btn btn-default cs-css-05" style="width:100px">취소</a>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">소개</label>
+										<div class="col-md-10">
+										<textarea class="form-control cs-css-03" rows="6" id="tenant_intro_content" placeholder="소개 내용을 등록해 주세요." data-valid-use="true" data-valid-symbol="false" data-valid-max="4000" data-valid-title="가맹점 소개"></textarea>
+										</div>	
+									</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label cs-css-05" style="width:140px !important">메뉴(서비스) 소개</label>
+										<div class="col-md-10">
+										<textarea class="form-control cs-css-03" rows="3" id="tenant_svc_desc" placeholder="메뉴(서비스) 내용을 등록해 주세요." data-valid-use="true" data-valid-symbol="false" data-valid-max="200" data-valid-title="가맹점 메뉴(서비스) 소개"></textarea>
+										</div>	
+									</div>
+								</div>
+								
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="form-actions">
+		<div class="row">
+			<div class="col-md-12">
+				<a href="javascript:f_tenantEN_cancel();" class="btn btn-default">취소</a>
+				<a href="javascript:f_tenantEN_submit();" class="btn btn-primary">저장</a>
+			</div>
+		</div>
+	</div>
+</section>
+<div id="open_find_post_noSD" style="display:none;"></div>
+<div id="templates_sd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/*
+ * ==================================================================================
+ * 상세주소 지도에 반영하기
+ * ==================================================================================
+ */
+
+function f_tenantAddr_gMap(){
+	
+	if($('#up_addr').text().length < 1){
+		alert('주소 입력 후 적용할 수 있습니다.');
+		return;
+	}
+	var address = $('#up_addr').text();
+	var tmp_address = $('#tmp_up_addr').val();
+		
+	var geocoder;
+	geocoder = new google.maps.Geocoder();
+	geocoder.geocode( { 'address': address}, function(results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+			var faddr_lat = results[0].geometry.location.lat();	//위도
+			var faddr_lng = results[0].geometry.location.lng();	//경도
+			$('#latt_val').val(faddr_lat);
+			$('#lngt_val').val(faddr_lng);
+			f_mapLoading(faddr_lat, faddr_lng)
+		} else {
+			geocoder.geocode( { 'address': tmp_address}, function(results, status) {
+				if (status == google.maps.GeocoderStatus.OK) {
+					var faddr_lat = results[0].geometry.location.lat();	//위도
+					var faddr_lng = results[0].geometry.location.lng();	//경도
+					$('#latt_val').val(faddr_lat);
+					$('#lngt_val').val(faddr_lng);
+					f_mapLoading(faddr_lat, faddr_lng)
+					alert('해당 주소의 정확한 좌표값을 찾을 수 없었습니다. 지도에는 근사치 값이 반영됩니다. 마커를 옮겨 정확한 위치를 지정해주세요.')
+				} else {
+					var faddr_lat = "";
+					var faddr_lng = "";
+					alert('해당하는 주소의 좌표값을 찾을 수 없습니다.');
+				}
+
+				return;
+			});
+		}
+
+		return;
+	});
+}
+
+/*
+ * ==================================================================================
+ * 우편번호 검색 팝업 호출
+ * ==================================================================================
+ */
+
+function f_open_find_post_noSD(){
+	$.ajax({
+		url: "/application/cooperateService/tenant/tenantFindPostnoSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#open_find_post_noSD');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#open_find_post_noSD').dialog('open');
+		}
+	});
+}
+/*
+ * ==================================================================================
+ * 우편번호 검색 팝업 화면 구문
+ * ==================================================================================
+ */
+ 
+$('#open_find_post_noSD').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	position : "top",
+	modal : true,
+	title : "<div class='widget-header'><h6> 우편번호 검색 </h6></div>"
+});
+
+
+/**
+ * ==================================================================================
+ * 업종 선택
+ * ==================================================================================
+ */
+ $('select[name=cate_]').change(function(){
+	if($('select[name=cate_]').val() == '01'){
+		$('._work_kind').hide();
+		$('._kind').val("");
+		$('#_k01').show();
+	}else if($('select[name=cate_]').val() == '02'){
+		$('._work_kind').hide();
+		$('._kind').val("");
+		$('#_k02').show();
+	}else if($('select[name=cate_]').val() == '03'){
+		$('._work_kind').hide();
+		$('._kind').val("");
+		$('#_k03').show();
+	}else if($('select[name=cate_]').val() == '04'){
+		$('._work_kind').hide();
+		$('._kind').val("");
+		$('#_k04').show();
+	}else{
+		$('._work_kind').hide();
+		$('._kind').val("");
+	}
+ });
+ 
+ 
+//전화번호 maxlength 체크
+function maxLengthCheck(object){
+ if (object.value.length > object.maxLength){
+  object.value = object.value.slice(0, object.maxLength);
+ }    
+}
+//
+//구글 지도====================================================================================
+//db에서 내려온 좌표를 특정 태그에 저장 한 후, 취소 할때마다 해당 좌표값으로 이동.
+//마커를 이동 한 후 '수정'버튼을 누르면 해당 마커가 위치한 좌표값을 태그에 새로 저장
+var marker;
+var map;
+function f_mapLoading(latitude, longitude) {
+	var myLatlng = new google.maps.LatLng(latitude, longitude);
+	
+	var myOptions = {
+		zoom: 16,
+// 		draggable: false,
+// 		zoomControl: false,
+// 		scrollwheel: false,
+		disableDoubleClickZoom: true,
+		center: myLatlng,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+
+	marker = new google.maps.Marker({ 
+		position: myLatlng, 
+		map: map,
+//		title: '마커',
+		draggable: true,
+		
+	});
+}
+var cnt = 0;
+var _cnt = 0;
+var c_cnt = 0;
+
+function f_tenantGroupChildEN_map_modify_submit(){ //수정
+	var lat = marker.getPosition().lat();
+	var lng = marker.getPosition().lng();
+	if(cnt < 1){
+		alert("옮겨진 마커가 적용됩니다. 새로운 위치는 '저장'후 app에 반영됩니다.");
+	}
+	cnt++;
+	$('#latt_val').val(lat);
+	$('#lngt_val').val(lng);
+	f_mapLoading(lat, lng);
+}
+function f_tenantGroupChildEN_map_modify_cancel(){ //취소
+	if(cnt == 0 && c_cnt < 1){
+		alert("기존 좌표로 돌아갑니다.");
+		c_cnt++;
+	}
+	if(cnt > 0 && _cnt < 1){
+		alert("가장 최근에 수정된 좌표로 이동합니다.");
+		_cnt++;
+	}
+	var latitude = $('#latt_val').val();
+	var longitude = $('#lngt_val').val();
+	f_mapLoading(latitude, longitude);
+}
+
+/**
+ * ==================================================================================
+ * 템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 템플릿 이미지 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=templ_list]:checked");
+			
+			$('input[name=templ_yn]').val('Y');			
+			$('input[name=orgin_nm]').val("");
+			$('input[name=strge_nm]').val("");
+			$('input[name=templ_id]').val(chk_obj.val());
+			
+			var v_nm = chk_obj.attr('img_view_nm');
+			//로컬
+// 			var img_path = chk_obj.attr('img_path').replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+			//개발
+			var img_path = chk_obj.attr('img_path');
+			var str_nm = chk_obj.attr('img_local_nm');
+			
+			$('#preview_uploadfile1').find('img').attr('src',img_path);			
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile1').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_uploadfile1');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_tenantEN_image_fileDelete('uploadfile1')").text('파일삭제');						
+			span.append(aTag);
+			
+			var btn_div = $("#uploadfile1").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#templates_sd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 이미지 파일 업로드
+/* --------------------------------------------------------------------------------------------
+/* 파일 업로드 이벤트 핸들러
+/* ============================================================================================ */
+$('#uploadfile1').change(function (e) {
+	
+	var limitWidth  = 720,
+		limitHeight = 260,
+		limitSize 	= 150;
+	
+	var intpuFile = $(this);
+	var file = this.files[0];
+    var reader = new FileReader();
+    var image  = new Image();
+	var boolFile = true;
+ 
+	reader.readAsDataURL(file);  
+    
+	reader.onload = function(_file) {
+        image.src    = _file.target.result;              // url.createObjectURL(file);
+        image.onload = function() {
+            var w = this.width,
+                h = this.height,
+                t = file.type,                           // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size/1024) +'KB';
+            
+            if(w > limitWidth || h > limitHeight){
+            	alert("제한 사이즈를 초과하셨습니다.( "+limitWidth+" * "+limitHeight+" )\n너비 : " + w + " 높이 : " + h);
+            }else if(s > limitSize){
+            	alert("제한 파일용량을 초과하셨습니다.( "+limitSize+" kb )\n파일용량 : " + s);
+            }else{
+            	f_tenantEN_image_fileUpload(intpuFile, "LKOKTENANT");
+            }
+        };
+        image.onerror= function() {
+        	alert("유효한 파일타입이 아닙니다. 이미지 파일(jpg,png,gif)을 등록해 주세요");
+//             alert('Invalid file type: '+ file.type);
+        };
+    };
+});
+
+$('#uploadfile2').change(function (e) {
+	
+	var limitWidth  = 214,
+		limitHeight = 214,
+		limitSize 	= 150;
+	
+	var intpuFile = $(this);
+	var file = this.files[0];
+    var reader = new FileReader();
+    var image  = new Image();
+	var boolFile = true;
+ 
+	reader.readAsDataURL(file);  
+    
+	reader.onload = function(_file) {
+        image.src    = _file.target.result;              // url.createObjectURL(file);
+        image.onload = function() {
+            var w = this.width,
+                h = this.height,
+                t = file.type,                           // ext only: // file.type.split('/')[1],
+                n = file.name,
+                s = ~~(file.size/1024);
+//                 s = ~~(file.size/1024) +'KB';
+            
+            if(w > limitWidth || h > limitHeight){
+            	alert("제한 사이즈를 초과하셨습니다.( "+limitWidth+" * "+limitHeight+" )\n너비 : " + w + " 높이 : " + h);
+            }else if(s > limitSize){
+            	alert("제한 파일용량을 초과하셨습니다.( "+limitSize+" kb )\n파일용량 : " + s);
+            }else{
+            	f_tenantEN_image_fileUpload(intpuFile, "LKOKTENANTMAIN","main");
+            }
+        };
+        image.onerror= function() {
+        	alert("유효한 파일타입이 아닙니다. 이미지 파일(jpg,png,gif)을 등록해 주세요");
+//             alert('Invalid file type: '+ file.type);
+        };
+    };
+});
+//---------------------------------------------------------------------------------------------------------------------------------------------------//
+
+/**
+ * 이미지 파일 업로드
+ * @param inputFile
+ * @param divnCd
+ */
+function f_tenantEN_image_fileUpload(inputFile, divnCd, inputSuffix) {
+	
+	if (inputSuffix == null) { 
+		inputSuffix = ""; 
+	}
+	var fileData = inputFile.get(0).files[0];
+	var formData = new FormData();
+
+	var preview = $('#preview_'+inputFile.attr('id'));
+	
+	if(preview.find('img').attr('src') != noImgPath) {
+		alert('기존 파일을 삭제하고 업로드 하시기 바랍니다.');
+		return;
+	}
+	
+	formData.append('file', fileData, encodeURI(fileData.name));
+	formData.append('file_divn_cd', divnCd);
+	formData.append('empno', $('#frmKeepData').find('input[name=empno]').val() );
+	
+	$.ajax({
+
+		//로컬
+// 		url: api_lifekok_img_url+"/lifekok/common/file/upload",
+		
+		//개발
+		url: api_lifekok_url+"/lifekok/common/file/upload",
+		
+		type: 'POST',
+		data: formData,
+        preprocessData: false,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(obj) {
+			
+			var _prvw_url = obj.data.prvw_url;
+			if(inputSuffix == "main"){
+				$('input[name=main_strge_nm]').val(obj.data.strge_nm);
+				$('input[name=main_orgin_nm]').val(fileData.name);
+				
+			}else{
+				$('input[name=strge_nm]').val(obj.data.strge_nm);
+				$('input[name=orgin_nm]').val(fileData.name);
+				$('input[name=templ_yn]').val('N');
+				
+			}
+			
+			//로컬
+// 			var _delivery_prvw_url = _prvw_url.replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+			
+			//개발
+			var _delivery_prvw_url = _prvw_url;
+			
+			preview.find('img').attr('src',_delivery_prvw_url);
+			
+			var fName = '<p class="alert alert-info bd0">'+fileData.name+'</p>';
+			preview.parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_'+inputFile.attr('id'));
+			var aTag = $('<a>')
+						.addClass('btn btn-danger btn-sm')
+						.attr('href','javascript:f_tenantEN_image_fileDelete(\''+inputFile.attr('id')+'\')')
+						.text('파일삭제');
+			
+			span.append(aTag);
+			// TODO: 추 후 필요한 정보는 더 추가 하여 입력 한다.
+			
+			var btn_div = inputFile.parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;       
+		}
+	});
+}
+/**
+ * 파일 삭제
+ * @param name
+ */
+function f_tenantEN_image_fileDelete(name) {
+	
+	if(name == "uploadfile1"){
+		$('input[name=strge_nm]').val("");
+		$('input[name=orgin_nm]').val("");
+		$('input[name=templ_id]').val("");
+		$('input[name=img_templ_id]').val("");
+		$('input[name=templ_yn]').val('');
+	}else if(name == "uploadfile2"){
+		$('input[name=main_strge_nm]').val("");
+		$('input[name=main_orgin_nm]').val("");
+	}
+	
+	var preview = $('#preview_'+name);
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_'+name).parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_'+name).remove();
+}
+/* ============================================================================================
+/* 저장 버튼 클릭 : 벨리데이션 체크 및 폼 전송
+/* ============================================================================================ */
+function f_tenantEN_submit(){
+	
+	var data = $('#frmLifekok').serializeFormObject();
+	
+	data['mod_type'] = 'ALL';
+	data['coregno'] = $('#coregno_1').val()+""+$('#coregno_2').val()+""+$('#coregno_3').val();
+	
+	if(data.cell_1 != "" && data.cell_2 != "" && data.cell_3 != ""){
+		data['tenant_user_cell_no'] = data.cell_1+ "-"+data.cell_2+"-"+data.cell_3;
+	}else if(data.cell_1 == "" && data.cell_2 == "" && data.cell_3 == ""){
+		//아무 값을 보내지 않음	. 필수값이 아니므로 아무 값을 보내지 않으면 기존 번호가 유지된다.
+	}else{
+		alert('휴대번호가 올바르게 지정되지 않았습니다.');
+		return;
+	}
+	if(data.tel_1 != "" && data.tel_2 != "" && data.tel_3 != ""){
+		data['tenant_rep_tel_no'] = data.tel_1+"-"+data.tel_2+"-"+data.tel_3;
+	}else if(data.tel_1 == "" && data.tel_2 == "" && data.tel_3 == ""){
+		//아무 값을 보내지 않음	. 필수값이 아니므로 아무 값을 보내지 않으면 기존 번호가 유지된다.
+	}else{
+		alert('전화번호가 올바르게 지정되지 않았습니다.');
+		return;
+	}
+	
+	data['tenant_intro_content'] = $('#tenant_intro_content').val();
+	data['tenant_svc_desc'] = $('#tenant_svc_desc').val();
+	data['post_no'] = $('#tenant_post_no').text();
+	data['road_name_addr'] = $('#up_addr').text();
+	
+	if(($('#coregno_1').val()+""+$('#coregno_2').val()+""+$('#coregno_3').val()).length < 10){
+		alert('사업자등록번호(열자리 번호)가 올바르게 입력되었는지 확인해 주세요.');
+		return;
+	}
+	
+	if($('#frmLifekok').formValid() ){
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+
+		if($('#kind01').val()+$('#kind02').val()+$('#kind03').val()+$('#kind04').val() == ""){
+			alert("카테고리/업종을 선택해 주세요");
+			return;
+		}
+		
+		
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+//	 		실제 데이터 전송
+			$.ajax({
+// 			    url: api_lifekok_img_url+'/backoffice/lifekok/tenant/modify',
+	 		    url: api_lifekok_url+'/backoffice/lifekok/tenant/modify',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+						var postData = {
+							tenant_cd: data.tenant_cd,
+							empno: '${sessionScope.sessionEmpno}'
+						};
+						var url = "/application/cooperateService/tenant/tenantRN.do";
+						var method = "GET";
+						cf_action(url, method, postData);
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});	
+			
+		} else {
+			return;
+		}
+}
+
+/* ============================================================================================
+/* 취소 버튼 클릭
+/* ============================================================================================ */
+function f_tenantEN_cancel(){
+	
+	var postData = {
+			empno		: $('#empno').val(),
+			tenant_cd	: $('#tenant_cd').val()
+	}
+	var url = "/application/cooperateService/tenant/tenantRN.do";
+	var method = "GET";
+	cf_action(url, method, postData);
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+
+	f_ajaxCellCode("cell_1");
+	f_ajaxPhoneCode("tel_1");
+	
+	f_ajaxBizCateCode("cate_");
+	f_ajaxBizCateCode("kind01");
+	f_ajaxBizCateCode("kind02");
+	f_ajaxBizCateCode("kind03");
+	f_ajaxBizCateCode("kind04");
+	
+	$.ajax({
+		
+		//로컬	    
+		url: api_lifekok_url+'/backoffice/lifekok/tenant/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	
+	    	$('#tenant_cd').val(detailData['tenant_cd']);
+	    	$('#login_vali_end_dy').val(detailData['login_vali_end_dy'].replace(/-/gi,""));
+	    	$('#str_nm').text(detailData['str_nm']);
+	    	$('#tenant_user_email').val(detailData['tenant_user_email']);
+	    	$('#presid_nm').val(detailData['presid_nm']);
+	    	$('#tenant_nm').val(detailData['tenant_nm']);
+	    	$('#tenant_user_id').text(detailData['tenant_user_id']);
+	    	$('#tenant_cpn_use_cd').text(detailData['cpn_use_cd']);
+	    	$("#tenant_nm_biz_cate_cd_nm").html(detailData['tenant_nm']+" / "+detailData['biz_cate_cd_nm']); //가맹점명 / 업종
+			$('#biz_cate_cd').val(detailData['biz_cate_cd']);	    	
+	  
+	    	
+			var c_no1 = detailData['coregno'].substring(0,3); 
+			var c_no2 = detailData['coregno'].substring(3,5); 
+			var c_no3 = detailData['coregno'].substring(5,10);
+			$('#coregno_1').val(c_no1);
+			$('#coregno_2').val(c_no2);
+			$('#coregno_3').val(c_no3);
+	    	
+			$('#tenant_post_no').text(detailData['tenant_post_no']);
+			if(detailData['lotno_addr'] != "" && detailData['road_name_addr'] == ""){
+				$('#up_addr').text(detailData['lotno_addr']);
+			}else{
+				$('#up_addr').text(detailData['road_name_addr']);
+			}
+			$('#dtl_addr').val(detailData['dtl_addr']);
+			
+	    	var _cell = detailData['tenant_user_cell_no'].split('-');
+			$('#cell_1').val(_cell[0]);
+			$('input[name=cell_2]').val(_cell[1]);
+			$('input[name=cell_3]').val(_cell[2]);
+			var _tel = detailData['tenant_rep_tel_no'].split('-');
+			$('#tel_1').val(_tel[0]);
+			$('input[name=tel_2]').val(_tel[1]);
+			$('input[name=tel_3]').val(_tel[2]);
+			$('#tenant_intro_content').val(detailData['tenant_intro_content']);
+			$('#tenant_svc_desc').val(detailData['tenant_svc_desc']);
+			
+			$('#latt_val').val(detailData['latt_val']);
+			$('#lngt_val').val(detailData['lngt_val']);
+	    	//좌표 이용 구글맵 표시
+	    	var latitude = detailData['latt_val']; 		//위도
+	    	var longitude = detailData['lngt_val'];	//경도
+	    	f_mapLoading(latitude, longitude);
+	    	
+			// 등록된 이미지 보여주기---------------------------------------------------------------
+
+	    	var _img_url = detailData['tenant_img_url'];
+	    	var _main_img_url = detailData['tenant_main_img_url'];
+	    	
+	    	if(_img_url.indexOf("null/null") == -1 && _img_url != ""){
+				var preview = $('#preview_uploadfile1');
+	
+// 		    	$('input[name=strge_nm]').val(obj.data.file_strge_nm);
+// 				$('input[name=orgin_nm]').val(obj.data.file_orgin_nm);
+				preview.find('img').attr('src',_img_url);			
+				var fName = '<p class="alert alert-info bd0">'+obj.data.file_orgin_nm+'</p>';
+				preview.parent().append(fName); 
+				
+				var span = $('<span>').addClass('btn_del_uploadfile1');
+				var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr('href','javascript:f_tenantEN_image_fileDelete(\'uploadfile1\')').text('파일삭제');			
+	
+				span.append(aTag);
+				
+				var btn_div = $("#uploadfile1").parent().parent();
+				btn_div.find("a").attr("disabled", true);
+				btn_div.find("span").attr("disabled", true);
+				btn_div.append(span);
+	    	}
+	    	
+	    	if(_main_img_url.indexOf("null/null") == -1 && _main_img_url != ""){
+				var preview = $('#preview_uploadfile2');
+	
+// 		    	$('input[name=main_strge_nm]').val(obj.data.main_strge_nm);
+// 				$('input[name=main_orgin_nm]').val(obj.data.main_orgin_nm);
+				preview.find('img').attr('src',_main_img_url);			
+				var fName = '<p class="alert alert-info bd0">'+obj.data.main_orgin_nm+'</p>';
+				preview.parent().append(fName); 
+				
+				var span = $('<span>').addClass('btn_del_uploadfile2');
+				var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr('href','javascript:f_tenantEN_image_fileDelete(\'uploadfile2\')').text('파일삭제');			
+	
+				span.append(aTag);
+				
+				var btn_div = $("#uploadfile2").parent().parent();
+				btn_div.find("a").attr("disabled", true);
+				btn_div.find("span").attr("disabled", true);
+				btn_div.append(span);
+	    	}
+	    	// 등록된 이미지 보여주기 끝---------------------------------------------------------------
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+};
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

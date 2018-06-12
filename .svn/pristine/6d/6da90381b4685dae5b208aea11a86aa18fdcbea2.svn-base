@@ -1,0 +1,365 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ * 공통 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_stampList() {
+	var url = "/application/stamp/stamp/stampLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_stampEdit() {
+	var url = "/application/stamp/stamp/stampEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#s_stamp_term_start_dd').getObjLength() > 0 ) {
+		if( $('#e_stamp_term_start_dd').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_stamp_term_start_dd').getObjLength() > 0 ) {
+		if( $('#s_stamp_term_start_dd').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#stamp_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#stamp_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#stamp_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#s_stamp_term_start_dd, #e_stamp_term_start_dd" ).datepicker( "option", {minDate: null, maxDate: null});
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#stamp_grid").jqGrid('setGridParam', {search: false});
+	$("#stamp_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#stamp_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+}
+
+/**
+ * ==================================================================================
+ * 스탬프 상세 화면 : 삭제 처리
+ * ==================================================================================
+ */
+function f_stampDelete() {
+	
+	if($('#aprv_sts_cd').val() == 'APPROVE') {
+		alert("승인상태의 스탬프는 삭제가 불가능합니다.");
+		return;
+	}
+	
+	if(confirm("스탬프를 삭제하시겠습니까?")) {
+		var select_ids = [$("#frmKeepData").find("input[name=stamp_id]").val()];
+		var data = {
+			stamp_id_list : select_ids,
+			empno: $("#frmKeepData").find("input[name=empno]").val(), 
+			emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+		};
+		
+		$.ajax({
+			url: api_url + "/backoffice/stamp/delete",
+			type: "POST",
+			async: false,
+			cache: true,
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_stampList();
+			},
+			error: function(obj) {
+				var serverObj = obj.responseJSON;
+				alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+				return;
+			}
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openStampCampaignSD() {
+	$.ajax({
+		url: "/application/stamp/stamp/stampCampaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#stamp_campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#stamp_campaign_sd').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 스탬프 상세 화면 : 승인요청 처리
+ * ==================================================================================
+ */
+function f_stampApprovalAsk() {
+	if(confirm("승인요청 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/stamp/approval/ask",
+			type: "POST",
+			async: true,
+			cache: false,
+			contentType: "application/json;charset=utf-8",
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/stamp/stamp/stampRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+			error: function(obj) {
+				var serverObj = obj.responseJSON;
+				alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+				return;
+			}
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 스탬프 상세 화면 : 승인 처리
+ * ==================================================================================
+ */
+function f_stampApprove() {
+	if(confirm("승인 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/stamp/approve",
+			type: "POST",
+			async: true,
+			cache: false,
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/stamp/stamp/stampRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+			error: function(obj) {
+				var serverObj = obj.responseJSON;
+				alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+				return;
+			}
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 스탬프 상세 화면 : 반려 처리
+ * ==================================================================================
+ */
+function f_stampReject() {
+	if(confirm("반려 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/stamp/reject",
+			type: "POST",
+			async: true,
+			cache: false,
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/stamp/stamp/stampRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+			error: function(obj) {
+				var serverObj = obj.responseJSON;
+				alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+				return;
+			}
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 스탬프 상세 화면 : 스탬프카드 강제 발행
+ * ==================================================================================
+ */
+function f_stampForcejoin() {
+	if(confirm("모든 회원에게 스탬프카드를 강제 발행하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/stamp/forcejoin",
+			type: "POST",
+			async: true,
+			cache: false,
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/stamp/stamp/stampRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+			error: function(obj) {
+				var serverObj = obj.responseJSON;
+				alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+				return;
+			}
+		});
+	}
+}
+
+/**
+ * 스탬프 미션 테이블 행삭제 (삭제시)
+ * @param targetTable
+ * @param toTable
+ */
+function cf_stampDelTableRow(targetTable) {
+	var del_row = 0;
+	$("#"+targetTable).find("input[type='checkbox']").each(function(i) {
+		if($(this).is(":checked")) {
+			var row = $(this).parent().parent();
+			row.remove();
+			del_row++;
+		}
+	});
+	var tbody_surfix = "1";
+	if (targetTable.indexOf("_2") != -1) {
+		tbody_surfix = "2";
+	}
+		
+	var targetCd = "prod";
+	
+	if (targetTable.indexOf("category") != -1) {
+		targetCd = "catg";
+	}
+	
+	var target_label = targetCd + "Count" + tbody_surfix;
+	$("#" + target_label).html((parseInt($("#" + target_label).html()) - del_row) + "");
+	
+}
+
+
+/**
+ * html특수문자 -> Text로 변환
+ * @param str
+ * 
+ */
+
+function strToText(str) {
+	if(str == null || str == "" || str == undefined)
+		return null;
+
+	var returnStr = str;
+	returnStr = returnStr.replaceAll("<br>", "\n");
+	returnStr = returnStr.replaceAll("&gt;", ">");
+	returnStr = returnStr.replaceAll("&lt;", "<");
+	returnStr = returnStr.replaceAll("&quot;", "\"");
+	returnStr = returnStr.replaceAll("&nbsp;", " ");
+	returnStr = returnStr.replaceAll("&amp;", "&");
+	returnStr = returnStr.replaceAll("&#8361;", "₩");
+	
+
+
+	return returnStr;
+}
+
+
+function backSlashToMoneySymbol(str) {
+	if(str == null || str == "" || str == undefined)
+		return "";
+	
+	
+	if (str.indexOf("\\") != -1) {
+		str = str.replaceAll("\\\\", "&#8361;");
+	}
+	
+	return str;
+	
+}
+
+

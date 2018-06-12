@@ -1,0 +1,299 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html('&#160;');
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰북 리스트 화면 이동
+ * ==================================================================================
+ */
+function f_couponBookList() {
+	var url = "/application/coupon/book/couponBookLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰북 수정 화면 이동
+ * ==================================================================================
+ */
+function f_couponBookEdit() {
+	var url = "/application/coupon/book/couponBookEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	var cpBookStrCd = $('#use_brnch_info_list').select2('val');
+	var use_brnch_info_list = $('#use_brnch_info_list').select2('data');
+	var brnch_info_name_list = "";
+	
+	if(use_brnch_info_list.length > 0) {
+		for(var i = 0; i < use_brnch_info_list.length; i++) {
+			if(i == 0) {
+				brnch_info_name_list += use_brnch_info_list[i].text;
+			} else {
+				brnch_info_name_list += ","+use_brnch_info_list[i].text;
+			}
+		}
+	}
+
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	var obj_cpbook_id = $("#frmSearch").find('input[name=cpbook_id]');
+	
+	if($('#frmSearch').searchValid() != true && cpBookStrCd.length < 1) {
+		alert('검색 조건을 입력해 주세요.');
+		return;
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 검색 초기화 버튼 추가
+	f_addButton();
+	
+	// 사용 지점 데이터 등록
+	$('input[name=use_brnch_info_list]').val(cpBookStrCd);
+	
+	// 검색 폼 데이터 추출
+	var searchData = $('#frmSearch').serializeFormObject();
+	searchData["brnch_info_name_list"] = brnch_info_name_list;
+	
+	// 검색 사용 중으로 변경
+	$('#coupon_book_grid').jqGrid('setGridParam', {search: true});
+	$("#coupon_book_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$('#coupon_book_grid').jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#btn_search').parent().append('<a href="javascript:void(0)" id="btn_cancel" onclick="f_cancel();" class="btn btn-warning"><i class="fa fa-remove"></i> 초기화 </a>');
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// KeepData 폼 안에 input 태그 삭제
+	$('#frmKeepData').empty();
+	// 검색 초기화 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#coupon_book_grid').jqGrid('setGridParam', {search: false});
+	$('#coupon_book_grid').jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$('#coupon_book_grid').jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$('#frmSearch').cleanObject();
+	
+	// 온라인 발행기기 UI 초기화
+	$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+	$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	$("#issue_quipmnt_cd_pc_yn").val("N");
+	$("#issue_quipmnt_cd_mobile_yn").val("N");
+	
+	// 사용지점 초기화
+	$('#use_brnch_info_list').select2("val","");
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 표지템플릿 파일 삭제 버튼 이벤트
+ * ==================================================================================
+ */
+function f_templateFileDelete() {
+	var preview = $('#preview_uploadfile');
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_uploadfile').parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_uploadfile').remove();
+	$('input[name=template_use_yn]').val('N');
+}
+
+function f_templateFileDelete2() {
+	var preview = $('#preview_uploadfile2');
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_uploadfile2').parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_uploadfile2').remove();
+	$('input[name=template_use_yn2]').val('N');
+}
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 표지 템플릿 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openTemplateSD() {
+	$.ajax({
+		url: "/application/coupon/book/templatesLD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#templates_sd');
+			$target.html(data);
+		}	
+	});
+	$('#templates_sd').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰별 쿠폰북 정보 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponBookRD(cpId) {
+	$.ajax({
+		url: "/application/coupon/coupon/couponBookRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data : {coupon_id : cpId},
+		success: function(data) {
+			var $target = $('#couponbook_info_rd');
+			$target.html(data);
+		}	
+	});
+	$('#couponbook_info_rd').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 상세 : 쿠폰북 삭제
+ * ==================================================================================
+ */
+function f_couponBookDel() {
+	
+	var select_ids = [$("#frmKeepData").find("input[name=cpbook_id]").val()];
+	var data = {
+		empno: $("#frmKeepData").find("input[name=empno]").val(), 
+		emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+		cpbook_id_list : select_ids
+	};
+	
+	$.ajax({
+		url: api_url + "/backoffice/couponbook/delete/check",
+		type: "POST",
+		contentType: "application/json;charset=utf-8", // POST 일때만 사용
+		async: false,
+		cache: true,
+		data: JSON.stringify(data),
+		success: function(obj) {
+			if(obj.data.delete_yn == 'N') {
+				alert('삭제 불가능한 쿠폰북입니다');
+				return;
+			}
+			else {
+				if(confirm("정말 삭제하시겠습니까?")) {
+					$.ajax({
+						url: api_url + "/backoffice/couponbook/delete",
+						type: "POST",
+						contentType: "application/json;charset=utf-8", // POST 일때만 사용
+						async: false,
+						cache: true,
+						data: JSON.stringify(data),
+						success: function(obj) {
+							alert(obj.message);
+							f_couponBookList();
+						},
+						error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+					    	return;
+					    }
+					});
+				}
+			}
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 쿠폰선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponSelectSD() {
+	$.ajax({
+		url: "/application/coupon/book/couponSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#coupon_select_sd');
+			$target.html(data);
+		}	
+	});
+	$('#coupon_select_sd').dialog('open');
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 대상 쿠폰 선택삭제 이벤트
+ * ----------------------------------------------------------------------------------
+ * 선택된 테이블 로우를 삭제 후 총 카운트 수 반영
+ * ==================================================================================
+ */
+function f_selectCouponDelete() {
+	cf_delTableRow('selectCoupon_tbody');
+	$("#couponCount").text(cf_getTrElementCount($("#selectCoupon_tbody")));
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 협력사 추가버튼 이벤트
+ * ----------------------------------------------------------------------------------
+ * 추가 버튼 클릭시 tagsinput에 데이터 등록
+ * ==================================================================================
+ */
+function f_addVenCd() { 
+	var select_id = $('#ven_cd').select2('data').id;
+	var select_text = $('#ven_cd').select2('data').text;
+	
+	$('.tagsinput').tagsinput('add', { id: select_id, text: select_text });
+	$('.tagsinput').tagsinput('refresh');
+}

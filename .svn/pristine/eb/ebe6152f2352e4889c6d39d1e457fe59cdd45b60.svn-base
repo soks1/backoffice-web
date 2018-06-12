@@ -1,0 +1,979 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>내가 만드는 M쿠폰북 발행 수정</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal"  id="frmSelCpbook" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<!-- <input type="hidden" name="campaign_id" value="" data-valid-use="true" data-valid-title="캠페인/고객군"> -->
+							<input type="hidden" name="campaign_id" value="" >
+							<input type="hidden" name="campaign_start_dy" value="">
+							<input type="hidden" name="campaign_end_dy" value="">
+							<input type="hidden" name="vali_term_start_dd" value=""> 	<!-- 유효기간 시작일 -->
+							<input type="hidden" name="vali_term_end_dd" value="">		<!-- 유효기간 시작일 -->
+							<!-- <input type="hidden" name="rep_img_sel_yn" value="N"> -->
+							<input type="hidden" name="issue_target" value="SELECT">		<!-- 생성유형 -->
+							<input type="hidden" name="cpbook_nm" value="">		<!-- 쿠폰북명 -->
+							<input type="hidden" name="cpbook_id" value="">		<!-- 쿠폰북명 -->
+							<input type="hidden" name="cpbook_desc_content" value="">		<!-- 쿠폰북상세 -->
+							<input type="hidden" name="custgp_cl_cpbook_id" value="">		<!-- 발행관리ID -->
+							<fieldset>
+								<div class="form-group" id="campaign_custgp">
+									<label class="col-md-1 control-label">캠페인/고객군<sup>*</sup></label>
+									<div class="col-md-11">
+										<!-- <div class="form-group">
+											<a href="javascript:f_openCampaignSD();" id="btn_campaign" class="btn btn-primary btn-sm">선택</a>
+											<a href="javascript:f_delCampaign();" class="btn btn-danger btn-sm">삭제</a>
+										</div> -->
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="campaign_id"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="campaign_term"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="custgp_cnt"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="campaign_nm"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-04" id="custgp_info"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 유형 <sup>*</sup></label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="cpbook_type_cd_name"></span>
+										<input type="hidden" name="cpbook_type_cd" />
+									</div>
+									<label class="col-md-1 control-label">온라인몰, 매장 <sup>*</sup></label>
+									<div class="col-md-3">
+										<select class="form-control" name="issue_chanel_cd" data-valid-use="true" data-valid-title="온라인몰, 매장">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<label class="col-md-2 control-label">롯데마트몰 발행기기</label>
+									<div class="col-md-2">
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" id="issue_quipmnt_cd_pc_yn" name="issue_quipmnt_cd_pc_yn" value="N" disabled="disabled">
+											  <span>PC</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" id="issue_quipmnt_cd_mobile_yn" name="issue_quipmnt_cd_mobile_yn" value="N" disabled="disabled">
+											  <span>모바일</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">브랜드 <sup>*</sup></label>
+									<div class="col-md-3">
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="lmart_issue_yn" value="N">
+											  <span>롯데마트</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="tru_issue_yn" value="N">
+											  <span>토이저러스</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" class="checkbox style-2" name="vic_issue_yn" value="N">
+											  <span>빅마켓</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">사용지점 <sup>*</sup></label>
+									<div class="col-md-6">
+										<input type="hidden" id="use_brnch_info_list" name="use_brnch_info_list" value="">
+									</div>
+									<div class="col-md-1">
+										<label class="checkbox-inline" >
+											  <input type="checkbox" class="checkbox style-2" id="use_brnch_info_all_yn" name="use_brnch_info_all_yn" value="N">
+											  <span>전체선택</span>
+										</label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">App노출지점 <sup>*</sup></label>
+									<div class="col-md-2">
+										<label class="radio radio-inline">
+											<input type="radio" name="use_psbt_brnch_yn" value="Y" data-valid-use="true" data-check-only="true" data-valid-title="App노출지점">
+											사용가능매장 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="use_psbt_brnch_yn" value="N" data-valid-use="true" data-check-only="true" data-valid-title="App노출지점">
+											사용제외매장 </label>
+									</div>
+									<div class="col-md-4">
+										<input class="form-control" name="use_psbt_excp_brnch_content" type="text" data-valid-use="true" data-valid-symbol="true" data-valid-title="App노출지점내용">
+									</div>
+								</div>
+								<div class="form-group cooperation" style="display: none;">
+									<label class="col-md-1 control-label">협력사 코드</label>
+									<div class="col-md-2">
+										<input type="hidden" id="ven_cd"/>
+									</div>
+									<div class="col-md-3">
+										<a href="javascript:f_addVenCd()" class="btn btn-primary btn-sm">추가</a><span id="cooperation_count"> 총 0개 업체 선택</span>
+									</div>
+									<label class="col-md-3 control-label"></label>
+									<label class="col-md-3 control-label"></label>
+								</div>
+								<div class="form-group cooperation" style="display: none;">
+									<label class="col-md-1 control-label"></label>
+									<div class="col-md-11">
+										<input class="form-control tagsinput" id="cooperation" value="" data-role="tagsinput">
+									</div>
+								</div>
+								<div class="form-group maxUseCoupon" style="display: none;">
+									<label class="col-md-1 control-label">최대 선택가능 쿠폰수</label>
+									<div class="col-md-1">
+										<input class="form-control" name="combo_max_sel_cnt" type="text" data-valid-num="true" data-valid-max="4" data-valid-title="최대 선택가능 쿠폰수">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">제목<sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="custgp_cl_cpbook_title" data-valid-use='true' data-valid-symbol='true' data-valid-max="500" data-valid-title='제목'>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">설명</label>
+									<div class="col-md-11">
+										<textarea class="form-control" name="custgp_cl_cpbook_desc" data-valid-max="500" data-valid-title='설명' rows="3"></textarea>
+										<!-- <input class="form-control" type="text" name="custgp_cl_cpbook_desc" data-valid-max="500" data-valid-title='설명'> -->
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">쿠폰북 유효기간<sup>*</sup></label>
+									
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input style="position: relative; z-index: 19;" class="form-control datepicker pr12 ta-c" type="text" id="evt_start_day" name="apply_start_dd" data-dateformat='yy-mm-dd' data-valid-use='true' data-valid-title="시작일 " data-valid-date='true' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input style="position: relative; z-index: 19;" class="form-control datepicker pr12 ta-c" type="text" id="evt_end_day" name="apply_end_dd" data-dateformat='yy-mm-dd' data-valid-use='true' data-valid-title="종료일 " data-valid-date='true' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group recipe_image_container">
+									<label class="col-md-1 control-label">롯데마트몰<sup>*</sup></label>
+									<div class="col-md-2">
+										<div class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%" id="lottemart_mall_image_preview">
+										</div>
+									</div>
+									<div class="col-md-3">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" name="recipe_image_mall" id="recipe_image_mall">   
+										</span>
+										<a href="javascript:f_openTemplateSD();" class="btn btn-primary btn-sm">표지템플릿 선택</a>
+										
+									</div>									
+														
+								</div>
+								
+								<div class="form-group recipe_image_container">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-11">
+										<p><i class="fa fa-info-circle"></i>사이즈: 260px X 260px  /  파일종류: jpg, gif, png  / 최대파일용량: 300KB</p>
+									</div>
+								</div>
+								<input type="hidden" name="template_use_yn" value="N"> 
+								<div class="form-group recipe_image_container">
+									<label class="col-md-1 control-label">M쿠폰앱<sup>*</sup></label>
+									<div class="col-md-2">
+										<div class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%" id="app_image_preview">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="recipe_image_app" name="recipe_image_app">
+										</span>
+									</div>
+								</div>
+								
+								<div class="form-group recipe_image_container">
+									<label class="col-md-1 control-label">&nbsp;</label>
+									<div class="col-md-11">
+										<p><i class="fa fa-info-circle"></i>사이즈: 260px X 260px  /  파일종류: jpg, gif, png  / 최대파일용량: 300KB</p>
+									</div>
+								</div>
+								<input type="hidden" name="template_use_yn2" value="N">
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">한도금액<sup>*</sup></label>
+									<div class="col-md-2">
+										<input class="form-control" type="text" id ="lim_amt" name="lim_amt" data-valid-max="7" data-valid-title='한도금액' maxlength="7">										
+									</div>
+									<label class="control-label">원</label>
+									
+								</div>
+								<hr/>
+								
+								
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_selCpBookIssueList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="templates_sd" style="display:none;"></div>
+<div id="dataPop" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+$(function(){
+	
+	
+	$("#lim_amt").keyup(function(event) {
+		$(this).val( $(this).val().replace(/[^0-9]/g,"") );	
+		
+		if (parseInt($(this).val()) > 1000000) {
+			$(this).val("1000000");
+		}
+	});
+	
+	$("#lim_amt").keypress(function(event) {
+		// $(this).val( $(this).val().replace(/[^0-9]/g,"") );
+		
+		if ($(this).val().length > 7) {
+			return false;
+		}
+	});
+	
+	$("#lim_amt").blur(function(event) {
+		$(this).val( cf_setComma($(this).val()));		
+	});
+});
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#evt_start_day').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#evt_end_day').datepicker('option','minDate', selected);
+            $('#evt_end_day').datepicker('option','maxDate', cf_termDate(90, selected));
+            $("input[name=vali_term_start_dd]").val($("#evt_start_day").val().replace(/-/g, ""));
+            //alert($("input[name=vali_term_start_dd]").val());
+        }
+    }, date_opts)
+);
+$('#evt_end_day').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#evt_start_day').datepicker('option','maxDate', selected);
+            $("input[name=vali_term_end_dd]").val($("#evt_end_day").val().replace(/-/g, ""));
+            //alert($("input[name=vali_term_end_dd]").val());
+        }
+    }, date_opts)
+);
+
+
+
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	if($('#frmSelCpbook').formValid()) {
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+
+		/* if($("#groupbuy_campaign_id").text().length == "0"){
+			alert("캠페인을 선택하세요.");
+			return;
+		} */
+		
+		// 온라인몰, 매장이 온라인 또는 온/오프라인일때 롯데마트몰 발행기기 확인
+		if( $('select[name=issue_chanel_cd]').children("option:selected").val() != 'OFFLINE' ) {
+			var issue_quipmnt_cd_pc_yn = 0;
+			if( $('input[name=issue_quipmnt_cd_pc_yn]').is(':checked') ) {
+				issue_quipmnt_cd_pc_yn++;
+			}
+			if( $('input[name=issue_quipmnt_cd_mobile_yn]').is(':checked') ) {
+				issue_quipmnt_cd_pc_yn++;
+			}
+			if(issue_quipmnt_cd_pc_yn < 1) {
+				alert('롯데마트몰 발행기기는 1개 이상 선택하셔야 합니다.');
+				return;
+			}
+		}
+		
+		// 온라인몰, 매장이 온라인 또는 온/오프라인일때 롯데마트몰 발행기기 확인
+		if( $('select[name=issue_chanel_cd]').children("option:selected").val() != 'OFFLINE' ) {
+			var issue_quipmnt_cd_pc_yn = 0;
+			if( $('input[name=issue_quipmnt_cd_pc_yn]').is(':checked') ) {
+				issue_quipmnt_cd_pc_yn++;
+			}
+			if( $('input[name=issue_quipmnt_cd_mobile_yn]').is(':checked') ) {
+				issue_quipmnt_cd_pc_yn++;
+			}
+			if(issue_quipmnt_cd_pc_yn < 1) {
+				alert('롯데마트몰 발행기기는 1개 이상 선택하셔야 합니다.');
+				return;
+			}
+		}
+		
+		// 발행처 3개중 1개는 무조건 선택 해야 함.
+		var issue_yn_cnt = 0;
+		if( $('input[name=lmart_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		if( $('input[name=tru_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		if( $('input[name=vic_issue_yn]').is(':checked') ) {
+			issue_yn_cnt++;
+		}
+		
+		if(issue_yn_cnt < 1) {
+			alert('브랜드 항목은 필수입니다.');
+			return;
+		}
+		
+		// 사용지점 전체 선택이 아닐때 지점 등록 확인
+		/*if( $('input[name=use_brnch_info_all_yn]').is(':checked') != true ) {
+			if( $('#use_brnch_info_list').select2('data').length < 1 ) {
+				alert('사용 지점을 등록해 주세요.');
+				return;
+			}
+		}*/
+		
+		
+		if ($('#evt_start_day').data('limitDate') > $('#evt_start_day').val().split('-').join('')) {
+            alert('시작일은 캠페인 기간을 초과하여 지정할 수 없습니다.');
+            $('#evt_start_day').focus();
+            return;
+        }
+
+		if ($('#evt_end_day').data('limitDate') < $('#evt_end_day').val().split('-').join('')) {
+            alert('종료일은 캠페인 기간을 초과하여 지정할 수 없습니다.');
+            $('#evt_end_day').focus();
+            return;
+        }
+		
+		if( !$("#lottemart_mall_image_preview").next().hasClass("alert")){
+    		alert("롯데마트몰 이미지를 등록해주세요.");
+    		return;
+    	}
+		
+		if( !$("#app_image_preview").next().hasClass("alert")){
+    		alert("M쿠폰앱 이미지를 등록해주세요.");
+    		return;
+    	}
+		
+		
+		if ($("#lim_amt").val() == "" || $("#lim_amt").val() == undefined) {
+			alert("한도 금액을 입력해 주세요.");
+    		return;
+		} else {
+			var limAmt = parseInt($("#lim_amt").val().replace(/\,/g,""));
+			if(limAmt == 0){
+	    		alert("한도 금액을 입력해 주세요.");
+	    		return;
+	    	}
+			
+			if( limAmt < 1000){
+	    		alert("천 원 이상 입력하세요.");
+	    		return;
+	    	}
+			
+			if( limAmt % 1000 > 0){
+	    		alert("천원 단위로 입력하세요.");
+	    		return;
+	    	}
+		}
+		
+				
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		
+			
+		// ---------------- 서버 전송 데이터 세팅 시작--------------------------//
+		// 히든값 설정
+    	$("input[name=vali_term_start_dd]").val($("#evt_start_day").val().replaceAll("-",""));
+    	$("input[name=vali_term_end_dd]").val($("#evt_end_day").val().replaceAll("-",""));
+    	$("input[name=cpbook_nm]").val("내가선택한M쿠폰북");
+    	$("input[name=cpbook_desc_content]").val("내가선택한 M쿠폰북");
+    	
+		var data = $('#frmSelCpbook').serializeFormObject();
+		var lst_custgp_id = [];
+				
+		$.each($("#custgp_info").text().split(","), function(i,items){
+			lst_custgp_id.push(items.split("-")[0].trim());
+		});
+		data.lst_custgp_id_list = lst_custgp_id;
+		data.thum_img_view_nm = data.img_orgin_file_nm;
+		data.thum_img_local_nm = data.img_strge_file_nm;
+		data.apply_start_dd = data.apply_start_dd.replaceAll("-","");
+		data.apply_end_dd = data.apply_end_dd.replaceAll("-","");
+		data.lim_amt = data.lim_amt.replace(/\,/g,"");
+		
+		if ($('input[name=template_use_yn]').val() == "N"	) {
+			$.extend(data, {
+				//'recipe_use_yn': $('input[name=recipe_yn]').is(':checked') ? 'Y' : 'N',
+				'file_divn_cd' : "IMG_SELCOUPONBOOK_LIST" ,
+				'img_orgin_file_nm': $('input[name=recipe_image_mall]').upload('fileinfo')['atch_file_nm'] || '',
+				'img_strge_file_nm': $('input[name=recipe_image_mall]').upload('fileinfo')['local_file_nm'] || ''
+			});	
+		}
+		if ($('input[name=template_use_yn2]').val() == "N"	) {
+			$.extend(data, {
+				//'recipe_use_yn': $('input[name=recipe_yn]').is(':checked') ? 'Y' : 'N',
+				'file_divn_cd2' : "IMG_SELCOUPONBOOK_LIST" ,
+				'img_orgin_file_nm2': $('input[name=recipe_image_app]').upload('fileinfo')['atch_file_nm'] || '',
+				'img_strge_file_nm2': $('input[name=recipe_image_app]').upload('fileinfo')['local_file_nm'] || ''
+			});	
+		}
+		
+				
+		// ---------------- 서버 전송 데이터 세팅 종료--------------------------//
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/selectcoupon/update',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(resultData){
+		    	alert(resultData["message"]);
+		    	f_selCpBookIssueList();
+		    },
+		    error: function(resultData) {
+		    	var serverObj = resultData["responseJSON"];
+		    	if (serverObj["data"] != "") {
+		    		alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["data"])+'\n');
+		    	} else {
+		    		alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	}
+		    	return;
+		    }
+		});			
+	} else {
+		return;
+	}
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰북 표지템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 표지템플릿 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=template_list]:checked");
+
+			var v_nm = chk_obj.attr('img_view_nm');
+			//var l_nm = chk_obj.attr('img_local_nm');
+			var img_path = chk_obj.attr('img_path');
+			var thum_path = chk_obj.attr('thum_path');			
+			
+			// 이미지1
+			$('#lottemart_mall_image_preview').attr('src',img_path);			
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#lottemart_mall_image_preview').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_uploadfile');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateFileDelete()").text('파일삭제');						
+			var template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			$('input[name=template_use_yn]').val('Y');			
+			var btn_div = $("#recipe_image_mall").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			// 이미지2
+			f_templateFileDelete2();
+			$('#app_image_preview').attr('src',thum_path);			
+			fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#app_image_preview').parent().append(fName); 
+			
+			span = $('<span>').addClass('btn_del_uploadfile2');
+			aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateFileDelete2()").text('파일삭제');			
+			template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id2').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			$('input[name=template_use_yn2]').val('Y');			
+			var btn_div = $("#recipe_image_app").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#templates_sd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ============================================================================================
+ * 체크 박스 선택에 따른 값 변경
+ * --------------------------------------------------------------------------------------------
+ * 체크 TRUE		: Y
+ * 체크 FALSE	: N
+ * ============================================================================================ 
+ */
+$(".checkbox").change(function() {
+	if($(this).is(':checked')) {
+		$(this).val("Y");
+// 		if($(this).attr("name") == "tru_issue_yn"){
+// 			$("input[name=vic_issue_yn]").attr("checked", false);
+// 			$("input[name=vic_issue_yn]").val("N");
+// 		} else if($(this).attr("name") == "vic_issue_yn"){
+// 			$("input[name=tru_issue_yn]").attr("checked", false);
+// 			$("input[name=tru_issue_yn]").val("N");
+// 		}
+	} else {
+		$(this).val("N");
+	}
+});
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 태그즈 인풋
+ * ==================================================================================
+ */
+$('.tagsinput').tagsinput({
+	itemValue: 'id',
+	itemText: 'text',
+	typeaheadjs: {
+		displayKey: 'text'
+	}
+});
+
+$('.tagsinput').on('itemAdded', function(event) {
+	var count = $('.tagsinput').tagsinput('items').length;
+	$('#cooperation_count').text(" 총 " + count + "개 업체 선택");
+});
+
+$('.tagsinput').on('itemRemoved', function(event) {
+	var count = $('.tagsinput').tagsinput('items').length;
+	$('#cooperation_count').text(" 총 " + count + "개 업체 선택");
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 협력사 코드
+ * ==================================================================================
+ */
+$("#ven_cd").select2({
+    placeholder: "협력사 코드 입력(6자리)",
+    minimumInputLength: 6,
+    width: '100%',
+    ajax: {
+        url: api_url + "/backoffice/common/partner/list",
+        dataType: 'json',
+        async: false,
+		cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            return encodeURI('params={"ven_cd":"'+term+'"}');
+        },
+        results: function (obj, page) {
+            var results = [];
+            $.each(obj.data.mst_list, function(index, item){
+              results.push({
+                id: item.ven_cd,
+                text: item.ven_nm
+              });
+            });
+            return {
+                results: results
+            };
+        }
+    },
+    escapeMarkup: function (m) { return m; } // we do not want to escape markup since we are displaying html in results
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 롯데마트몰 발행기기 선택 이벤트
+ * ==================================================================================
+ */
+$("select[name=issue_chanel_cd]").change(function(){
+	if($.trim($(this).val()) == '' ) {
+		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	}
+	else if($(this).val() !== 'OFFLINE') {
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", false);
+	}
+	else {
+		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	}
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 쿠폰북 유형 선택 이벤트
+ * ==================================================================================
+ */
+/* $("select[name=cpbook_type_cd]").change(function(){
+	if($(this).val() === 'B') {
+   		$(".cooperation").show();
+   		$(".maxUseCoupon").hide();
+   	} else if($(this).val() === 'C') {
+   		$(".maxUseCoupon").show();
+   		$(".cooperation").hide();
+   	} else {
+   		$(".cooperation").hide();
+   		$(".maxUseCoupon").hide();
+   	}
+}); */
+
+/* ============================================================================================
+/* 사용지점 전체선택 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 체크 TRUE	: 미션 수행 지점 입력박스 disalbe
+/* 체크 FALSE	: 미션 수행 지점 입력박스 enable
+/* ============================================================================================ */
+$('input[name=use_brnch_info_all_yn]').click(function(){
+    if($(this).is(':checked')){
+        $('#use_brnch_info_list').select2('enable', false);
+    } else {
+        $('#use_brnch_info_list').select2('enable', true);
+    }
+});
+
+/* ============================================================================================
+/* 사용지점 셀렉트 박스
+/* --------------------------------------------------------------------------------------------
+/* 미션수행지점 INPUT BOX 값으로 검색 결과 리스트 갱신
+/* ============================================================================================ */
+ $('#use_brnch_info_list').select2({
+	placeholder: '사용 지점 검색',
+    width: '100%',
+    multiple: true,
+    ajax: {
+        url: api_url + '/backoffice/common/branch/list',
+        dataType: 'json',
+        cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            var data = {
+                sys_type : 'BACKOFFICE',
+                svc_type : 'CPBOOK',
+                empno: '${sessionScope.sessionEmpno}',
+                hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+                use_type : 'USE_BRANCH',
+                str_cd : '${sessionScope.sessionStrCd}',
+                str_nm: term
+            };
+            return encodeURI('params='+JSON.stringify(data));
+        },
+        results: function (obj, page) {
+            var results = [];
+            $.each(obj.data.brnch_list, function(index, item){
+                results.push({
+                    id: item.str_cd,
+                    text: item.str_nm
+				});
+            });
+            return {
+                results: results
+            };
+        }
+    }
+});
+
+ 
+ 
+/* ============================================================================================
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 쿠폰북 유형
+	f_ajaxCPbookTypeCode($('select[name=cpbook_type_cd]'));
+	
+	// 초기데이터 로드 : 온라인몰, 매장
+	f_ajaxPublerCode($('select[name=issue_chanel_cd]'));
+	
+	// 본사여부에 다른 사용 지점
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#use_brnch_info_all_yn').attr('disabled', true);
+		$('#use_brnch_info_list').select2('enable', false);
+		var info_data = [];
+		var items = {};
+		items["id"] = '${sessionScope.sessionStrCd}';
+		items["text"] = '${sessionScope.sessionStrNm}';
+		info_data[0] = items;
+		$('#use_brnch_info_list').select2("data",info_data);
+	}
+	
+	$("select[name=cpbook_type_cd]").val("A");
+	$("select[name=cpbook_type_cd]").attr("disabled", "true");
+		
+	//$("#use_brnch_info_all_yn").attr("checked", "true");
+	//$("#use_brnch_info_all_yn").attr("disabled", "true");
+	$("#use_brnch_info_all_yn").click();
+	$("#use_brnch_info_all_yn").attr("disabled", "true");
+	
+	// 이미지영역 초기화
+	$('input[name=recipe_image_mall]').upload({'type': 'image/*', 'maxsize': 300, 'file_divn_cd': 'IMG_SELCOUPONBOOK_LIST', 'preview': '#lottemart_mall_image_preview'});
+	$('input[name=recipe_image_app]').upload({'type': 'image/*', 'maxsize': 300, 'file_divn_cd': 'IMG_SELCOUPONBOOK_LIST', 'preview': '#app_image_preview'});
+	
+	$.ajax({
+	    url: api_url+"/backoffice/selectcoupon/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	//alert(JSON.stringify(obj));
+	    	var searchData = Object.keys(obj.data);
+	    	for (var i = 0; i < searchData.length; i++) {
+	    		console.log("key : " + searchData[i]);
+	    		/* if ($("input[name=" + searchData[i] + "]").prop("tagName") != undefined) {
+	    			console.log("tagName : " + $("input[name=" + searchData[i] + "]").prop("tagName"));
+	    			$("input[name=" + searchData[i] + "]").val(eval("obj.data." + searchData[i]));
+	    		} */
+	    		if ($("#" + searchData[i]).prop("tagName") != undefined) {
+	    			console.log("tagName : " + $("#" + searchData[i]).prop("tagName"));
+	    			$("#" + searchData[i]).html(eval("obj.data." + searchData[i]));
+	    		}    		
+	    		
+	    	}
+	    	
+	    	$("input[name=custgp_cl_cpbook_id]").val(obj.data.custgp_cl_cpbook_id);
+	    	// 내가선택한M쿠폰북 발행관리명
+	    	$("input[name=custgp_cl_cpbook_title]").val(obj.data.custgp_cl_cpbook_title);
+	    	$("textarea[name=custgp_cl_cpbook_desc]").text(obj.data.custgp_cl_cpbook_desc);
+	    	
+	    	//쿠폰북 ID
+	    	$("input[name=cpbook_id]").val(obj.data.cpbook_id);
+	    	$("input[name=cpbook_nm]").val(obj.data.cpbook_nm);
+	    	// 고객군수
+	    	var custgp_info = obj.data.custgp_info;
+	    	if (custgp_info == "" || custgp_info == undefined || custgp_info == null) {
+	    		$("#custgp_cnt").text("0");
+	    	} else {
+	    		$("#custgp_cnt").text(custgp_info.split(",").length);	    		
+	    	}
+	    	
+	    	// 발행 채널
+	    	$("select[name=issue_chanel_cd]").val(obj.data.issue_chanel_cd);
+	    	
+	    	// 발행 기기
+	    	if (obj.data.issue_chanel_cd == null || obj.data.issue_chanel_cd == "") {
+	    		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+	    		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+	    		$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+	    		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	    	} else if (obj.data.issue_chanel_cd == "OFFLINE")  {
+	    		$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+	    		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+	    		$("#issue_quipmnt_cd_pc_yn").attr("disabled", true);
+	    		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", true);
+	    	} else {
+	    		$("#issue_quipmnt_cd_pc_yn").attr("disabled", false);
+	    		$("#issue_quipmnt_cd_mobile_yn").attr("disabled", false);
+	    		
+	    		if (obj.data.issue_quipmnt_cd == "PC" ) {
+	    			$("#issue_quipmnt_cd_pc_yn").attr("checked", true);
+	    			$("#issue_quipmnt_cd_pc_yn").val("Y");
+		    		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		    		$("#issue_quipmnt_cd_mobile_yn").val("N");
+	    		} else if (obj.data.issue_quipmnt_cd == "MOBILE") {
+	    			$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+	    			$("#issue_quipmnt_cd_pc_yn").val("N");
+		    		$("#issue_quipmnt_cd_mobile_yn").attr("checked", true);
+		    		$("#issue_quipmnt_cd_mobile_yn").val("Y");
+	    		} else if (obj.data.issue_quipmnt_cd == "PC/MOBILE") {
+	    			$("#issue_quipmnt_cd_pc_yn").attr("checked", true);
+	    			$("#issue_quipmnt_cd_pc_yn").val("Y");
+		    		$("#issue_quipmnt_cd_mobile_yn").attr("checked", true);
+		    		$("#issue_quipmnt_cd_mobile_yn").val("Y");
+	    		}else {
+	    			$("#issue_quipmnt_cd_pc_yn").attr("checked", false);
+	    			$("#issue_quipmnt_cd_pc_yn").val("N");
+		    		$("#issue_quipmnt_cd_mobile_yn").attr("checked", false);
+		    		$("#issue_quipmnt_cd_mobile_yn").val("N");
+	    		}
+	    	}
+	    	
+	    	// 브랜드 조회 값 세팅
+	    	if (obj.data.lmart_issue_yn == "Y") {
+	    		$("input[name=lmart_issue_yn]").attr("checked", true);
+	    		$("input[name=lmart_issue_yn]").val("Y");
+	    	} else {
+	    		$("input[name=lmart_issue_yn]").attr("checked", false);
+	    		$("input[name=lmart_issue_yn]").val("N");
+	    	}
+	    	
+	    	if (obj.data.tru_issue_yn == "Y") {
+	    		$("input[name=tru_issue_yn]").attr("checked", true);
+	    		$("input[name=tru_issue_yn]").val("Y");
+	    	} else {
+	    		$("input[name=tru_issue_yn]").attr("checked", false);
+	    		$("input[name=tru_issue_yn]").val("N");
+	    	}
+	    	
+	    	if (obj.data.vic_issue_yn == "Y") {
+	    		$("input[name=vic_issue_yn]").attr("checked", true);
+	    		$("input[name=vic_issue_yn]").val("Y");
+	    	} else {
+	    		$("input[name=vic_issue_yn]").attr("checked", false);
+	    		$("input[name=vic_issue_yn]").val("N");
+	    	}
+	    	
+	    	// 이미지 영역 조회결과 셋팅
+	    	$('input[name=recipe_image_mall]').upload('fileinfo', {
+				'atch_file_nm': obj.data.img_orgin_file_nm,
+				'local_file_nm': obj.data.img_strge_file_nm,
+				'prvw_url': obj.data.prvw_url
+			});
+	    	                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+	    	$('input[name=recipe_image_app]').upload('fileinfo', {
+				'atch_file_nm': obj.data.thum_orgin_file_nm,
+				'local_file_nm': obj.data.thum_strge_file_nm,
+				'prvw_url': obj.data.thum_url
+			});
+	    	
+	    	// 유효기간 설정
+	    	$("#evt_start_day").val(cf_cvtDateFormat(obj.data.vali_term_start_dd,'yyyy-MM-dd'));
+	    	$("#evt_end_day").val(cf_cvtDateFormat(obj.data.vali_term_end_dd,'yyyy-MM-dd'));
+	    	
+	    	//console.log("obj.data.use_psbt_brnch_yn : " + obj.data.use_psbt_brnch_yn);
+	    	//console.log($("input:radio[name=use_psbt_brnch_yn]:input[value="+obj.data.use_psbt_brnch_yn+"]").val());
+	    	// App 노출지점
+	    	$("input:radio[name=use_psbt_brnch_yn][value="+obj.data.use_psbt_brnch_yn+"]").attr("checked", true);
+	    	$("input:radio[name=use_psbt_brnch_yn]").attr("disabled", true);
+	    	$("input[name=use_psbt_excp_brnch_content]").val(obj.data.use_psbt_excp_brnch_content);
+	    	$("input[name=use_psbt_excp_brnch_content]").attr("disabled", true);
+	    	
+	    	// 한도금액
+	    	$("input[name=lim_amt]").val(cf_setComma(obj.data.lim_amt));
+	    	
+	    	// 쿠폰북 유형코드
+	    	$("input[name=cpbook_type_cd]").val(obj.data.cpbook_type_cd);
+	    	
+	    	// 캠페인 시작일자
+	    	$("input[name=campaign_start_dy]").val(obj.data.campaign_start_dy);
+	    	// 캠페인 종료일자
+	    	$("input[name=campaign_end_dy]").val(obj.data.campaign_end_dy);
+	    	$("input[name=campaign_id]").val(obj.data.campaign_id);
+	    	
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;	    	
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>

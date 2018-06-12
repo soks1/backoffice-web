@@ -1,0 +1,583 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<input type="hidden" id="empno" name="empno" value="${sessionScope.sessionEmpno}">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록지점</label>
+									<div class="col-md-2">
+										<select class="form-control" id="str_cd" name="str_cd" >
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">가맹점</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" id="tenant_nm" name="tenant_nm" data-valid-title="가맹점">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">적용시작일</label>
+									<div class="col-md-11">
+										<div class="input-group _type_week col-md-2">
+											<input class="form-control datepicker pr12 tac" type="text"  id="stts_date" name="stts_date" data-dateformat='yy-mm-dd' data-valid-date='true' data-valid-use='false' data-valid-title="시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group _type_day">
+											<input class="form-control datepicker pr12 tac" type="text"  id="date_from" name="date_from" data-dateformat='yy-mm-dd' data-valid-date='true' data-valid-use='false' data-valid-title="시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half _type_day">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="date_to" name="date_to" data-dateformat='yy-mm-dd' data-valid-date='true' data-valid-use='false' data-valid-title="종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-11 _type_month">
+										<div class="col-md-1" style="width:120px">
+											<select class="form-control md_control_" id="md_st_year" name="md_st_year">
+												<option value="">연도</option>
+											</select>
+										</div>
+										<div class="col-md-1" style="width:120px">
+											<select class="form-control md_control_" id="md_st_month" name="md_st_month">
+												<option value="">월</option>
+											</select>
+										</div>
+										<div class="col-md-1" style="width:50px">
+										<label class="col-md-1 control-label">~</label>
+										</div>
+										<div class="col-md-1" style="width:120px">
+											<select class="form-control md_control_" id="md_ed_year" name="md_ed_year">
+												<option value="">연도</option>
+											</select>
+										</div>
+										<div class="col-md-1" style="width:120px">
+											<select class="form-control md_control_" id="md_ed_month" name="md_ed_month">
+												<option value="">월</option>
+											</select>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_cooperateServiceSN_excel_down()" id="excel_down" class="btn btn-primary"><i class="fa fa-save"></i> 통계엑셀다운 </a>
+										<a href="javascript:void(0)" id="btn_search" onclick="f_cooperateServiceSN_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+							<input type="hidden" id="s_stts_dd" name="s_stts_dd">
+							<input type="hidden" id="e_stts_dd" name="e_stts_dd">							
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<!-- 			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-3" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false"> -->
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-3" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+					<h2>총 쿠폰 사용 통계</h2>				
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div class="form-group"  style="text-align: center;">
+					<label class="col-md-12 control-label center-block" id="_text_week" style="font-size:30px;">제휴서비스 주간 통계</label>
+					<label class="col-md-12 control-label center-block" id="_text_month" style="font-size:30px;">제휴서비스 월별 통계</label>
+					<label class="col-md-12 control-label center-block" id="_text_day" style="font-size:30px;">제휴서비스 일별 통계</label>
+					</div>
+					<div class="widget-body">
+						<div align="right" id="chart_canvas_txt_1"></div><hr/>
+						<div id="div_canvas_container_1">
+						<canvas id="chart_canvas_1" height="60"></canvas>
+						</div>
+						<div id="legend_chart_canvas_1"></div>
+					</div>
+					<div class="col-md-12 text-align-center">
+						<a href="javascript:void(0);" id="lifekok_cond_day" class="btn btn-sm bg-color-blue txt-color-white" style="width:120px">일별 통계</a>
+						<a href="javascript:void(0);" id="lifekok_cond_week" class="btn btn-sm bg-color-blueDark txt-color-white" style="width:120px">주간별 통계</a>
+						<a href="javascript:void(0);" id="lifekok_cond_month" class="btn btn-sm bg-color-blueDark txt-color-white" style="width:120px">월별 통계</a>
+					</div>
+					<div class="col-md-12 text-align-center"><label></label></div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="cooperateServiceExcelDownSD" style="display:none;"></div>
+
+<input type="hidden" id="terms_type" name="terms_type" value="day">
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js"></script>
+<script type="text/javascript">
+//달력 컨트롤
+$('input[name=date_from]').datepicker(
+    $.extend({
+    	maxDate : 0,
+    	onSelect: function(selected) {
+            $('input[name=date_to]').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('input[name=date_to]').datepicker(
+    $.extend({
+    	maxDate : 0,
+    	onSelect: function(selected) {
+            $('input[name=date_from]').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+); 
+
+pageSetUp();
+// api_url
+var _url = api_lifekok_url+"/backoffice/lifekok/stat/list";
+// API list object 추출
+var _list = function(obj){
+	return obj.data.stat_list;
+};
+
+// request param settting : api call, excel call
+var _data = function(){
+	
+	var data = {
+		empno: $('#empno').val(), 
+		terms_type : $("#terms_type").val(),
+		date_from : $('#date_from').val().replace(/-/gi,''),
+		date_to : $('#date_to').val().replace(/-/gi,''),
+		month_from : $('#md_st_year').val()+""+$('#md_st_month').val(),
+		month_to : $('#md_ed_year').val()+""+$('#md_ed_month').val(),
+		stts_date : $('#stts_date').val().replace(/-/gi,''),
+		str_cd : $('select[name=str_cd]').val(),
+		tenant_nm : $('#tenant_nm').val()
+	};
+	
+	return data;
+};
+
+//	오늘날짜 
+var Now = new Date();
+var NowTime = Now.getFullYear();
+NowTime += '-' + (Now.getMonth() + 1) ;
+NowTime += '-' + Now.getDate();
+//	$('#reg_date').html(NowTime);
+
+var NowYear = Now.getFullYear();
+var append_year = "";
+var append_month = "";
+
+//셀렉트박스 월 추가
+function f_addMonth(target){
+	var _month = 0;
+	for(var j = 0 ; j < 12 ; j++){
+		_month++;
+		if(_month < 10){
+			_month = "0"+""+_month;
+		}
+		append_month = "<option value='"+_month+"'>"+_month+"월</option>"; 
+		$('#'+target).append(append_month);
+	}	
+}
+
+//셀렉트박스 연도 추가
+function f_addYear(){
+	//연도 셀렉트박스 - 기간설정(올해부터 몇년 전까지 보여줄 것인가)
+	var YEAR_TERM = 10;
+	for(var i=0 ; i < YEAR_TERM ; i++){
+		append_year = "";
+		append_year = "<option value='"+NowYear+"'>"+NowYear+"년</option>";
+		$('#md_st_year').append(append_year);
+		$('#md_ed_year').append(append_year);
+		NowYear -= 1;
+	}
+}
+
+var pagefunction = function() {
+	
+	f_type_change('week');
+	$('input[name=stts_date]').val(cf_termDate(0));
+	
+	//월별 셀렉트 박스에 option 추가
+	f_addYear();
+	f_addMonth('md_st_month');
+	f_addMonth('md_ed_month');
+	
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCode("str_cd");
+// 	f_ajaxTenantCode("tenant_cd");
+	
+	// 엑셀 다운로드 본사일 경우만 버튼 존재
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#excel_down').remove();	
+	}
+
+	// 서버 통신
+	f_cooperateServiceSN_ajaxSubmit();
+
+};
+/* ============================================================================================
+/* Server와 통신 
+/* ============================================================================================ */
+function f_cooperateServiceSN_ajaxSubmit() {
+	var data = _data();
+	
+// //	실제 데이터 전송
+	$.ajax({
+		url : _url,
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    success: function(obj){
+	    	var list = _list(obj);
+	    	
+	    	// 차트 텍스트 세팅
+	    	f_cooperateServiceSN_setChartTxt();
+	    	// chart
+	    	drawChart(list);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+} 
+/* ============================================================================================
+/* Chart 생성
+/* ============================================================================================ */
+var _total_use_coupon_cnt = 0;
+
+function drawChart(dataset){
+
+	var _label = [];
+	var _data1 = [];
+	var _data2 = [];
+	var _data3 = [];
+// 	var _data4 = [];
+// 	var _data5 = [];
+	var value_spacing = 300;
+	
+	_total_use_coupon_cnt = 0;
+	
+	for(var nRow=0; nRow<dataset.length; nRow++){
+		// Chart 데이터 처리 시작 =========================
+		var _dayType = "";
+		if($("#terms_type").val() == 'day' || $("#terms_type").val() == 'week'){
+			_dayType = dataset[nRow].day.split('-')[0]+"년 "+dataset[nRow].day.split('-')[1]+"월 "+dataset[nRow].day.split('-')[2]+"일";
+		}
+		if($("#terms_type").val() == 'month'){
+			_dayType =  dataset[nRow].month.split('-')[0]+"년 "+dataset[nRow].month.split('-')[1]+"월";
+		}
+			
+		_label[nRow] = _dayType;
+		_data1[nRow] = dataset[nRow].use_coupon_cnt;
+		_data2[nRow] = dataset[nRow].bookmk_cnt;
+		_data3[nRow] = dataset[nRow].like_cnt;
+		_total_use_coupon_cnt += dataset[nRow].use_coupon_cnt;
+		// Chart 데이터 처리 시작 =========================
+	}	
+	
+// 	if(dataset.length > 2) {
+		value_spacing = value_spacing / dataset.length;
+// 	}
+	
+    var chart1_data = {
+	 	labels: _label,
+        datasets: [
+	 		{
+	            label: "쿠폰사용",
+	            fillColor: "rgba(79,129,189,1)",
+	            strokeColor: "rgba(79,129,189,1)",
+	            highlightFill: "rgba(79,129,189,0.8)",
+	            highlightStroke: "rgba(79,129,189,0.8)",
+	            //data: [240, 80, 15, 75]
+	 			data: _data1
+	        }
+	 		,
+	        {
+	            label: "찜하기",
+	            fillColor: "rgba(192,80,77,1)",
+	            strokeColor: "rgba(192,80,77,1)",
+	            highlightFill: "rgba(192,80,77,0.8)",
+	            highlightStroke: "rgba(192,80,77,0.8)",
+	            //data: [135, 125, 30, 10]
+	        	data: _data2
+	        }
+	 		,
+	        {
+	            label: "좋아요",
+	            fillColor: "rgba(155,187,89,1)",
+	            strokeColor: "rgba(155,187,89,1)",
+	            highlightFill: "rgba(155,187,89,0.8)",
+	            highlightStroke: "rgba(155,187,89,0.8)",
+	            //data: [135, 125, 30, 10]
+	        	data: _data3
+	        }
+// 	 		,
+// 	 		{
+// 	            label: "승인요청수",
+// 	            fillColor: "rgba(128,73,255,1)",
+// 	            strokeColor: "rgba(128,73,255,1)",
+// 	            highlightFill: "rgba(128,73,255,0.8)",
+// 	            highlightStroke: "rgba(128,73,255,0.8)",
+// 	            //data: [140, 170, 96, 65, 60]
+// 	        	data: _data4
+// 	        }
+// 	 		,
+// 	        {
+// 	            label: "승인처리수",
+// 	            fillColor: "rgba(176,239,37,1)",
+// 	            strokeColor: "rgba(176,239,37,1)",
+// 	            highlightFill: "rgba(176,239,37,0.8)",
+// 	            highlightStroke: "rgba(176,239,37,0.8)",
+// 	            //data: [140, 170, 96, 65, 60]
+// 	        	data: _data5
+// 	        }
+        ]
+	};
+
+    var chart1_options = {
+		    scaleBeginAtZero : true,
+		    scaleShowGridLines : true,
+		    scaleGridLineColor : "rgba(0,0,0,.05)",
+		    scaleGridLineWidth : 1,
+		    barShowStroke : true,
+		    barStrokeWidth : 1,
+		    barValueSpacing : value_spacing,
+		    barDatasetSpacing : 2,
+	        responsive: true
+	};
+
+		if (window.barChart1){ 
+	        window.barChart1.destroy();
+	    }
+        var bar_chart1 = document.getElementById("chart_canvas_1").getContext("2d");
+        barChart1 = new Chart(bar_chart1).Bar(chart1_data, chart1_options);
+        legend($("#legend_chart_canvas_1"), chart1_data);        
+}
+/* ============================================================================================
+/* Chart 우상단 Text Setting
+/* ============================================================================================ */
+function f_cooperateServiceSN_setChartTxt(){
+	// 발행일 기준 text setting
+	$('#chart_canvas_txt_1').html('※ 총 쿠폰 사용량 : ' +  _total_use_coupon_cnt);    
+}
+
+	
+/* ============================================================================================
+/* 달력 초기 데이터 설정
+/* ============================================================================================ */
+function f_cooperateServiceSN_setCalendar(){
+
+	$('#date_from').datepicker("option", "maxDate", $("#date_to").val());
+	$('#date_to').datepicker("option", "minDate", $("#date_from").val());
+}
+/**
+ * ==================================================================================
+ * calendar reset function
+ * ==================================================================================
+ */
+function f_cooperateServiceSN_resetCalendar(){
+	
+	
+	$('input[name=date_from]').val(cf_termDate(-7));
+	$('input[name=date_to]').val(cf_termDate(-1));
+	f_cooperateServiceSN_search();
+}
+/**
+ * ==================================================================================
+ * 검색  이벤트
+ * ==================================================================================
+ */
+function f_cooperateServiceSN_search() {
+	
+	var _vali = 0;
+	if($('#terms_type').val() == "day" && ($('#date_from').val() == "" || $('#date_to').val() == "")){
+		_vali++;
+	}else if($('#terms_type').val() == "month" && ($('#md_st_year').val() == "" || $('#md_st_month').val() == ""|| $('#md_ed_year').val() == ""|| $('#md_ed_month').val() == "")){
+		_vali++;
+	}else if($('#terms_type').val() == "week" && $('#stts_date').val() == ""){
+		_vali++;
+	}
+	if(_vali > 0 ){
+		alert("적용시작일을 설정해 주세요");
+		return;
+	}
+	
+	if($('#terms_type').val() == "day"){
+		var _s_d_arr = $('#date_from').val().split('-');
+		var _e_d_arr = $('#date_to').val().split('-');
+		var diff = new Date(_e_d_arr[0],_e_d_arr[1],_e_d_arr[2]) - new Date(_s_d_arr[0],_s_d_arr[1],_s_d_arr[2]);
+		var currDay = 24*60*60*1000;
+		var s_e_diff = parseInt(diff/currDay);
+		if(s_e_diff > 31){
+			alert('31일 이상의 기간은 일별 조회할 수 없습니다. 월별 통계를 이용해 주세요.');
+			return;
+		}
+	}
+	
+	if($('#terms_type').val() == "month"){
+		var _startYearMonth = $('#md_st_year').val() + "" + $('#md_st_month').val();
+		var _endYearMonth = $('#md_ed_year').val() + "" + $('#md_ed_month').val();
+		if(_startYearMonth > _endYearMonth){
+			alert("조회 기간 순서를 맞춰주세요. 조회 마지막 년/월은 시작 년/월보다 빠르게 설정할 수 없습니다.");
+			return;
+		}
+	}
+	
+	$("#btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cooperateServiceSN_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+	f_cooperateServiceSN_ajaxSubmit();	
+}
+
+/**
+ * ==================================================================================
+ * 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cooperateServiceSN_cancel() {
+	// 검색 폼의 항목들 초기화
+	f_terms_reset();
+	f_type_change('week');
+	$('input[name=stts_date]').val(cf_termDate(-3));
+	$("#btn_cancel").remove();
+
+	f_cooperateServiceSN_ajaxSubmit();	
+}
+/**
+ * ==================================================================================
+ * 기간항목 초기화
+ * ==================================================================================
+ */
+function f_terms_reset(){
+	$("#str_cd").val("");
+	$("#tenant_nm").val("");
+	$("#stts_date").val("");
+	$("#md_st_year").val("");
+	$("#md_st_month").val("");
+	$("#md_ed_year").val("");
+	$("#md_ed_month").val("");
+	$('#date_from').datepicker("option", "maxDate", $("#date_to").val());
+	$('#date_to').datepicker("option", "minDate", $("#date_from").val());
+}
+ 
+/**
+ * ==================================================================================
+ * 기간설정 show / hide : 월/주/일
+ * ==================================================================================
+ */
+function f_type_change(target){ 
+	var _type = [];
+	_type.push('day');
+	_type.push('week');
+	_type.push('month');
+	for(var k=0 ; k < _type.length ; k++){
+		if(target == _type[k]){
+			$('._type_'+_type[k]).show();
+			$("#terms_type").val(_type[k]);
+			$('#lifekok_cond_'+_type[k]).removeClass("bg-color-blueDark");
+			$('#lifekok_cond_'+_type[k]).addClass("bg-color-blue");
+			$('#_text_'+_type[k]).show();
+		}else{
+			$('._type_'+_type[k]).hide();
+			$('#lifekok_cond_'+_type[k]).removeClass("bg-color-blue");
+			$('#lifekok_cond_'+_type[k]).addClass("bg-color-blueDark");
+			$('#_text_'+_type[k]).hide();
+		}
+	}
+}
+/**
+ * ==================================================================================
+ * 월간,일간,시간 조회 버튼 관련 control function
+ * ==================================================================================
+ */
+$('a').click(function(){
+	var vbtn_id = $(this).attr('id');
+	if(vbtn_id=='lifekok_cond_month'){ //월별 통계 버튼
+		f_terms_reset();
+		f_type_change('month');
+		$("#md_st_year").val(cf_termDate(-180).split('-')[0]);
+		$("#md_st_month").val(cf_termDate(-180).split('-')[1]);
+		$("#md_ed_year").val(cf_termDate(-1).split('-')[0]);
+		$("#md_ed_month").val(cf_termDate(-1).split('-')[1]);
+		f_cooperateServiceSN_ajaxSubmit();
+		
+	} else if(vbtn_id=='lifekok_cond_day'){ //일별 통계 버튼
+		f_terms_reset();
+		f_type_change('day');
+		$('input[name=date_from]').val(cf_termDate(-29));
+		$('input[name=date_to]').val(cf_termDate(0));
+		f_cooperateServiceSN_ajaxSubmit();
+		
+	} else if(vbtn_id=='lifekok_cond_week'){ //주간별 통계 버튼
+		f_terms_reset();
+		f_type_change('week');
+		$('input[name=stts_date]').val(cf_termDate(0));
+		f_cooperateServiceSN_ajaxSubmit();
+	} 
+});
+
+/**
+ * ==================================================================================
+ * 통계엑셀다운 버튼 : 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_cooperateServiceSN_excel_down(){
+	$.ajax({
+		url: "/application/stats/cooperateService/cooperateServiceExcelDownSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#cooperateServiceExcelDownSD');
+			$target.html(data);
+		}	
+	});
+	$('#cooperateServiceExcelDownSD').dialog('open');
+}
+/**
+ * ==================================================================================
+ * 통계엑셀다운 버튼 : 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#cooperateServiceExcelDownSD').dialog({
+	autoOpen : false,
+	width : 450,
+	minHeight: 100,
+	resizable : false,
+	position : "top",
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 통계 엑셀 다운로드 </h6></div>",
+});
+
+
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", function(){
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/chartjs/chart.min.js", pagefunction);
+});
+</script>

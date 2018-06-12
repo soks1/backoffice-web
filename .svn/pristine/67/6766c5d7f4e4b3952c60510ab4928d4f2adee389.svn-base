@@ -1,0 +1,59 @@
+/**
+* ==================================================================================
+* 가맹점 검색 액션(function search member name)
+* ==================================================================================
+*/
+function f_commMchtSearch() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	if(!$("#frmMchtSearch").searchValid()) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmMchtSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#mcht_jqgrid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#mcht_jqgrid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#mcht_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+* ==================================================================================
+* 기관 검색 액션(function search frmCommInstiSearch)
+* ==================================================================================
+*/
+function f_commInstiSearch() {
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if(!$("#frmInstiSearch").searchValid()) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+
+	// 초기화 버튼 추가
+	//f_appcacheAddButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmInstiSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#insti_jqgrid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#insti_jqgrid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#insti_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}

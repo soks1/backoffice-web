@@ -1,0 +1,444 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>쿠폰진 발행 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+							<input type="hidden" id="saved_end_hhmm" name="saved_end_hhmm">
+							<input type="hidden" id="evnt_id">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="campaign_id"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="campaign_dy"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="custgp_list_cnt"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="campaign_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-04" id="custgp_list"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05 ">제목:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpzine_title"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">설명:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpzine_desc"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북구분:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpbook_gbn"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰진구분:</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpzine_gbn"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">적용기간</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="from_open_date"></span>
+									</div>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="apply_start_dd"></span>
+									</div>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="apply_end_dd"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">대표이미지</label>
+									<div class="col-md-11" id="thum_img">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">컨텐츠 노출</label>
+									<div class="col-md-10">
+										<label class="checkbox-inline">
+											<input type="checkbox" disabled="disabled" name="recipe_use_yn" id="recipe_use_yn" class="checkbox style-2">
+											<span>컨텐츠 노출</span>
+										</label>
+									</div>
+								</div>
+								
+								<div class="form-group" id="recipe_container" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05">레시피 목록 이미지</label>
+									<div id="recipe_image" class="col-md-10">
+									</div>
+								</div>
+
+								<div class="form-group">
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰진 구성</label>
+									<div class="col-md-11">
+									</div>
+								</div>
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right; ">
+							</fieldset>
+							
+							<fieldset class="couponzine_group">
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05"><p>쿠폰진컨텐츠 : <p/></label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+											<thead>
+												<tr>
+													<th class="ta-c">제목</th>
+													<th class="ta-c">컨텐츠 타이틀</th>
+													<th class="ta-c">분류</th>
+													<th class="ta-c">등록일자</th>
+												</tr>
+											</thead>
+											<tbody name="coupon_zine_contents" data-valid-title="쿠폰진컨텐츠" >
+											</tbody>
+										</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 : </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c">쿠폰북 번호</th>
+														<th class="ta-c">쿠폰북명</th>
+														<th class="ta-c">쿠폰북유형</th>
+														<th class="ta-c">쿠폰수</th>
+													</tr>
+												</thead>
+												<tbody name="coupon_book" data-valid-title="쿠폰북" >
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right; ">
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_openClosingDateRD();" class="btn btn-success btn_auth_stop">적용 종료일 변경</a>
+										<a href="javascript:f_reject();" class="btn btn-danger btn_auth_approve">반려</a>										
+										<a href="javascript:f_approve();" class="btn btn-primary btn_auth_approve">승인</a>
+										 <a href="javascript:f_approve_ask();" class="btn btn-info btn_auth_create">승인요청</a>										
+										<%--  <a href='javascript:f_openRequestCheckSD($("#evnt_id").val(),"${sessionScope.sessionEmpno}","1");' id="btn_approve" class="btn btn-primary btn_auth_approve">승인</a> --%>
+										<%-- <a href='javascript:f_openRequestCheckSD($("#evnt_id").val(),"${sessionScope.sessionEmpno}","0");' id="btn_ask" class="btn btn-info btn_auth_create">승인요청</a> --%>
+										
+										<!-- 상품중복방지 체크 필요 Object Start -->
+										<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+										<!-- common_dialog_script.js 해당 화면에 공통 다이얼로그가 선언되어있는지 확인 필요 -->
+										<div id="request_check" style="display:none;"></div>
+										<input type="hidden" id="dupCheck" name="dupCheck" value="0">
+										<!-- Callback 함수 -->
+										<script>
+										 function f_approve_proc(gbn){
+											 if(gbn == "0"){
+												 f_approve_ask();
+											 }else if(gbn == "1"){
+												 f_approve();
+											 }
+										 }
+										</script>
+										<!-- 상품중복방지 체크 필요 Object End -->
+										
+										
+										<a href="javascript:f_couponZineList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_couponZineEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_couponZineDel();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>	
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="closing_date_rd" style="display: none;"></div>
+<div id="coupon_book_rd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+	
+	// 쿠폰진 컨텐츠 상세 데이터 추출
+	f_groupbuyDetail();
+};
+
+/**
+ * ==================================================================================
+ * 상세 : 시간연장 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+ $('#closing_date_rd').dialog({
+	autoOpen : false,
+	width : 400,
+	minHeight: 300,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 적용 종료일 변경 </h6></div>",
+	buttons : [{
+		html : "취소",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+			$('#closing_date_rd').empty();
+		}
+	},{
+		html : "저장",
+		"class" : "btn btn-primary",
+		click : function() {
+				
+			if( $('#frmCloseDate').formValid() ) {
+				$.ajax({
+					url: api_url + "/backoffice/couponzine/finishdate/update",
+					type: "POST",
+					contentType: "application/json;charset=utf-8", // POST 일때만 사용
+					async: false,
+					cache: true,
+					data: JSON.stringify($("#frmCloseDate").serializeFormObject()),
+					success: function(resultData) {
+						alert(resultData["message"]);
+						var url = '/application/coupon/zine/couponZineRN.do';
+						var method = "POST";
+						cf_action(url, method, $("#frmKeepData").serialize());
+					//	f_joinList();
+					},
+				    error: function(resultData) {
+				    	var serverObj = resultData["responseJSON"] || {};
+				    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+				    	return;
+				    }	
+				});
+				
+				$(this).dialog("close");
+			}
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 상세 데이터 처리
+ * ----------------------------------------------------------------------------------
+ * 상세 화면의 데이터 처리
+ * ==================================================================================
+ */
+function f_groupbuyDetail() {
+	$.ajax({
+	    url: api_url+'/backoffice/couponzine/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	detailData = resultData.data;
+	    	
+	    	// 게시물 상태 :  승인완료
+	    	if(detailData["aprv_sts_cd"] == 'APPROVE') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	// 게시물 상태 : 승인대기중
+	    	else if(detailData["aprv_sts_cd"] == 'STANDBY') {
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_update').remove();
+	    		$('.btn_auth_stop').remove();
+	    		$('.btn_auth_delete').remove();
+	    		$('#joint_area').hide();
+	    	}
+	    	// 게시물 상태 : 승인 요청전
+	    	else if(detailData["aprv_sts_cd"] == 'REQUEST') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_stop').remove();
+	    		$('#joint_area').hide();
+	    	}
+	    	// 게시물 상태 : 반려
+	    	else if(detailData["aprv_sts_cd"] == 'REJECT') {
+	    		$('.btn_auth_approve').remove();
+	    		$('.btn_auth_create').remove();
+	    		$('.btn_auth_stop').remove();
+	    		$('#joint_area').hide();
+	    	}
+	    	
+	    	// 종료 상태인 경우 시간연장 버튼 숨김
+	    	if(detailData["prgs_sts_cd"] == 'END' || detailData["prgs_sts_cd"] == 'CPSNEND') {
+	    		$('.btn_auth_stop').remove();
+	    	}
+	    	
+	    	
+	    	
+	    	$('.btn_auth_stop').attr("href","javascript:f_openClosingDateRD()");
+	    	$("#evnt_id").val(detailData["cpzine_id"]);
+	    	$("#campaign_id").html(detailData["campaign_id"]);
+	    	$("#campaign_dy").html(cf_changeDateFormat(detailData["campaign_info"]["campaign_start_dy"],'yy-mm-dd')+" ~ "+cf_changeDateFormat(detailData["campaign_info"]["campaign_end_dy"],'yy-mm-dd'));
+	    	$("#custgp_list_cnt").html(detailData["campaign_info"]["custgp_list"].length);
+	    	$("#campaign_nm").html(detailData["campaign_info"]["campaign_nm"]);
+	    	var custgp_list = "";
+	    	$.each(detailData["campaign_info"]["custgp_list"], function(i,items){
+	    		if(i !=0 ){
+	    			custgp_list += ", ";  
+	    		}
+	    		custgp_list += items["lst_custgp_id"]+"-"+items["custgp_nm"];
+	    	});
+	    	$("#custgp_list").html(custgp_list);
+	    	$("#cpzine_title").html(detailData["cpzine_title"]);
+	    	$("#cpzine_desc").html(detailData["cpzine_desc"]);
+	    	$("#from_open_date").html("D-" + detailData["from_open_date"]);
+
+	    	$("#cpbook_gbn").html(detailData["cpbook_gbn_nm"]);
+	    	$("#cpzine_gbn").html(detailData["cpzine_gbn_nm"]);
+	    	//$("#apply_start_dd").html(cf_changeDateFormat(detailData["apply_start_dd"],'yy-mm-dd'));
+	    	//$("#apply_end_dd").html(cf_changeDateFormat(detailData["apply_end_dd"],'yy-mm-dd'));
+	    	$("#apply_start_dd").html(cf_cvtTimeFormat(detailData["apply_start_dd"]));
+	    	$("#apply_end_dd").html(cf_cvtTimeFormat(detailData["apply_end_dd"]));
+	    	
+	    	var tag_img = $('<img>').attr('src',detailData["thum_img_prvw_url"]).attr('alt',detailData["thum_img_view_nml"]).addClass('img-responsive');
+	    	$("#thum_img").append(tag_img);
+	    	
+	    	// 레시피
+	    	
+	    	if (detailData['recipe_use_yn'] == 'Y') {
+	    		$('#recipe_use_yn').prop('checked', true);
+	    		
+	    		var $recipeContainer = $('#recipe_container');
+	    		$('<img />', {'src': detailData['recipe_img_prvw_url']}).appendTo( $('#recipe_image') );
+	    		$recipeContainer.show();
+	    		
+	    	}
+	    	
+	    	var tempCouponzineGroup = $("fieldset.couponzine_group").html();
+	    	
+	    	$.each(detailData["cpzine_composition"], function(i, items1){
+	    		var cpzineTag = [];
+	    		if(i != 0){
+	    			$("fieldset.couponzine_group").append(tempCouponzineGroup);
+	    		}
+	    		cpzineTag.push("<tr>");
+	    		cpzineTag.push("<td class='ta-c'>"+items1["cpzine_contents_subject"]+"</td>");	
+	    		cpzineTag.push("<td class='ta-c'>"+items1["cpzine_contents_title"]+"</td>");	
+	    		cpzineTag.push("<td class='ta-c'>"+items1["cpzine_contents_cat_nm"]+"</td>");
+	    		cpzineTag.push("<td class='ta-c'>"+ cf_changeDateFormat(items1["cpzine_contents_regdate"],'yy-mm-dd') +"</td>");
+	    		cpzineTag.push("</tr>");
+	    		$("fieldset.couponzine_group tbody[name=coupon_zine_contents]:last").append(cpzineTag.join(""));
+	    		
+	    		if (items1["bsis_yn"] == "Y") {
+					$("fieldset.couponzine_group .form-group:last").prev(".form-group").find("label").append('<i class="fa fa-check-circle text-danger" style="font-size:2em;"></i>');
+	    		}
+	    		
+	    		var cpbookTag = [];	
+	    		$.each(items1["cpbook_list"], function(j, items2){
+	    			cpbookTag.push("<tr>");	
+	    			cpbookTag.push("<td class='ta-c'>"+items2["cpbook_id"]+"</td>");	
+	    			cpbookTag.push("<td class='ta-c'>"+items2["cpbook_nm"]+"</td>");	
+	    			cpbookTag.push("<td class='ta-c'>"+items2["cpbook_type_cd_name"]+"</td>");	
+	    			cpbookTag.push("<td class='ta-c'>"+items2["coupon_cnt"]+"</td>");
+	    			cpbookTag.push("</tr>");
+	    		});
+	    		$("fieldset.couponzine_group tbody[name=coupon_book]:last").append(cpbookTag.join(""));
+	    	});
+	    	
+			
+	    	
+		},
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }	
+	});
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+// loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+pagefunction();
+</script>

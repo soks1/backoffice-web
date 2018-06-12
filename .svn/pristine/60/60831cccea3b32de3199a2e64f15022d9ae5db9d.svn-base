@@ -1,0 +1,609 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>지점혜택 및 공지 등록</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal"  id="frmBranchNotice" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<div style="display:none;">
+								<select class="form-control" id="str_cd" name="str_cd" />
+							</div>
+							<input type="hidden" id="lst_custgp_id" name="lst_custgp_id">
+
+							<fieldset>
+							
+								<div class="form-group">
+									<label class="col-md-2 control-label">대상고객<sup>*</sup></label>
+									<div class="col-md-10" id="check_item">
+										<label class="checkbox-inline">
+											<span>[</span>
+											<span id="str_nm"></span>
+											<span>]</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="check_all" name="check_all" class="checkbox style-2">
+											  <span>전체</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="cust_grd_cd01" name="cust_grd_cd01" class="checkbox style-2" onClick="javascript:selectBoxCheck()">
+											  <span>VIP</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="cust_grd_cd02" name="cust_grd_cd02" class="checkbox style-2" onClick="javascript:selectBoxCheck()">
+											  <span>최우수</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="cust_grd_cd03" name="cust_grd_cd03" class="checkbox style-2" onClick="javascript:selectBoxCheck()">
+											  <span>우수</span>
+										</label>
+										<label class="checkbox-inline">
+											  <input type="checkbox" id="cust_grd_cd04" name="cust_grd_cd04" class="checkbox style-2" onClick="javascript:selectBoxCheck()">
+											  <span>일반</span>
+										</label>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" id="noti_title" name="noti_title" data-valid-use='true' data-valid-symbol='true' data-valid-max="50" data-valid-title='제목'>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">부제목</label>
+									<div class="col-md-10">
+										<textarea id="noti_sub_title" name="noti_sub_title" class="form-control" rows="2" data-valid-use='false' data-valid-title="부제목" data-valid-max="60"></textarea>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">노출기간 <sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input style="position: relative; z-index: 19;" class="form-control datepicker pr12 ta-c" type="text" name="vali_term_start_dd" data-dateformat='yy-mm-dd' data-valid-use='true' data-valid-title="시작일 " data-valid-date='true' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input style="position: relative; z-index: 19;" class="form-control datepicker pr12 ta-c" type="text" name="vali_term_end_dd" data-dateformat='yy-mm-dd' data-valid-use='true' data-valid-title="종료일 " data-valid-date='true' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<!-- 템플릿 사용시 필요 없음
+								<div class="form-group" id="area_upload_image">
+									<label class="col-md-2 control-label">이미지</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile" data-valid-title="파일선택">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i>이미지 사이즈: 1070px / 세로사이즈 무관  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+								-->
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">템플릿</label>
+									<div class="col-md-3">
+										<a href="javascript:f_openTemplateLD();" class="btn btn-primary btn-sm">템플릿 선택</a>
+										<span class="btn btn-success fileinput-button" style="display:none;">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+ 										    <input type="file" id="gen_uploadfile" name="gen_uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-2">
+										<div id="gen_preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div id="gen_template" class="col-md-8"></div>
+								</div>
+
+								<div id="btn_gen_preview" class="col-md-12" style="width:100%; text-align:right; align:right; display:none;">
+									<input type="hidden" id="gen_template_img_path" name="gen_template_img_path">
+									<input type="hidden" id="gen_img_reg_yn" name="gen_img_reg_yn">
+									<a href="javascript:f_openGenImgPreview();" class="btn btn-primary">미리보기</a>
+								</div>
+
+								<div class="col-md-12">
+									<span>&nbsp;</span>
+								</div>
+
+								<hr/>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용<sup>*</sup></label>
+									<div class="col-md-10">
+										<textarea id="noti_content" name="noti_content" class="form-control" rows="4" data-valid-use='true' data-valid-title="내용" data-valid-max="500"></textarea>
+									</div>
+								</div>
+								
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_branchNoticeList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="templates_ld" style="display:none;"></div>
+<div id="gen_img_preview" style="display:none;"></div>
+
+<div style="display:none;">
+	<div id="gen_template1">
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content1" name="gen_content1" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='이벤트제목1'  title="이벤트제목1">
+		<textarea class="form-control" id="gen_content2" name="gen_content2" rows="4" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="400" data-valid-title='이벤트내용1'></textarea>
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content3" name="gen_content3" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='이벤트제목2'  title="이벤트제목2">
+		<textarea class="form-control" id="gen_content4" name="gen_content4" rows="4" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="400" data-valid-title='이벤트내용2'></textarea>
+		<input class="form-control" type="text" style="width:100%; margin-top:2px; margin-bottom:2px; margin-left:1px;" id="gen_content5" name="gen_content5" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="300" data-valid-title='이벤트제목3'  title="이벤트제목3">
+		<textarea class="form-control" id="gen_content6" name="gen_content6" rows="4" style="margin-top:2px; margin-bottom:2px;" data-valid-use='false' data-valid-symbol='false' data-valid-max="400" data-valid-title='이벤트내용3'></textarea>
+	</div>
+</div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+/**
+* ==================================================================================
+* 지점혜택 및 공지 이미지 추가
+* --------------------------------------------------------------------------------------------
+* 이미지 등록/변경시 호출되는 이벤트
+* ============================================================================================ 
+*/
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this), "IMG_PUSH");
+});
+
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#vali_term_start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#vali_term_end_dd').datepicker('option','minDate', selected);
+            $('#vali_term_end_dd').datepicker('option','maxDate', cf_termDate(90, selected));
+        }
+    }, date_opts)
+);
+$('#vali_term_end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#vali_term_start_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+
+	if(
+			!$('#cust_grd_cd01').prop('checked')
+			&& !$('#cust_grd_cd02').prop('checked')
+			&& !$('#cust_grd_cd03').prop('checked')
+			&& !$('#cust_grd_cd04').prop('checked')
+	) {
+		alert('대상고객 등급을 선택하세요.');
+		return;
+	}
+
+	if($('#frmBranchNotice').formValid()) {
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+
+		if ($('input[name=noti_title]').val() == '' || $('input[name=noti_title]').val() == null) {
+			alert('제목을 입력하세요');
+			$('#noti_title').focus();
+			return;
+		}
+
+		if ($('textarea[name=noti_content]').val() == '' || $('textarea[name=noti_content]').val()== null) {
+			alert('내용을 입력하세요');
+			$('textarea[name=noti_content]').focus();
+			return;
+		}
+		
+		if( !$("#preview_uploadfile").next().hasClass("alert")
+			    && $("#gen_img_reg_yn").val() != "Y"
+		){
+// 			alert("이미지 또는 템플릿을 등록해주세요.");
+			alert("템플릿을 등록해주세요.");
+			return;
+		}
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		
+			
+		// ---------------- 서버 전송 데이터 세팅 시작--------------------------//
+		var data = $('#frmBranchNotice').serializeFormObject();
+		
+		data.vali_term_start_dd = data.vali_term_start_dd.replaceAll("-","")
+		data.vali_term_end_dd = data.vali_term_end_dd.replaceAll("-","")
+
+		// 대상고객값 설정
+		data.cust_grd_cd01 = $('input[name=cust_grd_cd01]').is(':checked') ? '01' : '';
+		data.cust_grd_cd02 = $('input[name=cust_grd_cd02]').is(':checked') ? '02' : '';
+		data.cust_grd_cd03 = $('input[name=cust_grd_cd03]').is(':checked') ? '03' : '';
+		data.cust_grd_cd04 = $('input[name=cust_grd_cd04]').is(':checked') ? '04' : '';
+		
+		$.extend(data, {
+			'img_view_nm': data.img_orgin_file_nm
+			,'img_local_nm': data.img_strge_file_nm
+			,'gen_img_view_nm' : data.gen_img_view_nm
+			,'gen_img_local_nm' : data.gen_img_local_nm
+			,'use_divn_cd' : 'BENEFIT_NOTICE'
+		});
+
+		// ---------------- 서버 전송 데이터 세팅 종료--------------------------//
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/branch/benefit/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(resultData){
+		    	alert(resultData["message"]);
+		    	f_branchNoticeList();
+		    },
+		    error: function(resultData) {
+		    	var serverObj = resultData["responseJSON"];
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+		});			
+	}
+	else {
+		return;
+	}
+}
+
+$(function () {
+	$("[name=check_all]").click(function () {
+		if (this.checked) {
+//             $('#check_item').children().find("checkbox").prop('checked', true);
+            $('#cust_grd_cd01').prop('checked', true);
+            $('#cust_grd_cd02').prop('checked', true);
+            $('#cust_grd_cd03').prop('checked', true);
+            $('#cust_grd_cd04').prop('checked', true);
+        } else {
+//             $('#check_item').children().find("checkbox").prop('checked', false);
+            $('#cust_grd_cd01').prop('checked', false);
+            $('#cust_grd_cd02').prop('checked', false);
+            $('#cust_grd_cd03').prop('checked', false);
+            $('#cust_grd_cd04').prop('checked', false);
+        }
+    });
+});
+
+function selectBoxCheck() {
+
+	if(
+			$('#cust_grd_cd01').prop('checked')
+			&& $('#cust_grd_cd02').prop('checked')
+			&& $('#cust_grd_cd03').prop('checked')
+			&& $('#cust_grd_cd04').prop('checked')
+	) {
+		$('#check_all').prop('checked', true);
+	}
+	
+	if(
+			!$('#cust_grd_cd01').prop('checked')
+			|| !$('#cust_grd_cd02').prop('checked')
+			|| !$('#cust_grd_cd03').prop('checked')
+			|| !$('#cust_grd_cd04').prop('checked')
+	) {
+		$('#check_all').prop('checked', false);
+	}
+
+}
+
+
+/**
+ * ==================================================================================
+ * 템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_ld').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 템플릿 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=template_list]:checked");
+
+			var v_nm = chk_obj.attr('img_view_nm');
+			var img_path = chk_obj.attr('img_path');
+			var thum_path = chk_obj.attr('thum_path');			
+			
+			
+			// 생성 이미지
+// 			$('#gen_preview_uploadfile').find('img').attr('src',img_path);			
+ 			$('#gen_preview_uploadfile').find('img').attr('src',img_path).attr('style','width:50%;');
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#gen_preview_uploadfile').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_gen_uploadfile');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_templateGenFileDelete()").text('파일삭제');						
+
+// 			var input_file_divn_cd = $('<input>')
+// 			.attr('type', 'hidden')
+// 			.attr('name', 'file_divn_cd')
+// 			.val("IMG_PUSH");
+		
+			var input_local_file_name = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'gen_img_local_nm')
+						.val(v_nm);
+			
+			var input_atch_file_nm = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'gen_img_view_nm')
+						.val(v_nm);
+			
+// 			span.append(input_file_divn_cd);
+			span.append(input_local_file_name);
+			span.append(input_atch_file_nm);
+
+			
+			
+			var template_id = $('<input>').attr('type', 'hidden').attr('name', 'template_id').val(chk_obj.val());
+			span.append(aTag);
+			span.append(template_id);
+			var btn_div = $("#gen_uploadfile").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			$('#gen_template_img_path').val(img_path);
+
+			// 템플릿ID에 맞는 입력폼 출력
+			if(template_id.val() == "000000000000001") {
+				$('#gen_template').html($('#gen_template1').html());
+			}
+
+			// 생성이미지 미리보기 버튼 보이기
+			$("#btn_gen_preview").show();
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#templates_ld').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+
+
+$('#gen_img_preview').dialog({
+	autoOpen : false,
+ 	width : 800+28,
+ 	minHeight: 745,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 미리보기 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			// 이미지생성파일 Temp 업로드
+			var data = {
+							 empno : $('input[name=empno]').val()
+							,emp_str_cd : $('input[name=emp_str_cd]').val()
+							,hq_base_yn : $('input[name=hq_base_yn]').val()
+							,gen_img_data : $('#gen_img_data').val()
+							,gen_img_view_nm : $('#gen_img_view_nm').val()
+							,gen_img_path : $('#gen_img_path').val()
+							,gen_content_type : $('#gen_content_type').val()
+							,gen_img_ext : $('#gen_img_ext').val()
+							,file_divn_cd : 'IMG_PUSH'
+						};
+			// ---------------- 서버 전송 데이터 세팅 종료--------------------------//
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/common/canvas/file/upload',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(resultData){
+// 			    	alert(resultData["message"]);
+			    	
+			    	var data = resultData.data;
+
+					var btn_div = $("#gen_uploadfile").parent().parent();
+// 					$('#gen_preview_uploadfile').find('img').attr('src',data.prvw_url);
+					$('#gen_preview_uploadfile').find('img').attr('src',data.prvw_url).attr('style','width:50%;');
+
+					btn_div.find("input[name=gen_img_local_nm]").val(data.local_file_nm);
+					btn_div.find("input[name=gen_img_view_nm]").val(data.atch_file_nm);
+					
+					$('#gen_img_reg_yn').val("Y"); // 생성이미지 등록여부 Y
+			    },
+			    error: function(resultData) {
+			    	var serverObj = resultData["responseJSON"];
+			    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+			    	return;
+			    }
+			});			
+
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#gen_img_preview').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 이미지생성 미리보기 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openGenImgPreview() {
+	var gen_content1 = $('#gen_content1').val() == undefined ? "" : $('#gen_content1').val();
+	var gen_content2 = $('#gen_content2').val() == undefined ? "" : $('#gen_content2').val();
+	var gen_content3 = $('#gen_content3').val() == undefined ? "" : $('#gen_content3').val();
+	var gen_content4 = $('#gen_content4').val() == undefined ? "" : $('#gen_content4').val();
+	var gen_content5 = $('#gen_content5').val() == undefined ? "" : $('#gen_content5').val();
+	var gen_content6 = $('#gen_content6').val() == undefined ? "" : $('#gen_content6').val();
+	var gen_content7 = $('#gen_content7').val() == undefined ? "" : $('#gen_content7').val();
+	var gen_content8 = $('#gen_content8').val() == undefined ? "" : $('#gen_content8').val();
+	var gen_content9 = $('#gen_content9').val() == undefined ? "" : $('#gen_content9').val();
+	var gen_content10 = $('#gen_content10').val() == undefined ? "" : $('#gen_content10').val();
+	
+// 	var img_path = $('#gen_preview_uploadfile').find('img').attr('src');
+	var img_path = $('#gen_template_img_path').val();
+ 	var img_view_nm = $('#gen_preview_uploadfile').parent().find('p').text();
+ 	var template_id = $("#gen_uploadfile").parent().parent().find("input[name=template_id]").val();
+ 	
+	var data = {
+					img_path:img_path
+					,img_view_nm:img_view_nm
+					,template_id:template_id
+					,gen_content1:gen_content1
+					,gen_content2:gen_content2
+					,gen_content3:gen_content3
+					,gen_content4:gen_content4
+					,gen_content5:gen_content5
+					,gen_content6:gen_content6
+					,gen_content7:gen_content7
+					,gen_content8:gen_content8
+					,gen_content9:gen_content9
+					,gen_content10:gen_content10
+				};
+
+	$.ajax({
+		url: "/application/branch/benefit/benefitGenImg.do",
+		type: 'POST',
+		async: true,
+		cache: false,
+ 		data: data,
+		success: function(data) {
+			var $target = $('#gen_img_preview');
+			$target.html(data);
+		}
+	});
+	$('#gen_img_preview').dialog('open');
+}
+
+
+
+
+
+
+
+/* ============================================================================================
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+
+	//공통코드 조회 : 지점목록
+	f_ajaxStrCdCode($('#str_cd'));
+	$('#str_cd').val('${sessionScope.sessionStrCd}'); // 지점 초기값 설정
+	$('#str_nm').text($('select[name=str_cd] option:selected').text());
+	
+	$('#lst_custgp_id').val(_lst_custgp_id); // 전체고객군 고객군ID 및 고객군명
+
+	
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>
+

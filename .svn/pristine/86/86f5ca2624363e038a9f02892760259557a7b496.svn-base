@@ -1,0 +1,431 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+			
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 쿠폰 조회 </h2>
+				</header>
+				<div class="jarviswidget-editbox"></div>
+				<div class="widget-body">
+					<form id="frmSearch" class="form-horizontal">
+					<input type="hidden" name="targetTbody" value="<%=LangUtil.replaceInjection(request.getParameter("targetTbody"))%>">
+					<input type="hidden" id="search_divn" name="search_divn" value="EVENT">
+						<fieldset>
+							<div class="form-group">
+								<div class="col-md-12">
+									<label class="col-md-1 control-label">제목</label>
+									<div class="col-md-2">
+										<input class="form-control" type="text" id="coupon_nm" name="coupon_nm" data-valid-title="제목">
+									</div>
+									
+									<label class="col-md-1 control-label">품목명</label>
+									<div class="col-md-2">
+										<input class="form-control" type="text" id="item_nm" name="item_nm" data-valid-title="제목">
+									</div>
+									<label class="col-md-1 control-label">등록일자</label>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="reg_date_from" name="reg_date_from" style="z-index:1200; width:90px;" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="reg_date_to" name="reg_date_to" style="z-index:1200; width:90px" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+						<div class="form-actions mt0">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="javascript:f_tenant_event_coupon_select_grid_Search()" id="btn_search" onclick="" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 쿠폰 List </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_coupon_select_list_grid" class="widget-body no-padding">
+						<table id="coupon_select_list_grid"></table>
+						<div id="coupon_select_list_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+//input 에서 엔터키 입력시 반응하지 않도록/// 완전한 해결이 되지 않음 
+$("#tenantEventCouponSelectSD").find('input').keypress(function(e) {
+	if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+		$(this).parent().parent().parent().parent().find('.ui-dialog-buttonpane').find('button:first').click(); /* Assuming the first one is the action button */
+		return false;
+	}
+});	
+
+
+/**
+ * ==================================================================================
+ * 검색 이벤트
+ * ==================================================================================
+ */
+function f_tenant_event_coupon_select_grid_Search() {
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+// 	f_tenant_event_coupon_select_grid_AddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('reg_date_from','reg_date_to');
+	if(val > 0){return;}
+	
+	if(($('#coupon_nm').val() == "") && ($('#item_nm').val() == "") && ($('#reg_date_from').val() == "") && ($('#reg_date_to').val() == "")){
+		alert("검색조건을 입력해 주세요");
+		return;
+	}
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#coupon_select_list_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#coupon_select_list_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#coupon_select_list_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+/**
+ * ==================================================================================
+ * 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_tenant_event_coupon_select_grid_AddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_tenant_event_coupon_select_grid_Cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+/**
+ * ==================================================================================
+ * 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_tenant_event_coupon_select_grid_Cancel() {
+	$('input[name=coupon_nm]').val("");
+	$('input[name=item_nm]').val("");
+	$('input[name=reg_date_from]').val("");
+	$('input[name=reg_date_to]').val("");
+	
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	$("#coupon_select_list_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	$("#btn_cancel").remove();
+// 	f_tenantEventList();
+}
+
+/* ============================================================================================
+/* 달력 컨트롤
+/* ============================================================================================ */
+$('#reg_date_from').datepicker(
+    $.extend({
+//     	minDate:0,
+    	onSelect: function(selected) {
+            $("#reg_date_to").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#reg_date_to').datepicker(
+    $.extend({
+//     	minDate:0,
+    	onSelect: function(selected) {
+            $("#reg_date_from").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function(){
+	var page_loading_cnt = 0;
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", coupon_select_list_grid_function);
+	function coupon_select_list_grid_function() {
+	
+		var pageWidth_dialog = $("#coupon_select_list_grid").parent().width() - 100;
+		//$("#coupon_select_list_grid").parent().width() 가 0이 출력되므로 임시로 페이지크기를 이용
+		pageWidth_dialog = 1070;
+	
+		jQuery("#coupon_select_list_grid").jqGrid({
+			url : api_lifekok_url+"/backoffice/lifekok/coupon/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '제목', '품목명', '할인유형','등록일자', '쿠폰사용개수','h쿠폰ID','h쿠폰유형코드','h등록자ID' ],
+			colModel : [
+				{ name : 'no', 					index : 'no',					align : 'center',	sortable : false, 	width : (pageWidth_dialog*(5/100)) 	},
+				{ name : 'coupon_nm', 			index : 'coupon_nm', 			align : 'center', 	sortable : false, 	width : (pageWidth_dialog*(30/100))	},
+				{ name : 'item_nm', 			index : 'item_nm', 				align : 'center',	sortable : false, 	width : (pageWidth_dialog*(17/100))	}, 
+				{ name : 'dc_type_cont', 		index : 'dc_type_cont', 		align : 'center',	sortable : false, 	width : (pageWidth_dialog*(12/100))	},
+				{ name : 'reg_date', 			index : 'reg_date',				align : 'center', 	sortable : false, 	width : (pageWidth_dialog*(12/100)) },
+				{ name : 'tot_use_cnt', 		index : 'tot_use_cnt',			align : 'center', 	sortable : false, 	width : (pageWidth_dialog*(12/100)) },
+				{ name : 'coupon_id', 			index : 'coupon_id',			hidden : true, 		width : 0 	},
+				{ name : 'coupon_type_cd_nm', 	index : 'coupon_type_cd_nm',	hidden : true, 		width : 0 	},
+				{ name : 'reg_id', 				index : 'reg_id',				hidden : true, 		width : 0 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "coupon_id",
+				root :		function(obj){ return obj.data.coupon_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#coupon_select_list_grid").jqGrid('setGridParam', {search: true});
+					$("#coupon_select_list_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#coupon_select_list_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#coupon_select_list_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}',
+				search_divn : 'EVENT',
+				page_limit: '10',
+				page_no: '1',
+				search_info : {
+					coupon_nm : '1204012qrwrqwkdkwu1'
+				}
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#coupon_select_list_grid_page',
+			sortname : 'reg_date',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+			},
+			gridComplete: function() {	
+				
+				var postData = $('#coupon_select_list_grid').jqGrid("getGridParam", "postData");				
+				$('#coupon_select_list_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#coupon_select_list_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+				
+				// 할인유형에 따른 단위표시
+				var rowids = jQuery("#coupon_select_list_grid").jqGrid('getDataIDs');
+				
+				$.each(
+					rowids,function(idx,rowId){
+						rowData = jQuery("#tenant_grid").getRowData(rowId);
+				  		if(rowData.coupon_type_cd_nm =="정액할인"){  
+							_dc_savu_amt = rowData['dc_savu_amt']+'원';
+							jQuery("#tenant_grid").jqGrid('setCell', rowId, 'dc_savu_amt',_title,'');
+						}else if(rowData.coupon_type_cd_nm =="정률할인"){
+							_dc_savu_amt = rowData['dc_savu_amt']+'%';
+							jQuery("#tenant_grid").jqGrid('setCell', rowId, 'dc_savu_amt',_title,'');
+						}
+					}		
+				);				
+			}
+		});
+		
+		jQuery("#coupon_select_list_grid").jqGrid('navGrid', "#coupon_select_list_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+	
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+				
+		jQuery("#coupon_select_list_grid").jqGrid('navButtonAdd','#coupon_select_list_grid_page',{
+			caption: "취소",
+			id: "delete_button",
+			buttonicon: "ui-icon-trash",
+			onClickButton: function(){
+				$('#tenantEventCouponSelectSD').dialog("close");
+			}
+		});
+					
+		
+		jQuery("#coupon_select_list_grid").jqGrid('navButtonAdd','#coupon_select_list_grid_page',{
+			caption: "적용",
+			id: "add_button",
+			buttonicon: "ui-icon-plus",
+			onClickButton: function(){
+				var rowId = $(this).jqGrid('getGridParam', 'selarrrow');
+				var _unit = "";
+				
+				for(var i = 0; i < rowId.length; i++) {
+
+					var appendData = "";
+					var coupon_id_val = $(this).jqGrid('getCell', rowId[i], 'coupon_id');
+					
+					if($(this).jqGrid('getCell', rowId[i], 'coupon_type_cd_nm')=="정률할인"){_unit = "%";}
+					else if($(this).jqGrid('getCell', rowId[i], 'coupon_type_cd_nm')=="정액할인"){_unit = "원";}
+					
+					appendData += "<tr>";
+					appendData += "	<td class='ta-c'><input type='checkbox' value='"+coupon_id_val+"'></td>";
+					appendData += "	<input type='hidden' data-array-always='true' name='t_coupon_id' id='coupon_id' value='"+coupon_id_val+"'>";
+// 					appendData += "	<input type='hidden' data-array-always='true' name='t_apply_to_type_cd' id='apply_to_type_cd' value='PRICE'>";
+// 					appendData += "	<input type='hidden' data-array-always='true' name='"+appendTbody+"' value='"+prod_sell_cd_val+"'>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'coupon_nm')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'item_nm')+"</td>";
+// 					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'coupon_type_cd_nm')+"</td>";
+					
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'dc_type_cont')+_unit+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'reg_date')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'tot_use_cnt')+"</td>";
+					appendData += "</tr>";
+					
+					// 대표이지 셀렉트 박스가 있을 경우 셀렉트 박스에 데이터 등록
+// 					if( $("#rep_prod_sell_cd").length > 0 ) {
+// 						var option_cnt = 0;
+// 						$("#rep_prod_sell_cd option").each(function(){
+// 							if( $(this).val() == prod_sell_cd_val ) {
+// 								option_cnt++;
+// 							}
+// 						});
+// 						if(option_cnt == 0) {
+// 							var option = '<option value="'+prod_sell_cd_val+'">'+$(this).jqGrid('getCell', rowId[i], 'prod_nm')+'</option>';
+// 							$("#rep_prod_sell_cd").append(option);	
+// 						}
+// 					}
+					
+					
+					// 중복 체크 후 데이터 등록
+					var duplication_cnt = 0;
+					$('#tenantEventCoupon_list').find('input[type=checkbox]').each(function(){
+						if( $(this).val() ==  coupon_id_val ) {
+							duplication_cnt++;
+						}
+					});
+					if(duplication_cnt == 0) {
+// 						$("#"+appendTbody).append(appendData);	
+						$('#tenantEventCoupon_list').append(appendData);	
+					}
+					
+				}
+// 				$("#prodCount1").text(cf_getTrElementCount($("#appoint_product_1")));
+// 				$("#prodCount2").text(cf_getTrElementCount($("#appoint_product_2")));
+				
+				$('#tenantEventCouponSelectSD').dialog("close");
+			}
+		});
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+	
+	  	$("#coupon_select_list_grid").gridCss();
+	  	$("#coupon_select_list_grid_cb").css("border-left-width","0");
+	  	$("#coupon_select_list_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_coupon_select_list_grid_cb").css("padding","7px 0");
+	  	$("#coupon_select_list_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	}
+	
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+</script>

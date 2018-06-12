@@ -1,0 +1,511 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>가맹점 이벤트 상세</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="form-horizontal" id="frmLifekok">
+						<input type="hidden" id="empno" name="empno" value="${sessionScope.sessionEmpno}">
+						<input type="hidden" id="event_mst_id" name="event_mst_id" value="">
+						<input type="hidden" id="event_id" name="event_id" value="">
+						<input type="hidden" id="tenant_cd" name="tenant_cd" value="">
+							<fieldset>
+							
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >등록일자 : </label>
+									<div class="col-md-2" >
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >등록자 : </label>
+									<div class="col-md-2"  >
+										<span class="form-control cs-css-03" id="reg_nm"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >승인일자 : </label>
+									<div class="col-md-2" >
+										<span class="form-control cs-css-03" id="apprv_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >승인자 : </label>
+									<div class="col-md-2"  >
+										<span class="form-control cs-css-03" id="aprv_nm"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >승인상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_nm"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >진행상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="prgs_sts_cd_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >등록지점 : </label>
+									<div class="col-md-8" >
+										<span class="form-control cs-css-03" id="str_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >사업자 가맹점 : </label>
+									<div class="col-md-8" >
+										<span class="form-control cs-css-03" id="tenant_nm"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >제목 : </label>
+									<div class="col-md-8" >
+										<span class="form-control cs-css-03" id="event_title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">이미지 : </label>
+									<div class="col-md-10" id="tenantEvent_img">
+									</div>
+								</div>
+														
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >업종 : </label>
+									<div class="col-md-4" >
+										<span class="form-control cs-css-03" id="biz_cate_nm"></span>
+									</div>
+								</div>
+								
+<!-- 								<div class="form-group"> -->
+<!-- 									<label class="col-md-1 control-label cs-css-05" >정액/정률 : </label> -->
+<!-- 									<div class="col-md-2" > -->
+<!-- 										<span class="form-control cs-css-03" id="event_type_cd_nm"></span> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+							
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >적용기간 : </label>
+									<div class="col-md-2" >
+										<span class="form-control cs-css-03" id="prgs_term"></span>
+									</div>
+<!-- 									<div class="col-md-2"></div> -->
+<!-- 									<label class="col-md-1 control-label cs-css-05" style="width:135px !important">쿠폰북 유효기간 : </label> -->
+<!-- 									<div class="col-md-2" > -->
+<!-- 										<span class="form-control cs-css-03" id="cpbook_term"></span> -->
+<!-- 									</div> -->
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" >해시태그 :</label>
+										<div class="col-md-10">
+											<span class="form-control cs-css-03" id="hashtag_words"></span>
+										</div>
+								</div>
+								
+<!-- 								<div id="couponbook_grid_disabled" style="display:none">		 -->
+<!-- 									<div class="form-group"> -->
+<!-- 										<label class="col-md-1 control-label cs-css-05" >쿠폰북</label> -->
+<!-- 										<div class="col-md-10"> -->
+<!-- 											<div class="table-responsive" style="max-height:230px; overflow:auto;"> -->
+<!-- 												<table class="table table-bordered"> -->
+<!-- 													<thead> -->
+<!-- 														<tr> -->
+<!-- 															<th class="ta-c">no</th> -->
+<!-- 															<th class="ta-c">쿠폰북번호</th> -->
+<!-- 															<th class="ta-c">쿠폰북명</th> -->
+<!-- 															<th class="ta-c">쿠폰북 유형</th> -->
+<!-- 															<th class="ta-c">쿠폰수</th> -->
+<!-- 														</tr> -->
+<!-- 													</thead> -->
+<!-- 													<tbody id="cpbook_list" data-valid-title="쿠폰북"> -->
+														
+<!-- 													</tbody> -->
+<!-- 												</table> -->
+<!-- 											</div> -->
+<!-- 										</div> -->
+<!-- 									</div> -->
+<!-- 								</div> -->
+								
+							</fieldset>
+							
+							<div class="row">
+								<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+									<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+										<header>
+											<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+											<h2> 쿠폰북 </h2>
+										</header>
+										<div>
+											<div class="col-md-12">
+												<div class="table-responsive" style="max-height:230px; overflow:auto;">
+													<table class="table table-bordered">
+														<thead>
+															<tr>
+																<th class="ta-c">no</th>
+																<th class="ta-c">제목</th>
+																<th class="ta-c">품목명</th>
+																<th class="ta-c">정액/정률</th>
+																<th class="ta-c">등록일자</th>
+																<th class="ta-c">쿠폰사용개수</th>
+															</tr>
+														</thead>
+														<tbody id="tenantEventCoupon_list">
+															
+														</tbody>
+													</table>
+												</div>
+											</div>
+
+<!-- 											<div class="jarviswidget-editbox"></div> -->
+<!-- 											<div id="target_coupon_list_grid" class="widget-body no-padding"> -->
+<!-- 												<table id="coupon_list_grid"></table> -->
+<!-- 												<div id="coupon_list_grid_page"></div> -->
+<!-- 											</div> -->
+										</div>
+									</div>
+								</article>
+							</div>
+						
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantEventEN();" class="btn btn-default" style="display:none;" id="tenantEventModify">수정</a>
+										<a href="" class="btn btn-default" style="display:none;" id="tenantEventConfirmRequest">승인요청</a>
+										<a href="javascript:f_tenantEventReturn();" class="btn btn-danger" style="display:none;" id="tenantEventReturn">반려</a>
+										<a href="javascript:f_tenantEventApprove();" class="btn btn-primary" style="display:none;" id="tenantEventConfirm">승인</a>
+										<a href="javascript:f_tenantEventPostingStop();" class="btn btn-danger" style="display:none;" id="tenantEventStopPosting">게시중단</a>
+										<a href="javascript:f_tenantEventLN();" class="btn btn-default" id="tenantEventList">목록</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 관리 : 수정 버튼
+ * ==================================================================================
+ */
+ function f_tenantEventEN(){
+	 var postData = $('#frmKeepData').serializeFormObject();
+	 var url = "/application/cooperateService/tenantEvent/tenantEventEN.do";
+	 var method = "POST";
+	 cf_action(url,method,postData);
+ }
+ 
+ 
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 관리 : 반려 버튼
+ * ==================================================================================
+ */
+function f_tenantEventReturn(){
+	
+	var data = $('#frmLifekok').serializeFormObject();
+	 
+	if(confirm("적용 시 app에 즉시 반영됩니다. 이벤트를 반려 하시겠습니까?")){
+		 $.ajax({
+			    url: api_lifekok_url+"/backoffice/lifekok/event/reject",
+			    type: "POST",
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	var url = "/application/cooperateService/tenantEvent/tenantEventRN.do";
+			    	var method = "GET";
+			    	var postData ={
+			    			event_mst_id : $("input[name=event_mst_id]").val(),
+			    			empno	  : '${sessionScope.sessionEmpno}'
+			    	}; 
+			    	cf_action(url, method, postData);
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			}); 
+	 }else{ 
+		 alert("이벤트 반려가 취소되었습니다");
+		 return;
+	 }
+}
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 관리 : 승인 버튼
+ * ==================================================================================
+ */
+function f_tenantEventApprove(){
+	
+	var data = $('#frmLifekok').serializeFormObject();
+	 
+	if(confirm("적용 시 app에 즉시 반영됩니다. 이벤트를 승인 하시겠습니까?")){
+		 $.ajax({
+			    url: api_lifekok_url+"/backoffice/lifekok/event/approve",
+			    type: "POST",
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	var url = "/application/cooperateService/tenantEvent/tenantEventRN.do";
+			    	var method = "GET";
+			    	var postData ={
+			    			event_mst_id : $("input[name=event_mst_id]").val(),
+			    			empno	  : '${sessionScope.sessionEmpno}'
+			    	}; 
+			    	cf_action(url, method, postData);
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			}); 
+	 }else{ 
+		 alert("이벤트 승인이 취소되었습니다");
+		 return;
+	 }
+}
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 관리 : 게시 중단 버튼
+ * ==================================================================================
+ */
+function f_tenantEventPostingStop(){
+	
+	var data = $('#frmLifekok').serializeFormObject();
+	if(confirm("적용 시 app에 즉시 반영됩니다. 게시 중단 하시겠습니까?")){
+		 $.ajax({
+			    url: api_lifekok_url+"/backoffice/lifekok/event/stop",
+			    type: "POST",
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	var url = "/application/cooperateService/tenantEvent/tenantEventRN.do";
+			    	var method = "GET";
+			    	var postData ={
+			    			event_mst_id : $("input[name=event_mst_id]").val(),
+			    			empno	  : '${sessionScope.sessionEmpno}'
+			    	}; 
+			    	cf_action(url, method, postData);
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			}); 
+	 }else{ 
+		 alert("취소되었습니다");
+		 return;
+	 }
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	
+// 	오늘날짜 
+	var Now = new Date();
+	var NowTime = Now.getFullYear()+"-";
+	if((Now.getMonth() + 1) < 10){NowTime += "0";}
+	NowTime += ((Now.getMonth()+1)+"-") ;
+	if((Now.getDate()) < 10){NowTime += "0";}
+	NowTime += Now.getDate();
+	
+	$.ajax({
+	    url: api_lifekok_url+'/backoffice/lifekok/event/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+			
+	    	var detailData = obj.data;
+	    	$("input[name=event_mst_id]").val(detailData['event_mst_id']);
+	    	
+	    	$("#apprv_date").html(detailData['apprv_date']);		//승인일자
+	    	$("#aprv_nm").html(detailData['aprv_nm']);				//승인자
+	    	$("#aprv_sts_cd_nm").html(detailData['aprv_sts_cd_nm']);//승인상태
+	    	$("#reg_date").html(detailData['reg_date']);			//등록일자
+	    	$("#reg_nm").html(detailData['reg_nm']);				//등록자
+	    	$("#mod_date").html(detailData['mod_date']);			//수정일자
+	    	$("#mod_nm").html(detailData['mod_nm']);				//수정자
+	    	$("#prgs_sts_cd_nm").html(detailData['prgs_sts_cd_nm']);	//진행상태
+	    	$("#str_nm").html(detailData['str_nm']);				//등록지점
+	    	$("#tenant_nm").html(detailData['tenant_nm']);			//가맹점
+	    	$("#event_title").html(detailData['event_title']);		//제목
+	    	$("#biz_cate_nm").html(detailData['biz_cate_nm']);		//업종
+	    	$("#evnet_type_cd_nm").html(detailData['evnet_type_cd_nm']);	//정액/정률(할인유형) - 확인필요
+	    	if(detailData['prgs_term'].substring(0,10) == detailData['prgs_term'].substring(13,23)){
+		    	$("#prgs_term").html(' - ');			//적용기간 (from~to 모두 필요)
+	    	}else{
+		    	$("#prgs_term").html(detailData['prgs_term']);			//적용기간 (from~to 모두 필요)
+	    	}
+	    	$("#hashtag_words").html(detailData['hashtag_words']);				//해시태그
+
+	    	
+	    	//이미지 관련
+	    	if(detailData['img_full_path'] != "" && detailData['img_full_path'] != "http://imagecoupond.lottemart.com") {
+	    		//로컬서버
+// 	    		var _delivery_img = detailData['img_full_path'].replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+	    		//개발서버
+	    		var _delivery_img = detailData['img_full_path'];
+	    		
+	    		var _img = $('<img>').attr('src', _delivery_img).attr('alt', detailData['orgin_nm']).addClass('img-responsive');
+	        	$("#tenantEvent_img").append(_img);
+	    	}
+	    	
+	    	$("#prgs_sts_cd").html(detailData['prgs_sts_cd']);	//진행상태코드
+	    	$("#aprv_sts_cd").html(detailData['aprv_sts_cd']);	//승인상태코드
+	    	
+	    	if(detailData['coupon_list']) {
+	    		$.each(detailData['coupon_list'], function(i, couponItem) {
+		    		var tag_td = '';
+		    		tag_td += '<td class="ta-c">' + couponItem.rnum + '</td>';
+		    		tag_td += '<td class="ta-c">' + couponItem.coupon_nm + '</td>';
+		    		tag_td += '<td class="ta-c">' + couponItem.item_nm + '</td>';
+// 		    		var _type = "";
+// 		    		if(couponItem.coupon_type_cd == 'A'){_type = " %"}else{_type = " 원"}
+// 		    		tag_td += '<td class="ta-c">' + couponItem.dc_savu_amt +_type+ '</td>';
+		    		tag_td += '<td class="ta-c">' + couponItem.dc_type_cont + '</td>';
+		    		tag_td += '<td class="ta-c">' + couponItem.reg_date + '</td>';
+		    		tag_td += '<td class="ta-c">' + couponItem.tot_use_cnt + '</td>';
+		    		$('#tenantEventCoupon_list').append('<tr>' + tag_td + '</tr>');
+		    	});
+	    	}
+	    	
+	    	$("#aprv_sts_cd_nm").html(detailData['aprv_sts_cd_nm']);//승인상태
+	    	// "none"  "inline"
+	    	if(detailData['aprv_sts_cd_nm'] == "승인대기"){
+	    		
+	    		tenantEventReturn.style.display = "inline";		//반려
+	    		tenantEventConfirm.style.display = "inline"	;	//승인
+	    		
+	    		if(detailData['tna_reg_divn_cd'] == 'MARTMANAGER') {
+		    		tenantEventModify.style.display = "inline";
+	    		} else {
+	    			tenantEventModify.style.display = "none";
+	    		}
+	    		
+	    		tenantEventConfirmRequest.style.display = "none";
+	    		tenantEventStopPosting.style.display = "none";
+	    	}
+	    	else if(detailData['aprv_sts_cd_nm'] == "승인요청전"){
+	    		
+	    		if(detailData['tna_reg_divn_cd'] == 'MARTMANAGER') {
+		    		tenantEventModify.style.display = "inline";
+	    		} else {
+	    			tenantEventModify.style.display = "none";
+	    		}
+	    		
+	    		tenantEventConfirmRequest.style.display = "inline";	//승인요청
+	    		tenantEventReturn.style.display = "none";			//반려
+	    		tenantEventConfirm.style.display = "none";			//승인
+	    		tenantEventStopPosting.style.display = "none";		//게시중단
+	    	}
+	    	else if(detailData['aprv_sts_cd_nm'] == "승인"){
+	    		tenantEventModify.style.display = "none";
+	    		tenantEventConfirmRequest.style.display = "none";
+	    		tenantEventReturn.style.display = "none";
+	    		tenantEventConfirm.style.display = "none";
+	    		if(detailData['prgs_sts_cd'] == "NOPROG" || detailData['prgs_sts_cd'] == "PROGRES"){
+		    		tenantEventStopPosting.style.display = "inline";	//게시중단
+	    		}
+	    	}
+	    	else if(detailData['aprv_sts_cd_nm'] == "반려"){
+	    		tenantEventModify.style.display = "inline"	;		//수정
+	    		tenantEventConfirmRequest.style.display = "none";
+	    		tenantEventReturn.style.display = "none";
+	    		tenantEventConfirm.style.display = "none";
+	    		tenantEventStopPosting.style.display = "none";
+	    	}
+	    	
+    		var auth_a = '${sessionScope.menuAuth.A}';
+	    	if(auth_a != 'Y'){
+	    		tenantEventReturn.style.display = "none";
+	    		tenantEventConfirm.style.display = "none";
+	    		tenantEventStopPosting.style.display = "none";
+	    	}
+
+	    	//게시종료일이 지나면 게시중단 버튼 숨김
+	    	var _prgs_term = detailData['prgs_term'];
+	    	var _EndTime = _prgs_term.substring(_prgs_term.length-10, _prgs_term.length);
+			if(NowTime > _EndTime){
+				tenantEventStopPosting.style.display = "none";	//게시중단			
+			};
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

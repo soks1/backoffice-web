@@ -1,0 +1,334 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+<!-- 							<input type="hidden" name="empno" value=""> -->
+							<fieldset>
+							
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">등록자</label>
+										<div class="col-md-3">
+											<input class="form-control" type="text" id="reg_nm" name="reg_nm" data-valid-title="등록자">
+										</div>
+										
+										<label class="col-md-1 control-label">등록일</label>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="reg_date_from" name="reg_date_from" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="reg_date_to" name="reg_date_to" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>	
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_appcacheSearch();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+								
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>	
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 캐시 설정 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_appcache_grid" class="widget-body no-padding">
+						<table id="appcache_grid"></table>
+						<div id="appcache_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 조회 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#reg_date_from').datepicker(
+    $.extend({
+    	onSelect: function(selected) {
+            $("#reg_date_to").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#reg_date_to').datepicker(
+    $.extend({
+    	onSelect: function(selected) {
+            $("#reg_date_from").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+ 
+var pagefunction = function() {
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", notice_grid_function);
+	function notice_grid_function() {
+		
+		var pageWidth = $("#appcache_grid").parent().width() - 100;
+
+		jQuery("#appcache_grid").jqGrid({
+			url : api_url+"/backoffice/appcache/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '기기종류', '등록 사유', '등록자','등록자ID', '등록일','캐시코드'],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 		align : 'center',	sortable : false, 	width : (pageWidth*(3/100)) 	},
+				{ name : 'cell_type_cd', 	index : 'cell_type_cd',		align : 'center', 	sortable : false, 	width : (pageWidth*(8/100))	},
+				{ name : 'reason', 			index : 'reason', 			align : 'center',	sortable : false, 	width : (pageWidth*(35/100)), 	classes:'pointer toooltip'  	}, 
+				{ name : 'reg_nm', 			index : 'reg_nm', 			align : 'center', 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'reg_id', 			index : 'reg_id', 			hidden: true,	 	width : 0 	},
+				{ name : 'reg_date',		index : 'reg_date',			align : 'center', 	sortable : false, 	width : (pageWidth*(8/100)) 	},
+				{ name : 'cache_cd',		index : 'cache_cd',		hidden: true,	 	width : 0 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "cache_cd",
+				root :		function(obj){ return obj.data.appcache_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#appcache_grid").jqGrid('setGridParam', {search: true});
+					$("#appcache_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#appcache_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#appcache_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				rows: '10',
+				page: '1'			
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#appcache_grid_page',
+			sortname : 'cache_cd',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+				if('${sessionScope.menuAuth.R}' == 'Y') {
+					if(index == 3) {
+						$("#appcache_grid").jqGrid('setGridParam', {'postData' : {'cache_cd':rowid} });
+						var postData = $('#appcache_grid').jqGrid("getGridParam", "postData");
+						var url = "application/appcache/appcacheRN.do";
+						var method = "POST";
+						cf_action(url, method, postData);
+				   } 
+				}
+			},
+			gridComplete: function() {	
+				
+				var postData = $('#appcache_grid').jqGrid("getGridParam", "postData");				
+				$('#appcache_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#appcache_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+				
+			}
+		});
+		
+		jQuery("#appcache_grid").jqGrid('navGrid', "#appcache_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+				
+		if('${sessionScope.menuAuth.U}' == 'Y') {
+			jQuery("#appcache_grid").jqGrid('navButtonAdd','#appcache_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					if(select_ids.length < 1) {
+						alert('삭제할 캐시 설정기록을 선택해주세요.');
+						return;
+					} else if(select_ids.length > 1){
+						alert('한번에 한개의 캐시설정을 삭제할 수 있습니다.');
+						return;
+					}
+					
+					var notice_del_list = [];
+					for (var i = 0; i < select_ids.length; i++) {
+						var del_item = {};
+						del_item['cache_cd'] = select_ids[i];
+					}
+					
+					var data = {
+						cache_cd : select_ids[0],
+						empno : '${sessionScope.sessionEmpno}'
+					};
+					
+					if(confirm("정말 삭제하시겠습니까?")) {
+						
+						$.ajax({
+							url: api_url + "/backoffice/appcache/delete",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$("#appcache_grid").trigger("reloadGrid");
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+						    	return;
+						    }
+						});
+					}
+				}
+			});
+		}
+					
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#appcache_grid").jqGrid('navButtonAdd','#appcache_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/appcache/appcacheWN.do";
+					var method = "POST";
+					var postData = $('#appcache_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#appcache_grid").gridCss();
+	  	$("#appcache_grid_cb").css("border-left-width","0");
+	  	$("#appcache_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_appcache_grid_cb").css("padding","7px 0");
+	  	$("#appcache_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#appcache_grid").jqGrid( 'setGridWidth', $("#target_notice_grid").width() );
+		});
+	}
+	
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

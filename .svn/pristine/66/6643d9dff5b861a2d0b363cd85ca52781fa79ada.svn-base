@@ -1,0 +1,183 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 그룹명 : <span id="_up_select_tenant_nm"></span> </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_select_tenant_grid" class="widget-body no-padding">
+						<table id="select_tenant_grid"></table>
+						<div id="select_tenant_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="form-actions mt0">
+		<div class="row">
+			<div class="col-md-12">
+				<a href="javascript:void(0)" id="btn_search" onclick="f_selected_tenant_delete();" class="btn btn-danger"> 삭제 </a>
+			</div>
+		</div>
+	</div>
+	
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+$("#select_str_sd").find('input').keypress(function(e) {
+	if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+		$(this).parent().parent().parent().parent().find('.ui-dialog-buttonpane').find('button:first').click(); /* Assuming the first one is the action button */
+		return false;
+	}
+});	
+
+/* ============================================================================================
+/* 삭제 버튼
+/* ============================================================================================ */
+
+function f_selected_tenant_delete(){
+	
+	var select_ids = $("#select_tenant_grid").jqGrid('getGridParam', 'selarrrow');
+	
+	for(var k = 0 ; k < modifyTenantList.length ; k++){
+		for(var l = 0 ; l < select_ids.length ; l++){
+			if(modifyTenantList.length > 0){
+				if(modifyTenantList[k].tenant_cd == $("#select_tenant_grid").jqGrid('getRowData', select_ids[l]).tenant_cd){
+					modifyTenantList.splice(k,1);
+				}
+			}
+		}
+		if(k == modifyTenantList.length-1 || modifyTenantList.length == 0){
+			$("#select_tenant_grid").jqGrid("GridUnload");
+			select_tenant_grid_function();
+		}
+	}
+	
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function(){
+	
+	modifyTenantList = [];
+	
+	for(var i = 0 ; i < selectTenantList.length ; i++){
+		modifyTenantList.push(selectTenantList[i]);
+	}
+	
+	$('#_up_select_tenant_nm').text($('#group_nm option:selected').text());
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", select_tenant_grid_function);	
+
+	select_tenant_grid_function();
+};
+
+
+
+	//-------------------------가맹점 목록 그리드-------------------------------------------//
+	function select_tenant_grid_function() {
+
+// 		var pageWidth = $("#select_tenant_grid").parent().width() - 200;
+		var pageWidth = 570;
+		jQuery("#select_tenant_grid").jqGrid({
+			datatype : "local",
+			data	 : modifyTenantList,
+			colNames : ['No.', '지점명', '가맹점명','h승인상태','h지점코드','h가맹점코드'],
+			colModel : [
+				{ name : 'no', 			index : 'no',			align : 'center',	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'str_nm', 		index : 'str_nm', 		align : 'center',	sortable : false, 	width : (pageWidth*(33/100))	}, 
+				{ name : 'tenant_nm', 	index : 'tenant_nm',	align : 'center',	sortable : false, 	width : (pageWidth*(33/100))	},
+				{ name : 'aprv_sts_cd',	index : 'aprv_sts_cd',	hidden: true,		width : 0	},
+				{ name : 'str_cd',		index : 'str_cd',		hidden: true,		width : 0	},
+				{ name : 'tenant_cd',	index : 'tenant_cd',	hidden: true,		width : 0	}
+			],
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				
+			},
+			rowNum : 9999,
+// 			rowList : [10, 20, 30],
+// 			pager : '#select_tenant_grid_page',
+			sortname : 'str_nm',
+			sortorder : 'asc',
+// 			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+// 			autowidth : true,
+			width : "570",
+// 			height : 'auto',
+			height:"300",
+			recordpos : "left",
+			scrollerbar:true,
+			onCellSelect: function(rowid, index, contents, event) {
+			},
+			gridComplete: function() {	
+				
+				var main_cnt = $("#select_tenant_grid").getRowData().length;
+				if(main_cnt > 0){
+					for(var i = 0; i < main_cnt ; i++){
+						$('#select_tenant_grid tr:eq('+(i+1)+') td:eq(1)').html((main_cnt-i));
+					}
+				}
+				
+			}
+		});
+		
+		jQuery("#select_tenant_grid").jqGrid('navGrid', "#select_tenant_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#select_tenant_grid").gridCss();
+	  	$("#select_tenant_grid_cb").css("border-left-width","0");
+	  	$("#select_tenant_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_select_tenant_grid_cb").css("padding","7px 0");
+	  	$("#select_tenant_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	}
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+</script>

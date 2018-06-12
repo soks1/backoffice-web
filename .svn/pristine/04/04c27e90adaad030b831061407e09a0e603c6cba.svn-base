@@ -1,0 +1,125 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<!-- 조회결과 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 분류 선택 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="table-responsive" style="max-height:400px; overflow-y: auto; overflow-x: hidden;">
+							<table class="table table-bordered table-striped" style="width: 100%;">
+								<thead>
+									<tr>
+										<th class="ta-c" style="width:25px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+										<th class="ta-c" style="width:25px">No.</th>
+										<th class="ta-c" style="width:100px">분류명D</th>
+										<th class="ta-c" style="width:">분류코드</th>
+										<th class="ta-c" style="width:100px">등록일자</th>
+									</tr>
+								</thead>
+								<tbody id="coupon_zine_contents_classify_tbody">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 달력 : 쿠폰진 분류조회
+ * ==================================================================================
+ */
+function f_CouponZineContentsClassifyList() {
+	
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+
+	$.ajax({
+	    url: api_url+"/backoffice/couponzine/contents/category/list",
+	    type: "GET", 
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	$("#coupon_zine_contents_classify_tbody").empty();
+	    	var couponZineContentsClassify_list = resultData.data.cpzine_contents_cat_list;
+	    	$.each(couponZineContentsClassify_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c" onclick="event.cancelBubble = true;"><input type="checkbox" value="'+items.cpzine_contents_cat_id+'"></td>';
+	    		tag_td += '<td class="ta-c">'+items.rnum+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.cpzine_contents_cat_id+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.cpzine_contents_cat_nm+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+cf_changeDateFormat(items.reg_date,'yy-mm-dd') +'</td>\n';
+	    		
+	    		var tag_tr = "<tr class='pointer' onclick=\"f_openCouponZineContentsClassifyWD('"+items.cpzine_contents_cat_id+"')\">"+tag_td+"</tr>";
+	    		$("#coupon_zine_contents_classify_tbody").append(tag_tr);
+	    	});
+	    },
+	    error: function(resultData) {
+	    	var serverObj = resultData["responseJSON"] || {};
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    }
+	});
+}
+
+/**
+ * ==================================================================================
+ * 달력 : 쿠폰진 삭제
+ * ==================================================================================
+ */
+function f_couponZineContentClassifyDelete() {
+	
+	var checkData = [];
+	$.each($("#coupon_zine_contents_classify_tbody input[type='checkbox']:checked"), function(i,items){
+		checkData.push($(items).val());
+	});
+	
+	var data = {};
+	
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["cpzine_contents_cat_id_list"] = checkData;
+
+	$.ajax({
+	    url: api_url+"/backoffice/couponzine/contents/category/delete",
+	    type: "POST", 
+	    async: false,
+	    cache: false,
+	    datatype: 'json',
+	    data: JSON.stringify(data),
+	    contentType: "application/json;charset=utf-8",
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	if(resultData["code"] == "S0000"){
+	    		alert("정상적으로 삭제되었습니다");
+	    	}
+	    	f_CouponZineContentsClassifyList();
+	    },
+	    error: function(resultData) {
+	    	var serverObj = resultData["responseJSON"] || {};
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+f_CouponZineContentsClassifyList();
+</script>

@@ -1,0 +1,1189 @@
+/**
+ * ==================================================================================
+
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ * 가맹점 그룹 관리 : 목록 화면 가기
+ * ==================================================================================
+ */
+function f_tenantGroupList() {
+	var url = "/application/cooperateService/tenantGroup/tenantGroupPN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+//	cf_action(url, method, "");
+}
+/**
+ * ==================================================================================
+ * 가맹점 그룹 관리 : 등록 화면 가기
+ * ==================================================================================
+ */
+function f_tenantGroupWN() {
+	var url = "/application/cooperateService/tenantGroup/tenantGroupWN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+//	cf_action(url, method, "");
+}
+/**
+ * ==================================================================================
+ * 가맹점 그룹 관리 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_tenantGroupEN() {
+	
+	var _empno = $('#empno').val();
+	var _tenant_cd = $("#tenant_cd").val();
+	
+	var postData = {
+			empno : _empno,
+			tenant_cd : _tenant_cd
+	}
+	
+	var url = "/application/cooperateService/tenantGroup/tenantGroupEN.do";
+	var method = "POST";
+	cf_action(url, method, postData);
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 그룹 관리 : 그룹 가맹점 상세 화면 가기
+ * ==================================================================================
+ */
+function f_tenantGroupChildRN() {
+	
+	var _empno = $('#empno').val();
+	var _tenant_cd = $("#tenant_cd").val();
+	
+	var postData = {
+			empno : _empno,
+			tenant_cd : _tenant_cd
+	}
+	
+	var url = "/application/cooperateService/tenantGroup/tenantGroupChildRN.do";
+	var method = "POST";
+	cf_action(url, method, postData);
+}
+/**
+ * ==================================================================================
+ * 가맹점 그룹 관리 : 그룹 가맹점 수정 화면 가기
+ * ==================================================================================
+ */
+function f_tenantGroupChildEN() {
+	
+	var _empno = $('#empno').val();
+	var _tenant_cd = $("#tenant_cd").val();
+	
+	var postData = {
+			empno : _empno,
+			tenant_cd : _tenant_cd
+	}
+	
+	var url = "/application/cooperateService/tenantGroup/tenantGroupChildEN.do";
+	var method = "POST";
+	cf_action(url, method, postData);
+}
+/**
+ * ==================================================================================
+ * 가맹점 관리 : 목록 화면 가기
+ * ==================================================================================
+ */
+function f_tenantList() {
+	var url = "/application/cooperateService/tenant/tenantPN.do";
+	var method = "POST";
+	cf_action(url, method, "");
+}
+/**
+ * ==================================================================================
+ * 가맹점 관리 : 상세 화면 가기
+ * ==================================================================================
+ */
+function f_tenantRN() {
+	var url = "/application/cooperateService/tenant/tenantRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 관리 : 가맹점 수정 화면 가기
+ * ==================================================================================
+ */
+function f_tenantEN() {
+	var url = "/application/cooperateService/tenant/tenantEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 / 쿠폰 관리 > 이벤트 목록 지점설정 팝업 호출
+ * ==================================================================================
+ */
+function f_openTenantMainSetSD() {
+	$.ajax({
+		url: "/application/cooperateService/tenant/tenantMainSetSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#tenantMainSetSD');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#tenantMainSetSD').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 템플릿 이미지 / 배너 관리 : 상세 화면 가기
+ * ==================================================================================
+ */
+function f_tenantTImgRN() {
+	var url = "/application/cooperateService/tenant/tenantTImgRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 템플릿 이미지 / 배너 관리 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_tenantTImgEN() {
+	var url = "/application/cooperateService/tenant/tenantTImgEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+/**
+ * ==================================================================================
+ * 가맹점 이벤트  / 쿠폰 관리 : 목록 화면 가기(PN)
+ * ==================================================================================
+ */
+function f_tenantEventList() {
+	var url = "/application/cooperateService/tenantEvent/tenantEventPN.do";
+	var method = "POST";
+	cf_action(url, method, "");
+}
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 / 쿠폰 관리 목록 화면 가기(LN)
+ * ==================================================================================
+ */
+function f_tenantEventLN() {
+	var url = "/application/cooperateService/tenantEvent/tenantEventLN.do";
+	var method = "POST";
+	cf_action(url, method, "");
+//	cf_action(url, method, $("#frmKeepData").serialize());
+}
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 / 쿠폰 관리 > 쿠폰 상세 화면 가기
+ * ==================================================================================
+ */
+function f_tenantEventCouponRN() {
+	var url = "/application/cooperateService/tenantEvent/tenantEventCouponRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 / 쿠폰 관리 > 쿠폰 수정 화면 가기
+ * ==================================================================================
+ */
+function f_tenantEventCouponEN() {
+	var url = "/application/cooperateService/tenantEvent/tenantEventCouponEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 / 쿠폰 관리 > 이벤트 목록 지점설정 팝업 호출
+ * ==================================================================================
+ */
+function f_openTenantEventStrMainSetSD() {
+	$.ajax({
+		url: "/application/cooperateService/tenantEvent/tenantEventStrMainSetSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#tenantEventStrMainSetSD');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#tenantEventStrMainSetSD').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 / 쿠폰 관리 > 이벤트 상세 화면 가기
+ * ==================================================================================
+ */
+function f_tenantEventRN() {
+	var url = "/application/cooperateService/tenantEvent/tenantEventRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 가맹점 별점 / 평가관리 > 목록 화면 가기
+ * ==================================================================================
+ */
+function f_tenantRatingLN() {
+	var url = "/application/cooperateService/rating/ratingLN.do";
+	var method = "POST";
+	cf_action(url, method);
+}
+/**
+ * ==================================================================================
+ * 공지사항 / 메뉴얼 업로드 > 목록 화면 가기
+ * ==================================================================================
+ */
+function f_tenantNoticeLN() {
+	var url = "/application/cooperateService/notice/noticeLN.do";
+	var method = "POST";
+	cf_action(url, method);
+}
+/**
+ * ==================================================================================
+ * 가맹점 템플릿 이미지 / 배너 관리 : 상세 화면 가기
+ * ==================================================================================
+ */
+function f_tenantNoticeRN() {
+	var url = "/application/cooperateService/notice/noticeRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+/**
+ * ==================================================================================
+ * 공지사항 / 메뉴얼 업로드 > 상세 > 수정 화면 가기
+ * ==================================================================================
+ */
+function f_tenantNoticeEN() {
+	var url = "/application/cooperateService/notice/noticeEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+
+/**
+ * ==================================================================================
+ * 문의사항 > 목록 화면 가기
+ * ==================================================================================
+ */
+function f_tenantQuestionsLN() {
+	var url = "/application/cooperateService/questions/questionsLN.do";
+	var method = "POST";
+	cf_action(url, method);
+}
+
+/**
+ * ==================================================================================
+ * 제휴서비스 통계 > 엑셀 다운로드 팝업 호출
+ * ==================================================================================
+ */
+function f_cooperateServiceExcelDownSD() {
+	
+	$.ajax({
+		url: "/application/stats/cooperateService/cooperateServiceExcelDownSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#cooperateServiceExcelDownSD');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#cooperateServiceExcelDownSD').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 가맹점push관리 > 목록 화면 가기
+ * ==================================================================================
+ */
+function f_tenantPushLN() {
+	var url = "/application/cooperateService/tenantPush/tenantPushLN.do";
+	var method = "POST";
+	cf_action(url, method);
+}
+
+
+
+
+/**
+ * ==================================================================================
+ * 검색 이벤트 : 날짜 조회시 시작일 종료일 모두 존재하는지 체크
+ * ==================================================================================
+ */
+function f_StartDD_EndDD_Both_Use_Check(from,to){
+	var val = 0;
+	if($('#'+from).val() != "" || $('#'+to).val() != ""){
+		if($('#'+from).val() == "" || $('#'+to).val() == ""){
+			alert('날짜 조건 조회시 시작일과 종료일 모두 입력해야 합니다.');
+			val++;
+		}
+	}
+	return val;
+}
+
+/**
+ * ==================================================================================
+ * 그룹 목록 grid 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_tenantGroupSearch() {
+
+	// 초기화 버튼 추가
+	f_tenantGroupAddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('reg_date_from','reg_date_to');
+	if(val > 0){return;}
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#tenantGroup_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#tenantGroup_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#tenantGroup_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 그룹 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_tenantGroupAddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_tenantGroupCancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+/**
+ * ==================================================================================
+ * 그룹 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_tenantGroupCancel() {
+	$('#tenant_nm').val("");
+	
+	$('#reg_date_from').val("");
+	$('#reg_date_to').val("");
+	$("#reg_date_from").datepicker('option','minDate', null);
+	$("#reg_date_from").datepicker('option','maxDate', null);
+	$("#reg_date_to").datepicker('option','minDate', null);
+	$("#reg_date_to").datepicker('option','maxDate', null);
+	var searchData = $("#frmSearch").serializeFormObject();
+	$("#btn_cancel").remove();
+	$("#tenantGroup_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 가맹점 목록 grid 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_tenantSearch() {
+	
+	// 초기화 버튼 추가
+	f_tenantAddButton();
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#tenant_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#tenant_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#tenant_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_tenantAddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_tenantCancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_tenantCancel() {
+	$('#str_cd').val("");
+	$('#aprv_sts_cd').val("");
+	$('#tenant_entshp_sts_cd').val("");
+	$('#tenant_nm').val("");
+	var searchData = $("#frmSearch").serializeFormObject();
+	$("#btn_cancel").remove();
+	$("#tenant_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 화면 쿠폰목록 grid(coupon_list_grid) : 검색 이벤트
+ * ==================================================================================
+ */
+function f_coupon_list_grid_Search() {
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_coupon_list_grid_AddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('reg_date_from','reg_date_to');
+	if(val > 0){return;}
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#coupon_list_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#coupon_list_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#coupon_list_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 화면 쿠폰목록 grid(coupon_list_grid) : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_coupon_list_grid_AddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_coupon_list_grid_Cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 화면 쿠폰목록 grid(coupon_list_grid) : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_coupon_list_grid_Cancel() {
+	$('#coupon_nm').val("");
+	$('#item_nm').val("");
+	$('#reg_date_from').val("");
+	$('#reg_date_to').val("");
+	$("#reg_date_from").datepicker('option','minDate', null);
+	$("#reg_date_from").datepicker('option','maxDate', null);
+	$("#reg_date_to").datepicker('option','minDate', null);
+	$("#reg_date_to").datepicker('option','maxDate', null);
+	$('#tna_reg_divn_cd').val("");
+	
+	$("#btn_cancel").remove();
+	var searchData = $("#frmSearch").serializeFormObject();
+	$("#coupon_list_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 화면 이벤트목록 grid(tenant_event_grid) : 검색 이벤트
+ * ==================================================================================
+ */
+function f_tenant_event_grid_Search() {
+	
+	// 초기화 버튼 추가
+	f_tenant_event_grid_AddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('search_date_from','search_date_to');
+	if(val > 0){return;}
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmEventSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#tenant_event_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#tenant_event_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#tenant_event_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 화면 이벤트목록 grid(tenant_event_grid) : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_tenant_event_grid_AddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_event_cancel").remove();
+	$("#btn_event_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_event_cancel\" onclick=\"f_tenant_event_grid_Cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 화면 이벤트목록 grid(tenant_event_grid) : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_tenant_event_grid_Cancel() {
+//	f_tenantEventList();
+	$('#aprv_sts_cd').val("");
+	$('#event_title').val("");
+	$('#prgs_sts_cd').val("");
+	$('#reg_divn_cd').val("");
+	$('#search_date_from').val("");
+	$('#search_date_to').val("");
+	$("#search_date_from").datepicker('option','minDate', null);
+	$("#search_date_from").datepicker('option','maxDate', null);
+	$("#search_date_to").datepicker('option','minDate', null);
+	$("#search_date_to").datepicker('option','maxDate', null);
+	$('#str_cd').val("");
+	$('#tenant_nm').val("");
+	var searchData = $("#frmEventSearch").serializeFormObject();
+		
+	$("#btn_event_cancel").remove();
+	$("#tenant_event_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+/**
+ * ==================================================================================
+ * 가맹점 이벤트 등록 / 수정 > 가맹점 선택 목록 grid 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_tenantEventStrSelectSDSearch() {
+	
+	// 초기화 버튼 추가
+	f_tenantEventStrSelectSDAddButton();
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	searchData['aprv_sts_cd'] = 'APPROVE';
+	searchData['tenant_entshp_sts_cd'] = 'ENTSHP';
+	
+	// 검색 사용 중으로 변경
+	$("#tenant_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#tenant_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#tenant_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_tenantEventStrSelectSDAddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_tenantEventStrSelectSDCancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_tenantEventStrSelectSDCancel() {
+	$('#_str_cd').val("");
+	$('#tenant_nm').val("");
+	var searchData = {
+			aprv_sts_cd:'APPROVE',
+			str_cd:'',
+			tenant_entshp_sts_cd:'ENTSHP',
+			tenant_nm:''	
+	}
+	$("#btn_cancel").remove();
+	$("#tenant_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+
+/**
+ * ==================================================================================
+ * 별점 / 평가관리 grid(lifekok_rating_grid) : 검색 이벤트
+ * ==================================================================================
+ */
+function f_lifekok_rating_grid_Search() {
+	
+	// 초기화 버튼 추가
+	f_lifekok_rating_grid_AddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('reg_date_from','reg_date_to');
+	if(val > 0){return;}
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	$('input[name=xls_str_nm]').val(searchData.str_nm);
+	$('input[name=xls_tenant_nm]').val(searchData.tenant_nm);
+	$('input[name=xls_reg_date_from]').val(searchData.reg_date_from);
+	$('input[name=xls_reg_date_to]').val(searchData.reg_date_to);
+	$('input[name=xls_user_rep_id]').val(searchData.user_rep_id);
+	
+	// 검색 사용 중으로 변경
+	$("#lifekok_rating_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#lifekok_rating_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#lifekok_rating_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+/**
+ * ==================================================================================
+ * 별점 / 평가관리 grid(lifekok_rating_grid) : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_lifekok_rating_grid_AddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_lifekok_rating_grid_Cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+/**
+ * ==================================================================================
+ * 별점 / 평가관리 grid(lifekok_rating_grid) : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_lifekok_rating_grid_Cancel() {
+	f_tenantRatingLN();
+}
+/**
+ * ==================================================================================
+ * 별점 / 평가관리 grid(lifekok_rating_grid) : 엑셀 다운로드
+ * ==================================================================================
+ */
+function excel_down_rating(){ 
+	// 별점 평가 관리 엑셀 양식 다운로드
+	var url = api_lifekok_url+"/lifekok/common/excel/download?";
+// 	var url = api_url+"/backoffice/common/excel/statistics/download?";
+	var data = _data();
+	var params = encodeURI('params='+JSON.stringify(data));
+	$.fileDownload(url + params);
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 공지사항/매뉴얼 업로드 > 공지사항 목록 grid(notice_grid) : 검색 이벤트
+ * ==================================================================================
+ */
+function f_notice_grid_search() {
+	
+	// 초기화 버튼 추가
+	f_notice_grid_AddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('reg_date_from','reg_date_to');
+	if(val > 0){return;}
+	
+	var searchData = $("#frmSearch").serializeFormObject();
+	if(searchData['keytype']=="_reg_nm"){
+		searchData['reg_nm'] = searchData['keyword'] 
+	}else if(searchData['keytype']=="_title"){
+		searchData['title'] = searchData['keyword'] 
+	}
+	
+	// 검색 사용 중으로 변경
+	$("#notice_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#notice_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#notice_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+/**
+ * ===========================================================================================
+ * 공지사항/매뉴얼 업로드 > 공지사항 목록 grid(notice_grid) : 검색 초기화 버튼 추가
+ * ===========================================================================================
+ */
+function f_notice_grid_AddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_notice_grid_Cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+/**
+ * ========================================================================================
+ * 공지사항/매뉴얼 업로드 > 공지사항 목록 grid(notice_grid) : 검색 초기화 이벤트
+ * ========================================================================================
+ */
+function f_notice_grid_Cancel() {
+	f_tenantNoticeLN();
+}
+
+/**
+ * ==================================================================================
+ * 문의사항 목록 grid(questions_grid) : 검색 이벤트
+ * ==================================================================================
+ */
+function f_questions_grid_search() {
+	
+	// 초기화 버튼 추가
+	f_questions_grid_AddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('reg_date_from','reg_date_to');
+	if(val > 0){return;}
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	if(searchData['keytype']=="_reg_nm"){
+		searchData['reg_nm'] = searchData['keyword'] 
+	}else if(searchData['keytype']=="_title"){
+		searchData['title'] = searchData['keyword'] 
+	}
+	
+	// 검색 사용 중으로 변경
+	$("#questions_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#questions_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#questions_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+/**
+ * ===========================================================================================
+ * 문의사항 목록 grid(questions_grid) : 검색 초기화 버튼 추가
+ * ===========================================================================================
+ */
+function f_questions_grid_AddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_questions_grid_Cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+/**
+ * ========================================================================================
+ * 문의사항 목록 grid(questions_grid) : 검색 초기화 이벤트
+ * ========================================================================================
+ */
+function f_questions_grid_Cancel() {
+	f_tenantQuestionsLN();
+}
+
+/**
+ * ==================================================================================
+ * 가맹점 push 관리 목록 grid(tenantPush_grid) : 검색 이벤트
+ * ==================================================================================
+ */
+function f_tenantPush_grid_search() {
+	
+	// 초기화 버튼 추가
+	f_tenantPush_grid_AddButton();
+	
+	var val = f_StartDD_EndDD_Both_Use_Check('tran_hope_dy_from','tran_hope_dy_to');
+	if(val > 0){return;}
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#tenantPush_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#tenantPush_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#tenantPush_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+/**
+ * ===========================================================================================
+ * 가맹점 push 관리 목록 grid(tenantPush_grid) : 검색 초기화 버튼 추가
+ * ===========================================================================================
+ */
+function f_tenantPush_grid_AddButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_tenantPush_grid_Cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+/**
+ * ========================================================================================
+ * 가맹점 push 관리 목록 grid(tenantPush_grid) : 검색 초기화 이벤트
+ * ========================================================================================
+ */
+function f_tenantPush_grid_Cancel() {
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+	$("#tran_hope_dy_from").datepicker('option','minDate', null);
+	$("#tran_hope_dy_from").datepicker('option','maxDate', null);
+	$("#tran_hope_dy_to").datepicker('option','minDate', null);
+	$("#tran_hope_dy_to").datepicker('option','maxDate', null);
+	var searchData = $("#frmSearch").serializeFormObject();
+	$("#btn_cancel").remove();
+	$("#tenantPush_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 표지 템플릿 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_lifekokOpenTenantEventTemplatesLD() {
+	
+	$.ajax({
+		url: "/application/cooperateService/tenantEvent/tenantEventTemplatesLD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#templates_sd');
+			$target.html(data);
+		}	
+	});
+	$('#templates_sd').dialog('open');
+}
+/**
+ * ==================================================================================
+ * 등록/수정 : 표지템플릿 파일 삭제 버튼 이벤트
+ * ==================================================================================
+ */
+function f_lifekokTemplateFileDelete() {
+	$('input[name=strge_nm]').val("");
+	$('input[name=orgin_nm]').val("");
+	$('input[name=img_templ_id]').val("");
+	$('input[name=img_templ_yn]').val('N');
+	
+	var preview = $('#preview_uploadfile');
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_uploadfile').parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_uploadfile').remove();
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------//
+
+/**
+ * 파일 업로드 - 생활콕
+ * @param inputFile
+ * @param divnCd
+ */
+function f_lifekok_fileUpload(inputFile, divnCd, inputSuffix) {
+	
+	if (inputSuffix == null) { 
+		inputSuffix = ""; 
+	}
+	
+	var fileData = inputFile.get(0).files[0];
+	var formData = new FormData();
+
+	var preview = $('#preview_'+inputFile.attr('id'));
+	
+	if(preview.find('img').attr('src') != noImgPath) {
+		alert('기존 파일을 삭제하고 업로드 하시기 바랍니다.');
+		return;
+	}
+	
+	formData.append('file', fileData, encodeURI(fileData.name));
+	formData.append('file_divn_cd', divnCd);
+	formData.append('empno', $('#frmKeepData').find('input[name=empno]').val() );
+	
+	$.ajax({
+
+		//로컬
+//		url: api_lifekok_img_url+"/lifekok/common/file/upload",
+		
+		//개발
+		url: api_lifekok_url+"/lifekok/common/file/upload",
+		
+		type: 'POST',
+		data: formData,
+        preprocessData: false,
+		cache: false,
+		contentType: false,
+		processData: false,
+		success: function(obj) {
+			
+			var _prvw_url = obj.data.prvw_url;
+			$('input[name=strge_nm]').val(obj.data.strge_nm);
+			$('input[name=file_divn_cd]').val(obj.data.file_divn_cd);
+			$('input[name=orgin_nm]').val(fileData.name);
+			$('input[name=templ_yn]').val('N');
+			$('input[name=img_templ_yn]').val('N');
+			//로컬
+//			var _delivery_prvw_url = _prvw_url.replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+			
+			//개발
+			var _delivery_prvw_url = _prvw_url;
+			
+			preview.find('img').attr('src',_delivery_prvw_url);
+			
+			var fName = '<p class="alert alert-info bd0">'+fileData.name+'</p>';
+			preview.parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_'+inputFile.attr('id'));
+			var aTag = $('<a>')
+						.addClass('btn btn-danger btn-sm')
+						.attr('href','javascript:f_lifekok_fileDelete(\''+inputFile.attr('id')+'\')')
+						.text('파일삭제');
+			
+			span.append(aTag);
+			// TODO: 추 후 필요한 정보는 더 추가 하여 입력 한다.
+			
+			
+			
+			var btn_div = inputFile.parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;       
+		}
+	});
+}
+/**
+ * 파일 삭제
+ * @param name
+ */
+function f_lifekok_fileDelete(name) {
+	
+	$('input[name=strge_nm]').val("");
+	$('input[name=orgin_nm]').val("");
+	$('input[name=templ_id]').val("");
+	$('input[name=img_templ_id]').val("");
+	$('input[name=templ_yn]').val('');
+	$('input[name=img_templ_yn]').val('');
+	var preview = $('#preview_'+name);
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_'+name).parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_'+name).remove();
+}
+//---------------------------------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+
+
+
+/**
+ * ==================================================================================
+ *  조회 조건 : 가맹점 그룹 기본 값 설정
+ * ==================================================================================
+ */
+function f_ajaxGroupCode(target) {
+	
+	var data = {
+			empno : $('input[name=empno]').val()
+	}
+	$.ajax({
+		url: api_lifekok_url + "/backoffice/lifekok/tenant/group/list",
+		type: "GET",
+		async: false,
+		data : encodeURI("params="+JSON.stringify(data)),
+		success: function(obj) {		
+			f_arraySortForTENANT_NM(obj.data.group_list)
+			var options = "";
+			for(var i = 0 ; i < obj.data.group_list.length ; i++ ){
+				options += "<option value='"+obj.data.group_list[i].tenant_cd+"'>"+obj.data.group_list[i].tenant_nm+"</option>"
+			}
+			$("#"+target).append(options);
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+			alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+			return;
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 배열 children sort : tenant_nm
+ * ==================================================================================
+ */
+function f_arraySortForTENANT_NM(_array){
+	 _array.sort(function (a, b) {
+			return a.tenant_nm < b.tenant_nm ? -1 : a.tenant_nm > b.tenant_nm ? 1 : 0;  
+		});
+}
+/**
+ * ==================================================================================
+ *  조회 조건 : 지점 코드 기본 값 설정
+ * ==================================================================================
+ */
+function f_ajaxStrCode(target) {
+	
+	$.ajax({
+		url: api_lifekok_url + "/lifekok/common/str/list",
+		type: "GET",
+		async: false,
+		success: function(obj) {		
+			var options = "";
+			
+			$.each(obj.data.str_list, function(i, item) {
+				options += "<option value='"+item.str_cd+"'>"+item.str_nm+"</option>";
+			});
+			
+			$("#"+target).append(options);	
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+			alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+			return;
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ *  조회 조건 : 전화국번코드 기본 값 설정
+ * ==================================================================================
+ */
+function f_ajaxPhoneCode(target) {
+	
+	$.ajax({
+		url: api_lifekok_url + "/lifekok/common/tenant/register/scrinfo",
+		type: "GET",
+		async: false,
+		success: function(obj) {		
+			var options = "";
+			
+			$.each(obj.data.phone_prefix_cd, function(i, item) {
+				options += "<option value='"+item.cd+"'>"+item.cd_nm+"</option>";
+			});
+			
+			$("#"+target).append(options);	
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+			alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+			return;
+		}
+	});
+}
+/**
+ * ==================================================================================
+ *  조회 조건 : 휴대폰국번코드 기본 값 설정
+ * ==================================================================================
+ */
+function f_ajaxCellCode(target) {
+	
+	$.ajax({
+		url: api_lifekok_url + "/lifekok/common/tenant/register/scrinfo",
+		type: "GET",
+		async: false,
+		success: function(obj) {		
+			var options = "";
+			
+			$.each(obj.data.cell_prefix_cd, function(i, item) {
+				options += "<option value='"+item.cd+"'>"+item.cd_nm+"</option>";
+			});
+			
+			$("#"+target).append(options);	
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+			alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+			return;
+		}
+	});
+}
+/**
+ * ==================================================================================
+ *  조회 조건 : 업무 카테고리 코드 기본 값 설정
+ * ==================================================================================
+ */
+function f_ajaxBizCateCode(target) {
+	
+	var _code = "";
+	if(target != "cate_"){
+		_code = target.substring(target.length-2,target.length); 
+	}
+	var data = {};
+	data['up_biz_cate_cd'] = _code;
+	$.ajax({
+		url: api_lifekok_url + "/lifekok/common/bizcatecode",
+		type: "GET",
+		async: false,
+		data : encodeURI("params="+JSON.stringify(data)),
+		success: function(obj) {		
+			var options = "";
+			
+			$.each(obj.data.biz_cate_code_list, function(i, item) {
+				options += "<option value='"+item.cd+"'>"+item.cd_nm+"</option>";
+			});
+			
+			$("#"+target).append(options);	
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+			alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+			return;
+		}
+	});
+}
+
+//구글 지도====================================================================================
+function mapLoading(latitude, longitude) {
+	var myLatlng = new google.maps.LatLng(latitude, longitude);
+	
+	var myOptions = {
+		zoom: 16,
+		center: myLatlng,
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	}
+	var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+	var marker;
+	marker = new google.maps.Marker({ 
+		   position: myLatlng, 
+		   map: map,
+// 		   title: '마커'
+	});
+}

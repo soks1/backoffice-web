@@ -1,0 +1,541 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회조건</h2>
+				</header>
+				<div>
+					<form class="form-horizontal" id="frmSearch">
+						<input type="hidden" name="empno" value='${sessionScope.sessionEmpno }'>
+						<div class="form-group">
+							<label class="col-md-1 control-label">지점명</label>
+							<div class="col-md-3">
+								<select class="form-control" id="d_str_cd" name="d_str_cd">
+										<option value="">선택</option>
+								</select>
+							</div>
+							<label class="col-md-1 control-label" style="width:120px;">가맹점명</label>
+							<div class="col-md-3">
+								<input class="form-control" type="text" id="d_tenant_nm" name="d_tenant_nm" data-valid-max="100" data-valid-title="가맹점명">
+							</div>
+						</div>
+						
+						<div class="form-actions mt0">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="javascript:void(0)" id="btn_tenantMainSetSD_search" onclick="f_tenantMainSetSearch();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-4 col-lg-5" style="width:520px">
+			<div class="jarviswidget" id="wid-id-2" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회 결과</h2>				
+				</header>
+				<button type="button" class="btn btn-primary col-md-12" id="mainAddBtn" onclick="f_mainAdd();">추가 &gt;&gt;</button>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div id="target_tenant_coupon_grid" class="widget-body no-padding" style="max-height: 600px; overflow-y:auto; overflow-x:hidden;">
+						<table id="tenant_coupon_grid"></table>
+					</div>
+					<div id="tenant_coupon_grid_page" class="ta-r" style="padding:5px;">
+					</div>
+				</div>
+			</div>
+		</article>
+		
+		<article class="col-xs-12 col-sm-12 col-md-4 col-lg-6" style="width:520px">
+<!-- 		순서변경기능추가시 -->
+<!-- 		<article class="col-xs-12 col-sm-12 col-md-4 col-lg-6" style="width:670px"> --> 
+			<div class="jarviswidget" id="wid-id-2" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>선택 항목</h2>				
+				</header>
+				<button type="button" class="btn btn-primary col-md-12" id="mainRemoveBtn" onclick="f_mainRemove();">&lt;&lt; 삭제</button>
+				<div class="no-padding">
+					<div class="table-responsive" style="max-height:370px; overflow:auto;">
+						<table class="table table-bordered order_change_able">
+							<thead>
+								<tr>
+									<th style="width:12px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+									<th class="ta-c">no</th>
+									<th class="ta-c">지점명</th>
+									<th class="ta-c">가맹점명</th>
+									<th class="ta-c">쿠폰명</th>
+<!-- 									<th class="ta-c">노출순서</th> -->
+								</tr>
+							</thead>
+							<tbody id="tenantMainView_list" data-valid-title="메인노출목록">
+								
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	
+</section>
+
+<form id="frmKeepData1">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 메인 가맹점 설정 grid 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_tenantMainSetSearch() {
+	
+	if($('#d_str_cd').val() == "" && $('#d_tenant_nm').val() == ""){
+		alert('지점명은 필수 조회조건입니다');
+		return;
+	}else
+	if($('#d_str_cd').val() == ""){
+		alert('지점 선택 후 가맹점명으로 검색해 주세요');
+		return;
+	}
+	
+	// 검색 사용 중으로 변경
+	$("#tenant_coupon_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#tenant_coupon_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#tenant_coupon_grid").jqGrid('setGridParam', {'postData' : {'empno':'${sessionScope.sessionEmpno}','str_cd':$('#d_str_cd').val(),'tenant_nm':$('#d_tenant_nm').val()} }).trigger('reloadGrid');
+	
+}
+
+/**
+ * ==================================================================================
+ * 메인노출목록 : 선택삭제 이벤트
+ * ==================================================================================
+ */
+function f_mainRemove() {
+	cf_delTableRow('tenantMainView_list');
+	
+	var main_cnt = $('#tenantMainView_list tr').length;
+	for(var i = 0; i < main_cnt ; i++){
+		$('#tenantMainView_list tr:eq('+i+') td:eq(1)').html(i+1);
+	}
+}
+/* ============================================================================================
+/* '추가'버튼
+/* ============================================================================================ */
+function f_mainAdd(){
+	var MAX_MAIN_CNT = 8; //매인 최대 노출 갯수
+	var main_cnt = $('#tenantMainView_list tr').length;
+	
+	if(main_cnt >= MAX_MAIN_CNT){
+		alert('최대 '+MAX_MAIN_CNT+'개의 항목을 노출 할 수 있습니다.');
+		return;
+	}
+	
+	var rowId = $("#tenant_coupon_grid").jqGrid('getGridParam', 'selarrrow');
+	
+	if(rowId.length < 1){
+		alert('추가할 항목을 선택해 주세요.');
+		return;
+	}else if(rowId.length > 1){
+		alert('한번에 하나의 항목을 추가할 수 있습니다.');
+		return;
+	}
+
+	var addItem = $('#tenant_coupon_grid').getRowData(rowId[0]);
+	
+	//중복검사
+	for(var i = 0; i < main_cnt ; i++){
+		var dupl = 0;
+		
+		if(addItem.main_kind_cd == 'COUPON'){
+			if(addItem.event_mst_id == $('#tenantMainView_list tr').eq(i).find('input[name=t_event_mst_id]').val() &&
+			   addItem.cpbook_id	== $('#tenantMainView_list tr').eq(i).find('input[name=t_cpbook_id]').val()	 &&
+			   addItem.coupon_id	== $('#tenantMainView_list tr').eq(i).find('input[name=t_coupon_id]').val()	 && 
+			   addItem.str_cd 		== $('#tenantMainView_list tr').eq(i).find('input[name=t_str_cd]').val() 		 &&
+			   addItem.tenant_cd	== $('#tenantMainView_list tr').eq(i).find('input[name=t_tenant_cd]').val()	 )
+			{
+				dupl++;
+			}
+		}
+		else if(addItem.main_kind_cd == 'TENANT'){
+			if(addItem.str_cd 		== $('#tenantMainView_list tr').eq(i).find('input[name=t_str_cd]').val()		&&
+			   addItem.tenant_cd	== $('#tenantMainView_list tr').eq(i).find('input[name=t_tenant_cd]').val()	 )
+			{
+				dupl++;
+			}
+		}
+		
+		if(dupl > 0){
+			alert('이미 등록된 항목입니다.');
+			return;
+		}
+	}
+	
+	var appendData = "";
+	
+	if(addItem.str_nm.length > 4){
+		addItem.tenant_nm = addItem.tenant_nm.substr(0,4);
+		addItem.tenant_nm += '..';
+	}
+	if(addItem.tenant_nm.length > 8){
+		addItem.tenant_nm = addItem.tenant_nm.substr(0,8);
+		addItem.tenant_nm += '..';
+		
+	}
+	if(addItem.coupon_nm.length > 20){
+		addItem.coupon_nm = addItem.coupon_nm.substr(0,20);
+		addItem.coupon_nm += '..';
+	}
+	
+	appendData += "<tr name='_main_tr'>";
+	appendData += "	<td class='ta-c'><input type='checkbox' value='"+(main_cnt+1)+"'></td>";
+	appendData += "	<input type='hidden' data-array-always='true' name='t_main_kind_cd' value='"+addItem.main_kind_cd+"'>";
+	appendData += "	<input type='hidden' data-array-always='true' name='t_event_mst_id' value='"+addItem.event_mst_id+"'>";
+	appendData += "	<input type='hidden' data-array-always='true' name='t_event_title'	value='"+addItem.event_title+"'>";
+	appendData += "	<input type='hidden' data-array-always='true' name='t_cpbook_id'	value='"+addItem.cpbook_id+"'>";
+	appendData += "	<input type='hidden' data-array-always='true' name='t_coupon_id'	value='"+addItem.coupon_id+"'>";
+	appendData += "	<input type='hidden' data-array-always='true' name='t_str_cd'		value='"+addItem.str_cd+"'>";
+	appendData += "	<input type='hidden' data-array-always='true' name='t_tenant_cd'	value='"+addItem.tenant_cd+"'>";
+	appendData += "	<td class='ta-c'>"+(main_cnt+1)+"</td>";
+	appendData += "	<td class='ta-c'>"+addItem.str_nm+"</td>";
+	appendData += "	<td class='ta-c'>"+addItem.tenant_nm+"</td>";
+	appendData += "	<td class='ta-c'>"+addItem.coupon_nm+"</td>";
+// 	appendData += "	<td class='ta-c'><button type='button' class='move up' onclick='moveUp(this)'>∧</button><button type='button' class='move dn' onclick='moveDown(this)'>∨</button></td>";
+	appendData += "</tr>";
+// 		var trHtml = $('tr[name=_main_tr]:last');
+// 		trHtml.after(appendData);
+	$('#tenantMainView_list').append(appendData);
+	
+}
+/**
+ * ==================================================================================
+ * 배열 children sort
+ * ==================================================================================
+ */
+function f_arraySortForSTR_NM(_array){
+	 _array.sort(function (a, b) {
+			return a.str_nm < b.str_nm ? -1 : a.str_nm > b.str_nm ? 1 : 0;  
+		});
+}
+/**
+ * ==================================================================================
+ *  조회 조건 : 가맹점 코드 기본 값 설정 - 등록가능 코드만 출력
+ * ==================================================================================
+ */
+function f_ajaxMain_AbleStrCode(target) {
+	var _ajax_data = {empno:'${sessionScope.sessionEmpno}'};
+	$.ajax({
+		url: api_lifekok_url + "/backoffice/lifekok/event/main/list",
+		type: "GET",
+		async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(_ajax_data)),
+		success: function(obj) {
+			
+			var data = [];
+			
+			for(var i=0;i<obj.data.target_list.length;i++){
+				var dupl = 0;
+				if(data.length > 0){
+					for(var j=0;j<data.length;j++){
+						if( data[j].str_nm == obj.data.target_list[i].str_nm){
+							dupl++;
+						}
+					}
+				}
+				if(dupl == 0){
+					var _data = {
+						'str_nm' : obj.data.target_list[i].str_nm,
+						'str_cd' : obj.data.target_list[i].str_cd,
+					};
+					data.push(_data);
+				}
+			}
+			f_arraySortForSTR_NM(data);
+			var options = "";
+			
+			$.each(data, function(i, item) {
+				options += "<option value='"+item.str_cd+"'>"+item.str_nm+"</option>";
+			});
+			
+			$("#"+target).append(options);	
+		},
+		error: function(obj) {
+			var serverObj = obj.responseJSON;
+			alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+			return;
+		}
+	});
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function(){
+	
+	f_ajaxStrCode("d_str_cd");
+// 	f_ajaxMain_AbleStrCode("d_str_cd");
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", tenant_coupon_grid_function);
+	function tenant_coupon_grid_function() {
+// 		var pageWidth = $("#tenant_coupon_grid").parent().width() - 150; 
+		var pageWidth = 1090;
+
+		jQuery("#tenant_coupon_grid").jqGrid({
+			//로컬
+			url : api_lifekok_url+"/backoffice/lifekok/event/main/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.','지점명','가맹점명','쿠폰명','h가맹점/쿠폰','h이벤트마스터아이디','h이벤트타이틀','h지점코드','h가맹점코드','h쿠폰북아이디','h쿠폰아이디' ],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 	align : 'center',	sortable : false, 	width : (pageWidth*(3/100)) 	},
+				{ name : 'str_nm',			index : 'str_nm', 		align : 'center', 	sortable : false, 	width : (pageWidth*(8/100))		},
+				{ name : 'tenant_nm', 		index : 'tenant_nm', 	align : 'center',	sortable : false, 	width : (pageWidth*(10/100))	}, 
+				{ name : 'coupon_nm', 		index : 'coupon_nm',	align : 'center',	sortable : false, 	width : (pageWidth*(20/100))	},
+				{ name : 'main_kind_cd', 	index : 'main_kind_cd', hidden : true, 		width : 0 },
+				{ name : 'event_mst_id', 	index : 'event_mst_id', hidden : true, 		width : 0 },
+				{ name : 'event_title', 	index : 'event_title',	hidden : true, 		width : 0 },
+				{ name : 'tenant_cd', 		index : 'tenant_cd',	hidden : true, 		width : 0 },
+				{ name : 'str_cd', 			index : 'str_cd',		hidden : true, 		width : 0 },
+				{ name : 'cpbook_id', 		index : 'cpbook_id',	hidden : true, 		width : 0 },
+				{ name : 'coupon_id', 		index : 'coupon_id',	hidden : true, 		width : 0 }
+			],
+			jsonReader: {
+				repeatitems : false,
+// 				id : "templ_id",
+				root :		function(obj){ return obj.data.target_list; },			// 루트가 될 데이터 셋 명칭
+// 				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+// 				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+// 				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#tenant_coupon_grid").jqGrid('setGridParam', {search: true});
+					$("#tenant_coupon_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#tenant_coupon_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#tenant_coupon_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				str_cd: '191-^^24',
+				tenant_nm: '11258190285-0198259185'			
+			},
+// 			rowNum : 10,
+// 			rowList : [10, 20, 30],
+// 			pager : '#tenant_coupon_grid_page',
+// 			sortname : 'reg_date',
+// 			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : false,
+			autowidth : true,
+			height : 320,
+// 			overflow:'auto',
+// 			height : 'auto',
+			recordpos : "left",
+			gridComplete: function() {		
+				
+				var postData = $('#tenant_coupon_grid').jqGrid("getGridParam", "postData");				
+				$('#tenant_coupon_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#tenant_coupon_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+				
+			}
+		});
+		
+		jQuery("#tenant_coupon_grid").jqGrid('navGrid', "#tenant_coupon_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#tenant_coupon_grid").gridCss();
+	  	$("#tenant_coupon_grid_cb").css("border-left-width","0");
+	  	$("#tenant_coupon_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_tenant_coupon_grid_cb").css("padding","7px 0");
+	  	$("#tenant_coupon_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	
+	}
+	
+	var data1 = {
+			empno : '${sessionScope.sessionEmpno}',
+	}	
+	
+	$.ajax({
+	    url: api_lifekok_url+'/backoffice/lifekok/event/main/list', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(data1)),
+	    beforeSend : function() {},
+	    success: function(obj){
+			
+	    	var detailData = obj.data.current_main_list;
+	    	
+	    	for(var i = 0 ; i < detailData.length; i++){
+	    		var appendData = "";
+	    		
+	    		if(detailData[i].str_nm.length > 4){
+	    			detailData[i].str_nm = detailData[i].str_nm.substr(0,4);
+	    			detailData[i].str_nm += '..';
+	    		}
+	    		if(detailData[i].tenant_nm.length > 8){
+	    			detailData[i].tenant_nm = detailData[i].tenant_nm.substr(0,8);
+	    			detailData[i].tenant_nm += '..';
+	    			
+	    		}
+	    		if(detailData[i].coupon_nm.length > 20){
+	    			detailData[i].coupon_nm = detailData[i].coupon_nm.substr(0,20);
+	    			detailData[i].coupon_nm += '..';
+	    		}
+	    		
+				appendData += "<tr name='_main_tr' id='mark"+i+"'>";
+				appendData += "	<td class='ta-c'><input type='checkbox' value='"+(i+1)+"'></td>";
+				appendData += "	<input type='hidden' data-array-always='true' name='t_main_kind_cd' value='"+detailData[i].main_kind_cd+"'>";
+				appendData += "	<input type='hidden' data-array-always='true' name='t_event_mst_id' value='"+detailData[i].event_mst_id+"'>";
+				appendData += "	<input type='hidden' data-array-always='true' name='t_event_title'	value='"+detailData[i].event_title+"'>";
+				appendData += "	<input type='hidden' data-array-always='true' name='t_cpbook_id'	value='"+detailData[i].cpbook_id+"'>";
+				appendData += "	<input type='hidden' data-array-always='true' name='t_coupon_id'	value='"+detailData[i].coupon_id+"'>";
+				appendData += "	<input type='hidden' data-array-always='true' name='t_str_cd'		value='"+detailData[i].str_cd+"'>";
+				appendData += "	<input type='hidden' data-array-always='true' name='t_tenant_cd'	value='"+detailData[i].tenant_cd+"'>";
+				appendData += "	<td class='ta-c'>"+(i+1)+"</td>";
+				appendData += "	<td class='ta-c'>"+detailData[i].str_nm+"</td>";
+				appendData += "	<td class='ta-c'>"+detailData[i].tenant_nm+"</td>";
+				appendData += "	<td class='ta-c'>"+detailData[i].coupon_nm+"</td>";
+				var markUp = "moveUpItem('mark"+i+"')";
+				var markDn = "moveDownItem('mark"+i+"')";
+// 				appendData += "	<td class='ta-c'><button type='button' class='move up' onclick='moveUp(this)'>∧</button><button type='button' class='move dn' onclick='moveDown(this)'>∨</button></td>";
+				appendData += "</tr>";
+		    	$('#tenantMainView_list').append(appendData);
+	    	}
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/**
+ * ============================================================================================================================================================================================
+ * 메인노출목록 : 순서변경 이벤트  -> 메인 순서변경기능이 요구 될 시 사용하세요.(다이얼로그와 테이블의 사이즈도 변경이필요합니다 - 해당 부분에 style로 정의 후 커멘트 처리 상태)
+ * ============================================================================================================================================================================================
+ */
+// function moveUp(el){
+// 	var $tr = $(el).parent().parent(); // 클릭한 버튼이 속한 tr 요소
+// 	$tr.prev().before($tr); // 현재 tr 의 이전 tr 앞에 선택한 tr 넣기
+// 	sort_No();
+// }
+
+// function moveDown(el){
+// 	var $tr = $(el).parent().parent(); // 클릭한 버튼이 속한 tr 요소
+// 	$tr.next().after($tr); // 현재 tr 의 다음 tr 뒤에 선택한 tr 넣기
+// 	sort_No();
+// }
+
+// function sort_No(){			// 순서 변경시 no(order_seq) 변경해주기
+// 	var main_cnt = $('#tenantMainView_list tr').length;
+// 	for(var i = 0; i < main_cnt ; i++){
+// 		$('#tenantMainView_list tr:eq('+i+') td:eq(1)').html(i+1);
+// 	}
+// }
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+</script>

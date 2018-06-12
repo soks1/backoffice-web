@@ -1,0 +1,161 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>공지사항 상세보기</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="form-horizontal" id="frmLifekok">
+						<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+						<input type="hidden" name="file_divn_cd" value="">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">공지내용 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="title"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important" >게시상태 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="post_status"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">게시기간 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="post_term"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important" >등록자 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="reg_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important" >등록일 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+								</div>
+								<div class="form-group" id="notice_img_display" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">내용이미지 : </label>
+									<div class="col-md-10" id="template_img">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important" >설명 : </label>
+									<div class="col-md-10">
+										<textarea class="form-control cs-css-03" id="_content" rows="5" readonly="readonly"></textarea>
+									</div>
+								</div>
+								
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantNoticeLN()" class="btn btn-default">목록</a>
+										<a href="javascript:f_tenantNoticeEN()" class="btn btn-success" id="tenantNotice_Modify" style="display:none;">수정</a>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	//권한에 따른 수정버튼 노출 여부
+	var auth_u = '${sessionScope.menuAuth.U}';
+	if( auth_u == 'Y') {
+		$('#tenantNotice_Modify').show();
+	}	
+	
+	$('input[name=file_divn_cd]').val("LKOKBOARDIMG");
+	
+	$.ajax({
+	    url: api_lifekok_url+'/backoffice/lifekok/notice/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	$("#title").html(detailData['title']);
+	    	$("textarea[id=_content]").html(detailData['content']);  //id=content인경우 css 걸려있는듯(상단공백이 생긴다)
+	    	$("#reg_nm").html(detailData['reg_nm']);
+	    	$("#reg_date").html(detailData['reg_date']);
+	    	$("#post_status").html(detailData['post_status']);
+	    	var _post_term = detailData['post_start_dd'] +"  ~  "+detailData['post_end_dd']; 
+	    	$("#post_term").html(_post_term);
+	    	
+	    	if(detailData['url'] != "") {
+	    		$('#notice_img_display').show();
+	    		var _delivery_img = detailData['url'];
+// 	    		var _delivery_img = detailData['url'].replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+	    		var _img = $('<img>').attr('src', _delivery_img).attr('alt', detailData['orgin_nm']).addClass('img-responsive');
+	        	$("#template_img").append(_img);
+	    	}
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

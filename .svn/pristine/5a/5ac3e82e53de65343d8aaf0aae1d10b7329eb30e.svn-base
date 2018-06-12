@@ -1,0 +1,275 @@
+/**
+ * ==================================================================================
+
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ *  조회 조건 : 카테고리 기본 값 설정
+ * ==================================================================================
+ */
+function f_ajaxCategoryCode(target, up_category_cd) {
+	
+	var data = {			
+		up_category_cd: up_category_cd	
+	}; 
+	
+	$.ajax({
+		url: api_chkok_url + "/common/code/chkok/media/category/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {		
+			var options = "";
+			
+			$.each(obj.data.category_code_list, function(i, item) {
+				options += "<option value='"+item.category_cd+"'>"+item.category_nm+"</option>";
+			});
+			
+			$("#"+target).append(options);	
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+
+
+
+/**
+ * ==================================================================================
+ * 공통 : 목록 화면 가기
+ * ==================================================================================
+ */
+function f_chkokList() {
+	var url = "/application/chkok/chkokPN.do";
+	var method = "POST";
+	cf_action(url, method, "");
+//	cf_action(url, method, $("#frmKeepData").serialize()); //기존 검색했던 데이터를 가지고 가야 할 경우 이것을 사용한다
+}
+/**
+ * ==================================================================================
+ * 공통 : 상세 화면 가기
+ * ==================================================================================
+ */
+function f_chkokRead() {
+	var url = "/application/chkok/chkokRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_chkokEdit() {
+	var url = "/application/chkok/chkokEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 채널콕 삭제
+ * ==================================================================================
+ */
+function f_chkokDel() {
+	
+	if(confirm("정말 삭제하시겠습니까?")) {
+		var select_ids = [$("#frmKeepData").find("input[name=media_id]").val()];
+		var data = {
+			empno: $("#frmKeepData").find("input[name=empno]").val(), 
+			chkok_list : select_ids
+		};
+
+		$.ajax({
+			url: api_chkok_url + "/backoffice/chkok/list/delete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_chkokList();
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+		
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#chk_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#chk_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#chk_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+//	// KeepData 폼 안에 input 태그 삭제
+//	$("#frmKeepData").empty();
+//	// 검색 초기화 버튼 삭제
+//	$("#btn_cancel").remove();
+//	$("#chk_grid").jqGrid('setGridParam', {search: false});
+//	$("#chk_grid").jqGrid('setGridParam', {page: 1});
+//	// 검색 데이터 초기화 후 그리드 리로드
+//	$("#chk_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+//	// 검색 폼의 항목들 초기화
+//	$("#frmSearch").cleanObject();
+//	
+	//날짜 선택 옵션으로 인하여 페이지 리로딩 처리
+	f_chkokList();
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 대상 상품 선택삭제 이벤트
+ * ==================================================================================
+ */
+function f_selectProductDelete() {
+	cf_delTableRow('prod_list');
+}
+
+/**
+ * ==================================================================================
+ * 채널콕 리스트 : 카테고리 정렬 순서 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openchkokCateSD() {
+	$.ajax({
+		url: "/application/chkok/chkokCateSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#cate_set');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#cate_set').dialog('open');
+		}
+	});
+}
+
+
+
+/**
+ * ==================================================================================
+ * 채널콕 통계 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_chk_stats_search() {
+	
+	// 초기화 버튼 추가
+	f_chk_stats_addButton();
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	// 검색 사용 중으로 변경
+	$("#chk_stats_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#chk_stats_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#chk_stats_grid").jqGrid('setGridParam', 
+					{'postData' : {'category_cd':searchData.category_cd,'title':searchData.title,'st_date_from':searchData.search_st_date,'st_date_to':searchData.search_ed_date} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 채널콕 통계 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_chk_stats_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_chk_stats_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 채널콕 통계 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_chk_stats_cancel() {
+	
+//	// KeepData 폼 안에 input 태그 삭제
+//	$("#frmKeepData").empty();
+//	// 검색 초기화 버튼 삭제
+//	$("#btn_cancel").remove();
+//	$("#chk_stats_grid").jqGrid('setGridParam', {search: false});
+//	$("#chk_stats_grid").jqGrid('setGridParam', {page: 1});
+//	// 검색 데이터 초기화 후 그리드 리로드
+//	$("#chk_stats_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+//	// 검색 폼의 항목들 초기화
+//	$("#frmSearch").cleanObject();
+	
+	//날짜 선택 옵션으로 인하여 페이지 리로딩 처리
+	var url = "/application/stats/chkok/chkokPN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+	
+	
+}

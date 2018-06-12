@@ -1,0 +1,487 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row" id="crmListDiv">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div class="widget-body">
+					<form id="frmSearch" class="form-horizontal">
+						<input type="hidden" id="str_cd" name="str_cd" >
+						<fieldset>
+							<div class="form-group">
+								<label class="col-md-1 control-label">캠페인ID</label>
+								<div class="col-md-3">
+									<input class="form-control" type="text" name="campaignId">
+								</div>
+								<label class="col-md-1 control-label">캠페인명</label>
+								<div class="col-md-3">
+									<input class="form-control" type="text" name="campaignNm">
+								</div>
+								<label class="col-md-1 control-label">전송상태</label>
+								<div class="col-md-3">
+									<select class="form-control" name="msgSts">
+										<option value="">전체</option>
+										<option value="1">전송완료</option>
+										<option value="0">전송대기(예약)</option>
+										<option value="2">예약취소</option>
+										<option value="3">오류</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-1 control-label">고객군ID</label>
+								<div class="col-md-3">
+									<input class="form-control" type="text" name="custgpId">
+								</div>
+								<label class="col-md-1 control-label">고객군명</label>
+								<div class="col-md-3">
+									<input class="form-control" type="text" name="custgpNm">
+								</div>
+								<label class="col-md-1 control-label">캠페인기간</label>
+								<div class="col-md-3">
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" placeholder="시작일" type="text" name="campaignStartDd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-sm-6">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" placeholder="종료일" type="text" name="campaignEndDd" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-md-1 control-label">제목</label>
+								<div class="col-md-3">
+									<input class="form-control" type="text" name="title">
+								</div>							
+								<div class="form-group">
+									<label class="col-md-1 control-label">승인상태</label>
+									<div class="col-md-3">
+										<select class="form-control" name="aprv_sts_cd">
+											<option value="">전체</option>
+											<option value="REQUEST">승인요청전</option>
+											<option value="STANDBY">승인대기</option>
+											<option value="REJECT">반려</option>
+											<option value="APPROVE">승인</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+						<div class="form-actions">
+							<div class="row">
+    							<div class="col-md-12 text-danger ta-l">
+    								<i class="fa fa-info-circle"></i> 캠페인기간 조회는 캠페인 시작일자 기준입니다.
+    							</div>
+    							<div class="col-md-12">
+    								<a href="javascript:void(0);" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+    							</div>
+							</div>
+						</div>
+					</form>
+					
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" data-widget-editbutton="false" data-widget-deletebutton="false">	
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> CRM PUSH 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_crm_jqgrid" class="widget-body no-padding">
+						<table id="crm_jqgrid"></table>
+						<div id="crm_jqgrid_page"></div>
+					</div>
+				</div>
+				
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 페이지 정보 설정
+ * ----------------------------------------------------------------------------------
+ * 초기 설정 및 필요 UI 컴포넌트 셋팅
+ * ==================================================================================
+ */
+var pagefunction = function() {
+	
+	// 지점 호출
+	f_ajaxStrCdCode($('#str_cd'));
+	$('#str_cd').val('${sessionScope.sessionStrCd}'); // 지점 초기값 설정
+// 	$('#str_cd').attr({"readonly":true,"disabled":true}); // 지점 readonly 설정
+
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', crm_jqgrid_function);
+
+	function crm_jqgrid_function() {
+		
+		// grid resize target object (don't remove!)
+		var jqgrid_section = $('#target_crm_jqgrid');
+		var pageWidth = $('#crm_jqgrid').parent().width() - 100;
+		
+		// jqgrid load (don't remove!)
+		$("#crm_jqgrid").jqGrid({
+			url: api_url+'/backoffice/push/crm/list',
+			mtype: 'GET',
+			datatype : 'json',
+		    contentType: 'application/json;charset=utf-8',
+			colNames: ['No', '제목', '캠페인명', '고객군ID', '고객군명', '전송일자', '승인상태', '전송상태', '전송요청', '성공갯수', '확인갯수', '등록일자', '지점', '스케줄ID', '상태값', '메시지ID', '캠페인ID', '캠페인 시작일', '캠페인 종료일', '승인상태코드'],
+			colModel: [
+				{ name : 'rnum',	index:'rnum',	sortable:false,	width:(pageWidth*(5/100)), 	align:'center'}, 
+				{ name : 'view_title',	index:'view_title',	sortable:false,	width:(pageWidth*(30/100)),	classes:'pointer' },
+				{ name : 'campaignnm',	index:'campaignnm',	sortable:false,	width:(pageWidth*(16/100)),align:'center' },  
+				{ name : 'custgpid',	index:'custgpid',	sortable:false,	width:(pageWidth*(10/100)),align:'center' 		}, 
+				{ name : 'custgpnm',	index:'custgpnm',	sortable:false,	width:(pageWidth*(10/100)),align:'center' 		}, 
+				{ name : 'scdltm',	index:'scdltm',	sortable:false,	width:(pageWidth*(10/100)),		align:'center'},
+				{ name : 'aprv_sts_cd_name',		index : 'aprv_sts_cd_name',	sortable : false, 	width : (pageWidth*(6/100)),	align : 'center' 	},
+				{ name : 'msgsts',	index:'msgsts',	sortable:false,	width:(pageWidth*(5/100)),align:'center' 		},
+				{ name : 'sendtotncnt',index:'sendtotncnt',	sortable:false,	width:(pageWidth*(5/100)),align:'center'	},
+				{ name : 'scssncnt',index:'scssncnt',	sortable:false,	width:(pageWidth*(5/100)),align:'center'	},
+				{ name : 'view_cnt',index:'view_cnt',	sortable:false,	width:(pageWidth*(5/100)),align:'center'	},
+				{ name : 'gendate',	index:'gendate',	sortable:false,	width:(pageWidth*(10/100)),		align:'center'},
+				{ name : 'strnm',	index:'strnm',	sortable:false,	width:(pageWidth*(8/100)),align:'center' ,hidden:true},  
+				{ name : 'scdlid',	index:'scdlid',	sortable:false,	width:(pageWidth*(10/100)),		align:'center' ,hidden:true},
+				{ name : 'msgstsval',	index:'msgstsval',	sortable:false,	width:(pageWidth*(10/100)),		align:'center' ,hidden:true},
+				{ name : 'msgid',	index:'msgid',	sortable:false,	width:(pageWidth*(10/100)),		align:'center' ,hidden:true},
+				{ name : 'campaignid',	index:'campaignid',	sortable:false,	width:(pageWidth*(10/100)),		align:'center' ,hidden:true},
+				{ name : 'campaignstartdd',	index:'campaignstartdd',	sortable:false,	width:(pageWidth*(10/100)),		align:'center' ,hidden:true},
+				{ name : 'campaignenddd',	index:'campaignenddd',	sortable:false,	width:(pageWidth*(10/100)),		align:'center' ,hidden:true},
+				{ name : 'aprv_sts_cd', 			index : 'aprv_sts_cd',				align : 'center', 	hidden:true, sortable : false, 	width : (pageWidth*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems: false,
+				id: 'col_1',
+				root:	function(obj){ return obj.data.content_list; },			// 루트가 될 데이터 셋 명칭
+				records:function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page: 	function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total: 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			
+			serializeRowData : function(postData) { return encodeURI('params='+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+								
+				var _search = $('#frmKeepData').find('input[name=_search]');
+				var page 	= $("#frmKeepData").find("input[name=page]");
+				var rows 	= $("#frmKeepData").find("input[name=rows]");
+
+				if(_search.val() == 'true') {
+					// 기존 검색 데이터 등록(특이 사항은 별로 코딩 하세요.)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+
+					// 특이 사항은 별로 코딩 영역
+					// TODO : 이 영역을 지우고 코딩 하세요.
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+
+
+					postData._search = true;
+					$('#crm_jqgrid').jqGrid('setGridParam', { search:true } );
+					$('#crm_jqgrid').jqGrid('setGridParam', {'postData' : { 'search_info' : searchData } } );
+					
+					// 검색 취소 버튼 추가
+					f_bc_searchCencle();
+				}
+
+				postData.str_cd = '${sessionScope.sessionStrCd}';
+				postData.screen_id = '';
+
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#crm_jqgrid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#crm_jqgrid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+
+				return encodeURI('params='+JSON.stringify(postData));
+			},
+			postData:{ 
+				search_info: '', 
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				row : "10",
+				_search: false 
+			},
+
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : $('#crm_jqgrid_page'),
+			sortname : 'col_1',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : 'left',
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+
+			onCellSelect: function(rowId, index, contents, event) {
+				if(index == 2) {
+					var scdlId = $("#crm_jqgrid").jqGrid('getCell', rowId, 'scdlid');
+					var msg_id = $("#crm_jqgrid").jqGrid('getCell', rowId, 'msgid');
+					var custgpId = $("#crm_jqgrid").jqGrid('getCell', rowId, 'custgpid');
+					var campaignId = $("#crm_jqgrid").jqGrid('getCell', rowId, 'campaignid');
+					var custgpnm = $("#crm_jqgrid").jqGrid('getCell', rowId, 'custgpnm');
+					var campaignnm = $("#crm_jqgrid").jqGrid('getCell', rowId, 'campaignnm');
+					var campaignstartdd = $("#crm_jqgrid").jqGrid('getCell', rowId, 'campaignstartdd');
+					var campaignenddd = $("#crm_jqgrid").jqGrid('getCell', rowId, 'campaignenddd');
+					var msgstsval = $("#crm_jqgrid").jqGrid('getCell', rowId, 'msgstsval');
+
+					$('#crm_jqgrid').jqGrid('setGridParam', {'postData' : 	{
+																				'msgid':msg_id
+																				,'custgpid':custgpId
+																				,'custgpnm':custgpnm
+																				,'campaignid':campaignId
+																				,'campaignnm':campaignnm
+																				,'campaignstartdd':campaignstartdd
+																				,'campaignenddd':campaignenddd
+																				,'scdlId':scdlId
+																				,'msgstsval':msgstsval
+																			} });
+
+					
+					var postData = $('#crm_jqgrid').jqGrid('getGridParam', 'postData');
+					var url = '/application/push/crm/crmRN.do';
+					var method = 'POST';
+					cf_action(url, method, postData);
+				}
+			},
+			
+			loadComplete: function(){			
+				// 풋터 로우
+				/* 
+				var sum = $('#crm_jqgrid').jqGrid('getCol', 'col_13', false, 'sum');
+				$('#crm_jqgrid').jqGrid('footerData', 'set', {createName:'합계', 'col_8':sum});
+				 */
+			},
+			gridComplete: function(){
+				var postData = $('#crm_jqgrid').jqGrid('getGridParam', 'postData');
+				$('#crm_jqgrid').jqGrid('sortGrid', postData.sidx, false, postData.sord);
+			},
+			loadError: function (obj) {
+				var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+
+			
+		});
+		
+		$('#crm_jqgrid').jqGrid('navGrid', '#crm_jqgrid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		
+		// btn_delete
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			$('#crm_jqgrid').jqGrid('navButtonAdd','#crm_jqgrid_page',{
+				caption: '예약취소',
+				id: 'btn_delete',
+				buttonicon: 'ui-icon-trash',
+				onClickButton: function(){
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');				
+					var chk_cnt = 0;				
+					var aprv_sts_cd_cnt = 0;				
+					var del_ids = "dummy";
+					
+					if(select_ids.length <= 1){
+						if(select_ids == ""){
+							alert("삭제할 PUSH를 선택하세요.");
+							return;
+						}
+					}
+					
+					for(var i = 0; i < select_ids.length; i++) {
+						
+						var scdl_cnt = $("#crm_jqgrid").jqGrid('getCell', select_ids[i], 'scdlid');
+						var msgsts_cnt = $("#crm_jqgrid").jqGrid('getCell', select_ids[i], 'msgstsval');
+						
+						
+						del_ids += "," + scdl_cnt;
+						if (msgsts_cnt > 0) {
+							chk_cnt++;	
+						}					
+
+					}
+					
+					if(chk_cnt > 0) {
+						alert("전송대기 상태의 PUSH만 예약 취소할 수 있습니다.");
+						return;
+					}
+					
+					
+					f_crm_cancel(del_ids);
+				}
+			});
+		}		
+		
+/*		
+		// btn_modify
+		if('${sessionScope.menuAuth.U}' == 'Y') {
+			$('#crm_jqgrid').jqGrid('navButtonAdd','#crm_jqgrid_page',{
+				caption: '수정',
+				id: 'btn_modify',
+				buttonicon: 'ui-icon-plus',
+				onClickButton: function(){
+									
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					var msgsts_cnt = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'msgstsval');
+					
+					if(select_ids.length > 1){
+						alert("하나만 체크하세요");
+					}else if(select_ids.length <= 1){
+						if(select_ids == ""){
+							alert("수정 대상을 체크해야 합니다.");
+						}else{
+							var scdlId = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'scdlid');
+							var msg_id = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'msgid');
+							var custgpId = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'custgpid');
+							var campaignId = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'campaignid');
+							var custgpnm = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'custgpnm');
+							var campaignnm = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'campaignnm');
+							var campaignstartdd = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'campaignstartdd');
+							var campaignenddd = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'campaignenddd');
+							var msgstsval = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'msgstsval');
+							var aprv_sts_cd = $("#crm_jqgrid").jqGrid('getCell', select_ids, 'aprv_sts_cd');
+
+							var postData = {
+									scdl_info : scdlId
+									,msg_info : msg_id
+									,custgpId : custgpId
+									,campaignId : campaignId
+									,custgpnm : custgpnm
+									,campaignnm : campaignnm
+									,campaignstartdd : campaignstartdd
+									,campaignenddd : campaignenddd
+									,msgstsval : msgstsval
+							};
+
+							// 승인대기상태만 수정가능 체크
+							if(aprv_sts_cd != "REQUEST") {
+								alert("승인상태가 [승인요청전]일경우만 수정가능합니다.");
+								return;
+							}
+
+							if(msgsts_cnt == 0){
+								var url = '/application/push/crm/crmEN.do';
+								var method = 'POST';
+								cf_action(url, method, postData);
+							
+							} else {
+//								alert("이미 전송완료된 PUSH는 수정 및 삭제할 수 없습니다.");
+								alert("전송완료, 전송취소 상태의 PUSH는 수정할 수 없습니다.");
+							}
+						}
+					}
+				}
+			});
+		}
+*/
+
+		// btn_create
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			$('#crm_jqgrid').jqGrid('navButtonAdd','#crm_jqgrid_page',{
+				caption: '등록',
+				id: 'btn_create',
+				buttonicon: 'ui-icon-plus',
+				onClickButton: function(){
+					var url = '/application/push/crm/crmWN.do';
+					var method = 'POST';
+					var postData = $('#crm_jqgrid').jqGrid('getGridParam', 'postData');
+					cf_action(url, method, postData);
+				}
+			});
+		}
+		
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+		
+		// jqgrid css setting (don't remove!)
+//		$('#crm_jqgrid').jqgridStyle();
+	  	$('#crm_jqgrid').gridCss();
+	  	$('#crm_jqgrid_cb').css('border-left-width','0');
+	  	$('#crm_jqgrid_cb').css('padding-left','4px');
+	  	$('#jqgh_crm_jqgrid_cb').css('padding','7px 0');	  	
+	  	$('#crm_jqgrid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  	  
+	    // jqgrid resizing (don't remove!)
+		$(window).on('resize.jqGrid', function () {
+			$('#crm_jqgrid').setGridWidth(jqgrid_section.width(), true);
+		});
+
+	    
+	};
+	
+	
+	
+};
+
+
+/**
+ * ==================================================================================
+ * 페이지 셋업 (don't remove!)
+ * ----------------------------------------------------------------------------------
+ * 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행
+ * ==================================================================================
+ */
+pageSetUp();
+
+
+/**
+ * ==================================================================================
+ * 페이지 정보 설정 로드
+ * ----------------------------------------------------------------------------------
+ * 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+ * ==================================================================================
+ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+
+</script>

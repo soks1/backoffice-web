@@ -1,0 +1,54 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script type="text/javascript">
+function f_productList() {
+	var url = "/application/auction/auctionBeaconLL.do";
+	var method = "POST";
+	cf_actionTarget(url, method, $("#searchProduct").serialize(), $("#beaconLL"));
+}
+</script>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="searchProduct">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-3 control-label">종료시간</label>
+									<div class="col-md-3">
+										<select class="form-control">
+											<option value="">시</option>
+										</select>
+									</div>
+									<div class="col-md-3">
+										<select class="form-control">
+											<option value="">분</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label"></label>
+									<div class="col-md-10">
+										<i class="fa fa-info-circle"></i> 종료시간은 기존에 설정된 시간보다 단축할 수 없으며 연장만 가능합니다.
+									</div>
+								</div>
+							</fieldset>							
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="beaconLL">
+		
+	</div>
+</section>
+<script type="text/javascript">
+	pageSetUp();
+</script>

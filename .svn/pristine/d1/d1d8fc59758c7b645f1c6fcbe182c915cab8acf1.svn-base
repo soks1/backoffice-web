@@ -1,0 +1,864 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil" %>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@page import="java.util.Enumeration" %>
+
+<section id="widget-grid">
+    <div class="row">
+        <article class="col-sm-12 col-md-12 col-lg-12">
+            <div class="jarviswidget jarviswidget-color-darken" data-widget-editbutton="false" data-widget-deletebutton="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2> 신규 M클럽 수정 </h2>
+                </header>
+                <div>
+                    <div class="jarviswidget-editbox">
+                    </div>
+                    <div class="widget-body">
+                        <form class="form-horizontal" id="frmMclubData" method="post">
+                            <input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+                            <input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+                            <input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+                            <input type="hidden" id="mclub_id" name="mclub_id">
+                            <input type="hidden" id="aprv_sts_cd" name="aprv_sts_cd">
+                            <fieldset>
+                                <legend></legend>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">ISR 클럽 유형코드<sup>*</sup></label>
+                                    <div class="col-md-1">
+                                        <select class="form-control" id="mclub_type" name="mclub_type">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">클럽명<sup>*</sup></label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" id="mclub_name" name="mclub_name" type="text"
+                                               data-valid-use="true" data-valid-max="108" data-valid-symbol="true" data-valid-title="클럽명">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">고객군<sup>*</sup></label>
+                                    <div class="input-group col-md-2 pl10">
+                                        <input class="form-control" id="lst_custgp_nm" type="text" data-valid-use="true"
+                                               readonly="readonly" data-valid-symbol="true" data-valid-title="고객군">
+                                        <input type="hidden" id="lst_custgp_id" name="lst_custgp_id"
+                                               data-valid-use="true" data-valid-symbol="true" data-valid-title="고객군">
+                                        <div class="input-group-btn">
+                                            <a href="javascript:f_openCustgpSD();" id="btn_campaign" class="btn btn-primary btn-sm">선택</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">클럽설명</label>
+                                    <div class="col-md-8">
+                                        <input class="form-control" id="mclub_desc" name="mclub_desc" placeholder="설명을 입력해 주세요."
+                                               data-valid-max="108" type="text" data-valid-title="클럽설명">
+                                    </div>
+                                </div>
+                                <fieldset id="area_upload_image">
+                                    <div class="form-group" id="area_upload_represent_image">
+										<label class="col-md-2 control-label">메인 이미지</label>
+										<div class="col-md-2">
+											<div id="preview_uploadfileM" class="files">
+												<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+											</div>
+										</div>
+										<div class="col-md-2" id="uploadfile_div">
+											<span class="btn btn-success fileinput-button">
+											    <i class="glyphicon glyphicon-plus"></i>
+											    <span>파일선택</span>
+											    <input type="file" id="uploadfileM" name="uploadfile2">
+											</span>
+										</div>
+									</div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">&nbsp;</label>
+                                        <div class="col-md-10">
+                                            <p>
+                                                <i class="fa fa-info-circle"></i>
+                                                직접등록 시, 사이즈: 350px X 350px / 파일종류: jpg, gif, png / 최대파일용량: 150KB
+                                            </p>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset id="area_upload_image">
+                                    <div class="form-group" id="area_upload_represent_image">
+										<label class="col-md-2 control-label">클럽 이미지 <sup>*</sup></label>
+										<div class="col-md-2">
+											<div id="preview_uploadfileC" class="files">
+												<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+											</div>
+										</div>
+										<div class="col-md-2" id="uploadfile_div">
+											<span class="btn btn-success fileinput-button">
+											    <i class="glyphicon glyphicon-plus"></i>
+											    <span>파일선택</span>
+											    <input type="file" id="uploadfileC" name="uploadfile">
+											</span>
+										</div>
+									</div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">&nbsp;</label>
+                                        <div class="col-md-10">
+                                            <p>
+                                                <i class="fa fa-info-circle"></i>
+                                                직접등록 시, 사이즈: 350px X 350px / 파일종류: jpg, gif, png / 최대파일용량: 150KB
+                                            </p>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <!-- 
+                                <fieldset id="area_upload_image">
+                                    <div class="form-group" id="area_upload_represent_image">
+                                        <label class="col-md-2 control-label">이미지<sup>*</sup></label>
+                                        <div class="col-md-2">
+                                            <span class="btn btn-success fileinput-button">
+                                                <i class="glyphicon glyphicon-plus"></i>
+                                                <span>파일선택</span>
+                                                <input type="file" id="uploadfileC" name="uploadfile">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">&nbsp;</label>
+                                        <div class="col-md-2">
+                                            <div id="preview_uploadfileC" class="files">
+                                                <style scoped>
+                                                    img {
+                                                        width: 120px;
+                                                        height: 120px;
+                                                        border-radius: 50%;
+                                                    }
+                                                </style>
+                                                <img src="${pageContext.request.contextPath}/resources/img/noPreview.png">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">&nbsp;</label>
+                                        <div class="col-md-10">
+                                            <p>
+                                                <i class="fa fa-info-circle"></i>
+                                                직접등록 시, 사이즈: 350px X 350px / 파일종류: jpg, gif, png / 최대파일용량: 150KB
+                                            </p>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset id="area_upload_image">
+                                    <div class="form-group" id="area_upload_represent_image">
+                                        <label class="col-md-2 control-label">이미지<sup>*</sup></label>
+                                        <div class="col-md-2">
+                                            <span class="btn btn-success fileinput-button">
+                                                <i class="glyphicon glyphicon-plus"></i>
+                                                <span>파일선택</span>
+                                                <input type="file" id="uploadfileM" name="uploadfile">
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">&nbsp;</label>
+                                        <div class="col-md-2">
+                                            <div id="preview_uploadfileM" class="files">
+                                                <style scoped>
+                                                    img {
+                                                        width: 120px;
+                                                        height: 120px;
+                                                        border-radius: 50%;
+                                                    }
+                                                </style>
+                                                <img src="${pageContext.request.contextPath}/resources/img/noPreview.png">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-md-2 control-label">&nbsp;</label>
+                                        <div class="col-md-10">
+                                            <p>
+                                                <i class="fa fa-info-circle"></i>
+                                                직접등록 시, 사이즈: 350px X 350px / 파일종류: jpg, gif, png / 최대파일용량: 150KB
+                                            </p>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                -->
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">클럽 상세 설명<sup>*</sup></label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" rows="10" id="mclub_detail_desc" name="mclub_detail_desc" data-valid-use="true" data-valid-max="4000" 
+                                                  data-valid-title="클럽 상세 설명" style="resize:none;" maxlength="4000"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">이용약관<sup>*</sup></label>
+                                    <div class="col-md-8">
+                                        <textarea class="form-control" rows="10" id="terms" name="terms" data-valid-use="true" data-valid-max="4000"
+                                         data-valid-title="이용약관" style="resize:none;" maxlength="4000"></textarea>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <style scoped>
+                                    .checkbox-inline {
+                                        float: right;
+                                        margin-right: 20px;
+                                        color: red;
+                                    }
+
+                                    .checkbox-inline > span {
+                                        font-weight: bold !important;
+                                    }
+                                </style>
+                                <legend></legend>
+                                <fieldset class="col-md-12 fieldset-survey fieldset-survey-join">
+                                    <div class="form-group">
+                                        <label class="col-md-1 control-label">가입설문<sup>*</sup></label>
+                                        <div class="col-md-2">
+                                            <a class="btn btn-primary btn-sm btn-question-plus" disabled>질문추가</a>
+                                            <label class="checkbox-inline">
+                    											 	    <input type="checkbox" class="checkbox style-2 create-new-survey">
+                        											  <span>설문재작성요청</span>
+                    										    </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                    <hr style="border-top: 1px solid #c8c8c8; width:97.5%; text-align:right;">
+                                <fieldset class="col-md-12 fieldset-survey fieldset-survey-leave">
+                                    <div class="form-group">
+                                        <label class="col-md-1 control-label">탈퇴설문<sup>*</sup></label>
+                                        <div class="col-md-2">
+                                            <a class="btn btn-primary btn-sm btn-question-plus" disabled>질문추가</a>
+                                            <label class="checkbox-inline">
+                        											  <input type="checkbox" class="checkbox style-2 create-new-survey">
+                        											  <span>탈퇴설문</span>
+                    										    </label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </fieldset>
+                            <div class="form-actions mt0">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <a href="javascript:f_mclubRead()" class="btn btn-default">취소</a>
+                                        <a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
+
+<div id="custgp_sd" style="display:none;"></div>
+<form id="frmKeepData">
+    <%
+        Enumeration<?> e = request.getParameterNames();
+        while (e.hasMoreElements()) {
+            String key = (String) e.nextElement();
+            String values[] = request.getParameterValues(key);
+            for (int i = 0; i < values.length; i++) {
+                out.println("<input type=\"hidden\" name=\"" + LangUtil.replaceInjection(key) + "\" value=\"" + LangUtil.replaceInjection(values[i]) + "\" />\n");
+            }
+        }
+    %>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+    var frmMclubData = $("#frmMclubData");
+
+    var survey_id_attr_name = 'data-survey-id';
+    
+    var fieldset_survey_join = $('.fieldset-survey-join');
+    var fieldset_survey_leave = $('.fieldset-survey-leave');
+    
+    var preQuestionList = [];
+    var preOptionList = [];
+
+    /**
+     * ==================================================================================
+     * 고객군 선택 다이얼로그 화면 구문
+     * ==================================================================================
+     */
+    $('#custgp_sd').dialog({
+        autoOpen: false,
+        width: 555,
+        minHeight: 500,
+        resizable: false,
+        modal: true,
+        title: "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 고객군 선택 </h6></div>",
+        buttons: [{
+            html: "<i class='fa fa-times'></i>&nbsp; 취소",
+            "class": "btn btn-default",
+            click: function () {
+                $(this).dialog("close");
+            }
+        }, {
+            html: "<i class='fa fa-save'></i>&nbsp; 적용",
+            "class": "btn btn-primary",
+            click: function () {
+
+                var check_items_cnt = 0;
+
+                if (cf_getTrElementCount($("#custgroup_tbody")) < 1) {
+                    alert("고객군 항목을 조회해 주십시오.");
+                    return;
+                } else {
+                    check_items_cnt = $("#custgroup_tbody").find("input[type='checkbox']:checked").length;
+                }
+                if (check_items_cnt < 1) {
+                    alert("고객군 항목을 선택해 주십시오.");
+                    return;
+                }
+                if (check_items_cnt > 1) {
+                    alert("고객군 1개만 등록 가능 합니다.");
+                    return;
+                }
+
+                var checked_custgp = $("#custgroup_tbody").find("input[type='checkbox']:checked");
+                var checked_custgp_id = checked_custgp.val();
+                var checked_custgp_nm = checked_custgp.parent().parent().find('.custgp_nm').text();
+                frmMclubData.find("#lst_custgp_id").val(checked_custgp_id);
+                frmMclubData.find("#lst_custgp_nm").val(checked_custgp_nm);
+
+                $(this).dialog("close");
+            }
+        }]
+    });
+
+    /* ============================================================================================
+     /* 파일 업로드
+     /* --------------------------------------------------------------------------------------------
+     /* 파일 업로드 이벤트 핸들러
+     /* ============================================================================================ */
+
+	// 클럽 : IMG_MCLUB_CONTENT
+	$('#uploadfileC').change(function (e) {
+	   cf_fileUpload($(this),'IMG_MCLUB_CONTENT');
+	});
+	// 메인 : IMG_MCLUB_DETAIL_CONTENT
+	$('#uploadfileM').change(function (e) {
+	   cf_fileUpload($(this),'IMG_MCLUB_DETAIL_CONTENT');
+	});
+    var question_type_options = '';
+    var question_type_option_template = '';
+    var question_type_code;
+    var question_type_name;
+    var prop;
+    var questionType;
+
+    for (prop in QUESTION_TYPE) {
+
+        if (QUESTION_TYPE.hasOwnProperty(prop) && typeof QUESTION_TYPE[prop] !== 'function') {
+            questionType = QUESTION_TYPE[prop];
+            question_type_code = questionType.code;
+            question_type_name = questionType.name;
+
+            if (question_type_options) {
+                question_type_option_template = '<option value="{0}">{1}</option>';
+            } else {
+                question_type_option_template = '<option value="{0}" selected>{1}</option>';
+            }
+
+            question_type_options += question_type_option_template.getFormatted(question_type_code, question_type_name);
+        }
+    }
+
+    /**
+     * ==================================================================================
+     * 질문 그룹 html
+     * ==================================================================================
+     */
+    var question_template = '<div class="question_template">'
+            + '<div class="form-group">'
+            + '<label class="col-md-1 control-label questionNum"></label>'
+            + '<div class="col-md-8">'
+            + '<input class="form-control question_text" name="question_text" data-valid-use="true" data-valid-max="300" type="text" data-valid-title="질문">'
+            + '</div>'
+            + '<div class="col-md-2 pl0">'
+            + '<select class="form-control question-type-selector" name="question_type">'
+            + question_type_options
+            + '</select>'
+            + '</div>'
+            + '<div class="col-md-1 pl0">'
+            + '<a class="btn btn-danger btn-sm btn-question-minus"><i class="glyphicon glyphicon-minus"></i></a>'
+            + '</div>'
+            + '</div>'
+            + '<div class="form-group options">'
+            + '</div>'
+            + '</div>';
+
+    /**
+     * ==================================================================================
+     * 보기 그룹 html
+     * ==================================================================================
+     */
+    var option_template = '<div class="form-group col-md-12 option_template">'
+            + '<label class="col-md-2 control-label optionNum"></label>'
+            + '<div class="col-md-8">'
+            + '<input class="form-control option_text" type="text" name="option_text" data-valid-use="true" data-valid-max="200" data-valid-title="보기"></div>'
+            + '<div class="col-md-1 text-left pl0">'
+            + '<a class="btn btn-primary btn-option-plus"><i class="glyphicon glyphicon-plus"></i></a>'
+            + '<a class="btn btn-danger btn-option-minus"><i class="glyphicon glyphicon-minus"></i></a>'
+            + '</div>'
+            + '</div>';
+
+    /**
+     * 질문 그룹추가
+     */
+    frmMclubData.on('click', '.btn-question-plus', function (e) {
+        var button = $(this);
+        var surveyFieldset = button.parents('.fieldset-survey');
+
+        surveyFieldset.append(question_template);
+        reorderQuestionNumber(surveyFieldset);
+
+        // 실제로 버튼을 클릭 했을때만 textbox focus 처리(=trigger()를 통한 이벤트시 제외)
+        if (e.originalEvent !== undefined) {
+            surveyFieldset.find('.question_text').last().focus();
+        }
+    });
+
+    /**
+     * 질문 그룹삭제
+     */
+    frmMclubData.on('click', '.btn-question-minus', function () {
+        var button = $(this);
+        var surveyFieldset = button.parents('.fieldset-survey');
+        var questions = surveyFieldset.find('.question_template');
+        var questionLength = questions.length;
+
+        if (questionLength == 1) {
+            alert('질문일 한건일 경우 삭제하실수 없습니다.');
+            return;
+        }
+
+        button.parents('.question_template').remove();
+        reorderQuestionNumber(surveyFieldset);
+    });
+
+    /*
+     * 질문 번호
+     */
+    function reorderQuestionNumber(surveyFieldset) {
+        if (!surveyFieldset) {
+            return;
+        }
+
+        var questions = surveyFieldset.find('.question_template');
+        if (!questions.length) {
+            return;
+        }
+
+        questions.each(function (i) {
+            var question = $(this);
+            question.find('.questionNum').html('질문' + (i + 1));
+        });
+    }
+
+    /*
+     * 보기 번호
+     */
+    function reorderOptionNumber(options) {
+        if (!options) {
+            return;
+        }
+
+        var optionList = options.find('.option_template');
+        if (!optionList.length) {
+            return;
+        }
+
+        optionList.each(function (i) {
+            var option = $(this);
+            option.find('.optionNum').html('ㄴ보기' + (i + 1));
+        });
+    }
+
+    /**
+     * plus버튼 클릭 시 보기 추가 function
+     */
+    frmMclubData.on('click', '.btn-option-plus', function () {
+        var button = $(this);
+        var option_temp = button.parents('.option_template');
+        var options = option_temp.parents('.options');
+
+        options.append(option_template);
+        reorderOptionNumber(options);
+    });
+
+    /**
+     * minus버튼 클릭 시 보기 삭제 function
+     */
+    frmMclubData.on('click', '.btn-option-minus', function (btn) {
+        var button = $(this);
+        var option_temp = button.parents('.option_template');
+        var options = option_temp.parents('.options');
+
+        if (options.find('.option_template').length == 1) {
+            alert('보기가 한건일 경우 삭제하실수 없습니다.');
+            return false;
+        }
+        option_temp.remove();
+        reorderOptionNumber(options);
+    });
+
+    /**
+     * 질문 selectbox 변경시
+     */
+    frmMclubData.on('change', '.question-type-selector', function () {
+        var button = $(this);
+        var questVal = button.val();
+        var questionTemp = button.parents('.question_template');
+        var options = questionTemp.find('.options');
+
+        if (questVal === QUESTION_TYPE.MULTIPLE_CHOICE.code) {
+            options.append(option_template);
+            reorderOptionNumber(options);
+        } else if (questVal === QUESTION_TYPE.SHORT_ANSWER.code) {
+            questionTemp.find('.option_template').remove();
+        }
+    });
+    
+
+    	$('.create-new-survey').on('click', function() {
+    		
+        if ($(this).is(':checked')) {
+        	$(this).parents('.fieldset-survey').find($('.btn, .question-type-selector')).attr('disabled',false);
+        } else if ($(this).is(':unchecked')) {
+        	$(this).parents('.fieldset-survey').find('.btn').attr('disabled', true);
+        	$(this).parents('.fieldset-survey').find('.question_template').remove();
+        	var appendQuestionList = [];
+        	
+        	if($(this).parents().hasClass('fieldset-survey-join')) {
+        		for(var i = 0, len= preQuestionList.length; i < len; i++ ) {
+        			if (preQuestionList[i].survey_type === SURVEY_TYPE.JOIN) {
+    							appendQuestionList.push(preQuestionList[i]);                
+        			}
+        		}
+        	} else if($(this).parents().hasClass('fieldset-survey-leave')) {
+        		for(var i = 0, len= preQuestionList.length; i < len; i++ ) {
+        			if (preQuestionList[i].survey_type === SURVEY_TYPE.LEAVE) {
+    							appendQuestionList.push(preQuestionList[i]);        				
+        			}
+        		}
+        	}
+        		reSurveyList(appendQuestionList, preOptionList);
+        }
+    	});
+    	
+    	function reSurveyList(preQuestionList, preOptionList) {
+    		
+    		var read_question_template = '<div class="question_template" question-id="{4}"}>'
+                + '<div class="form-group">'
+                + '<label class="col-md-1 control-label questionNum">{0}</label>'
+                + '<div class="col-md-8">'
+                + '<input class="form-control question_text" name="question_text" data-valid-use="true" data-valid-max="300" type="text" data-valid-title="질문" value="{1}">'
+                + '</div>'
+                + '<div class="col-md-2 pl0">'
+                + '<select class="form-control question-type-selector" name="question_type" disabled>'
+                + '{2}</select>'
+                + '</div>'
+                + '<div class="col-md-1 pl0">'
+                + '<a class="btn btn-danger btn-sm btn-question-minus" disabled><i class="glyphicon glyphicon-minus"></i></a>'
+                + '</div>'
+                + '</div>'
+                + '<div class="form-group options">{3}'
+                + '</div>'
+                + '</div>';
+
+        var read_option_template = '<div class="form-group col-md-12 option_template" option-id="{2}">'
+                + '<label class="col-md-2 control-label optionNum">{0}</label>'
+                + '<div class="col-md-8">'
+                + '<input class="form-control option_text" type="text" name="option_text" value="{1}">'
+                + '</div>'
+                + '<div class="col-md-1 text-left pl0">'
+                + '<a class="btn btn-primary btn-option-plus" disabled><i class="glyphicon glyphicon-plus"></i></a>'
+                + '<a class="btn btn-danger btn-option-minus" disabled><i class="glyphicon glyphicon-minus"></i></a>'
+                + '</div>'
+                + '</div>';
+
+        var question_type_template = '<option value="{0}" selected>{1}</option>'
+                + '<option value="{2}">{3}</option>';
+
+        $.each(preQuestionList, function (i, question) {
+
+            var survey_type = question.survey_type;
+            var question_num_text = '질문' + question.order_no;
+            var question_id = question.question_id;
+            var question_text = question.question_text;
+            var question_type = question.question_type;
+            var options_html = '';
+            var question_type_options = '';
+            
+            if (question_type === QUESTION_TYPE.MULTIPLE_CHOICE.code) {
+                $.each(preOptionList, function (j, question_option) {
+                    if (survey_type === question_option.survey_type && question_id === question_option.question_id) {
+                        var option_num_text = 'ㄴ보기' + question_option.order_no;
+                        options_html += read_option_template.getFormatted(option_num_text, question_option.option_text, question_option.option_id);
+                    }
+                });
+
+                question_type_options += question_type_template.getFormatted(QUESTION_TYPE.MULTIPLE_CHOICE.code
+                        , QUESTION_TYPE.MULTIPLE_CHOICE.name
+                        , QUESTION_TYPE.SHORT_ANSWER.code
+                        , QUESTION_TYPE.SHORT_ANSWER.name);
+            } else {
+                question_type_options += question_type_template.getFormatted(QUESTION_TYPE.SHORT_ANSWER.code
+                        , QUESTION_TYPE.SHORT_ANSWER.name
+                        , QUESTION_TYPE.MULTIPLE_CHOICE.code
+                        , QUESTION_TYPE.MULTIPLE_CHOICE.name);
+            }
+
+            var qa_html = read_question_template.getFormatted(question_num_text, question_text, question_type_options, options_html, question_id);
+            
+            var fieldset_survey;
+
+            if (survey_type === SURVEY_TYPE.JOIN) {
+                fieldset_survey = fieldset_survey_join;
+            } else if (survey_type === SURVEY_TYPE.LEAVE) {
+                fieldset_survey = fieldset_survey_leave;
+            }
+
+            var survey_id = question.survey_id;
+
+           	if (!fieldset_survey.attr(survey_id_attr_name)) {
+                fieldset_survey.attr(survey_id_attr_name, survey_id);
+            }
+
+            fieldset_survey.append(qa_html);
+        });
+    	}
+    	
+    	
+    /* ============================================================================================
+     /* 벨리데이션 체크 및 폼 전송
+     /* --------------------------------------------------------------------------------------------
+     /* 벨리데이션 체크
+     /* 	- true	: 폼전송
+     /* 	- false : 알림창 경고
+     /* ============================================================================================ */
+    function f_submit() {
+
+        if (!frmMclubData.formValid()) {
+            return;
+        }
+        
+        if( !$("#preview_uploadfileC").next().hasClass("alert")){
+    		alert("클럽 이미지를 등록해주세요.");
+    		return;
+		}
+        
+/* 
+   		if( !$("#preview_uploadfileM").next().hasClass("alert")){
+    		alert("메인 이미지를 등록해주세요.");
+    		return;
+		}
+ */
+  		var data =  cf_clubFileObject(frmMclubData);
+   		
+ // 메인 이미지 필수 아님. 등록 했던 메인 이미지 삭제시, 값 비움.
+		if(data.img_list.length < 2) {
+			var file_data = {};
+			file_data['file_divn_cd'] = 'IMG_MCLUB_CONTENT';
+			file_data['img_file_divn_cd'] = 'DESC';
+			file_data['img_orgin_file_nm'] = '';
+			file_data['img_strge_file_nm'] = '';
+			file_data['img_type'] = 'M';
+			data['img_list'].push(file_data);
+		}
+ 
+//         var data = frmMclubData.serializeFormObject();
+        var survey_list = [];
+        var survey_type;
+        var question_list = [];
+        var question_text;
+        var question_type;
+        var option_list = [];
+
+        $.each($(".fieldset-survey"), function () {
+
+            var survey_fieldset = $(this);
+            var survey_id = survey_fieldset.attr(survey_id_attr_name);
+            var create_new_survey = survey_fieldset.find('.create-new-survey').is(':checked');
+            var question_template = survey_fieldset.find('.question_template');
+
+            if (survey_fieldset.hasClass('fieldset-survey-join')) {
+                survey_type = SURVEY_TYPE.JOIN;
+            } else {
+                survey_type = SURVEY_TYPE.LEAVE;
+            }
+
+            question_list = [];
+
+            $.each(question_template, function (i) {
+
+                var question = $(this);
+                question_text = question.find(".question_text").val();
+                question_type = question.find(".question-type-selector").val();
+                
+                option_list = [];
+
+                if (question_type == QUESTION_TYPE.MULTIPLE_CHOICE.code) {
+                    $.each(question.find(".option_template"), function (j) {
+                        var option = $(this);
+                        option_list.push({
+                            "option_text": option.find(".option_text").val(),
+                            "order_no": j + 1
+                        })
+                    });
+                }
+
+                question_list.push({
+                    "question_text": question_text,
+                    "question_type": question_type,
+                    "order_no": i + 1,
+                    "option_list": option_list
+                });
+            });
+
+            survey_list.push({
+                'survey_id': survey_id,
+                'survey_type': survey_type,
+                'question_list': question_list,
+                'create_new_survey': create_new_survey
+            });
+
+        });
+
+        data['survey_list'] = survey_list;
+
+        // 미사용 객체 삭제
+        delete data.question_text;
+        delete data.question_type;
+        delete data.option_text;
+
+        $.ajax({
+            url: api_url + "/backoffice/mclub/update",
+            type: "POST",
+            async: true,
+            cache: false,
+            datatype: 'json',
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(data),
+            success: function (obj) {
+                alert(obj.message);
+                f_mclubRead();
+            }, error: function (obj) {
+                var serverObj = obj.responseJSON;
+                alert('code:' + serverObj.code + '\n' + 'message:' + cf_msg(serverObj.message) + '\n');
+            }
+        });
+    }
+
+    /* ============================================================================================
+    /* M클럽타입 연계코드 조회
+    /* ============================================================================================ */
+   	var getMclubType = function (target) {
+   		var data = {
+   				empno: "${sessionScope.sessionEmpno}", 
+   				mclub_id: $('#mclub_id').val()
+   		};
+   		$.ajax({
+   			url: api_url + "/backoffice/mclub/getMclubType",
+   			type: "GET",
+   			async: false,
+   			data: encodeURI('params='+JSON.stringify(data)),
+   			success: function(obj) {
+   				var options = "";
+   				$.each(obj.data.cd_list, function(i, item) {
+   					options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+   				});
+   				target.append(options);
+   			},
+   			error: function(obj) {
+   		    	var serverObj = obj.responseJSON;
+   		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+   		    	return;
+   		    }
+   		});
+        
+    };
+    
+    /* ============================================================================================
+     /* 페이지 정보 설정
+     /* --------------------------------------------------------------------------------------------
+     /* 초기 설정 및 필요 UI 컴포넌트 셋팅
+     /* ============================================================================================ */
+    var pagefunction = function () {
+
+       $.ajax({
+            url: api_url + "/backoffice/mclub/show",
+            type: "GET",
+            async: false,
+            cache: true,
+            datatype: 'json',
+            data: encodeURI("params=" + JSON.stringify($("#frmKeepData").serializeFormObject())),
+            success: function (obj) {
+								
+                var data = obj.data;
+                
+                $("#aprv_sts_cd").val(data.aprv_sts_cd);
+
+                $('#mclub_id').val(data.mclub_id);
+                
+                getMclubType($("#mclub_type"));
+                $("#mclub_type option[value='" + data.mclub_type + "']").attr("selected", "selected");// M클럽타입코드
+                
+                $('#mclub_name').val(data.mclub_name);
+                $("#lst_custgp_nm").val(data.custgp_nm);
+                $("#lst_custgp_id").val(data.lst_custgp_id);
+                $("#mclub_desc").val(data.mclub_desc);
+                $("#terms").val(data.terms);
+                
+                $("#mclub_detail_desc").val((data.mclub_detail_desc).replaceAll("\\n","<br/>").replaceAll("&gt;", ">").replaceAll("&lt;", "<"));
+
+                
+             	// 클럽이미지
+				if( obj.data.img_list[0] != "" && obj.data.img_list[0] != undefined ) {
+					if(obj.data.img_list[0].img_type == "C") {
+						modifyImg($('#preview_uploadfileC'), $("#uploadfileC"), data.img_list[0], 'C');
+					}else {
+						modifyImg($('#preview_uploadfileM'), $("#uploadfileM"), data.img_list[0], 'M');
+					}
+				}
+             
+                // 메인이미지
+				if( obj.data.img_list[1] != "" && obj.data.img_list[1] != undefined ) {
+					if(obj.data.img_list[1].img_type == "C") {
+						modifyImg($('#preview_uploadfileC'), $("#uploadfileC"), data.img_list[1], 'C');
+					}else {
+						modifyImg($('#preview_uploadfileM'), $("#uploadfileM"), data.img_list[1], 'M');
+					}
+				}
+				
+                preQuestionList = data.question_list;
+                preOptionList = data.option_list;
+                reSurveyList(preQuestionList, preOptionList);
+
+            }, error: function (obj) {
+                var serverObj = obj.responseJSON;
+                alert('code:' + serverObj.code + '\n' + 'message:' + cf_msg(serverObj.message) + '\n');
+            }
+        });
+
+    };
+
+    /* ============================================================================================
+     /* 페이지 셋업 (Don't remove!!!)
+     /* --------------------------------------------------------------------------------------------
+     /* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행
+     /* ============================================================================================ */
+    pageSetUp();
+
+    /* ============================================================================================
+     /* 페이지 정보 설정 로드
+     /* --------------------------------------------------------------------------------------------
+     /* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+     /* ============================================================================================ */
+    pagefunction();
+
+</script>

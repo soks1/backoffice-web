@@ -1,0 +1,377 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">등록지점</label>
+										<div class="col-md-2">
+											<select class="form-control" id="str_cd" name="str_cd">
+												<option value="">전체</option>
+											</select>
+										</div>
+										
+										<label class="col-md-1 control-label" style="width:100px !important">사업자 가맹점</label>
+										<div class="col-md-2">
+											<input class="form-control" type="text" id="tenant_nm" name="tenant_nm" data-valid-title="가맹점">
+										</div>
+										
+										<label class="col-md-1 control-label">전송상태</label>
+										<div class="col-md-2">
+											<select class="form-control" id="msg_sts" name="msg_sts">
+												<option value="">전체</option>
+												<option value="9">전송중</option>
+												<option value="0">전송대기</option>
+												<option value="1">전송완료</option>
+												<option value="2">전송취소</option>
+											</select>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">제목</label>
+										<div class="col-md-2">
+											<input class="form-control" type="text" id="msg_title" name="msg_title" data-valid-title="제목">
+										</div>
+										
+										<label class="col-md-1 control-label" style="width:100px !important;">승인상태</label>
+										<div class="col-md-2">
+											<select class="form-control" id="aprv_sts_cd" name="aprv_sts_cd">
+												<option value="">전체</option>
+											</select>
+										</div>										
+										
+										<label class="col-md-1 control-label">전송요청일</label>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="tran_hope_dy_from" name="tran_hope_dy_from" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="tran_hope_dy_to" name="tran_hope_dy_to" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>	
+									</div>							
+								</div>
+								
+							</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_tenantPush_grid_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 사업자 가맹점 Push 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_tenantPush_grid" class="widget-body no-padding">
+						<table id="tenantPush_grid"></table>
+						<div id="tenantPush_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 조회 화면 : 달력 컨트롤
+/* ============================================================================================ */
+$('#tran_hope_dy_from').datepicker(
+    $.extend({
+    	onSelect: function(selected) {
+            $("#tran_hope_dy_to").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#tran_hope_dy_to').datepicker(
+    $.extend({
+    	onSelect: function(selected) {
+            $("#tran_hope_dy_from").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCode("str_cd");
+	
+	// 초기데이터 로드 : 승인상태
+	f_ajaxCommonCode({
+		target:"select[name=aprv_sts_cd]", 
+		cd_divn_id: "APRV_STS_CD",
+		codeId : "",
+		fnSuccess : ""
+	});
+		
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", tenantPush_grid_function);
+	function tenantPush_grid_function() {
+		
+		var pageWidth = $("#tenantPush_grid").parent().width() - 100;
+
+		jQuery("#tenantPush_grid").jqGrid({
+			url : api_lifekok_url+"/backoffice/lifekok/push/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '등록지점', '사업자 가맹점', '제목', '전송요청일', '전송일자', '승인상태', '전송상태','h전송상태값', '등록일자', '이벤트마스터ID', 'h일련번호', 'h승인상태코드','h스케쥴ID','h메세지ID'],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 		align : 'center',	sortable : false, 	width : (pageWidth*(3/100)) 	},
+				{ name : 'str_nm', 			index : 'str_nm', 			align : 'center', 	sortable : false, 	width : (pageWidth*(12/100))	},
+				{ name : 'tenant_nm', 		index : 'tenant_nm', 		align : 'center',	sortable : false, 	width : (pageWidth*(15/100))	}, 
+				{ name : 'msg_title', 		index : 'msg_title', 		align : 'center',	sortable : false, 	width : (pageWidth*(20/100)), 	classes:'pointer toooltip'  },
+				{ name : 'tran_hope_dy', 	index : 'tran_hope_dy',		align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'scdl_tm', 		index : 'scdl_tm', 			align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'aprv_sts_cd_nm',	index : 'aprv_sts_cd_nm',	align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'msg_sts_nm', 		index : 'msg_sts_nm', 		align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'msg_sts', 		index : 'msg_sts', 			hidden : true,		width : 0 },
+				{ name : 'reg_date', 		index : 'reg_date', 		align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'event_mst_id', 	index : 'event_mst_id', 	hidden : true, 		width : 0 },
+				{ name : 'serial_no', 		index : 'serial_no', 		hidden : true, 		width : 0 },
+				{ name : 'aprv_sts_cd', 	index : 'aprv_sts_cd',		hidden : true, 		width : 0 },
+				{ name : 'scdl_id', 		index : 'scdl_id',	 		hidden : true, 		width : 0 },
+				{ name : 'msg_id', 			index : 'msg_id',	 		hidden : true, 		width : 0 }
+				
+			],
+			jsonReader: {
+				repeatitems : false,
+// 				id : "no",
+				root :		function(obj){ return obj.data.push_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#tenantPush_grid").jqGrid('setGridParam', {search: true});
+					$("#tenantPush_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#tenantPush_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#tenantPush_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				rows: '10',
+				page: '1'			
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#tenantPush_grid_page',
+			sortname : 'serial_no',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+				if('${sessionScope.menuAuth.R}' == 'Y'){
+					if(index == 4) {
+						var _event_mst_id = $("#tenantPush_grid").jqGrid('getRowData', rowid).event_mst_id;
+						var _serial_no = $("#tenantPush_grid").jqGrid('getRowData', rowid).serial_no;
+// 						var _aprv_sts_cd = $("#tenantPush_grid").jqGrid('getRowData', rowid).aprv_sts_cd;
+						
+						$("#tenantPush_grid").jqGrid('setGridParam', {'postData' : {'event_mst_id':_event_mst_id,'serial_no':_serial_no} });
+// 						$("#tenantPush_grid").jqGrid('setGridParam', {'postData' : {'event_mst_id':_event_mst_id,'serial_no':_serial_no,'aprv_sts_cd':_aprv_sts_cd} });
+						var postData = $('#tenantPush_grid').jqGrid("getGridParam", "postData");
+						var url = "/application/cooperateService/tenantPush/tenantPushRN.do";
+						var method = "POST";
+						cf_action(url, method, postData);
+					} 
+				}
+			},
+			gridComplete: function() {	
+				var postData = $('#tenantPush_grid').jqGrid("getGridParam", "postData");				
+				$('#tenantPush_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#tenantPush_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+				
+			}
+		});
+		
+		jQuery("#tenantPush_grid").jqGrid('navGrid', "#tenantPush_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+				
+		if('${sessionScope.menuAuth.A}' == 'Y') {
+			jQuery("#tenantPush_grid").jqGrid('navButtonAdd','#tenantPush_grid_page',{
+				caption: "예약취소",
+				id: "reservation_cancel_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					if(select_ids.length < 1) {
+						alert('예약 취소할 대상을 선택해 주세요.');
+						return;
+					} 
+					var _push_key_list = [];
+					for(var i=0; i < select_ids.length; i++){
+						var _cd = $("#tenantPush_grid").jqGrid('getRowData', select_ids[i]).msg_sts;
+						if(_cd != "0"){
+							alert("전송상태 : '전송대기'인 항목만 예약취소 할 수 있습니다.");
+							return;
+						}
+						var _delivery = {
+// 							event_mst_id : $("#tenantPush_grid").jqGrid('getRowData', select_ids[i]).event_mst_id,
+// 							serial_no	 : $("#tenantPush_grid").jqGrid('getRowData', select_ids[i]).serial_no 
+							msg_id : $("#tenantPush_grid").jqGrid('getRowData', select_ids[i]).msg_id,
+							scdl_id	 : $("#tenantPush_grid").jqGrid('getRowData', select_ids[i]).scdl_id 
+						}
+						_push_key_list.push(_delivery);
+					}					
+					
+					var data = {
+							empno	 : '${sessionScope.sessionEmpno}',
+							chk_list : _push_key_list
+					};
+					
+					if(confirm("예약 취소 하시겠습니까?")) {
+						
+						$.ajax({
+							url: api_lifekok_url + "/backoffice/lifekok/push/cancel",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$("#tenantPush_grid").trigger("reloadGrid");
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+						    	return;
+						    }
+						});
+					}
+				}
+			});	
+		}
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#tenantPush_grid").gridCss();
+	  	$("#tenantPush_grid_cb").css("border-left-width","0");
+	  	$("#tenantPush_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_tenantPush_grid_cb").css("padding","7px 0");
+	  	$("#tenantPush_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#tenantPush_grid").jqGrid( 'setGridWidth', $("#target_tenantPush_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

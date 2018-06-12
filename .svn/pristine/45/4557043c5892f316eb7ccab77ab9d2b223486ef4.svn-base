@@ -1,0 +1,19 @@
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<script src="${pageContext.request.contextPath}/resources/js/application/board_system.js"></script>
+<div id="targetHtml">
+<%
+	String mode = LangUtil.nvl( (String)request.getAttribute("mode"), "LIST");
+	if(mode.equals("LIST")) {
+%>
+<jsp:include page="/WEB-INF/jsp/application/board/system_notice/noticeLN.jsp" flush="false" />
+<%
+	}
+	else {
+%>
+<jsp:include page="/WEB-INF/jsp/application/board/system_notice/noticeRN.jsp" flush="false" />
+<%		
+	}
+%>
+	
+</div>

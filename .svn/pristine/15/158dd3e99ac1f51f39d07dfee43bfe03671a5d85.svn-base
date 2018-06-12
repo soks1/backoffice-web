@@ -1,0 +1,71 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">지점</label>
+									<div class="col-md-5">
+										<select class="form-control" id="excel_str_cd" name="excel_str_cd" >
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">기간</label>
+									<div class="col-md-5">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="s_reg_date" name="s_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-5">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="e_reg_date" name="e_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+pageSetUp();
+
+// 날짜 입력 폼 초기화
+$('#s_reg_date').val(cf_termDate(-30));
+$('#e_reg_date').val(cf_toDate());
+$('#frmSearch .datepicker').datepicker("option", "beforeShow", function() {
+    setTimeout(function(){
+        $('.ui-datepicker').css('z-index', 99999999);            
+    }, 100);	
+});
+
+//공통코드 조회 : 지점목록
+f_ajaxStrCdCode($('#excel_str_cd'));
+$('#excel_str_cd').val('${sessionScope.sessionStrCd}'); // 지점 초기값 설정
+$("#excel_str_cd option[value='999']").remove();
+
+// 본부일때는 지점선택 가능
+if('${sessionScope.sessionStrCd}' == '999') {
+	$('#excel_str_cd').attr({"readonly":false,"disabled":false}); // 지점 readonly 설정
+}
+else {
+	$('#excel_str_cd').attr({"readonly":true,"disabled":true}); // 지점 readonly 설정
+}
+
+
+</script>

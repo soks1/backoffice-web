@@ -1,0 +1,84 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header></header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmImgFileUpload">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지 1</label>
+									<div class="col-md-4">
+										<div id="preview_poll_img_uploadfile1" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="poll_img_uploadfile1" name="poll_img_uploadfile1">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지 2</label>
+									<div class="col-md-4">
+										<div id="preview_poll_img_uploadfile2" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="poll_img_uploadfile2" name="poll_img_uploadfile2">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지 3</label>
+									<div class="col-md-4">
+										<div id="preview_poll_img_uploadfile3" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-6">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="poll_img_uploadfile3" name="poll_img_uploadfile3">
+										</span>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="show_edit_sd" style="display:none;"></div>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 이미지 파일 업로드
+ * ==================================================================================
+ */
+$('#frmImgFileUpload').on("change", "input[name*=poll_img_uploadfile]", function (e) {
+	var imgCodeType = "";
+	var callback = null;
+ 	
+ 	cf_multiFileUpload($(this), 'IMG_POLL', callback);
+});
+
+</script>

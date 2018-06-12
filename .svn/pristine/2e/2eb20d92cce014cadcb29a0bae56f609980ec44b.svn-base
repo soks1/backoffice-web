@@ -1,0 +1,491 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row"> 
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>M쿠폰북 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+								<label class="col-md-1 control-label cs-css-05">사용대상 구분 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="nomem_view_gbn_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 번호: </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="cpbook_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록일자: </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">등록자: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">수정자: </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일자: </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">쿠폰북 매핑수 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="campaignseg_info"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 유형: </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="cpbook_type_cd_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">온라인몰, 매장: </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="issue_chanel_cd_name"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">롯데마트몰 발행기기: </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="issue_quipmnt_cd"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">브랜드: </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="issue_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">사용지점: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="use_brnch_info_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">APP 노출지점: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="use_psbt_brnch"></span>
+									</div>
+								</div>
+								<div class="form-group cooperation" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05">협력사: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="ven_info_name"></span>
+									</div>
+								</div>
+								<div class="form-group maxUseCoupon" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05">최대 사용 쿠폰수: </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="combo_max_sel_cnt"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북명: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpbook_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 설명: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpbook_desc_content"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">쿠폰북 노출타입 </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpbook_size_type_cd"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">자/타사 구분: </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="cpbook_company_type"></span>
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">롯데마트몰: </label>
+									<div class="col-md-11" id="cpbook_img">
+									</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">M쿠폰앱: </label>
+									<div class="col-md-11" id="cpbook_img2">
+									</div>
+								</div>
+							</fieldset>
+							<fieldset id="applyTypeFieldSetB" >
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">대상쿠폰(<span id="couponCount">0</span>): </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<thead>
+													<tr>
+														<th class="ta-c">No.</th>
+														<th class="ta-c">쿠폰번호</th>
+														<th class="ta-c">쿠폰명</th>
+														<th class="ta-c">쿠폰유형</th>
+														<th class="ta-c">할인/적립 유형</th>
+														<th class="ta-c">적용 기준</th>
+														<th class="ta-c">할인 상품</th>
+														<th class="ta-c">조건 상품</th>
+														<th class="ta-c">할인 적용 단계</th>
+														<th class="ta-c">할인적립(금액/율/개수)</th>
+														<th class="ta-c">사용가능일자</th>
+														<th class="ta-c">쿠폰별 쿠폰북 매핑수</th>
+														<th class="ta-c">우선순위</th>
+													</tr>
+												</thead>
+												<tbody id="selectCoupon_tbody">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12 authButtonContainer">
+										<a href="javascript:f_couponBookList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_couponBookEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_couponBookDel();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="couponbook_info_rd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 쿠폰별 쿠폰북 정보 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 맵핑수 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+$('#couponbook_info_rd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-eye'></i> 쿠폰별 쿠폰북 정보 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 쿠폰북 유형 선택 이벤트
+ * ==================================================================================
+ */
+function f_cpbookTypeCd(val) {
+	if(val == 'B') {
+   		$(".cooperation").show();
+   		$(".maxUseCoupon").hide();
+   	} else if(val == 'C') {
+   		$(".maxUseCoupon").show();
+   		$(".cooperation").hide();
+   	} else {
+   		$(".cooperation").hide();
+   		$(".maxUseCoupon").hide();
+   	}
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	
+	// 쿠폰북 기본 정보
+	$.ajax({
+	    url: api_url+"/backoffice/couponbook/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	// 기배포된 쿠폰북이면 수정 불가
+	    	if(obj.data.campaign_evnt_mapp_yn == 'Y') {
+	    		if('${sessionScope.menuAuth.M}' == 'Y') {
+	    			$('<a></a>', {'href':'#'}).addClass('btn btn-warning btn_auth_modify')
+	    				.on('click', function() {
+	    					$('#frmKeepData').find('input[name=is_forced_modify]').remove().end().append( $('<input></input>', {'name': 'is_forced_modify'}).val('Y') );
+		    				if (typeof f_couponBookEdit == 'function') f_couponBookEdit();
+		    				return false;
+	    				})
+	    				.text('강제수정').insertAfter( $('.btn_auth_update') );
+	    		}
+
+	    		$('.btn_auth_update').remove();
+	    	}
+	    	
+	    	$('.authButtonContainer').show();
+	    	$("#nomem_view_gbn_name").html(obj.data.nomem_view_gbn_name);
+	    	$("#cpbook_id").html(obj.data.cpbook_id);
+	    	$("#reg_date").html(obj.data.reg_date);
+	    	$("#reg_id_name").html(obj.data.reg_id_name + " ("+obj.data.reg_id_str_cd_name+")");
+	    	$("#mod_date").html(obj.data.mod_date);
+	    	$("#mod_id_name").html(obj.data.mod_id_name);
+	    	$("#cpbook_size_type_cd").html(obj.data.cpbook_size_type_cd + " 타입");
+	    	
+	    	$("#campaignseg_info").html('<a href="javascript:f_openCouponCampaignRD(\''+obj.data.cpbook_id+'\');">'+obj.data.campaignseg_info+'</a>');
+	    	
+	    	$("#cpbook_type_cd_name").html(obj.data.cpbook_type_cd_name);
+	    	f_cpbookTypeCd(obj.data.cpbook_type_cd);
+	    	$("#issue_chanel_cd_name").html(obj.data.issue_chanel_cd_name);
+	    	
+	    	if(obj.data.use_brnch_info_all_yn == "Y") {
+	    		$("#use_brnch_info_name").html("전점 사용 가능");
+	    	} else {
+	    		$("#use_brnch_info_name").html("( "+obj.data.use_brnch_info_list.length+"개 지점 ) " + obj.data.use_brnch_info_name);	
+	    	}
+	    	
+	    	if(obj.data.use_psbt_brnch_yn == "Y") {
+	    		$("#use_psbt_brnch").html("[사용가능매장] " + obj.data.use_psbt_excp_brnch_content);	
+	    	} else {
+	    		$("#use_psbt_brnch").html("[사용제외매장] " + obj.data.use_psbt_excp_brnch_content);
+	    	}
+			
+	    	if(obj.data.cpbook_type_cd == "B") {
+	    		$("#ven_info_name").parent().parent().show();
+	    		$("#ven_info_name").html(obj.data.ven_info_name);
+	    	}
+	    	
+	    	if(obj.data.smart_combo_coupon_yn == "Y") {
+	    		$("#combo_max_sel_cnt").parent().parent().show();
+	    		$("#combo_max_sel_cnt").html(obj.data.combo_max_sel_cnt + "개");
+	    	}
+	    	
+	    	$("#issue_name").html(obj.data.issue_name);
+	    	$("#cpbook_nm").html(obj.data.cpbook_nm);
+	    	$("#cpbook_desc_content").html(obj.data.cpbook_desc_content);
+	    	$("#cpbook_company_type").html(obj.data.cpbook_company_type_name);
+	    	$("#use_brnch_info_cnt").html(obj.data.use_brnch_info_cnt);
+	    	
+	    	var chk_quipmnt = false;
+	    	if(obj.data.issue_quipmnt_cd_pc_yn == "Y") {
+	    		$("#issue_quipmnt_cd").append("PC");
+	    		chk_quipmnt = true;
+	    	}
+			if(obj.data.issue_quipmnt_cd_mobile_yn == "Y") {
+	    		if(chk_quipmnt) {
+	    			$("#issue_quipmnt_cd").append(" / 모바일");	
+	    		} else {
+	    			$("#issue_quipmnt_cd").append("모바일");
+	    		}
+	    	}
+	    	
+	    	
+	    	var tag_img = $("<img>").attr("src",obj.data.prvw_url).attr("alt",obj.data.img_orgin_file_nm).addClass('img-responsive');
+	    	$("#cpbook_img").append(tag_img);
+	    	
+	    	tag_img = $("<img>").attr("src",obj.data.thum_url).attr("alt",obj.data.thum_orgin_file_nm).addClass('img-responsive');
+	    	$("#cpbook_img2").append(tag_img); 
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+
+	// 대상 쿠폰 리스트f_openCouponBookRD
+	var cp_data = $("#frmKeepData").serializeFormObject();
+	cp_data['list_all_yn'] = 'Y';
+	cp_data['sidx'] = 'reg_date';
+	
+	$.ajax({
+	    url: api_url+"/backoffice/couponbook/coupon/list", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(cp_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var _coupon_val = "";
+	    	var _cond_val = "";
+	    	var prod_content = "";
+	    	$.each(obj.data.coupon_list, function(i, item) {
+	    		if(_cls_cd != "B") {
+		    		if(item.prod_content == "") {
+						prod_content = item.cate_content; 
+					}else  {
+						prod_content = item.prod_content;
+					}
+	    		}
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c">' + item.rnum + '</td>';
+	    		tag_td += '<td class="ta-c">' + item.coupon_id + '</td>';
+	    		tag_td += '<td class="ta-c">' + item.coupon_nm + '</td>';
+	    		tag_td += '<td class="ta-c">' + item.coupon_cls_cd_name + '</td>';
+	    		tag_td += '<td class="ta-c">' + item.coupon_type_cd_name + '</td>';
+	    		tag_td += '<td class="ta-c">' + item.coupon_apply_cond_cd_name + '</td>';
+	    		tag_td += '<td class="ta-c">' + prod_content + '</td>';
+	    		tag_td += '<td class="ta-c">' + item.cond_prod_content + '</td>';
+	    		
+	    		var _cls_cd = item.coupon_cls_cd;
+	    		var _cp_type = item.coupon_type_cd;
+	    		
+	    		
+	    		if(_cls_cd == "C") {
+	    			_cond_val = '-';
+					_coupon_val = '-';
+	    		} 
+	    			
+	    		var cond_html = '';
+	    		var coupon_html = '';
+    			if(item.cond_info_list != null && item.cond_info_list != "") {
+		    		$.each(item.cond_info_list, function(i, item2) {
+						_coupon_val = item2.coupon_val_desc;
+						_cond_val = item2.cond_val_desc;
+						_apply_base_cnt = item2.apply_base_cnt;
+						
+						if(i == 0) {
+							cond_html  = cond_html +  _cond_val;
+							coupon_html = coupon_html + _coupon_val;
+						}else {
+							cond_html  = cond_html + '<br>' +  _cond_val;
+							coupon_html = coupon_html + '<br>' + _coupon_val;
+						}
+						
+					});
+    				
+    			}
+    			if(_cls_cd == "B") {
+	    			if(_cp_type == 'A' || _cp_type == 'F' || _cp_type == 'J' || _cp_type == 'L') {             
+	    				cond_html = item.dc_savu_amt + ' %';                                                                 
+	    			} else if(_cp_type == 'B' || _cp_type == 'G' || _cp_type == 'K' || _cp_type == 'M') {      
+	    				cond_html = item.dc_savu_amt + ' 원';                                                                 
+	    			} else if(_cp_type == 'C' || _cp_type == 'H' || _cp_type == 'N') {                               
+	    				cond_html = item.dc_savu_amt + ' 배';                                                                 
+	    			} else if(_cp_type == 'D' || _cp_type == 'I' || _cp_type == 'E' || _cp_type == 'O') {      
+	    				cond_html = item.dc_savu_amt + ' P';                                                                 
+	    			} else {                                                                                                           
+	    				cond_html = item.dc_savu_amt;                                                                                     
+	    			}                                                                                                                  
+	    		}
+    			
+	    		tag_td += '<td class="ta-c">' + cond_html + '</td>';
+	    		tag_td += '<td class="ta-c">' + coupon_html + '</td>';
+	    		
+	    		if(item.use_day_info != '') {
+	    			var day_info = item.use_day_info;
+	    			var day_lst = day_info.split(",");
+	    			var day_html = '';
+	    			for(var x = 0; x < day_lst.length; x++) {
+	    				if(x != 0 && (x % 2) == 0) {
+	    					day_html = day_html + '<br>' + cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');
+	    				}
+	    				else {
+	    					if(x == 0) {
+	    						day_html = cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');	
+	    					}
+	    					else {
+	    						day_html = day_html + ', ' + cf_cvtDateFormat($.trim(day_lst[x]),'yyyy-MM-dd');	
+	    					}
+	    				}
+	    			}
+	    			tag_td += '<td class="ta-c">'+day_html+'</td>';
+	    		}
+	    		else {
+	    			tag_td += '<td class="ta-c"></td>';
+	    		}
+	    		
+	    		tag_td += '<td class="ta-c"><a href="javascript:f_openCouponBookRD(\''+item.coupon_id+'\');">' + item.mapp_freq_cnt + '</a></td>';
+	    		tag_td += '<td class="ta-c">' + item.ord_seq + '</td>';
+	    		
+	    		$('#selectCoupon_tbody').append('<tr>' + tag_td + '</tr>');
+	    	});
+	    	
+	    	$("#couponCount").text(cf_getTrElementCount($("#selectCoupon_tbody")));
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

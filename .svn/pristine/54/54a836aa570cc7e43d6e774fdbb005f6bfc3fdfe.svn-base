@@ -1,0 +1,141 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-11" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 랭킹보기 </h2>
+				</header>
+				<div id="width_target">
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body" style="padding-bottom: 0px;">
+						<form class="form-horizontal" method="post">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-11 cs-css-05">&middot; 전체 참여자 <span id="spn_total_person">0</span> 명 / 참여자 평균 <span id="spn_avg_step">0</span> 걸음</label>
+								</div>
+								<div class="form-group">
+									<div class="col-md-11" style="width: 100%;">
+										<div class="table-responsive" style="overflow:hidden;">
+											<table class="table table-bordered" id="tbl_userRank" style="margin-bottom: 0px;"></table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<script type="text/javascript">
+	var userRank_data = {
+		evnt_id: "<%=LangUtil.replaceInjection(request.getParameter("evnt_id"))%>", 
+		empno: '${sessionScope.sessionEmpno}',
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+	};
+
+	function f_call_userRank() {
+		$.ajax({
+		    url: api_url+'/backoffice/event/pedometer/userRank/show', //this is the submit URL
+		    type: 'GET', // GET or POST
+		    async: true,
+		    cache: true,
+		    datatype: 'json',
+		    data: encodeURI('params='+JSON.stringify(userRank_data)),
+		    beforeSend : function() {},
+		    success: function(obj){
+				console.log(obj);
+
+				// 전체 참여자, 참여자 평균 걸음 수 세팅
+				var cntObj 	= obj.data.pedometer_user_rank_cnt;
+				$("#spn_total_person").text( cf_setComma( cntObj.total_person ) );
+				$("#spn_avg_step").text( cf_setComma( cntObj.avg_step ) );
+// 				total_step
+				
+				// 순위 테이블 그리기
+				var listObj 	= obj.data.pedometer_user_rank_list;
+				var strHtml 	= "";
+				
+				for(var i=0; i < 30; i++){
+					if( i % 2 == 0){
+						strHtml += "<tr>";
+						strHtml += "<td class='ta-c' style='width:60px; background-color: aliceblue;'>" + (i+1) + "</td>";
+						
+						if(listObj[i] == null || listObj[i] == undefined){
+							strHtml += "<td class='ta-c' style='width:200px;'>&nbsp;</td>";
+						} else {
+							strHtml += "<td class='ta-c' style='width:200px;'>" + cf_setComma( listObj[i].total_step ) + " (" + listObj[i].user_nick + ")</td>";
+						}
+						
+						if( (i+1) == 30 ){
+							strHtml += "<td class='ta-c' style='width:60px; background-color: aliceblue;'>&nbsp;</td>";
+							strHtml += "<td class='ta-c' style='width:200px;'>&nbsp;</td>";
+							strHtml += "</tr>";
+						}
+					} else {
+						strHtml += "<td class='ta-c' style='width:60px; background-color: aliceblue;'>" + (i+1) + "</td>";
+						
+						if(listObj[i] == null || listObj[i] == undefined){
+							strHtml += "<td class='ta-c' style='width:200px;'>&nbsp;</td>";
+						} else {
+							strHtml += "<td class='ta-c' style='width:200px;'>" + cf_setComma( listObj[i].total_step ) + " (" + listObj[i].user_nick + ")</td>";
+						}
+						strHtml += "</tr>";
+					}
+				}
+				
+				$("#tbl_userRank").html(strHtml);
+		    }
+		});
+	}
+	
+	/* ============================================================================================
+	/* 페이지 정보 설정
+	/* --------------------------------------------------------------------------------------------
+	/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+	/* ============================================================================================ */
+	var dialog_pagefunction = function() {
+		f_call_userRank();
+
+		// 날짜 선택 UI
+		$("#tbl_selectDate td:eq(0)").click(function(){
+			var curDate = new Date( cf_cvtDateFormat( userRank_data.record_date, 'yyyy-MM-dd' ) ); 
+			curDate = new Date( curDate.getTime() - (24 * 60 * 60 * 1000) );
+			curDate = curDate.getFullYear() + ( (curDate.getMonth()+1) < 10 ? "0" + (curDate.getMonth()+1) : (curDate.getMonth()+1) ) + ( curDate.getDate() < 10 ? "0" + curDate.getDate() : curDate.getDate() );
+			userRank_data.record_date = curDate;
+			
+			f_call_userRank();
+		});
+		
+		$("#tbl_selectDate td:eq(2)").click(function(){
+			var curDate = new Date( cf_cvtDateFormat( userRank_data.record_date, 'yyyy-MM-dd' ) ); 
+			curDate = new Date( curDate.getTime() + (24 * 60 * 60 * 1000) );
+			curDate = curDate.getFullYear() + ( (curDate.getMonth()+1) < 10 ? "0" + (curDate.getMonth()+1) : (curDate.getMonth()+1) ) + ( curDate.getDate() < 10 ? "0" + curDate.getDate() : curDate.getDate() );
+			userRank_data.record_date = curDate;
+			
+			f_call_userRank();
+		});
+	};
+	
+	/* ============================================================================================
+	/* 페이지 셋업 (Don't remove!!!)
+	/* --------------------------------------------------------------------------------------------
+	/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+	/* ============================================================================================ */
+	pageSetUp();
+	
+	/* ============================================================================================
+	/* 페이지 정보 설정 로드
+	/* --------------------------------------------------------------------------------------------
+	/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+	/* ============================================================================================ */
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', dialog_pagefunction);
+</script>

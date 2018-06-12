@@ -1,0 +1,683 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>POLL 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmPoll">
+							<input type="hidden" name="empno" 	  value="${sessionScope.sessionEmpno}">
+							
+							<fieldset>
+								<legend>기본 정보</legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label">POLL 유형</label>
+									<div class="col-md-5">
+										<label class="form-control cs-css-03" id="poll_type_nm"></label>
+									</div>
+									<label class="col-md-1 control-label">POLL 속성</label>
+									<div class="col-md-5">
+										<label class="form-control cs-css-03" id="poll_att"></label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">제목</label>
+									<div class="col-md-11">
+										<label class="form-control cs-css-03" id="poll_title"></label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">설명</label>
+									<div class="col-md-11">
+										<label class="form-control cs-css-03" id="poll_desc"></label>
+									</div>
+								</div>
+								<div class="form-group" id="intro_msg_div" style="display:none;">
+									<label class="col-md-1 control-label">인트로 메세지</label>
+									<div class="col-md-11">
+										<label class="col-md-12 cs-css-03" id="intro_msg"></label>
+									</div>
+								</div>
+								<div class="form-group" id="agree_sbjt_div" style="display:none;">
+									<label class="col-md-1 control-label">동의사항</label>
+									<div class="col-md-11">
+										<label class="col-md-12 cs-css-03" id="agree_sbjt"></label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_name"></span>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0);" class="btn btn-default" onclick="f_pollList();">목록</a>
+										<a href="javascript:void(0);" class="btn btn-warning" id="pollUpdateBtn" onclick="f_pollEdit();" >수정</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<!-- POLL 문항 목록 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>POLL 문항 목록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<form id="frmQstnList" class="form-horizontal" method="post">
+						<div class="widget-body no-padding">
+							<div>
+								<div class="dt-toolbar-footer" id="listCtrlBtnDiv">
+									<div class="col-md-6" id="addDelDiv">
+										<a href="javascript:void(0);" class="btn btn-sm bg-color-blueDark txt-color-white" onclick="f_qstnUpDownItem('U');">↑</a>
+										<a href="javascript:void(0);" class="btn btn-sm bg-color-blueDark txt-color-white" onclick="f_qstnUpDownItem('D');">↓</a>
+										<a href="javascript:void(0);" class="btn btn-primary" onclick="f_qstnEditSD('create', '', '');">추가</a>
+										<a href="javascript:void(0);" class="btn btn-danger"  onclick="f_deleteQstn();">삭제</a>
+									</div>
+									<div class="col-md-6 ta-r">
+										<a href="javascript:void(0);" class="btn btn-sm bg-color-blueDark txt-color-white" onclick="f_pollImgLD('M');">이미지 관리</a>
+										<a href="javascript:void(0);" class="btn btn-sm bg-color-blueDark txt-color-white" onclick="f_logicEditSD();" id="logicManageBtn">전체 로직 관리</a>
+									</div>
+								</div>
+							</div>
+							<div>
+								<div class="table-responsive" style="min-height:80px; max-height:417px; overflow-y:auto;">
+									<table class="table table-bordered table-striped">
+										<colgroup>
+								            <col width="3%" />
+								            <col width="5%" />
+								            <col />
+								            <col width="10%" />
+								            <col width="9%" />
+								            <col width="9%" />
+								            <col width="9%" />
+								            <col width="9%" />
+								        </colgroup>
+										<thead>
+											<tr>
+												<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+												<th class="ta-c">순번</th>
+												<th class="ta-c">질문</th>
+												<th class="ta-c">유형</th>
+												<th class="ta-c">보기수</th>
+												<th class="ta-c">로직</th>
+												<th class="ta-c">실시간</th>
+												<th class="ta-c">미리보기</th>
+											</tr>
+										</thead>
+										<tbody id="poll_qstn_tbody"></tbody>
+									</table>
+								</div>
+							</div>
+							<div class="dt-toolbar-footer">
+								<div class="col-md-12 ta-r">
+									<a href="javascript:void(0);" class="btn btn-primary" id="btnOrderSave" onclick="f_updateQstnList();">저장</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<!-- 팝업 DIV -->
+<div id="img_list_ld"   style="display:none;"></div>	<!-- 이미지 선택 팝업 -->
+<div id="qstn_edit_sd"  style="display:none;"></div>	<!-- 질문 등록/수정 팝업 -->
+<div id="logic_edit_sd" style="display:none;"></div>	<!-- 전체 로직관리 팝업 -->
+<div id="pre_view_qstn_sd" style="display:none;"></div>	<!-- 질문 미리보기 팝업 -->
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<form id="qstnPreviewData">
+</form>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 전역 변수 선언
+/* ============================================================================================ */
+var POLL_TYPE_CD;			// 설문 유형 코드
+var INTRO_MSG;				// 인트로 메세지
+var POLL_UPDATE_YN 	 = 'Y'	// POLL 업데이트 가능 여부
+var DEL_QSTN_ID_LIST = [];	// 질문 삭제 ID 리스트
+
+/* ==================================================================================
+ * 이미지 관리 다이얼로그 화면 구문
+ * ================================================================================== */
+$('#img_list_ld').dialog({
+	autoOpen : false,
+	width 	 : 1024,
+	minHeight: 600,
+	position : [250,100],
+	resizable: false,
+	modal 	 : true,
+	title 	 : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 이미지 관리 </h6></div>",
+	beforeClose: function () {
+		// 이미지 업로드 팝업이 있을 경우
+		if($('#img_upload_sd').length > 0) {
+			$('#img_upload_sd').empty();
+			$('#img_upload_sd').dialog("close");
+		}
+    },
+	buttons : [
+		{
+			id    : "delImgBtn",
+			html  : "<i class='fa fa-times'></i>&nbsp; 선택삭제",
+			class : "btn btn-danger",
+			click : function() { f_deleteImgFileList(); }
+		}
+		, {
+			html  : "<i class='fa fa-times'></i>&nbsp; 이미지 업로드",
+			class : "btn btn-success",
+			click : function() { f_ImgUploadSD(); }
+		}
+		, {
+			id    : "setImgBtn",
+			html  : "<i class='fa fa-save'></i>&nbsp; 적용",
+			class : "btn btn-primary",
+			click : function() { f_setQstnShowType(IMAGE_POP_TYPE); }
+		}
+		, {
+			html  : "<i class='fa fa-times'></i>&nbsp; 닫기",
+			class : "btn btn-default",
+			click : function() {
+				$('#img_list_ld').empty();
+				$(this).dialog("close");
+				
+				// 이미지 업로드 팝업이 있을 경우
+				if($('#img_upload_sd').length > 0) {
+					$('#img_upload_sd').empty();
+					$('#img_upload_sd').dialog("close");
+				}
+			}
+		}
+	]
+});
+
+/* ==================================================================================
+ * 전체 로직관리 다이얼로그 화면 구문
+ * ================================================================================== */
+$('#logic_edit_sd').dialog({
+	autoOpen : false,
+	width 	 : 1200,
+	minHeight: 600,
+	resizable: false,
+	modal 	 : true,
+	title 	 : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 로직 관리 </h6></div>",
+	buttons  : [
+		{
+			html  : "<i class='fa fa-save'></i>&nbsp; 저장",
+			class : "btn btn-primary",
+			click : function() {
+				f_saveLogic();
+			}
+		}, {
+			html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+			class : "btn btn-default",
+			click : function() {
+				$('#qstn_edit_sd').empty();
+				$(this).dialog("close");
+			}
+		}
+	]
+});
+
+/* ==================================================================================
+ * 질문 등록/수정 다이얼로그 화면 구문
+ * ================================================================================== */
+$('#qstn_edit_sd').dialog({
+	autoOpen  : false,
+	width 	  : 1024,
+	minHeight : 600,
+	resizable : false,
+	modal 	  : true,
+	title 	  : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> POLL 문항 등록 </h6></div>",
+	beforeClose: function () {
+		$('#qstn_edit_sd').empty();
+    },
+	buttons   : [
+		{
+			id	  : "qstnShowSaveBtn",
+			html  : "<i class='fa fa-save'></i>&nbsp; 저장",
+			class : "btn btn-primary",
+			click : function() { f_saveQstnShow(); }
+		}
+		, {
+			html  : "<i class='fa fa-times'></i>&nbsp; 닫기",
+			class : "btn btn-default",
+			click : function() {
+				$('#qstn_edit_sd').empty();
+				$(this).dialog("close");
+			}
+		}
+	]
+});
+
+/* ==================================================================================
+ * 질문 미리보기 다이얼로그 화면 구문
+ * ================================================================================== */
+$('#pre_view_qstn_sd').dialog({
+	autoOpen  : false,
+	width 	  : 400,
+	minHeight : 600,
+	resizable : false,
+	modal 	  : true,
+	title 	  : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 질문 미리보기 </h6></div>",
+	buttons   : [
+		{
+			html  : "<i class='fa fa-times'></i>&nbsp; 닫기",
+			class : "btn btn-default",
+			click : function() {
+				$('#pre_view_qstn_sd').empty();
+				$(this).dialog("close");
+			}
+		}
+	]
+});
+
+/* ==================================================================================
+ * POLL 질문 목록 조회
+ * ================================================================================== */
+function f_pollQstnList() {
+	var frm_data = $("#frmKeepData").serializeFormObject();
+	
+	// POLL 질문 목록
+	$.ajax({
+	    url: api_url+"/backoffice/poll/qstn/list",
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(frm_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	if(POLL_TYPE_CD == 'SNGL' && obj.data.poll_qstn_list.length > 0) {
+		    	$('#addDelDiv a').eq(2).hide();
+	    	}
+	    	
+	    	f_renderQstnList(obj.data)
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ==================================================================================
+ * POLL 질문 목록 화면 출력
+ * ================================================================================== */
+function f_renderQstnList(data) {
+	var tbody = $('#poll_qstn_tbody');
+
+   	tbody.empty();
+   	
+	var intro_tr = $('<tr/>');
+	var intro_td_01 = $('<td/>').addClass('ta-c');
+	var intro_td_02 = $('<td/>').addClass('ta-c');
+	var intro_td_03 = $('<td/>');
+	var intro_td_04 = $('<td/>').addClass('ta-c');
+	var intro_td_05 = $('<td/>').addClass('ta-c');
+	var intro_td_06 = $('<td/>').addClass('ta-c');
+	var intro_td_07 = $('<td/>').addClass('ta-c');
+	var intro_td_08 = $('<td/>').addClass('ta-c');
+	
+	var intro_pre_view_a   = $('<a/>').addClass('btn btn-default').attr('href', 'javascript:void(0);')
+									  .text('미리보기').on('click', function() { f_preViewQstnSD('I'); })
+
+	intro_td_02.append('0');
+	intro_td_03.append('인트로');
+	intro_td_04.append('-');
+	intro_td_05.append('-');
+	intro_td_06.append('-');
+	intro_td_07.append('-');
+	intro_td_08.append(intro_pre_view_a);
+	
+	intro_tr
+		.append(intro_td_01, intro_td_02, intro_td_03, intro_td_04)
+		.append(intro_td_05, intro_td_06, intro_td_07, intro_td_08);
+	
+	if(POLL_TYPE_CD == 'PRS') {
+		tbody.append(intro_tr);
+	}
+	else {
+		$('#btnOrderSave').hide();
+	}
+
+	if(data.poll_qstn_list.length > 0) {
+		$.each(data.poll_qstn_list, function(i, items) {
+			var tr = $('<tr/>');
+			var td_01 = $('<td/>').attr('style', 'text-align:center;');
+			var td_02 = $('<td/>').attr('style', 'text-align:center;');
+			var td_03 = $('<td/>');
+			var td_04 = $('<td/>').attr('style', 'text-align:center;');
+			var td_05 = $('<td/>').attr('style', 'text-align:center;');
+			var td_06 = $('<td/>').attr('style', 'text-align:center;');
+			var td_07 = $('<td/>').attr('style', 'text-align:center;');
+			var td_08 = $('<td/>').attr('style', 'text-align:center;');
+			
+			var check_input = $('<input/>').attr('type', 'checkbox').attr('name', 'qstn_id').val(items.qstn_id);
+			var prto_input  = $('<input/>').attr('type', 'hidden').attr('name', 'qstn_prto').val(items.qstn_prto);
+			
+			var title_view_a = $('<a/>').attr('href', 'javascript:void(0);')
+										.on('click', function() {
+											f_qstnEditSD('update', check_input.val(), prto_input.val());
+										});
+			
+			var pre_view_a   = $('<a/>').addClass('btn btn-default').attr('href', 'javascript:void(0);')
+										.text('미리보기').on('click', function() { f_preViewQstnSD('Q', items.qstn_id); });
+			
+			title_view_a.append(items.qstn_title);
+			
+			td_01.append(check_input, prto_input);
+			td_02.append(items.qstn_prto);
+			td_03.append(title_view_a);
+			td_04.append(items.show_type_nm);
+			td_05.append(items.show_cnt);
+			td_06.append(items.qstn_logic);
+			td_07.append(items.rt_rslt_yn);
+			td_08.append(pre_view_a);
+			
+			tr.append(td_01, td_02, td_03, td_04, td_05, td_06, td_07, td_08);
+			
+			tbody.append(tr);
+		});
+		
+		if(tbody.find('tr').length < 2) {
+			$('#btnOrderSave').hide();
+		}
+		else {
+			$('#btnOrderSave').show();
+		}
+	}
+	else {
+		$('#btnOrderSave').hide();
+	}
+}
+
+/* ==================================================================================
+ * POLL 질문 삭제
+ * ================================================================================== */
+function f_deleteQstn() {
+	var tbody = $('#poll_qstn_tbody');
+	
+	var obj_checkbox = tbody.find('input[type=checkbox]:checked');
+	
+	if(obj_checkbox.length < 1) {
+		alert("삭제 할 문항을 선택하세요.");
+		return false;
+	}
+	else if(obj_checkbox.length > 1) {
+		alert("하나의 문항만 선택하세요.");
+		return false;
+	}
+	
+	$.each(tbody.find('tr'), function(idx) {
+		var tbodyTrObj = $(this);
+		
+		if($(this).find('input[type=checkbox]').is(':checked')) {
+			// 질문 목록 저장 시 삭제대상 질문ID 리스트에 담아 두기
+			DEL_QSTN_ID_LIST.push($(this).find('input[type=checkbox]').val());
+			tbodyTrObj.remove();
+		}
+	});
+	
+	f_reloadQstnPrto();
+}
+
+/* ==================================================================================
+ * POLL 질문 목록 순서변경
+ * ================================================================================== */
+function f_qstnUpDownItem(type) {
+	var tbody = $('#poll_qstn_tbody');
+		
+	var obj_checkbox = tbody.find('input[type=checkbox]:checked');
+	
+	if(obj_checkbox.length < 1) {
+		alert("이동 할 문항을 선택하세요.");
+		return false;
+	}
+	else if(obj_checkbox.length > 1) {
+		alert("하나의 문항만 선택하세요.");
+		return false;
+	}
+	
+	tbody.find('tr').each(function(idx) {
+		if($(this).find('input[type=checkbox]').is(':checked') && type == 'U') {
+			if(idx < 2) {
+				alert('더 이상 이동 할 수 없습니다.');
+				return false;
+			}
+			else {
+				$(this).insertBefore($(this).prev());
+				return false;
+			}
+		}
+		else if($(this).find('input[type=checkbox]').is(':checked') && type == 'D') {
+			if(idx >= (tbody.find('tr').length-1)) {
+				alert('더 이상 이동 할 수 없습니다.');
+				return false;
+			}
+			else {
+				$(this).insertAfter($(this).next());
+				return false;
+			}
+		}
+	});
+	
+	f_reloadQstnPrto();
+}
+
+/* ==================================================================================
+ * POLL 질문 우선순위 재정렬
+ * ================================================================================== */
+function f_reloadQstnPrto() {
+	var tbody = $('#poll_qstn_tbody');
+	
+	tbody.find('tr').each(function(idx) {
+		$(this).find('input[name=qstn_prto]').val(idx);
+		$(this).find('td').eq(1).empty();
+		$(this).find('td').eq(1).append(idx);
+	});
+}
+
+/* ==================================================================================
+ * POLL 질문 우선순위 수정 및 질문 삭제
+ * ================================================================================== */
+function f_updateQstnList() {
+	var frmQstnList = $('#frmQstnList');
+	
+	if(confirm("문항 목록을 저장 하시겠습니까?")) {
+		var qstnList = [];
+		
+		var tbody = $('#poll_qstn_tbody');
+		tbody.find('tr').each(function(idx) {
+			if(idx > 0) {
+				var qstnId   = $(this).find('input[name=qstn_id]').val();
+				var qstnPrto = $(this).find('input[name=qstn_prto]').val();
+				
+				var qstnData = {
+					qstn_id : qstnId,
+					qstn_prto : qstnPrto
+				};
+				
+				qstnList.push(qstnData);
+			}
+		});
+		
+		if(tbody.find('tr').length < 2) {
+			var qstnData = {
+				qstn_id : '',
+				qstn_prto : ''
+			};
+			
+			qstnList.push(qstnData);
+		}
+		
+		var data = {
+			empno 			 : $('#frmKeepData').find('input[name=empno]').val(),
+			poll_id 		 : $('#frmKeepData').find('input[name=poll_id]').val(),
+			qstn_list 		 : qstnList,
+			del_qstn_id_list : DEL_QSTN_ID_LIST
+		};
+        	
+		// 실제 데이터 전송
+		$.ajax({
+		    url: api_url+'/backoffice/poll/qstn/list/update',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	
+		    	DEL_QSTN_ID_LIST = [];
+				
+				f_pollQstnList();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/* ==================================================================================
+ * POLL 질문 미리보기 화면 출력
+ * ================================================================================== */
+function f_renderQstnPreView(data) {
+	alert('화면 UI 필요');
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	var frm_data = $("#frmKeepData").serializeFormObject();
+
+	// POLL 기본 정보
+	$.ajax({
+	    url: api_url+"/backoffice/poll/show",
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(frm_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var data = obj.data;
+	    	
+	    	// 삭제되거나 POLL 발행된 설문일 경우 수정 불가
+	    	if(data.del_yn == 'N') {
+	    		$('#pollUpdateBtn').remove();
+	    		$('#listCtrlBtnDiv').remove();
+	    		$('#btnOrderSave').remove();
+	    		
+	    		POLL_UPDATE_YN = 'N';
+	    	}
+	    	
+	    	$('#poll_type_nm').html(data.poll_type_nm);
+	    	$('#poll_att').html(data.poll_att);
+	    	$('#poll_title').html(data.poll_title);
+	    	$('#poll_desc').html(data.poll_desc);
+	    	$('#intro_msg').html(data.intro_msg.split('\n').join('<br/>'));
+	    	$('#agree_sbjt').html(data.agree_sbjt.split('\n').join('<br/>'));
+	    	$('#reg_name').html(data.reg_name);
+	    	$('#reg_date').html(data.reg_date);
+	    	$('#mod_name').html(data.mod_name);
+	    	$('#mod_date').html(data.mod_date);
+	    	
+	    	if(data.poll_type_cd == 'SNGL') {
+		    	$('#addDelDiv a').eq(0).hide();
+		    	$('#addDelDiv a').eq(1).hide();
+		    	$('#addDelDiv a').eq(3).hide();
+		    	$('#logicManageBtn').hide();
+		    	
+		    	$('#intro_msg_div').hide();
+				$('#agree_sbjt_div').hide();
+	    	}
+	    	else {
+	    		$('#intro_msg_div').show();
+				$('#agree_sbjt_div').show();
+	    	}
+	    	
+	    	POLL_TYPE_CD = data.poll_type_cd;
+	    	INTRO_MSG 	 = data.intro_msg;
+	    	
+	    	// POLL 문항 리스트 조회
+	    	f_pollQstnList();
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>

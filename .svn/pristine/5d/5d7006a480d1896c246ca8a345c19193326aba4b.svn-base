@@ -1,0 +1,943 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>PUSH 상세</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="searchProduct">
+							<fieldset>
+
+								<div class="form-group" id="campaign_custgp" style="display:none;">
+									<label class="col-md-2 control-label">캠페인/고객군</label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_id"><%=request.getParameter("campaignid") %></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_term"><%=request.getParameter("campaignstartdd") + " ~ " + request.getParameter("campaignenddd") %></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_custgp_cnt">1</span>
+											</div>
+										</div>
+										<div class="form-group" style="display:none;">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="groupbuy_campaign_nm"><%=request.getParameter("campaignnm") %></span>
+											</div>
+										</div>
+										<div class="form-group" style="display:none;">
+											<label class="col-md-1 control-label cs-css-05">고객군ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_custgp"><%=request.getParameter("custgpid") %></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군명 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="groupbuy_custgpnm"><%=request.getParameter("custgpnm") %></span>
+											</div>
+										</div>
+
+									</div>
+								</div>
+
+
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">대상</label>
+									<div class="col-md-6">
+										<span class="form-control cs-css-03" id="cust_grd_nm"></span>
+									</div>								
+									<label class="col-md-2 control-label">등록자</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="regNm"></span>
+									</div>								
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">전송일자</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="scdlTm"></span>
+									</div>								
+									<label class="col-md-2 control-label">전송상태</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="msgSts"></span>
+									</div>								
+									<label class="col-md-2 control-label">등록일자</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="genDate"></span>
+									</div>								
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">전송요청</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="sendTotNcnt"></span>
+									</div>								
+									<label class="col-md-2 control-label">성공개수</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="scssNcnt"></span>
+									</div>								
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">승인상태</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_sts_cd_name"></span>
+									</div>								
+									<label class="col-md-2 control-label">승인일자</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="aprv_date"></span>
+									</div>								
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="crm_title"></span>
+										<input type="hidden" id="empno" name="empno" value="${sessionScope.sessionEmpno}">
+										<input type="hidden" id="emp_str_cd" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+										<input type="hidden" id="hq_base_yn" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+										<input type="hidden" name="msg_id" id="msg_id" value="<%=request.getParameter("msgid") %>"/>
+										<input type="hidden" name="scdl_id" id="scdl_id" value="<%=request.getParameter("scdlId") %>"/>
+										<input type="hidden" name="campaign_id" id="campaign_id" value="<%=request.getParameter("campaignid") %>"/>
+										<input type="hidden" name="lst_campaign_id" id="lst_campaign_id" value="<%=request.getParameter("campaignid") %>"/>
+										<input type="hidden" name="lst_custgp_id" id="lst_custgp_id" value="<%=request.getParameter("custgpid") %>"/>
+										<input type="hidden" name="imgYn" id="imgYn" value="" />
+										
+										<input type="hidden" name="campaign_nm_val" id="campaign_nm_val" value="<%=request.getParameter("campaignnm") %>" />
+										<input type="hidden" name="campaign_start_dy" id="campaign_start_dy" value="<%=request.getParameter("campaignstartdd") %>" />
+										<input type="hidden" name="campaign_end_dy" id="campaign_end_dy" value="<%=request.getParameter("campaignenddd") %>" />
+										<input type="hidden" name="msgstsval" id="msgstsval" value="<%=request.getParameter("msgstsval") %>" />
+										<input type="hidden" name="custgpnm" id="custgpnm" value="<%=request.getParameter("custgpnm") %>" />
+
+									</div>								
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">관리 제목</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="view_title"></span>
+
+									</div>								
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">유형</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="userYn"></span>
+									</div>											
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용</label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-04" id="crm_desc"></span>
+									</div>
+								</div>
+
+								<div class="form-group" id="img">
+									<label class="col-md-2 control-label">이미지</label>
+									<div class="col-md-10">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="" id="preview_uploadfile2" width="100%">
+										    <input type="hidden" id="imgPath" name="imgPath">
+										</div>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-2 control-label">링크사용</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="linkYn"></span>
+									</div>											
+								</div>
+
+								<div class="form-group" id="link_hide" style="display:none;">
+									<label class="col-md-2 control-label">URL 선택</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="link_url_text"></span>
+									</div>
+									<div class="col-md-8" id="inside_url">
+										<span class="form-control cs-css-03" id="issue_cpbook_text"></span>
+									</div>
+								</div>
+								
+								<div class="form-group" id="link_hide_org" style="display:none;">
+									<label class="col-md-2 control-label">URL 선택</label>
+									<div class="col-md-2">
+										<div class="input-group">
+										<select class="form-control" id="link_url" name="link_url" data-valid-use="true">
+											<option value="">선택</option>
+											<option value="LIST">목록</option>
+											<option value="CPBOOK">쿠폰북</option>
+											<option value="STAMP">스탬프</option>
+											<option value="FCFS">달려라선착순</option>
+											<option value="OUTSIDE">외부링크</option>
+										</select>
+										</div>
+									</div>
+									<div class="col-md-2" id="inside_url">
+										<select class="form-control" id="issue_cpbook" name="issue_cpbook" data-valid-use="true">
+											<option value="">선택</option>
+										</select>
+									</div>
+									<div class="col-md-6" id="outside_url" style="display:none">
+										<input class="form-control" type="text" name="issue_cpbook" id="issue_cpbook" />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">발송일</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="s_campaign_start_dt"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">화면켜짐</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="expose"></span>
+									</div>											
+								</div>
+								
+							</fieldset>							
+
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+
+										<a id="crm_del" href="javascript:f_resv_calcel();" class="btn btn-danger btn_auth_delete">예약취소</a>
+										<a href="javascript:f_reject();" class="btn btn-danger btn_auth_approve">반려</a>
+										<a href="javascript:f_approve();" class="btn btn-primary btn_auth_approve">승인</a>
+										<a href="javascript:f_approve_ask();" class="btn btn-info btn_auth_create">승인요청</a>
+										<a href="javascript:f_mCouponList();" class="btn btn-default">목록</a>
+										<a id="crm_mod" href="javascript:f_crm_mod();" class="btn btn-warning btn_auth_update">수정</a>
+
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="beaconLL">
+		
+	</div>
+</section>
+
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * PUSH CRM 내용작성 : PUSH CRM 구성 그룹추가
+ * ==================================================================================
+ */
+function f_addCouponZineGroup() {
+	 
+	if($("div.div_coupon_zine_group div.coupon_zine").length > 5){
+		 alert("컨텐츠는 최대 6개까지 입니다.")
+		 return false;
+	 }
+	 
+	$("div.div_coupon_zine_group").append(temp_div_coupon_zine_group);
+	f_reNameCouponZineGroup();
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰진 내용작성 : 쿠폰진 구성 그룹 그룹 이름 재정의
+ * ==================================================================================
+ */
+function f_reNameCouponZineGroup() {
+	$.each($("div.div_coupon_zine_group label.control-label span"), function(i,items){ 
+		$(items).text(i+1)
+		
+		$($("div.div_coupon_zine_group a[name=selectCpZine]")[i]).attr("href", "javascript:f_openCpZineContentsSD('couponzine_tbody"+(i+1)+"')");
+		$($("div.div_coupon_zine_group a[name=delCpZine]")[i]).attr("href", "javascript:f_delContentAndBook('couponzine_tbody"+(i+1)+"')");
+		$($("div.div_coupon_zine_group tbody[name=coupon_zine_contents]")[i]).attr("id", "couponzine_tbody"+(i+1));
+						
+		$($("div.div_coupon_zine_group a[name=selectCpBook]")[i]).attr("href", "javascript:f_openCpBookSD('groupbuy_cpb_tbody"+(i+1)+"')");
+		$($("div.div_coupon_zine_group a[name=delCpBook]")[i]).attr("href", "javascript:f_delContentAndBook('groupbuy_cpb_tbody"+(i+1)+"')");
+		$($("div.div_coupon_zine_group tbody[name=coupon_book]")[i]).attr("id", "groupbuy_cpb_tbody"+(i+1));
+	});
+}
+
+
+var pagefunction = function() {
+
+	// 버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	if('${sessionScope.menuAuth.A}' != 'Y') {
+		$('.btn_auth_approve').remove();
+	}
+
+	f_setTimeStr();
+	
+// 	$('input[name="linkYn"]').change(function(){
+// 	    if($(this).val() == "N") {
+// 	    	 $('#link_hide').hide();
+// 		}
+// 	    else {
+// 	        $('#link_hide').show();
+// 	    }
+// 	});
+	
+	$('select[name=issue_cpbook]')
+		.on('change', function() {
+			
+		})
+		.bind('getData', function(evt, key) {
+			var self = this;
+			var $option = $(self).children(':selected');
+			return $option.data('item')[key || '_'] || '';
+		})
+		.bind('init', function(evt) {
+			var self = this;
+			var _options = $(self).data();
+			$(self).empty().append( $('<option></option>').data('item', {}).val('').text('선택') );
+			
+			$.each(_options['items'] || [], function() {
+				$('<option></option>').data('item', this).val(this[_options['key']]).text(this[_options['label']]).appendTo( $(self) );
+			});
+
+			if (_options['_select'] && $.isFunction(_options['_select'])) {
+				_options['_select'].apply(self);
+			}
+			else if (_options['defaultValue']){
+				$(self).val(_options['defaultValue'] || '');
+			}
+		});
+	
+		var send_data = {
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				msgId : $("#msg_id").val(),
+				scdlId : $("#scdl_id").val()
+		};
+		
+		
+		$.ajax({
+		    url: api_url+"/backoffice/push/crm/show", 
+			type: 'GET',
+			async: true,
+			cache: true,
+			datatype: 'json',
+			data: encodeURI("params="+JSON.stringify(send_data)),
+			success: function(data) {
+
+				////////////////////////////////
+				// 버튼 Visible관리 Start
+				////////////////////////////////
+				
+		    	// 게시물 상태 :  승인완료
+		    	if(data.data.push_list[0].aprv_sts_cd == 'APPROVE') {
+		    		$('.btn_auth_approve').remove();
+		    		$('.btn_auth_create').remove();
+		    		$('.btn_auth_update').remove();
+		    		$('.btn_auth_delete').remove();
+		    	}
+		    	// 게시물 상태 : 승인대기중
+		    	else if(data.data.push_list[0].aprv_sts_cd == 'STANDBY') {
+		    		$('.btn_auth_create').remove();
+		    		$('.btn_auth_update').remove();
+		    		$('.btn_auth_delete').remove();
+		    	}
+		    	// 게시물 상태 : 승인 요청전
+		    	else if(data.data.push_list[0].aprv_sts_cd == 'REQUEST' || data.data.push_list[0].aprv_sts_cd == '') {
+		    		$('.btn_auth_approve').remove();
+		    	}
+		    	// 게시물 상태 : 반려
+		    	else if(data.data.push_list[0].aprv_sts_cd == 'REJECT') {
+		    		$('.btn_auth_approve').remove();
+		    		$('.btn_auth_create').remove();
+		    	}
+		    	
+
+				////////////////////////////////
+				// 버튼 Visible관리 End
+				////////////////////////////////
+				
+				
+				// 전송상태별 버튼 권한 설정
+				if(data.data.push_list[0].msgsts != "전송대기") {
+					$("#crm_mod").hide();
+					$("#crm_del").hide();
+					$('.btn_auth_create').remove();
+					$('.btn_auth_update').remove();
+					$('.btn_auth_delete').remove();
+					$('.btn_auth_approve').remove();
+				}
+
+				// 스케줄상태별 버튼 권한 설정
+				if(data.data.push_list[0].scdl_sts != "0") {
+					$("#crm_mod").hide();
+				}
+
+				$("#crm_title").text(data.data.push_list[0].msgtitle);
+				$("#view_title").text(data.data.push_list[0].view_title);
+				$("#crm_desc").html(data.data.push_list[0].msgcontent.replaceAll("\\n","<br/>").replaceAll("&gt;", ">").replaceAll("&lt;", "<"));
+				var date_val = data.data.push_list[0].scdltm;
+				var date = date_val.substring(0,10);
+				var time = date_val.substring(11,13);
+				var minut = date_val.substring(14,16);
+				var msgType = data.data.push_list[0].msgtype;
+				var urlType = data.data.push_list[0].urltype;
+				var custgpId = data.data.push_list[0].custgpid;
+				var msgUrl = data.data.push_list[0].msgurl;
+				var expose = data.data.push_list[0].expose;
+						
+				var regNm = data.data.push_list[0].reg_id_name;
+				var scdlTm = data.data.push_list[0].scdltm;
+				var msgSts = data.data.push_list[0].msgsts;
+				var genDate = data.data.push_list[0].gendate;
+				var sendTotNcnt = data.data.push_list[0].sendtotncnt;
+				var scssNcnt = data.data.push_list[0].scssncnt;
+				var aprv_sts_cd_name = data.data.push_list[0].aprv_sts_cd_name;
+				var aprv_date = data.data.push_list[0].aprv_date;
+				console.log(data.data.push_list[0].reg_id_name);
+				$("#regNm").text(regNm);
+				$("#scdlTm").text(scdlTm);
+				$("#msgSts").text(msgSts);
+				$("#genDate").text(genDate);
+				$("#sendTotNcnt").text(sendTotNcnt);
+				$("#scssNcnt").text(scssNcnt);
+				$("#aprv_sts_cd_name").text(aprv_sts_cd_name);
+				$("#aprv_date").text(aprv_date);
+				
+ 				$("#s_campaign_start_dt").text(date + " " + time + ":" + minut);				
+
+ 				var strnm = data.data.push_list[0].strnm;
+ 				var cust_grd_nm_list = data.data.push_list[0].cust_grd_nm_list;
+ 				$("#cust_grd_nm").html("[" + strnm + "] 등급(" + cust_grd_nm_list + ")");
+ 				
+				var template_id = data.data.push_list[0].template_id;
+ 				
+				if(expose =="Y") {
+					$("#expose").text("예");
+
+				}else{
+					$("#expose").text("아니오");
+				}
+				
+				
+				if(msgType == "1"){ // link 없는 text
+					$("#userYn").text("텍스트");
+					$('#img').hide();
+					$('#preview_uploadfile').hide();
+					$("#imgYn").val("N");
+					$("#linkYn").text("아니오");
+					$("#link_hide").hide();
+					
+				}else if(msgType == "2"){ // link 없는 img
+					if(template_id != "") {
+						$("#userYn").text("이미지생성");
+					}
+					else {
+						$("#userYn").text("이미지");
+					}
+
+					$('#img').show();
+			    	$('#preview_uploadfile').show();
+			    	
+			    	var string = data.data.push_list[0].msgurl;
+					var strArray = string.split('|');
+					var imgArray = strArray[1];
+					var cutLen =imgArray.lastIndexOf("/lmscp");
+
+					var imgPathArr = string.split('/');
+					var imgPath = imgPathArr[imgPathArr.length-1];
+
+// 					var imgPath = "/scpimg_nas"+imgArray.substring(cutLen);
+					 $("#imgPath").val(imgPath);
+// 					 $('#preview_uploadfile2').attr('src', string.substring(57));
+ 					 $('#preview_uploadfile2').attr('src', imgArray);
+					 $("#imgYn").val("Y");
+					 $("#linkYn").text("아니오");
+					 $("#link_hide").hide(); 
+				}else if(msgType == "3") { // link 있는 text
+					$("#userYn").text("텍스트");
+					$('#img').hide();
+					$('#preview_uploadfile').hide();
+					$("#imgYn").val("N");
+					$("#linkYn").text("예");
+					$("#link_hide").show(); 
+					
+					$("#link_url").val(urlType);
+					$("#link_url_text").text($("#link_url option:selected").text());
+					
+					var modData = {
+							empno: '${sessionScope.sessionEmpno}', 
+							emp_str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+					 		link_url : urlType,
+					 		lst_custgp_id_list : [custgpId]
+
+					};
+					$.ajax({
+						url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+						type: 'GET',
+						async: false,
+						cache: true,
+						datatype: 'json',
+						data: encodeURI('params='+JSON.stringify(modData)),
+						success: function(obj) {
+							var objData = obj['data'] || {};
+							if(objData['url_type'] == "CPBOOK") {
+								var _cpbook_id = ""; // msgUrl.substring(78,83);
+								var _cpzine_id = ""; // msgUrl.substring(78,83);
+								var _mapp_digit = ""; // msgUrl.substring(129, 133);
+								var _cp_type = "";
+								if(msgUrl.indexOf("cpzine_id") > -1) {
+									_cpbook_id = msgUrl.substring(82,97);
+									_cp_type = "CPZINE";
+								}else {
+									_cp_type = "CRM";
+									_mapp_digit = msgUrl.substring(129, 133);
+									_cpbook_id = msgUrl.substring(78,83);
+								}
+								$('select[name=issue_cpbook]')
+									.data({
+										'items': objData['result_list'], 'key': 'cpbook_id', 'label': 'cpbook_nm', '_select': function() {
+											var self = this;
+											
+											$(self).children()
+														.filter(function() {
+															if(_cp_type =="CRM") {
+																return $(this).data('item')['cpbook_id'] == _cpbook_id
+																		&& $(this).data('item')['cpbook_mapp_digit'] == _mapp_digit;
+															}else {
+																return $(this).data('item')['cpbook_id'] == _cpbook_id;
+																
+															}
+														}).prop('selected', 'selected');
+										}
+									})
+									.triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+							}else if(objData['url_type'] == "STAMP") {
+								var _stamp_id = msgUrl.substring(77);
+								$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'stamp_id', 'label': 'evt_title', '_select': function() { $(this).val(_stamp_id);}}).triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+
+							}else if(objData['url_type'] == "FCFS") {
+								var _fcfs_id = msgUrl.substring(73);
+								$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'fcfs_evnt_id', 'label': 'evt_title', '_select': function() { $(this).val(_fcfs_id);}}).triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+								
+							}else if(urlType == "LIST"){
+								var target = $('select[name=issue_cpbook]');
+								var options = "";
+								
+								options +="<option value=cpbook_list>쿠폰북목록</option>";
+								options +="<option value=stamp_list>스탬프목록</option>";
+								options +="<option value=fcfs_list>달려라선착순목록</option>";
+								options +="<option value=poll_list>POLL목록</option>";
+								
+								target.html(options);
+								if(msgUrl.indexOf("couponMainLN") > -1) {
+									$('#issue_cpbook').val("cpbook_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("stampMainLN") > -1) {
+									$('#issue_cpbook').val("stamp_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("withMainLN") > -1) {
+									$('#issue_cpbook').val("fcfs_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("pollMainLN") > -1) {
+									$('#issue_cpbook').val("poll_list").attr('selected', 'selected');
+								}
+								$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+
+							}else if(urlType == "OUTSIDE"){
+// 								$("#inside_url").hide();
+// 								$("#outside_url").show();
+								$("#outside_url").find("input[name=issue_cpbook]").val(msgUrl.substring(msgUrl.indexOf("=")+1));
+// 								$("#issue_cpbook").val(msgUrl.substring(msgUrl.indexOf("=")+1)); // http://m.coupond.lottemart.com/ 기준
+								$("#issue_cpbook_text").text($("#outside_url").find("input[name=issue_cpbook]").val());
+							}
+						}	
+					});
+				}else if(msgType == "4"){ // link 있는 img
+					if(template_id != "") {
+						$("#userYn").text("이미지생성");
+					}
+					else {
+						$("#userYn").text("이미지");
+					}
+
+					$('#img').show();
+			    	$('#preview_uploadfile').show();
+			    	
+			    	var string = data.data.push_list[0].msgurl;
+					var strArray = string.split('|');
+					var imgArray = strArray[1];
+					var cutLen =imgArray.lastIndexOf("/lmscp");
+
+					var imgPathArr = string.split('/');
+					var imgPath = imgPathArr[imgPathArr.length-1];
+					
+// 					var imgPath = "/scpimg_nas"+imgArray.substring(cutLen);
+					 $("#imgPath").val(imgPath);
+//					 $('#preview_uploadfile2').attr('src', string.substring(32));
+ 					 $('#preview_uploadfile2').attr('src', imgArray);
+					 $("#imgYn").val("Y");
+					 $("#linkYn").text("예");
+					 $("#link_hide").show(); 
+
+					$("#link_url").val(urlType);
+					$("#link_url_text").text($("#link_url option:selected").text());
+					 
+					 
+					var modData = {
+							empno: '${sessionScope.sessionEmpno}', 
+							emp_str_cd: '${sessionScope.sessionStrCd}',
+							hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+					 		link_url : urlType,
+					 		lst_custgp_id_list : [custgpId]
+
+					};
+					
+					$.ajax({
+						url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+						type: 'GET',
+						async: false,
+						cache: true,
+						datatype: 'json',
+						data: encodeURI('params='+JSON.stringify(modData)),
+						success: function(obj) {
+							var objData = obj['data'] || {};
+							
+							if(objData['url_type'] == "CPBOOK") {
+								var _cpbook_id = ""; // msgUrl.substring(78,83);
+								var _cpzine_id = ""; // msgUrl.substring(78,83);
+								var _mapp_digit = ""; // msgUrl.substring(129, 133);
+								var _cp_type = "";
+								if(msgUrl.indexOf("cpzine_id") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(98));
+									 
+									_cpbook_id = msgUrl.substring(82,97);
+									_cp_type = "CPZINE";
+								}else {
+									$('#preview_uploadfile2').attr('src', string.substring(134));
+									_cp_type = "CRM";
+									_mapp_digit = msgUrl.substring(129, 133);
+									_cpbook_id = msgUrl.substring(78,83);
+								}
+								$('select[name=issue_cpbook]')
+									.data({
+										'items': objData['result_list'], 'key': 'cpbook_id', 'label': 'cpbook_nm', '_select': function() {
+											var self = this;
+											
+											$(self).children()
+														.filter(function() {
+															if(_cp_type =="CRM") {
+																return $(this).data('item')['cpbook_id'] == _cpbook_id
+																		&& $(this).data('item')['cpbook_mapp_digit'] == _mapp_digit;
+															}else {
+																return $(this).data('item')['cpbook_id'] == _cpbook_id;
+																
+															}
+														}).prop('selected', 'selected');
+										}
+									})
+									.triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+
+							}else if(objData['url_type'] == "STAMP") {
+								 $('#preview_uploadfile2').attr('src', string.substring(93));
+								var _stamp_id = msgUrl.substring(77, 92);
+								$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'stamp_id', 'label': 'evt_title', '_select': function() { $(this).val(_stamp_id);}}).triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+
+							}else if(objData['url_type'] == "FCFS") {
+								 $('#preview_uploadfile2').attr('src', string.substring(89));
+								var _fcfs_id = msgUrl.substring(73, 88);
+								$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'fcfs_evnt_id', 'label': 'evt_title', '_select': function() { $(this).val(_fcfs_id);}}).triggerHandler('init');
+								$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+								
+							}else if(urlType == "LIST"){
+								var target = $('select[name=issue_cpbook]');
+								var options = "";
+								
+								options +="<option value=cpbook_list>쿠폰북목록</option>";
+								options +="<option value=stamp_list>스탬프목록</option>";
+								options +="<option value=fcfs_list>달려라선착순목록</option>";
+								options +="<option value=poll_list>POLL목록</option>";
+								
+								target.html(options);
+								if(msgUrl.indexOf("couponMainLN") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(68));
+									$('#issue_cpbook').val("cpbook_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("stampMainLN") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(66));
+									$('#issue_cpbook').val("stamp_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("withMainLN") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(64));
+									$('#issue_cpbook').val("fcfs_list").attr('selected', 'selected');
+								}else if(msgUrl.indexOf("pollMainLN") > -1) {
+									$('#preview_uploadfile2').attr('src', string.substring(64));
+									$('#issue_cpbook').val("poll_list").attr('selected', 'selected');
+								}
+								$("#issue_cpbook_text").text($('select[name=issue_cpbook] option:selected').text());
+
+							}else if(urlType == "OUTSIDE"){
+								$('#preview_uploadfile2').attr('src', string.substring(string.indexOf("|")+1));
+// 								$("#inside_url").hide();
+// 								$("#outside_url").show();
+								$("#outside_url").find("input[name=issue_cpbook]").val(msgUrl.substring(msgUrl.indexOf("=")+1, msgUrl.indexOf("|")));
+								//$("#issue_cpbook").val(msgUrl.substring(31)); // http://m.coupond.lottemart.com/ 기준
+								$("#issue_cpbook_text").text($("#outside_url").find("input[name=issue_cpbook]").val());
+
+							}
+						}	
+					});
+				}
+				
+				
+				
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData["responseJSON"];
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+			
+		});
+		$('input[name="userYn"]').change(function(){
+		    if($(this).val() == "N") {
+		        $('#img').show();
+		    	$('#preview_uploadfile').show();
+			}
+		    else {
+		    	if ($("#imgYn").val()=="Y"){    //확인
+		    		if(confirm("기존의 이미지 파일은 삭제 됩니다.\n 진행 하시겠습니까?")==true){
+			    		$("#imgPath").val("");
+			    		$("#imgYn").val("N");
+			    		
+		    		} else{   //취소
+					return;
+		    		}
+		    	}
+		    	$('#img').hide();
+		    	$('#preview_uploadfile').hide();
+		    }
+		});
+	
+};
+
+$('#link_url').change(function(){
+	var _link_url = $('#link_url option:selected').val();
+	$("#outside_url").find("input[name=issue_cpbook]").val("");
+	if(_link_url != "LIST" && _link_url != "OUTSIDE") {
+		$("#outside_url").hide();
+		$("#inside_url").show();
+		var data = {
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+		 		link_url : _link_url,//$('#link_url option:selected').val(),
+		 		lst_custgp_id_list : [$("input[name=lst_custgp_id]").val()]
+	
+		};
+		$("#url_lst_custgp_id").val($("input[name=lst_custgp_id]").val());
+		$.ajax({
+			url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+			type: 'GET',
+			async: false,
+			cache: true,
+			datatype: 'json',
+			data: encodeURI('params='+JSON.stringify(data)),
+			success: function(obj) {
+				
+	// 			var obj = obj.data;
+	// 			var target = $('select[name=issue_cpbook]');
+	// 			var options = "<option value=''>선택</option>";
+	// 			if(obj.url_type=="cpbook") {
+	// 				$.each(obj.result_list, function(i, item) {
+	// 					console.log(item.cpbook_type_cd);
+	// 					options += "<option value='"+item.cpbook_id+"'data-mapp-digit='"+item.cpbook_mapp_digit+"'data-cpbook-cd='"+item.ctype+"'data-cpbook-id='"+item.cpbook_id+"'data-cpbook-cd='"+item.ctype+"'data-cpbook-type-cd='"+item.cpbook_type_cd+"'>"+item.cpbook_nm+"</option>";
+	// 				});
+	// 				$("#send_url").val();
+	// 			}else if(obj.url_type=="stamp") {
+	// 				$.each(obj.result_list, function(i, item) {
+	// 					options += "<option value='"+item.stamp_id+"'>"+item.evt_title+"</option>";
+	// 				});
+	// 				$("#send_url").val("");
+	// 			}else if(obj.url_type=="fcfs") {
+	// 				$.each(obj.result_list, function(i, item) {
+	// 					options += "<option value='"+item.fcfs_evnt_id+"'>"+item.evt_title+"</option>";
+	// 				});
+	// 				$("#send_url").val();
+	// 			}
+	// 			target.html(options);
+	
+				var objData = obj['data'] || {};
+				if(objData.result_list == 0){
+					alert("해당 고객군에 발행된 쿠폰북이 없습니다.");
+				}else if(objData.result_list == 1){
+					alert("해당 고객군에 진행중인 달려라 선착순이 없습니다.");
+				}else if(objData.result_list == 2){
+					alert("해당 고객군에 진행중인 스탬프가 없습니다.");
+					
+				}
+				if(objData['url_type'] == "CPBOOK") {
+					$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'cpbook_id', 'label': 'cpbook_nm', '': function() {}}).triggerHandler('init');
+				}else if(objData['url_type'] == "STAMP") {
+					$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'stamp_id', 'label': 'evt_title', '': function() { }}).triggerHandler('init');
+	
+				}else if(objData['url_type'] == "FCFS") {
+					 
+					$('select[name=issue_cpbook]').data({'items': objData['result_list'], 'key': 'fcfs_evnt_id', 'label': 'evt_title', '': function() { }}).triggerHandler('init');
+					
+				}
+			}	
+		});
+	}else if(_link_url == "LIST"){
+		var target = $('select[name=issue_cpbook]');
+		var options = "<option value=''>선택</option>";
+		
+		options +="<option value=cpbook_list>쿠폰북목록</option>";
+		options +="<option value=stamp_list>스탬프목록</option>";
+		options +="<option value=fcfs_list>달려라선착순목록</option>";
+		options +="<option value=poll_list>POLL목록</option>";
+		
+		target.html(options);
+	}else {
+		$("#inside_url").hide();
+		$("#outside_url").show();
+	}
+});
+
+/**
+ * ==================================================================================
+ * 달력 : 달력 인덱스 조정
+ * ==================================================================================
+ */
+function f_datepickerIndex() {
+	$('#ui-datepicker-div').css('z-index','10000');
+}
+
+/**
+* ==================================================================================
+* PUSH CRM 이미지 추가
+* --------------------------------------------------------------------------------------------
+* 이미지 등록/변경시 호출되는 이벤트
+* ============================================================================================ 
+*/
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this), "IMG_PUSH");
+});
+
+/**
+ * 예약취소
+ */
+function f_resv_calcel()
+{
+	var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');				
+	var chk_cnt = 0;				
+	var del_ids = "dummy";
+	
+	var scdl_cnt = $("#scdl_id").val();
+	var msgsts_cnt = $("#msgstsval").val();
+		
+	del_ids += "," + scdl_cnt;
+	if (msgsts_cnt > 0) {
+		chk_cnt++;	
+	}					
+	
+	if(chk_cnt > 0) {
+		alert("전송대기 상태의 PUSH만 예약 취소할 수 있습니다.");
+		return;
+	}
+	
+	var rslt = f_crm_cancel(del_ids);
+
+	if(rslt.status == "200") {
+		$("#crm_mod").hide();
+		$("#crm_del").hide();
+		$('.btn_auth_create').remove();
+		$('.btn_auth_update').remove();
+		$('.btn_auth_delete').remove();
+		$('.btn_auth_approve').remove();
+	}
+
+}
+
+function f_crm_mod()
+{
+	var scdlId = $("#scdl_id").val();
+	var msg_id = $("#msg_id").val();
+	var custgpId = $("#lst_custgp_id").val();
+	var campaignId = $("#campaign_id").val();
+	var custgpnm = $("#custgpnm").val();
+	var campaignnm = $("#campaign_nm_val").val();
+	var campaignstartdd = $("#campaign_start_dy").val();
+	var campaignenddd = $("#campaign_end_dy").val();
+	var msgstsval = $("#msgstsval").val();
+
+	var postData = {
+			scdl_info : scdlId
+			,msg_info : msg_id
+			,custgpId : custgpId
+			,campaignId : campaignId
+			,custgpnm : custgpnm
+			,campaignnm : campaignnm
+			,campaignstartdd : campaignstartdd
+			,campaignenddd : campaignenddd
+			,msgstsval : msgstsval
+	};
+
+	if(msgstsval == 0){
+		var url = '/application/branch/push/crmEN.do';
+		var method = 'POST';
+		cf_action(url, method, postData);
+	
+	} else {
+		alert("전송완료, 전송취소 상태의 PUSH는 수정할 수 없습니다.");
+	}
+}
+
+
+
+	pageSetUp();
+	pagefunction();
+</script>

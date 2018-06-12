@@ -1,0 +1,193 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>쿠폰북 정보</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰북번호 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_cpbook_id"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">쿠폰북 유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_cpbook_type_cd_name"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">쿠폰북 맵핑수 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_campaignseg_info"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰북명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="rd_cpbook_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">쿠폰북 설명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="rd_cpbook_desc_content"></span>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+	<!-- 캠페인/고객군 목록 -->
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 발행 목록 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_campaign_seg_grid" class="widget-body no-padding">
+						<table id="campaign_seg_grid"></table>
+						<div id="campaign_seg_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	
+	var action_data = {
+		search_info: "", 
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+		cpbook_id: "<%=LangUtil.replaceInjection(request.getParameter("cpbook_id"))%>"	
+	};
+
+	$.ajax({
+	    url: api_url+"/backoffice/couponbook/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(action_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$("#rd_cpbook_id").html(obj.data.cpbook_id);
+	    	$("#rd_campaignseg_info").html(obj.data.campaignseg_info);
+	    	$("#rd_cpbook_type_cd_name").html(obj.data.cpbook_type_cd_name);
+	    	$("#rd_cpbook_nm").html(obj.data.cpbook_nm);
+	    	$("#rd_cpbook_desc_content").html(obj.data.cpbook_desc_content);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    },
+	    complete: function() {}
+	});
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#campaign_seg_grid").parent().width() - 100;
+		
+		jQuery("#campaign_seg_grid").jqGrid({
+			url : api_url+"/backoffice/couponbook/campaign/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '구분', '제목/행사제목', '캠페인명', '맵핑된 고객군명', '유효기간 시작일', '유효기간 종료일' ],
+			colModel : [
+				{ name : 'rnum', 				index : 'rnum',		 			align : "center",	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'evt_kind_nm', 		index : 'evt_kind_nm', 			align : "center",	sortable : false, 	width : (pageWidth*(15/100))	},
+				{ name : 'evt_title', 			index : 'evt_title', 			align : "center",	sortable : false, 	width : (pageWidth*(15/100))	},
+				{ name : 'campaign_nm', 		index : 'campaign_nm', 			align : "center", 	sortable : false, 	width : (pageWidth*(15/100)) 	}, 
+				{ name : 'custgp_nm', 			index : 'custgp_nm', 			align : "center", 	sortable : false, 	width : (pageWidth*(12/100)) 	}, 
+				{ name : 'vali_term_start_dd', 	index : 'vali_term_start_dd', 	align : "center", 	sortable : true, 	width : (pageWidth*(12/100)),	formatter:cf_cvtJqGridDate 	},
+				{ name : 'vali_term_end_dd', 	index : 'vali_term_end_dd', 	align : "center", 	sortable : true, 	width : (pageWidth*(12/100)), 	formatter:cf_cvtJqGridDate	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "campaign_id",
+				root : 		function(obj){ return obj.data.campaign_seg_list; },	// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			postData: action_data,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#campaign_seg_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : false,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left"
+		});
+		jQuery("#campaign_seg_grid").jqGrid('navGrid', "#campaign_seg_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		$('#campaign_seg_grid').gridCss();
+	  	$("#campaign_seg_grid_cb").css("border-left-width","0");
+	  	$("#campaign_seg_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_campaign_seg_grid_cb").css("padding","7px 0");
+	  	$("#campaign_seg_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#campaign_seg_grid").jqGrid( 'setGridWidth', $("#target_campaign_seg_grid").width() );
+		});
+	} 
+	// end function
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+
+</script>

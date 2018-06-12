@@ -1,0 +1,1229 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>문항 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmPollQstn">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="poll_id"   />
+							<input type="hidden" name="qstn_id"   />
+							<input type="hidden" name="qstn_prto" />
+							
+							<fieldset>
+								<legend>기본 정보</legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">문항번호</label>
+									<div class="col-md-10">
+										<label class="form-control cs-css-03" id="qstn_prto"></label>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">질문 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="qstn_title" data-valid-use="true" data-valid-max="500" data-valid-title="질문">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">질문 속성 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="qstn_att" data-valid-use="true" data-valid-max="100" data-valid-title="질문 속성">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">보기 유형 <sup>*</sup></label>
+									<div class="col-md-4">
+										<select class="form-control" name="show_type_cd" onchange="f_showTypeChange();" data-valid-title="보기 유형"></select>
+									</div>
+									<label class="col-md-2 control-label">보기 출력방식</label>
+									<div class="col-md-4">
+										<input type="checkbox" name="chk_random_yn" /> 랜덤출력
+										<input type="hidden" name="random_yn" value="N"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">보기카드</label>
+									<div class="col-md-10">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span onclick="f_setImgFileObj('QSTN');">이미지 선택</span>
+										</span>
+										<span class="btn_del_uploadfile" id="showCardImgDelBtn" style="display:none;">
+										    <a href="javascript:void(0);" class="btn btn-danger btn-sm" onclick="f_deleteQstnImage();">이미지 삭제</a>
+										</span>
+									    &nbsp;&nbsp;
+									    <a href="javascript:void(0);" id="showCardImgUrl" target="_blank"></a>
+									    <input type="hidden" name="show_card_img_seq" />
+									</div>
+								</div>
+								<div class="form-group" id="real_time_yn" style="display:none;">
+									<label class="col-md-2 control-label">실시간 결과여부</label>
+									<div class="col-md-4">
+										<input type="checkbox" name="chk_rt_rslt_yn" /> 실시간 결과보기
+										<input type="hidden" name="rt_rslt_yn" value="N"/>
+									</div>
+								</div>
+								<div class="form-group" id="createInfoDiv" style="display:none;">
+									<label class="col-md-1 control-label cs-css-05">등록일 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정일 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_name"></span>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row" id="showListDiv">
+		<!-- POLL 문항 목록 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>보기 목록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<form id="frmQstnView" class="form-horizontal" method="post">
+						
+					</form>
+					<div class="dt-toolbar-footer" style="display:none;" id="groupAddBtn">
+						<div class="col-md-12">
+							<a href="javascript:f_setShowListType('ADD');" class="btn btn-primary">그룹추가</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="showPrsCdDiv" style="display:none;">
+	<select class="form-control" name="show_prs_cd" onchange="f_showPrsCdChange($(this));">
+		<option value="">선택</option>
+	</select>
+</div>
+
+<div id="show_edit_sd" style="display:none;"></div>
+
+<!-- 보기 리스트 유형 01 -->
+<div class="widget-body no-padding" id="showListType01" style="display:none;">
+	<div class="show_list_group">
+		<div class="dt-toolbar-footer">
+			<div class="col-md-12">
+				<a href="javascript:void(0);" class="btn btn-sm bg-color-blueDark txt-color-white" onclick="f_showUpDownItem('U');">↑</a>
+				<a href="javascript:void(0);" class="btn btn-sm bg-color-blueDark txt-color-white" onclick="f_showUpDownItem('D');">↓</a>
+				<a href="javascript:void(0);" class="btn btn-primary" onclick="f_addShow($(this));">추가</a>
+				<a href="javascript:void(0);" class="btn btn-danger" onclick="f_deleteShow($(this));">삭제</a>
+			</div>
+		</div>
+		<div class="table-responsive" style="min-height:80px; max-height:417px; overflow-y:auto;">
+			<table class="table table-bordered table-striped">
+				<colgroup>
+		            <col width="4%" />
+		            <col width="5%" />
+		            <col />
+		            <col width="30%" />
+		            <col width="23%" />
+		        </colgroup>
+				<thead>
+					<tr>
+						<th class="ta-c"></th>
+						<th class="ta-c">순번</th>
+						<th class="ta-c">보기 내용</th>
+						<th class="ta-c">이미지</th>
+						<th class="ta-c">로직</th>
+					</tr>
+				</thead>
+				<tbody class="show_tbody"></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<!-- 보기 리스트 유형 02 -->
+<div class="widget-body no-padding" id="showListType02" style="display:none;">
+	<div class="show_list_group">
+		<div class="dt-toolbar-footer">
+			<div class="col-md-12">
+				<a href="javascript:f_showUpDownItem('U');" class="btn btn-sm bg-color-blueDark txt-color-white">↑</a>
+				<a href="javascript:f_showUpDownItem('D');" class="btn btn-sm bg-color-blueDark txt-color-white">↓</a>
+				<a href="javascript:void(0);" class="btn btn-primary" onclick="f_addShow($(this));">추가</a>
+				<a href="javascript:void(0);" class="btn btn-danger" onclick="f_deleteShow($(this));">삭제</a>
+			</div>
+		</div>
+		<div class="table-responsive" style="min-height:80px; max-height:417px; overflow-y:auto;">
+			<table class="table table-bordered table-striped">
+				<colgroup>
+		            <col width="4%" />
+		            <col width="5%" />
+		            <col />
+		            <col width="30%" />
+		        </colgroup>
+				<thead>
+					<tr>
+						<th class="ta-c"></th>
+						<th class="ta-c">순번</th>
+						<th class="ta-c">보기 내용</th>
+						<th class="ta-c">이미지</th>
+					</tr>
+				</thead>
+				<tbody class="show_tbody"></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<!-- 보기 리스트 유형 03 -->
+<div class="widget-body no-padding" id="showListType03" style="display:none;">
+	<div class="show_list_group">
+		<div class="dt-toolbar-footer">
+			<div class="col-md-12">
+				<a href="javascript:f_showUpDownItem('U');" class="btn btn-sm bg-color-blueDark txt-color-white">↑</a>
+				<a href="javascript:f_showUpDownItem('D');" class="btn btn-sm bg-color-blueDark txt-color-white">↓</a>
+				<a href="javascript:void(0);" class="btn btn-primary" onclick="f_addShow($(this));">추가</a>
+				<a href="javascript:void(0);" class="btn btn-danger" onclick="f_deleteShow($(this));">삭제</a>
+			</div>
+		</div>
+		<div class="table-responsive" style="min-height:80px; max-height:417px; overflow-y:auto;">
+			<table class="table table-bordered table-striped">
+				<colgroup>
+		            <col width="4%" />
+		            <col width="5%" />
+		            <col />
+		            <col width="10%" />
+		            <col width="25%" />
+		        </colgroup>
+				<thead>
+					<tr>
+						<th class="ta-c"></th>
+						<th class="ta-c">순번</th>
+						<th class="ta-c">보기 내용</th>
+						<th class="ta-c">점수</th>
+						<th class="ta-c">로직</th>
+					</tr>
+				</thead>
+				<tbody class="show_tbody"></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<!-- 보기 리스트 유형 04 -->
+<div class="widget-body no-padding" id="showListType04" style="display:none;">
+	<div class="show_list_group">
+		<div class="dt-toolbar-footer">
+			<div class="col-md-12">
+				<a href="javascript:f_showUpDownItem('U', this);" class="btn btn-sm bg-color-blueDark txt-color-white">↑</a>
+				<a href="javascript:f_showUpDownItem('D', this);" class="btn btn-sm bg-color-blueDark txt-color-white">↓</a>
+				<a href="javascript:void(0);" class="btn btn-primary" id="addShowBtn" onclick="f_addShow($(this));">추가</a>
+				<a href="javascript:void(0);" class="btn btn-danger" onclick="f_deleteShow($(this));">삭제</a>
+				&nbsp;&nbsp;<i class="fa fa-info-circle" style="color:red;"></i>
+				&nbsp;<span style="font-size:12px; color:red;">질문 삭제 시 해당 질문그룹이 삭제 됩니다.</span>
+			</div>
+		</div>
+		<div class="table-responsive" style="min-height:80px; max-height:417px; overflow-y:auto;">
+			<table class="table table-bordered table-striped">
+				<colgroup>
+		            <col width="4%" />
+		            <col width="5%" />
+		            <col />
+		            <col width="10%" />
+		            <col width="25%" />
+		        </colgroup>
+				<thead>
+					<tr>
+						<th class="ta-c"></th>
+						<th class="ta-c">순번</th>
+						<th class="ta-c">보기 내용</th>
+						<th class="ta-c">점수</th>
+						<th class="ta-c">로직</th>
+					</tr>
+				</thead>
+				<tbody class="show_tbody"></tbody>
+			</table>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+var IMAGE_SET_OBJ;			// 보기 리스트 이미지 Object
+var IMAGE_POP_TYPE;			// 이미지 리스트 팝업 구분
+var DEL_SHOW_ID_LIST = [];	// 보기 삭제 ID 리스트
+var ORG_SHOW_TYPE_CD;		// 변경전 보기 유형
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	// 초기데이터 로드 : 공통코드(설문 유형 코드)
+	f_ajaxCommonCode({
+		target:"select[name=show_type_cd]", 
+		cd_divn_id: "SHOW_TYPE_CD"
+	});
+	
+	// 초기데이터 로드 : 공통코드(보기 프로세스 코드)
+	f_ajaxCommonCode({
+		target: "select[name=show_prs_cd]",
+		cd_divn_id: "SHOW_PRS_CD"
+	});
+	
+	// 보기 리스트 Type에 따른 화면 출력
+	f_setShowListType();
+	
+	// 실시간 결과 보기 화면 출력 처리
+	var showTypeCd = $('#frmPollQstn select[name=show_type_cd]').val();
+
+	if(POLL_TYPE_CD == 'SNGL') {
+		if(showTypeCd == 'ATT' || showTypeCd == 'ODR' || showTypeCd == 'TEXT') {
+			$('#real_time_yn').hide();
+		}
+		else {
+			$('#real_time_yn').show();
+		}
+	}
+	else {
+		$('#real_time_yn').hide();
+	}
+};
+
+/* ============================================================================================
+/* 실시간 결과여부 화면 출력 Control
+/* ============================================================================================ */
+function f_showTypeChange(){
+	var frm = $('#frmPollQstn');
+	
+	var showTypeCd = frm.find('select[name=show_type_cd]').val();
+
+	if(POLL_TYPE_CD == 'SNGL') {
+		if(showTypeCd == 'ATT' || showTypeCd == 'ODR' || showTypeCd == 'TEXT') {
+			$('#real_time_yn').hide();
+		}
+		else {
+			$('#real_time_yn').show();
+		}
+	}
+	else {
+		$('#real_time_yn').hide();
+	}
+	
+	if(showTypeCd == 'MESR' || showTypeCd == 'ATT' || showTypeCd == 'TEXT') {
+		frm.find('input[name=chk_random_yn]').prop('checked', false);
+		frm.find('input[name=random_yn]').val('N');
+		frm.find('input[name=chk_random_yn]').prop('disabled', true);
+	}
+	else {
+		frm.find('input[name=chk_random_yn]').prop('disabled', false);
+	}
+	
+	frm.find('rt_rslt_yn').val('N');
+	
+	f_setShowListType('CHG');
+}
+
+/* ============================================================================================
+/* 질문 상세정보 조회
+/* ============================================================================================ */
+function f_loadQstnInfo() {
+	var frm = $('#frmPollQstn');
+	
+	// POLL 문항 기본 정보
+	$.ajax({
+	    url: api_url+"/backoffice/poll/qstn/show",
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(frm.serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var data = obj.data;
+	    	
+	    	frm.find('input[name=qstn_title]').val(data.qstn_title);
+	    	frm.find('input[name=qstn_att]').val(data.qstn_att);
+	    	frm.find('select[name=show_type_cd]').val(data.show_type_cd);
+	    	
+	    	if(data.random_yn == 'Y') {
+	    		frm.find('input[name=chk_random_yn]').prop('checked', true);
+	    		frm.find('input[name=random_yn]').val(data.random_yn);
+	    	}
+	    	
+	    	if(data.show_card_img_seq != null && data.show_card_img_seq != '') {
+	    		frm.find('#showCardImgDelBtn').show();
+	    		frm.find('input[name=show_card_img_seq]').val(data.show_card_img_seq);
+	    		frm.find('#showCardImgUrl').attr('href', data.show_card_img_url);
+	    		frm.find('#showCardImgUrl').html(data.atch_file_nm);
+	    	}
+	    	
+	    	if(data.rt_rslt_yn == 'Y') {
+	    		frm.find('input[name=chk_rt_rslt_yn]').prop('checked', true);
+	    		frm.find('input[name=rt_rslt_yn]').val(data.rt_rslt_yn);
+	    	}
+	    	
+	    	// 변경전 보기유형 저장
+	    	ORG_SHOW_TYPE_CD = data.show_type_cd;
+	    	
+	    	f_showTypeChange();
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 보기 유형에 따른 보기목록 Title 화면 출력 Control
+/* ============================================================================================ */
+function f_setShowListType(obj){
+	var qstnFrm = $('#frmPollQstn');
+	var showFrm = $('#frmQstnView');
+	
+	var showTypeCd = qstnFrm.find('select[name=show_type_cd]').val();
+	
+	if(obj != 'ADD') {
+		showFrm.empty();
+	}
+	
+	$('#showListDiv').show();
+	$('#groupAddBtn').hide();
+	
+	if(showTypeCd == 'SIN' || showTypeCd == 'ODR') {
+		showFrm.append($('#showListType01').html());
+	}
+	else if(showTypeCd == 'PLUR') {
+		showFrm.append($('#showListType02').html());
+	}
+	else if(showTypeCd == 'MESR') {
+		showFrm.append($('#showListType03').html());
+	}
+	else if(showTypeCd == 'ATT') {
+		var groupNum = showFrm.find('.show_list_group').length;
+
+		$('#showListType04 #addShowBtn').attr('data-group-num', groupNum);
+		
+		showFrm.append($('#showListType04').html());
+		
+		$('#groupAddBtn').show();
+		
+		f_setAttCtrl();		// 로직 항목 화면 출력 여부
+	}
+	else {
+		$('#showListDiv').hide();
+	}
+	
+	if(obj == 'CHG' && ORG_SHOW_TYPE_CD == showTypeCd) {
+		f_loadViewList();
+	}
+}
+
+/* ============================================================================================
+/* 보기카드 이미지 삭제
+/* ============================================================================================ */
+function f_deleteQstnImage() {
+	var frm = $('#frmPollQstn');
+	
+	frm.find('#showCardImgDelBtn').hide();
+	
+	frm.find('#showCardImgUrl').attr('href', 'javascript:void(0);').html('');
+	frm.find('input[name=show_card_img_seq]').val('');
+}
+
+/* ============================================================================================
+/* 보기 목록 조회
+/* ============================================================================================ */
+function f_loadViewList() {
+	var frm = $('#frmPollQstn');
+	
+	var data = {
+		poll_id : frm.find('input[name=poll_id]').val(),
+		qstn_id : frm.find('input[name=qstn_id]').val(),
+	}
+	
+	//  기본 정보
+	$.ajax({
+	    url: api_url+"/backoffice/poll/show/list",
+	    type: "GET",
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(frm.serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	f_renderShowList(obj.data);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/* ==================================================================================
+ * 보기 목록 화면 출력
+ * ================================================================================== */
+function f_renderShowList(data) {
+	// 보기 유형이 '속성' 일 경우 보기목록 그룹을 추가한다.
+	var group_cnt = 0;
+	$.each(data.show_list, function(i, items) {
+		if(items.att_prto != '99999' && items.show_prto == '0') {
+			group_cnt++;
+		}
+	})
+	
+	for(var i = 1; i < group_cnt; i++) {
+		f_setShowListType('ADD');
+	}
+	
+	// 리스트 화면 출력
+	var tbodyList = $('#frmQstnView').find('.show_tbody');
+	if(tbodyList.length < 1) {
+		tbodyList.empty();
+	}
+	else {
+		$.each(tbodyList, function() {
+			$(this).empty();
+		});
+	}
+	
+	var showTypeCd = $('#frmPollQstn').find('select[name=show_type_cd]').val();	// 보기 유형
+	
+	if(showTypeCd != 'TEXT') {
+		$.each(tbodyList, function(idx) {
+			var tbody = $(this);
+			var tbodyTrLength = tbody.find('tr').length;
+			
+			var listIndex;
+			if(showTypeCd == 'ATT') {
+				listIndex = idx;
+			}
+			else {
+				listIndex = '99999';
+			}
+			
+			$.each(data.show_list, function(i, items) {
+				if(items.att_prto == listIndex) {
+					var tr = $('<tr/>');
+					var td_01 = $('<td/>').attr('style', 'text-align:center;');
+					var td_02 = $('<td/>').attr('style', 'text-align:center;');
+					var td_03 = $('<td/>');
+					var td_04 = $('<td/>').attr('style', 'text-align:left;');
+					var td_05 = $('<td/>').addClass('logic_td').attr('style', 'text-align:left;');
+					
+					var check_input = $('<input/>').attr('type', 'checkbox').attr('name', 'show_id').val(items.show_id);
+					var att_prto    = $('<input/>').attr('type', 'hidden').attr('name', 'att_prto').val(items.att_prto);
+					var prto_input  = $('<input/>').attr('type', 'hidden').attr('name', 'show_prto').val(items.show_prto);
+					
+					var title_input = $('<input/>').addClass('form-control').attr('type', 'text').attr('name', 'show_content')
+												   .attr('data-valid-max', '500').attr('data-valid-use', 'true')
+												   .attr('data-valid-title', '보기 내용')
+												   .val(items.show_content);
+					
+					var img_file_choice_span 	 = $('<span/>').addClass('btn btn-success fileinput-button');
+					var img_file_choice_i 		 = $('<i/>').addClass('glyphicon glyphicon-plus');
+					var img_file_choice_btn_span = $('<span/>').text('이미지 선택')
+															   .on('click', function() {
+																   f_setImgFileObj('VIEW', $(this).parent().parent());
+															   });
+					
+					var img_file_delete_span 	 = $('<span/>').addClass('btn_del_uploadfile').attr('name', 'deleteShowImgBtn').hide();
+					var img_file_delete_a 		 = $('<a/>').attr('href', 'javascript:void(0);').addClass('btn btn-danger btn-sm').text('이미지 삭제')
+															.on('click', function() {
+																f_deleteShowImg($(this).parent().parent());
+															});
+															
+					var img_url_a 	 	   = $('<a/>').attr('href', 'javascript:void(0);').attr('name', 'showImgUrl').attr('target', '_blank');
+					var show_img_seq_input = $('<input/>').attr('type', 'hidden').attr('name', 'show_img_seq');
+					
+					var pnt_num_input = $('<input/>').addClass('form-control').attr('type', 'number').attr('name', 'pnt_num')
+													 .attr('data-valid-max', '3').attr('data-valid-use', 'true')
+													 .attr('data-valid-title', '점수').val(items.pnt_num);
+					
+					var show_prs_cd_div	   = $('<div/>').addClass('col-md-8').attr('style', 'padding-left:1px; padding-right:1px;');
+					var show_prs_cd_select = $('#showPrsCdDiv').html();
+					
+					var qstn_num_div 	= $('<div/>').addClass('col-md-4').attr('style', 'padding-left:0px; padding-right:1px;');
+					var qstn_num_select = $('<select/>').addClass('form-control').attr('name', 'show_skip_qstn_id');
+					
+					var optionGridFlag = false;
+					
+					qstn_num_select.append('<option>');
+					
+					$.each($('#poll_qstn_tbody tr'), function(idx) {
+						var option = $('<option/>');
+						var qstnId = $(this).find('input[name=qstn_id]').val();
+						
+						if(optionGridFlag) {
+							if(POLL_TYPE_CD == 'PRS') {
+								if(idx != 0) {
+									option.text(idx).val(qstnId);
+									
+									if(qstnId == items.show_skip_qstn_id) {
+										option.attr('selected', 'selected');
+									}
+									
+									qstn_num_select.append(option);
+								}
+							}
+							else if(POLL_TYPE_CD == 'SNGL') {
+								option.text(idx).val(qstnId);
+								qstn_num_select.append(option);
+							}
+						}
+						
+						if(items.qstn_id == qstnId) {
+							optionGridFlag = true;
+						}
+					});
+					
+					show_prs_cd_div.append(show_prs_cd_select);
+					
+					$.each(show_prs_cd_div.find('option'), function() {
+						if($(this).val() == items.show_prs_cd) {
+							$(this).attr('selected', 'selected');
+						}
+					});
+					
+					if(items.show_img_seq != '') {
+						img_file_delete_span.show();
+						
+						img_url_a.attr('href', items.show_img_url).text(items.atch_file_nm);
+						show_img_seq_input.val(items.show_img_seq);
+					}
+					
+					if(items.show_prs_cd == 'SKIP' && $('#poll_qstn_tbody tr').length > 0) {
+						qstn_num_select.show();
+					}
+					else {
+						qstn_num_select.hide();
+					}
+					qstn_num_div.append(qstn_num_select);
+					
+					td_01.append(check_input, att_prto, prto_input);
+					
+					if(showTypeCd != 'ATT') {
+						td_02.append(items.show_prto);
+					}
+					else {
+						if(items.show_prto == 0) {
+							td_02.append('질문');
+						}
+						else {
+							td_02.append(items.show_prto);
+						}
+					}
+					
+					td_03.append(title_input);
+					
+					if(showTypeCd == 'SIN' || showTypeCd == 'ODR' || showTypeCd == 'PLUR') {
+						img_file_choice_span.append(img_file_choice_i, img_file_choice_btn_span);
+						img_file_delete_span.append('&nbsp;', img_file_delete_a);
+						
+						td_04.append(img_file_choice_span, img_file_delete_span);
+						
+						if(items.show_img_seq != '') {
+							td_04.append('<br/><br/>');
+						}
+						
+						td_04.append(img_url_a, show_img_seq_input);
+						
+						td_05.append(show_prs_cd_div, qstn_num_div);
+					}
+					else if(showTypeCd == 'ATT' || showTypeCd == 'MESR') {
+						if(showTypeCd == 'ATT' && items.show_prto == 0) {
+							td_04.append('');
+							td_05.append('');
+						}
+						else {
+							td_04.append(pnt_num_input);
+							td_05.append(show_prs_cd_div, qstn_num_div);
+						}
+					}
+					
+					// POLL 유형이 단일문항 일 경우 로직 항목 제외
+					if(POLL_TYPE_CD == 'SNGL') {
+						td_05.empty('');
+					}
+					
+					if(showTypeCd == 'PLUR') {
+						tr.append(td_01, td_02, td_03, td_04);
+					}
+					else {
+						tr.append(td_01, td_02, td_03, td_04, td_05);
+					}
+					
+					tbody.append(tr);
+				}
+			});
+		});
+	}
+	
+	/*
+	 * POLL 발행 설문 일 경우 질문 및 보기를 수정 할 수 없게 하였으나
+	 * TEXT 변경에 대항 이슈가 있어서 주석 처리 함. (2015.11.26)
+	if(POLL_UPDATE_YN == 'N') {
+		$('#qstnShowSaveBtn').remove();
+	}
+	*/ 
+	
+	// 보기유형이 '속성' 일 경우 로직 항목 화면 출력여부
+	if(showTypeCd == 'ATT') {
+		f_setAttCtrl();
+	}
+}
+
+/* ==================================================================================
+ * 보기 추가
+ * ================================================================================== */
+function f_addShow(obj) {
+	var addObj = obj.parent().parent().parent();
+	
+	var qstnPrto = parseInt($('#qstn_prto').text());	// 문항 번호
+	
+	// 리스트 화면 출력
+	var tbody = addObj.find('.show_tbody');
+	var tbodyTrLength = tbody.find('tr').length;
+	
+	var showTypeCd = $('#frmPollQstn').find('select[name=show_type_cd]').val();	// 보기 유형
+	
+	var tr = $('<tr/>');
+	var td_01 = $('<td/>').attr('style', 'text-align:center;');
+	var td_02 = $('<td/>').attr('style', 'text-align:center;');
+	var td_03 = $('<td/>');
+	var td_04 = $('<td/>').attr('style', 'text-align:left;');
+	var td_05 = $('<td/>').addClass('logic_td').attr('style', 'text-align:left;');
+	
+	var check_input = $('<input/>').attr('type', 'checkbox').attr('name', 'show_id');
+	var att_prto    = $('<input/>').attr('type', 'hidden').attr('name', 'att_prto');
+	var prto_input  = $('<input/>').attr('type', 'hidden').attr('name', 'show_prto');
+	
+	var title_input = $('<input/>').addClass('form-control').attr('type', 'text').attr('name', 'show_content')
+								   .attr('data-valid-max', '500').attr('data-valid-use', 'true')
+								   .attr('data-valid-title', '보기 내용');
+	
+	var img_file_choice_span 	 = $('<span/>').addClass('btn btn-success fileinput-button');
+	var img_file_choice_i 		 = $('<i/>').addClass('glyphicon glyphicon-plus');
+	var img_file_choice_btn_span = $('<span/>').text('이미지 선택')
+											   .on('click', function() {
+												   f_setImgFileObj('VIEW', $(this).parent().parent());
+											   })
+	
+	var img_file_delete_span 	 = $('<span/>').addClass('btn_del_uploadfile').attr('name', 'deleteShowImgBtn').hide();
+	var img_file_delete_a 		 = $('<a/>').attr('href', 'javascript:void(0);').addClass('btn btn-danger btn-sm').text('이미지 삭제')
+											.on('click', function() {
+												f_deleteShowImg($(this).parent().parent());
+											});
+											
+	var img_url_a 	 	   = $('<a/>').attr('href', 'javascript:void(0);').attr('name', 'showImgUrl').attr('target', '_blank');
+	var show_img_seq_input = $('<input/>').attr('type', 'hidden').attr('name', 'show_img_seq');
+	
+	var pnt_num_input = $('<input/>').addClass('form-control').attr('type', 'number').attr('name', 'pnt_num')
+									 .attr('data-valid-max', '3').attr('data-valid-use', 'true')
+									 .attr('data-valid-title', '점수');
+	
+	var show_prs_cd_div	   = $('<div/>').addClass('col-md-8').attr('style', 'padding-left:1px; padding-right:1px;');
+	var show_prs_cd_select = $('#showPrsCdDiv').html();
+	
+	var qstn_num_div 	= $('<div/>').addClass('col-md-4').attr('style', 'padding-left:0px; padding-right:1px;');
+	var qstn_num_select = $('<select/>').addClass('form-control').attr('name', 'show_skip_qstn_id').hide();
+	
+	if(showTypeCd != 'ATT') {
+		att_prto.val('99999');
+		prto_input.val(tbody.find('input[name=show_prto]').length+1);
+	}
+	else {
+		att_prto.val(obj.attr('data-group-num'));
+		prto_input.val(tbody.find('input[name=show_prto]').length);
+	}
+	
+	var optionGridFlag = false;
+
+	$.each($('#poll_qstn_tbody tr'), function(idx) {
+		var option = $('<option/>');
+		var qstnId = $(this).find('input[name=qstn_id]').val();
+		
+		if(optionGridFlag) {
+			// 현재 문항의 다음 문항을 기본 선택한다.
+			if((qstnPrto+1) == idx) {
+				option.attr('selected', 'selected');
+			}
+			
+			if(POLL_TYPE_CD == 'PRS') {
+				if(idx != 0) {
+					option.text(idx).val(qstnId);
+					qstn_num_select.append(option);
+				}
+			}
+			else if(POLL_TYPE_CD == 'SNGL') {
+				option.text(idx).val(qstnId);
+				qstn_num_select.append(option);
+			}
+		}
+		
+		if($('#frmPollQstn input[name=qstn_id]').val() == qstnId) {
+			optionGridFlag = true;
+		}
+	});
+	
+	show_prs_cd_div.append(show_prs_cd_select);
+	qstn_num_div.append(qstn_num_select);
+	
+	td_01.append(check_input, att_prto, prto_input);
+	
+	if(showTypeCd != 'ATT') {
+		td_02.append(tbodyTrLength+1);
+	}
+	else {
+		if(tbodyTrLength == 0) {
+			td_02.append('질문');
+		}
+		else {
+			td_02.append(tbodyTrLength);
+		}
+	}
+	
+	td_03.append(title_input);
+	
+	if(showTypeCd == 'SIN' || showTypeCd == 'ODR' || showTypeCd == 'PLUR') {
+		img_file_choice_span.append(img_file_choice_i, img_file_choice_btn_span);
+		img_file_delete_span.append('&nbsp;', img_file_delete_a);
+		
+		td_04
+			.append(img_file_choice_span, img_file_delete_span)
+			.append(img_url_a, show_img_seq_input);
+		
+		td_05.append(show_prs_cd_div, qstn_num_div);
+	}
+	else if(showTypeCd == 'ATT' || showTypeCd == 'MESR') {
+		if(showTypeCd == 'ATT' && tbodyTrLength == 0) {
+			td_04.append('');
+			td_05.append('');
+		}
+		else {
+			td_04.append(pnt_num_input);
+			td_05.append(show_prs_cd_div, qstn_num_div);
+		}
+	}
+	
+	// POLL 유형이 단일문항 일 경우 로직 항목 제외
+	if(POLL_TYPE_CD == 'SNGL') {
+		td_05.empty('');
+	}
+	
+	if(showTypeCd == 'PLUR') {
+		tr.append(td_01, td_02, td_03, td_04);
+	}
+	else {
+		tr.append(td_01, td_02, td_03, td_04, td_05);
+	}
+	
+	tbody.append(tr);
+	
+	var objNum = tbodyTrLength;
+	if(showTypeCd == 'ATT') {
+		objNum = tbodyTrLength - 1;
+		
+		f_setAttCtrl();		// 로직 항목 화면 출력여부
+	}
+}
+
+function f_showPrsCdChange(obj) {
+	var qstnPrto = parseInt($('#qstn_prto').text());	// 문항 번호
+	
+	if(obj.val() == 'SKIP') {
+		if($('#poll_qstn_tbody tr').length < 2) {
+			obj.find('option').eq(0).attr('selected', 'selected');
+			alert('질문 개수가 2개 이상 일 경우 선택 가능합니다.');
+			return;
+		}
+		
+		obj.parent().parent().find('select[name=show_skip_qstn_id]').show();
+	}
+	else {
+		obj.parent().parent().find('select[name=show_skip_qstn_id] option').eq(qstnPrto).attr('selected', 'selected');
+		obj.parent().parent().find('select[name=show_skip_qstn_id]').hide();
+	}
+}
+
+/* ============================================================================================
+/* 보기 리스트 이미지 삭제
+/* ============================================================================================ */
+function f_deleteShowImg(obj) {
+	var imgObj = obj;
+	
+	imgObj.find('span[name=deleteShowImgBtn]').hide();
+	
+	imgObj.find('a[name=showImgUrl]').attr('href', 'javascript:void(0);').html('');
+	imgObj.find('input[name=show_img_seq]').val('');
+}
+
+/* ==================================================================================
+ * 보기 삭제
+ * ================================================================================== */
+function f_deleteShow(obj) {
+	var showGroupObj = obj.parent().parent().parent();
+	
+	var checkboxObj = showGroupObj.find('input[type=checkbox]:checked');
+	
+	var showTypeCd = $('#frmPollQstn').find('select[name=show_type_cd]').val();
+	
+	if(showTypeCd == 'ATT') {
+		var attGroupObj = $('#frmQstnView .show_list_group');
+
+		if(attGroupObj.length > 1 && showGroupObj.find('.show_tbody tr').length <= 1) {
+			if(confirm("보기 그룹을 삭제 하시겠습니까?")) {
+				$.each(showGroupObj.find('input[type=checkbox]'), function(groupIdx) {
+					DEL_SHOW_ID_LIST.push($(this).val());
+				});
+				
+				showGroupObj.remove();
+				
+				f_reloadShowPrto();	// 보기 우선순위 재정렬
+				f_setAttCtrl();		// 로직 항목 화면 출력여부
+				return;
+			}
+			else {
+				return;
+			}
+		}
+	}
+	
+	if(checkboxObj.length < 1) {
+		alert("삭제 할 보기을 선택하세요.");
+		return;
+	}
+	
+	$.each(showGroupObj.find('input[type=checkbox]'), function(chkIdx) {
+		var checkBoxParent = $(this).parent();
+		
+		if($(this).is(':checked')) {
+			if(checkBoxParent.find('input[name=show_prto]').val() == 0) {
+				if(confirm("보기 그룹을 삭제 하시겠습니까?")) {
+					$.each(showGroupObj.find('input[type=checkbox]'), function(groupIdx) {
+						DEL_SHOW_ID_LIST.push($(this).val());
+						
+						if(showGroupObj.find('input[type=checkbox]').length == (groupIdx+1)) {
+							showGroupObj.remove();
+						}
+					});
+				}
+			}
+			else {
+				DEL_SHOW_ID_LIST.push($(this).val());
+				$(this).parents('tr').remove();
+			}
+		}
+	});
+	
+	f_reloadShowPrto();		// 보기 우선순위 재정렬
+	
+	if(showTypeCd == 'ATT') {
+		f_setAttCtrl();		// 로직 항목 화면 출력여부
+	}
+}
+
+/* ==================================================================================
+ * 보기 목록 순서변경
+ * ================================================================================== */
+function f_showUpDownItem(type) {
+	var tbodyList = $('#frmQstnView').find('.show_tbody');
+	
+	var showTypeCd = $('#frmPollQstn').find('select[name=show_type_cd]').val();	// 보기 유형
+		
+	var checkboxObj = tbodyList.find('input[type=checkbox]:checked');
+	
+	if(checkboxObj.length < 1) {
+		alert("이동 할 문항을 선택하세요.");
+		return;
+	}
+	else if(checkboxObj.length > 1) {
+		alert("하나의 문항만 선택하세요.");
+		return;
+	}
+	
+	var showPrto = parseInt(checkboxObj.parent().find('input[name=show_prto]').val());
+	if( type == 'U' && showTypeCd == 'ATT' && showPrto < 2 ) {
+		alert('더 이상 이동 할 수 없습니다.');
+		return;
+	}
+	
+	var showPrto = parseInt(checkboxObj.parent().find('input[name=show_prto]').val());
+	if( type == 'D' && showTypeCd == 'ATT' && showPrto == 0 ) {
+		alert('질문은 이동 할 수 없습니다.');
+		return;
+	}
+	
+	$.each(tbodyList, function() {
+		var tbody = $(this);
+
+		tbody.find('tr').each(function(idx) {
+			if($(this).find('input[type=checkbox]').is(':checked') && type == 'U') {
+				if(idx < 1) {
+					alert('더 이상 이동 할 수 없습니다.');
+					return false;
+				}
+				else {
+					$(this).insertBefore($(this).prev());
+					return false;
+				}
+			}
+			else if($(this).find('input[type=checkbox]').is(':checked') && type == 'D') {
+				if(idx >= (tbody.find('tr').length-1)) {
+					alert('더 이상 이동 할 수 없습니다.');
+					return false;
+				}
+				else {
+					$(this).insertAfter($(this).next());
+					return false;
+				}
+			}
+		});
+	})
+	
+	f_reloadShowPrto();
+}
+
+/* ==================================================================================
+ * 보기 우선순위 재정렬
+ * ================================================================================== */
+function f_reloadShowPrto() {
+	var tbodyList = $('#frmQstnView').find('.show_tbody');
+	
+	var showTypeCd = $('#frmPollQstn').find('select[name=show_type_cd]').val();	// 보기 유형
+	
+	$.each(tbodyList, function(listIdx) {
+		var tbodyListObj = $(this);
+		
+		tbodyListObj.find('tr').each(function(idx) {
+			var idxNum = idx;
+			
+			if(showTypeCd != 'ATT') {
+				idxNum = idx + 1;
+			}
+			
+			if(showTypeCd == 'ATT') {
+				$(this).find('input[name=att_prto]').val(listIdx);
+			}
+			else {
+				$(this).find('input[name=att_prto]').val('99999');
+			}
+			
+			$(this).find('input[name=show_prto]').val(idxNum);
+			$(this).find('td').eq(1).empty();
+			
+			if(showTypeCd == 'ATT' && idx == 0) {
+				$(this).find('td').eq(1).append('질문');
+			}
+			else {
+				$(this).find('td').eq(1).append(idxNum);
+			}
+		});
+	})
+}
+
+/* ==================================================================================
+ * 보기 유형이 '속성' 일 경우 로직 필드 컨트롤
+ * ================================================================================== */
+function f_setAttCtrl() {
+	var listObj    = $('#frmQstnView .show_list_group');
+	var listLength = listObj.length;
+
+	if(listLength > 1) {
+		$.each(listObj, function(i) {
+			var logicObj = $(this).find('.logic_td');
+			
+			if(i == 0) {
+				logicObj.children().hide();
+				logicObj.find('select[name=show_prs_cd]').val('');
+				logicObj.find('select[name=show_skip_qstn_id]').val('');
+			}
+			else {
+				logicObj.empty();
+			}
+		});
+	}
+	else {
+		listObj.find('.logic_td').children().show();
+	}
+}
+
+/* ==================================================================================
+ * 보기 목록 이미지 이미지 선택 버튼 클릭
+ * ================================================================================== */
+function f_setImgFileObj(type, obj) {
+	IMAGE_POP_TYPE = type;
+	IMAGE_SET_OBJ  = obj;
+	
+	f_pollImgLD('S');
+}
+
+/* ==================================================================================
+ * POLL 질문 및 보기 등록/수정 처리
+ * ================================================================================== */
+function f_saveQstnShow() {
+	var frmQstn = $('#frmPollQstn');	// 질문 정보
+	var frmView = $('#frmQstnView');	// 보기 목록
+
+	// 등록/수정 구분 여부
+	var urlType = 'create';
+	
+	// 질문 ID 가 있을 경우 수정 변환
+	if(frmQstn.find('input[name=qstn_id]').val() != '') {
+		urlType = 'update';
+	}
+	
+	// 랜덤출력 여부 설정
+	if(frmQstn.find('input[name=chk_random_yn]').is(':checked')) {
+		frmQstn.find('input[name=random_yn]').val('Y');
+	}
+	else {
+		frmQstn.find('input[name=random_yn]').val('N');
+	}
+	
+	// 실시간 결과보기 여부 설정
+	if(frmQstn.find('input[name=chk_rt_rslt_yn]').is(':checked')) {
+		frmQstn.find('input[name=rt_rslt_yn]').val('Y');
+	}
+	else {
+		frmQstn.find('input[name=rt_rslt_yn]').val('N');
+	}
+	
+	if(frmQstn.formValid() && frmView.formValid()) {
+		var showTypeCd = frmQstn.find('select[name=show_type_cd]').val();
+		
+		// 질문 유형이 '텍스트'가 아닐 경우 보기 목록 존재 여부 확인
+		if(frmView.find('.show_tbody tr').length < 1 && showTypeCd != 'TEXT') {
+			alert('보기 목록을 입력하세요');
+			return;
+		}
+		
+		if(showTypeCd == 'ATT') {
+			var returnFlag = false;
+			
+			$.each(frmView.find('.show_list_group'), function() {
+				if($(this).find('.show_tbody tr').length < 2) {
+					returnFlag = true;
+					return false;
+				}
+			});
+			
+			if(returnFlag) {
+				alert('보기 목록을 입력하세요');
+				return;
+			}
+		}
+		
+		// 보기 목록의 로직 중 'SKIP' 개수 확인
+		var skipLength    = 0;
+		var skipValLength = 0;
+		$.each($('#frmQstnView select[name=show_prs_cd]'), function(i) {
+			if($(this).val() == 'SKIP') {
+				skipLength++;
+				
+				var logicObj = $(this).parents('.logic_td').eq(0);
+				if(logicObj.find('select[name=show_skip_qstn_id]').val() == '') {
+					skipValLength++;
+				}
+			}
+		});
+		
+		if(showTypeCd == 'ATT' && skipLength > 1) {
+			alert('보기 목록의 로직 중 SKIP(은)는 하나의 항목만 선택하세요')
+			return;
+		}
+		
+		if(skipValLength > 0) {
+			alert('보기 목록의 로직 중 SKIP 대상 질문 번호를 선택하세요.');
+			return;
+		}
+		
+		if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+			var data = frmQstn.serializeFormObject();
+			
+			var showList = [];	// 보기 리스트
+			
+			$.each(frmView.find('.show_tbody tr'), function(idx) {
+				var showData = {
+					show_id 			: $(this).find('input[name=show_id]').val()
+					, att_prto 			: $(this).find('input[name=att_prto]').val()
+					, show_prto 		: $(this).find('input[name=show_prto]').val()
+					, show_content 		: $(this).find('input[name=show_content]').val()
+					, pnt_num 			: $(this).find('input[name=pnt_num]').val()
+					, show_img_seq 		: $(this).find('input[name=show_img_seq]').val()
+					, show_prs_cd 		: $(this).find('select[name=show_prs_cd]').val()
+					, show_skip_qstn_id : $(this).find('select[name=show_skip_qstn_id]').val()
+				};
+				
+				showList.push(showData);
+			});
+			
+			data['show_list'] 		 = showList;
+			data['del_show_id_list'] = DEL_SHOW_ID_LIST;
+	        	
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+'/backoffice/poll/qstn/'+urlType,
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+					
+			    	// POLL 문항 목록 Reload
+					f_pollQstnList();
+			    	
+					$('#qstn_edit_sd').dialog("close");
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		}
+	}
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+dialog_pagefunction();
+
+</script>

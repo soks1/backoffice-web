@@ -1,0 +1,308 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html('&#160;');
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+//	
+	var brnch_info_name_list = "";
+
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	var obj_cpbook_id = $("#frmSearch").find('input[name=cpbook_id]');
+	if( obj_cpbook_id.getObjLength() > 0 && obj_cpbook_id.alphanumeric() != true ) {
+		return;
+	}
+	
+	if($('#frmSearch').searchValid() != true) {
+		alert('검색 조건을 입력해 주세요.');
+		return;
+	}
+	
+	if( $('#s_apply_start_dd').getObjLength() > 0 ) {
+		if( $('#e_apply_start_dd').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_apply_start_dd').getObjLength() > 0 ) {
+		if( $('#s_apply_start_dd').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 검색 초기화 버튼 추가
+	f_addButton();
+
+	// 검색 폼 데이터 추출
+	var searchData = $('#frmSearch').serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$('#coupon_zine_grid').jqGrid('setGridParam', {search: true});
+	$("#coupon_zine_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$('#coupon_zine_grid').jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#btn_search').parent().append('<a href="javascript:void(0)" id="btn_cancel" onclick="f_cancel();" class="btn btn-warning"><i class="fa fa-remove"></i> 초기화 </a>');
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// KeepData 폼 안에 input 태그 삭제
+	$('#frmKeepData').empty();
+	// 검색 초기화 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#coupon_zine_grid').jqGrid('setGridParam', {search: false});
+	$('#coupon_zine_grid').jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$('#coupon_zine_grid').jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$('#frmSearch').cleanObject();
+	
+}
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰진 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCampaignSD() {
+	$.ajax({
+		url: "/application/groupbuy/campaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#groupbuy_campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#groupbuy_campaign_sd').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰진 캠페인/고객군 삭제 버튼 클릭시 호출되는 메소드
+ * ==================================================================================
+ */
+function f_delCampaign() {
+	$("input[name=campaign_id]").val('');
+	$("input[name=campaign_end_dy]").val('');
+	$("input[name=lst_custgp_id]").remove();
+	
+	$("#groupbuy_campaign_id").text('');
+	$("#groupbuy_campaign_term").text('');
+	$("#groupbuy_custgp_cnt").text('');
+	$("#groupbuy_campaign_nm").text('');
+	$("#groupbuy_custgp").text('');
+	
+	$('#campaign_custgp').data('lst_custgp_id', [])
+	
+	if (typeof changeCampaignId === 'function')
+		changeCampaignId($("input[name=campaign_id]").val());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰진 컨텐츠 리스트 화면 이동
+ * ==================================================================================
+ */
+function f_couponZineList() {
+	var url = "/application/coupon/zine/couponZineLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ *  쿠폰진 : 적용 종료일 변경
+ * ==================================================================================
+ */
+function f_openClosingDateRD() {
+	var cpzine_id = $('#frmKeepData').find('input[name=cpzine_id]').val();
+	$.ajax({
+		url: "/application/coupon/zine/couponZineClosingDateRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data: {"cpzine_id" : cpzine_id, "limit_apply_start_dd":$("#apply_start_dd").text(), "limit_apply_end_dd":$("#apply_end_dd").text()},
+		success: function(data) {
+			var $target = $('#closing_date_rd');
+			$target.html(data);
+		}	
+	});
+	$('#closing_date_rd').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰진 : 승인 요청
+ * ==================================================================================
+ */
+function f_approve_ask() {
+	if(confirm("승인요청 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/couponzine/approval/ask",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(resultData) {
+				alert(resultData["message"]);
+				var url = '/application/coupon/zine/couponZineRN.do';
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData.responseJSON;
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 쿠폰진 상세 화면 : 승인 처리
+ * ==================================================================================
+ */
+function f_approve() {
+	if(confirm("승인 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/couponzine/approve",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(resultData) {
+				alert(resultData["message"]);
+				var url = '/application/coupon/zine/couponZineRN.do';
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData.responseJSON;
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 반려
+ * ----------------------------------------------------------------------------------
+ * 등록한 경매 승인 요청에 대한 반려
+ * ==================================================================================
+ */
+function f_reject() {
+	if(confirm("반려 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/couponzine/reject",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(resultData) {
+				alert(resultData["message"]);
+				var url = '/application/coupon/zine/couponZineRN.do';
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData.responseJSON;
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰북 수정 화면 이동
+ * ==================================================================================
+ */
+function f_couponZineEdit() {
+	var url = "/application/coupon/zine/couponZineEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰진 삭제
+ * ==================================================================================
+ */
+function f_couponZineDel() {
+	if($('#aprv_sts_cd').val() != 'APPROVE') {
+		alert("승인상태의 쿠폰진은 삭제가 불가능합니다.");
+		return;
+	}
+	var select_ids = [$("#frmKeepData").find("input[name=cpzine_id]").val()];
+	var data = {
+		empno: $("#frmKeepData").find("input[name=empno]").val(), 
+		emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+		cpzine_id_list : select_ids
+	};
+	if(confirm("삭제하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/couponzine/delete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(resultData) {
+				alert(resultData["message"]);
+				f_couponZineList();
+			},
+			error: function(resultData) {
+		    	var serverObj = resultData["responseJSON"] || {};
+		    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+		    	return;
+		    }
+		});
+	}
+}

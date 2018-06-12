@@ -1,0 +1,150 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+조회 기준 시간 (오늘, 어제) (YYYY-MM-DD hh:mm) 
+ * ==================================================================================
+ */
+function f_getTargetDate() {
+	var to = new Date();
+	
+	var todayDate = to.getFullYear() + "-" + ("0" + (to.getMonth()+1)).slice(-2) + "-" + ("0" + to.getDate()).slice(-2);
+	var currentTime = ("0" + to.getHours()).slice(-2) + ":" + ("0" + to.getMinutes()).substr(-2,1) + "0";
+	
+	to.setDate(to.getDate()-1); //하루 전
+	var yesterdayDate = to.getFullYear() + "-" + ("0" + (to.getMonth()+1)).slice(-2) + "-" + ("0" + to.getDate()).slice(-2);
+	
+	result = { 
+			start_date : yesterdayDate + " " + currentTime 
+			, end_date : todayDate + " " + currentTime 
+		};
+	
+	return result;
+}
+
+/**
+ * ==================================================================================
+ * 실시간 거래내역 목록 화면 호출
+ * ==================================================================================
+ */
+function f_realLN() {
+	var url = '/application/payment/real/paymentRealPN.do';
+	var method = 'POST';
+	cf_action(url, method, "");
+}
+
+/**
+ * ==================================================================================
+ * 실시간 거래내역 grid 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// checkbox 데이터 추출
+	var checkVals = [];
+	$('[name=pmt_req_type_cd]:checked').each(function() {
+		checkVals.push($(this).val());
+	});
+	if( checkVals.length > 0) {
+		searchData['pmt_req_type_cd'] = checkVals;
+	} else {
+		searchData['pmt_req_type_cd'] = "";
+	}
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+/*	if(!$("#frmSearch").searchValid() && checkVals.length < 0) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}*/
+	if($("#frmSearch").searchValid() != true && checkVals.length < 0 ){
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	// 초기화 버튼 추가
+	//f_appcacheAddButton();
+	
+	
+	// 검색 사용 중으로 변경
+	$("#tran_jqgrid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#tran_jqgrid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#tran_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 실시간 거래 정보 셋팅(상세 화면에서 사용)
+ * ==================================================================================
+ */
+function f_realInfoRN() {
+	$.ajax({
+	    url: api_url + '/bo/transaction/npmt_bo_04002',
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    headers: {'AJAX':true},
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+		beforeSend : function() {
+			
+		},
+		success: function(obj) {
+			
+			$('.form-horizontal').find('.read-cont').html('&nbsp;');	
+			
+			// 기본정보
+			$('#npmt_order_id').append(obj.data.npmt_order_id);
+	    	$('#client_id').append(obj.data.client_id);
+	    	$('#card_mcht_no').append(obj.data.card_mcht_no);
+	    	$('#pmt_amt').append(obj.data.pmt_amt);
+	    	$('#pmt_req_type_cd_nm').append(obj.data.pmt_req_type_cd_nm);
+	    	$('#insti_nm').append(obj.data.insti_nm);
+	    	$('#insti_id').append(obj.data.insti_id);
+	    	$('#pmt_mthd_id_nm').append(obj.data.pmt_mthd_id_nm);
+	    	$('#npmt_trs_id').append(obj.data.npmt_trs_id);
+	    	$('#appr_no').append(obj.data.appr_no);
+	    	$('#reg_date').append(obj.data.reg_date);
+	    	$('#appr_date').append(obj.data.appr_date);
+	    	if(obj.data.cnl_yn == 'N'){
+	    		$("#cnl_yn").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancle();\" class=\"btn btn-default\">거래취소</a>");
+	    	}else{
+	    		$("#cnl_yn").parent().append("");
+	    	}
+		},
+		error: function(obj) {
+			cf_errMsg(obj);
+	    	return;
+	    },
+	    complete: function() {
+	    	
+	    }
+	});
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,536 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 회원정보 및 M스탬프 선택 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearchRN" class="form-horizontal">
+							
+							<fieldset>
+								<div class="form-group">
+									<!-- <label class="col-md-1 control-label cs-css-05">APP CARD NO. : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="membs_card_no"></span>
+									</div> -->
+									
+									<label class="col-md-1 control-label cs-css-05">멤버스고객번호 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="user_rep_id"></span>
+									</div>
+									
+									<!-- <label class="col-md-1 control-label cs-css-05">아이디 : </label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="login_id"></span>
+									</div> -->
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">스탬프유형</label>
+									<div class="col-md-5">
+										<div class="form-group" style="margin-bottom: 0;">
+											<div class="col-md-4">
+												<select class="form-control" name="stamp_divn_cd">
+													<option value="">전체</option>
+												</select>
+											</div>
+										</div>
+										
+									</div>
+									
+									<label class="col-md-1 control-label">진행 여부</label>
+									<div class="col-md-5">
+										<div class="form-group" style="margin-bottom: 0;">
+											<div class="col-md-4">
+												<select class="form-control" name="use_yn">
+													<option value="">전체</option>
+													<option value="Y">Y</option>
+													<option value="N">N</option>
+												</select>
+											</div>
+										</div>
+									</div>
+									
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">행사제목</label>
+									<div class="col-md-5">
+										<input class="form-control" type="text" placeholder="" name="evt_title">
+									</div>
+									
+									<label class="col-md-1 control-label">스탬프 발급일</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="s_issue_start_date2" name="s_issue_start_date" type="text" placeholder="시작일" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' value="<%=request.getParameter("s_issue_start_date")%>">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="e_issue_start_date2" name="e_issue_start_date" type="text" placeholder="종료일" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' value="<%=request.getParameter("e_issue_start_date")%>">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="rn_btn_search" onclick="f_searchRN();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 회원별 M스탬프 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_detail_grid" class="widget-body no-padding">
+						<table id="detail_grid"></table>
+						<div id="detail_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<div id="stampfund_info_sd" style="display:none;"></div>
+<div id="stamp_forece_seal_wd" style="display:none;"></div>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 상세 리스트 화면 : 달력 포멧 사용 정의
+ * ==================================================================================
+ */
+$('#s_issue_start_date2').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#e_issue_start_date2").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#e_issue_start_date2').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#s_issue_start_date2").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/**
+ * ==================================================================================
+ * 상세 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_searchRN() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if($("#frmSearchRN").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#s_issue_start_date2').getObjLength() > 0 ) {
+		if( $('#e_issue_start_date2').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_issue_start_date2').getObjLength() > 0 ) {
+		if( $('#s_issue_start_date2').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	f_addButtonRN();
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearchRN").serializeFormObject();	
+	$("#detail_grid").jqGrid('setGridParam', {search: true});
+	$("#detail_grid").jqGrid('setGridParam', {page: 1});
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#detail_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');	
+}
+
+/**
+ * ==================================================================================
+ * 상세 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButtonRN() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#rn_btn_cancel").remove();
+	$("#rn_btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"rn_btn_cancel\" onclick=\"f_cancelRN();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancelRN() {
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#s_issue_start_date2, #e_issue_start_date2" ).datepicker( "option", {minDate: null, maxDate: null});
+	// KeepData 폼 안에 input 태그 삭제
+	// $("#frmKeepDataRN").empty();
+	// 검색 초기화 버튼 삭제
+	$("#rn_btn_cancel").remove();
+	$("#detail_grid").jqGrid('setGridParam', {search: false});
+	$("#detail_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#detail_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$("#frmSearchRN").cleanObject();
+}
+
+/**
+ * ==================================================================================
+ * 스탬프 적립정보 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#stampfund_info_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 스탬프 참여 정보 </h6></div>",
+	buttons : [
+	{
+		html : "강제날인",
+		"class" : "btn btn-primary",
+		click : function() {
+			f_openStampForceSealWD();
+		}
+	},
+	{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#stampfund_info_sd').html('');
+			$(this).dialog("close");
+		}
+	
+	}]
+});
+	
+/* ============================================================================================
+/* 팝업 레이아웃 호출
+/* --------------------------------------------------------------------------------------------
+/* 스탬프 적립정보 팝업 레이아웃 호출 함.
+ * 		- fieldName		: 클릭한 컬럼 이름
+ * 		- stampCardId	: 클릭한 row object에 들어있는 스탬프카드ID
+ * 		- stampId	: 클릭한 row object에 들어있는 스탬프ID
+/* ============================================================================================ */
+function f_openStampFundRD(fieldName, stampCardId, stampId) {
+	$.ajax({
+		url: "/application/stamp/member/stampFundRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data: {field_name : fieldName, stamp_card_id : stampCardId, stamp_id : stampId},
+		success: function(data) {
+			var $target = $('#stampfund_info_sd');
+			$target.html(data);
+		}	
+	});
+	$('#stampfund_info_sd').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 스탬프 강제 날인 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#stamp_forece_seal_wd').dialog({
+	autoOpen : false,
+	width : 520,
+	minHeight: 500,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 스탬프 강제 날인 </h6></div>",
+	buttons : [
+	{
+		html : "등록",
+		"class" : "btn btn-primary",
+		click : function() {
+			f_stampForceSeal();
+		}
+	},
+	{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#stamp_forece_seal_wd').html('');
+			$(this).dialog("close");
+		}
+	
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 등록 화면 :  스탬프 강제 날인 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openStampForceSealWD() {
+	$.ajax({
+		url: "/application/stamp/member/stampForceSealWD.do",
+		type: 'POST',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#stamp_forece_seal_wd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#stamp_forece_seal_wd').dialog('open');
+		}
+	});
+}
+
+/* ============================================================================================
+/* 대상회원 상세정보 조회
+/* --------------------------------------------------------------------------------------------
+/* 선택한 회원의 정보를 조회해서 화면에 표시함(APP CARD NO.|멤버스고객번호|이메일)
+/* ============================================================================================ */
+function showMemberIdInfo() {
+	var action_data = {
+		empno: "${sessionScope.sessionEmpno}",
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+		user_rep_id_star: $("#frmKeepData").find("input[name=user_rep_id_star]").val(),
+		user_rep_id: $("#frmKeepData").find("input[name=user_rep_id]").val(),
+	};
+	
+	$.ajax({
+		url: api_url+"/backoffice/stamp/member/show",
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(action_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$("#membs_card_no").html(obj.data.membs_card_no);
+	    	$("#user_rep_id").html(obj.data.user_rep_id_star);
+	    	$("#login_id").html(obj.data.login_id);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 회원 아이디 정보 표시
+	showMemberIdInfo();
+	
+	// 발급일 초기값 설정
+	/* $('#s_issue_start_date2').val(cf_termDate(-30));
+	   $('#e_issue_start_date2').val(cf_toDate()); */
+	
+	// 스탬프 유형 호출
+	f_ajaxStampTypeCode($("select[name=stamp_divn_cd]"));
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#detail_grid").parent().width() - 100;
+		
+		var s_date = $("#frmKeepData").find('input[name="search_info[s_issue_start_date]"]').val();
+		var e_date = $("#frmKeepData").find('input[name="search_info[e_issue_start_date]"]').val();
+		
+		$("#frmSearchRN").find("input[name=s_issue_start_date]").val(cf_cvtDateFormat(s_date,'yyyy-MM-dd'));
+		$("#frmSearchRN").find("input[name=e_issue_start_date]").val(cf_cvtDateFormat(e_date,'yyyy-MM-dd'));
+		
+		jQuery("#detail_grid").jqGrid({
+			url : api_url+"/backoffice/stamp/member/stamp/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '스탬프유형', '행사 번호', '행사 제목', '미션수행', '보상', '스탬프발급일', '스탬프유효기간', '참여종료일', 'stamp_card_id'],
+			colModel : [
+				{ name : 'rnum', 			index : 'rnum', 				align : "center",	sortable : false, 	width : (pageWidth*(5/100))		},
+				{ name : 'stamp_divn_cd_name',	index : 'stamp_divn_cd_name',	align : "center",	sortable : false, 	width : (pageWidth*(10/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						// 개인은 그룹장이라고 표시되면 안됨. 그룹장 -> 대장  변경됨. 2015-04-25
+						var rtnstr = "";
+						if(rowObject.stamp_divn_cd == 'GROUP' && rowObject.grp_gen_rep_id == $("#frmKeepData").find("input[name=user_rep_id]").val()) {
+							rtnstr = cellvalue + "&nbsp;<span class='label label-success' style='font-size: 90%'>대장</span>";
+						} else {
+							rtnstr = cellvalue;
+						}
+	                	return rtnstr;
+	            	}
+				},
+				{ name : 'stamp_id', 		index : 'stamp_id',		align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'evt_title', 		index : 'evt_title', 		align : "center", 	sortable : false, 	width : (pageWidth*(30/100)) 	},
+				{ name : 'stamp_seal_tot_cnt',	index : 'stamp_seal_tot_cnt',	align : "center", 	sortable : false, 	width : (pageWidth*(5/100)),	classes:'pointer',
+					formatter: function(cellvalue, options, rowObject) {
+						return "<strong>" + cellvalue + "</strong>" + "/" + rowObject.stamp_recp_tot_cnt;
+					}
+				},
+				{ name : 'stamp_reward_cnt', 	index : 'stamp_reward_cnt',	align : "center", 	sortable : false, 	width : (pageWidth*(5/100)), 	classes:'pointer',
+					formatter: function(cellvalue, options, rowObject) {
+						return "<strong>" + cellvalue + "</strong>";
+					}
+				},
+				{ name : 'issue_date',		index : 'issue_date',		align : "center", 	sortable : true, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'period', 			index : 'period',	 		align : "center", 	sortable : false, 	width : (pageWidth*(15/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						return cf_cvtDateFormat(rowObject.evt_term_start_dd, 'yyyy-MM-dd') + " ~ " + cf_cvtDateFormat(rowObject.evt_term_end_dd, 'yyyy-MM-dd');
+					}
+				},
+				{ name : 'stamp_prgs_cd_name',	index : 'stamp_prgs_cd_name',	align : "center", 	sortable : false, 	width : (pageWidth*(10/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						var rtnstr = "";
+						if(rowObject.stamp_prgs_cd == 'DELETE' && rowObject.stamp_divn_cd == 'GROUP') {
+							// rtnstr = rowObject.end_date + "&nbsp;("+ cellvalue +")";
+							rtnstr = rowObject.end_date + "&nbsp;(탈퇴)";
+						} else if(rowObject.stamp_prgs_cd == 'PROGRES'/*  || rowObject.stamp_prgs_cd == 'ACHIEVE' */) {
+							rtnstr = "참여중";
+						} else {
+							rtnstr = rowObject.end_date;
+						}
+	                	return rtnstr;
+					}
+				},
+				{ name : 'stamp_card_id',	index : 'stamp_card_id',	hidden:true,	editrules: {edithidden:true} },
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "stamp_card_id",
+				root : 		function(obj){ return obj.data.to_member_stamp_list; },				// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },  
+			serializeGridData: function(postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				ptc_user_rep_id: $("#frmKeepData").find("input[name=user_rep_id]").val(),
+				search_info  : {
+					s_issue_start_date : cf_cvtDateFormat($("#frmSearchRN").find("input[name=s_issue_start_date]").val(),'yyyyMMdd'), 
+					e_issue_start_date : cf_cvtDateFormat($("#frmSearchRN").find("input[name=e_issue_start_date]").val(),'yyyyMMdd')	
+				}
+			},
+			search : true,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#detail_grid_page',
+			sortname : 'issue_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : false,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){ },
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+				if(index == 4 || index == 5) {
+					var rowObj = $("#detail_grid").jqGrid('getRowData', rowid);
+					var cm = $("#detail_grid").jqGrid('getGridParam','colModel');
+
+					f_openStampFundRD(cm[index].name, rowObj.stamp_card_id, rowObj.stamp_id);
+				}
+			}
+		});
+		jQuery("#detail_grid").jqGrid('navGrid', "#detail_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position:'right'
+		});
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		jQuery("#detail_grid").jqGrid('navButtonAdd','#detail_grid_page',{
+			caption: "목록",
+			id: "add_button",
+			buttonicon: "ui-icon-plus",
+			onClickButton: function(){
+				f_stampMemberList();
+			}
+		});	
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+	  	
+	  	$("#detail_grid").gridCss();
+	  	$("#detail_grid_cb").css("border-left-width","0");
+	  	$("#detail_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_detail_grid_cb").css("padding","7px 0");
+	  	$("#detail_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#detail_grid").jqGrid( 'setGridWidth', $("#target_detail_grid").width() );
+		});
+	} 
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

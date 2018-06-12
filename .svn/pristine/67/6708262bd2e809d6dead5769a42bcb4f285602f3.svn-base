@@ -1,0 +1,347 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2> 신규가입 쿠폰북 발행관리 수정 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmJoinCpb" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="new_join_cpbook_id" value="">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" name="cpbook_title" placeholder="제목을 입력해 주세요." type="text" data-valid-use="true" data-valid-max="108" data-valid-symbol="true" data-valid-title="제목">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">설명</label>
+									<div class="col-md-10">
+										<input class="form-control" name="cpbook_desc" placeholder="설명을 입력해 주세요." type="text" data-valid-max="108" data-valid-symbol="true" data-valid-title="쿠폰설명">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">적용기간 <sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="apply_start_dd" name="apply_start_dd" type="text" data-valid-use="true" data-date-format="yyyyMMdd" data-valid-title="쿠폰북 유효기간 시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="apply_end_dd" name="apply_end_dd" type="text" data-valid-use="true" data-date-format="yyyyMMdd" data-valid-title="쿠폰북 유효기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰북 유효기간 <sup>*</sup></label>
+									<div class="col-md-1">
+										<div class="input-group">
+											<input class="form-control" name="cpbook_vali_term_dd_cnt" type="text" data-valid-use="true" data-valid-num="true" data-valid-minnum='1' data-valid-max="4" data-valid-title="쿠폰북 유효기간">
+											<span class="input-group-addon">일</span>
+										</div>
+									</div>
+									<div class="col-md-9">
+										<span class="form-control cs-css-03">
+											<i class="fa fa-info-circle"></i> 신규가입하여 쿠폰북을 발급 받은 날로부터 사용 가능한 기간을 입력해주세요.
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">쿠폰북 <sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<div class="col-md-10">
+												<i class="fa fa-info-circle"></i> 신규가입 쿠폰북은 총 3개까지 선택 가능합니다.<br>
+<!-- 												<i class="fa fa-info-circle"></i> 신규가입 쿠폰북의 유효기간은 회원이 M쿠폰앱에 신규 가입해서 쿠폰북을 발급받은 일자부터 30일까지 사용 가능합니다. -->
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:f_openCouponBookSD();" class="btn btn-primary btn-sm">쿠폰북 선택</a>
+												<a href="javascript:cf_delTableRow('join_cpb_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<colgroup>
+										            <col width="5%" />
+										            <col width="20%" />
+										            <col />
+										            <col width="20%" />
+										            <col width="20%" />
+										        </colgroup>
+												<thead>
+													<tr>
+														<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">쿠폰번호</th>
+														<th class="ta-c">쿠폰명</th>
+														<th class="ta-c">쿠폰유형</th>
+														<th class="ta-c">쿠폰북수</th>
+													</tr>
+												</thead>
+												<tbody id="join_cpb_tbody" data-valid-title="쿠폰북">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_joinList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="join_couponbook_sd" style="display: none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<!-- end widget grid -->
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#apply_start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#apply_end_dd').datepicker('option','minDate', selected);
+            $('#apply_end_dd').datepicker('option','maxDate', cf_termDate(90, selected));
+        }
+    }, date_opts)
+);
+$('#apply_end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#apply_start_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+
+/**
+ * ==================================================================================
+ * 등록 / 수정 : 쿠폰북 선택 다이얼로그
+ * ==================================================================================
+ */
+$('#join_couponbook_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			var from_tr_cnt = cf_getTrElementCount($("#join_cpb_tbody"));
+			var to_tr_cnt = cf_getTrElementCount($("#to_tbody"));
+			
+			if( (from_tr_cnt + to_tr_cnt) > 3) {
+				alert("3건까지만 등록 가능 합니다.");
+				return;
+			}
+						
+			$("#to_tbody").find("tr").each(function(){
+				
+				var tag_td = "";
+				var key = "";
+				
+				// 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+				
+				$(this).find("td").each(function(i){
+					if(i == 1) {
+						return true;
+					}
+					
+					// 각 셀 데이터 생성
+					if(i < 6) {
+						if(i == 2) {
+							key = $(this).text();
+							tag_td += "<input type='hidden' name='cpbook_id_list' data-array-always='true' value='"+key+"'>";
+						}
+						tag_td += "<td class='ta-c'>"+$(this).html()+"</td>\n";	
+					}	
+				});
+				
+				var tag_tr = "<tr>"+tag_td+"</tr>";
+				
+				// 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+				var chk = 0;
+				$("#join_cpb_tbody").find("tr > td").each(function(){
+					if($(this).text() == key) {
+						chk++;
+					}
+				});
+				
+				// 같은 데이터가 없을 경우에만 등록 시킨다.
+				if(chk == 0) {
+					$("#join_cpb_tbody").append(tag_tr);	
+				}
+				
+			});
+			pageSetUp();
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit(){
+	
+	if( $('#frmJoinCpb').formValid() && $('#join_cpb_tbody').tableRowValid() ) {
+		
+		// 설명 값이 있을경우 체크
+		if( $('input[name=cpbook_desc]').getObjLength() > 0 ) {
+			if( $('input[name=cpbook_desc]').specialSymbol() != true) {
+				return;
+			}
+			if( $('input[name=cpbook_desc]').xss() != true ) {
+				return;
+			}
+		}
+		
+		$.ajax({
+		    url: api_url+"/backoffice/couponbook/entrant/update",
+		    type: "POST",
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: "application/json;charset=utf-8",
+		    data: JSON.stringify($("#frmJoinCpb").serializeFormObject()),
+		    beforeSend : function() {},
+		    success: function(obj){
+		    	alert(obj.message);
+		    	
+		    	var url = "/application/coupon/join/joinRN.do";
+		    	var method = "POST";
+		    	cf_action(url, method, $("#frmKeepData").serialize());
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    },
+		    complete: function(obj) {}
+		});
+		
+	}else{
+		return;
+	}
+}
+	
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	$.ajax({
+	    url: api_url+"/backoffice/couponbook/entrant/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$("input[name=new_join_cpbook_id]").val(obj.data.new_join_cpbook_id);
+	    	
+	    	$("input[name=cpbook_title]").val(obj.data.cpbook_title);
+	    	$("input[name=cpbook_desc]").val(obj.data.cpbook_desc);
+	    	
+	    	$("input[name=apply_start_dd]").val(cf_cvtDateFormat(obj.data.apply_start_dd,'yyyy-MM-dd'));
+	    	$("input[name=apply_end_dd]").val(cf_cvtDateFormat(obj.data.apply_end_dd,'yyyy-MM-dd'));
+	    	
+	    	$("input[name=cpbook_vali_term_dd_cnt]").val(obj.data.cpbook_vali_term_dd_cnt);
+	    				
+	    	if(obj.data.cpbook_info) {
+	    		$.each(obj.data.cpbook_info, function(i, item) {
+		    		var tag_td = "";
+		    		tag_td += "<td class='ta-c'><input type='checkbox' value='"+ item.cpbook_id + "' />";
+		    		tag_td += "<input type='hidden' data-array-always='true' name='cpbook_id_list' value='"+ item.cpbook_id + "' /></td>";
+		    		tag_td += "<td class='ta-c'>" + item.cpbook_id + "</td>";
+		    		tag_td += "<td class='ta-c'>" + item.cpbook_nm + "</td>";
+		    		tag_td += "<td class='ta-c'>" + item.cpbook_type_cd_name + "</td>";
+		    		tag_td += "<td class='ta-c'>" + item.coupon_cnt + "</td>";
+		    		$("#join_cpb_tbody").append("<tr>" + tag_td + "</tr>");
+		    	});
+	    	}
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+		}
+	});
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>

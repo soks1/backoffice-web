@@ -1,0 +1,291 @@
+function f_instiSearch() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if(!$("#frmSearch").searchValid()) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+
+	// 초기화 버튼 추가
+	//f_appcacheAddButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#insti_jqgrid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#insti_jqgrid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#insti_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ * 기관 구분 호출
+ * ==================================================================================
+ */
+function f_fninstiCd() {
+	var target = $('#insti_type_cd');
+	var data = {
+			
+			cd_divn_id: "INSTI_TYPE_CD",
+	};
+	
+	$.ajax({
+		url: api_url + "/bo/common/code/npmt_bo_09000",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+/**
+ * ==================================================================================
+ * 금융사 구분 호출
+ * ==================================================================================
+ */
+function f_fnCoCd() {
+	var target = $('#fn_co_cd');
+	var data = {
+			
+			cd_divn_id: "FN_CO_CD",
+	};
+	
+	$.ajax({
+		url: api_url + "/bo/common/code/npmt_bo_09000",
+		type: "GET",
+		async: false,
+		data: encodeURI('params='+JSON.stringify(data)),
+		success: function(obj) {
+			var options = "";
+			$.each(obj.data.cd_list, function(i, item) {
+				options += "<option value='"+item.mst_cd+"'>"+item.mst_cd_nm+"</option>";
+			});
+			target.append(options);
+		},
+		error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/**
+ * ==================================================================================
+ * 기관 조회 목록으로 이동
+ * ==================================================================================
+ */
+function f_cancelInstiRgst(mbrId, mbrNm) {
+	if(confirm("취소하시면 입력한 내용이 삭제됩니다.\n취소하시겠습니까?")) {
+		f_instiLN();
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 기관관리 목록 화면 호출
+ * ==================================================================================
+ */
+function f_instiLN() {
+	var url = '/application/merchant/institution/institutionPN.do';
+	var method = 'POST';
+	cf_action(url, method, "");
+}
+
+
+/**
+ * ==================================================================================
+ * 기관관리 수정 화면 호출
+ * ==================================================================================
+ */
+function f_institutionUpdate() {
+	var url = '/application/merchant/institution/institutionEN.do';
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 수정 취소
+ * ==================================================================================
+ */
+function f_cancelInstiUpd() {
+	if(confirm("취소하시면 입력한 내용이 삭제됩니다.\n취소하시겠습니까?")) {
+		f_instiLN();
+	}
+}
+
+/**
+ * ==================================================================================
+ * 기관 정보 셋팅(상세 화면에서 사용)
+ * ==================================================================================
+ */
+function f_instiInfoRN() {
+	$.ajax({
+	    url: api_url + '/bo/institution/npmt_bo_03002',
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    headers: {'AJAX':true},
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+		beforeSend : function() {
+			
+		},
+		success: function(obj) {
+			
+			$('.form-horizontal').find('.read-cont').html('&nbsp;');	
+			
+			// 기본정보
+			$('#insti_id').append(obj.data.insti_id);
+	    	$('#rep_nm').append(obj.data.rep_nm);
+	    	$('#insti_type_cd').append(obj.data.insti_type_cd_nm);
+	    	$('#fn_co_cd').append(obj.data.fn_co_cd_nm);
+	    	$('#cprt_reg_num').append(obj.data.cprt_reg_num);
+	    	$('#insti_nm').append(obj.data.insti_nm);
+	    	$('#use_yn').append(obj.data.use_yn);
+	    	$('#rep_tel').append(obj.data.rep_tel);
+	    	$('#rep_email').append(obj.data.rep_email);
+	    	$('#zip_code').append(obj.data.zip_code);
+	    	$('#address').append(obj.data.address);
+	    	$('#address_detail').append(obj.data.address_detail);
+	    	$('#home_url').append(obj.data.home_url);
+	    	$('#service_staff_nm').append(obj.data.service_staff_nm);
+	    	$('#service_staff_tel').append(obj.data.service_staff_tel);
+	    	$('#mcht_nm').append(obj.data.mcht_nm);
+		},
+		error: function(obj) {
+			cf_errMsg(obj);
+	    	return;
+	    },
+	    complete: function() {
+	    	
+	    }
+	});
+}
+
+/**
+ * ==================================================================================
+ * 기관 수정
+ * ==================================================================================
+ */
+function f_instiUpd() {
+	
+	if( $('#frmInstiEN').formValid() ) {
+		
+		if(confirm("수정하시겠습니까?")) {
+		
+		}
+		
+		var data = $('#frmInstiEN').serializeFormObject();
+		
+		// 실제 데이터 전송
+		$.ajax({
+			url: api_url + '/bo/institution/npmt_bo_03003',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    headers: {'AJAX':true},
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    beforeSend : function() {
+		    },
+		    success: function(obj){
+		    	alert("정상 처리 되었습니다.");
+		    	f_instiLN();
+		    },
+		    error: function(obj) {
+		    	cf_errMsg(obj);
+		    	return;
+		    }
+		});
+	}else{
+		return;
+	}
+}
+
+/**
+ * ==================================================================================
+ * 기관 저장
+ * ==================================================================================
+ */
+function f_instiRgst() {
+	
+	if( $('#frmInstiWN').formValid() ) {
+		
+		if(confirm("신규등록하시겠습니까?")) {
+		
+		}
+		
+		var data = $('#frmInstiWN').serializeFormObject();
+		
+		// 실제 데이터 전송
+		$.ajax({
+			url: api_url + '/bo/institution/npmt_bo_03000',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    headers: {'AJAX':true},
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    beforeSend : function() {
+		    },
+		    success: function(obj){
+		    	alert("정상 처리 되었습니다.");
+		    	f_instiLN();
+		    },
+		    error: function(obj) {
+		    	cf_errMsg(obj);
+		    	return;
+		    }
+		});
+	}else{
+		return;
+	}
+}
+
+
+
+
+
+
+
+

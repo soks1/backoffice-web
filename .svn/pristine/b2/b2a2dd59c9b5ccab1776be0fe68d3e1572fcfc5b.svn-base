@@ -1,0 +1,127 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>반려사유</h2>
+				</header>
+				<div class="jarviswidget-editbox"></div>
+				<div class="widget-body">
+					<form class="form-horizontal" method="post" id="frmLifekok" name="frmLifekok">
+						<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+						<fieldset>
+							<div class="form-group">
+								<div class="col-md-12">
+									<textarea rows="6" cols="75" class="form-control" name="retn_reason" data-valid-use="true" data-valid-symbol="false" data-valid-max="500" data-valid-title="반려사유" placeholder="반려 사유를 입력해주세요"></textarea>
+								</div>
+							</div>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenant_Push_Return_Cancel();" class="btn btn-default">취소</a>
+										<a href="javascript:f_tenant_Push_Return_Submit();" class="btn btn-primary">반려</a>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+var dialog_pagefunction = function(){
+	
+};
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_tenant_Push_Return_Submit() {
+	if($('#frmLifekok').formValid() ){
+		var data = $('#frmLifekok').serializeFormObject();
+		
+		if($("textarea[name=retn_reason]").val().length > 500){
+			alert('반려사유는 500byte를 초과할 수 없습니다.');
+			return;
+		}
+		data['retn_reason'] = $("textarea[name=retn_reason]").val();
+		
+		$('#tenantPush_return_sd').dialog("close");
+		
+		if(confirm("적용 시 app에 즉시 반영됩니다. 반려하시겠습니까?")){
+			
+			$.ajax({
+			    url: api_lifekok_url+'/backoffice/lifekok/push/reject',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+					$('#input_return_reason').dialog("close");
+					var url = "/application/cooperateService/tenantPush/tenantPushRN.do";
+			    	var method = "GET";
+			    	var postData ={
+			    			event_mst_id : data.event_mst_id,
+			    			empno	  	 : '${sessionScope.sessionEmpno}',
+			    			serial_no	 : data.serial_no,
+							aprv_sts_cd  : 'REJECT'
+			    	}; 
+			    	cf_action(url, method, postData);
+					
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});	
+		}
+	} else {
+		return;
+	}
+}
+
+function f_tenant_Push_Return_Cancel(){
+	$('#tenantPush_return_sd').dialog("close");
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+</script>

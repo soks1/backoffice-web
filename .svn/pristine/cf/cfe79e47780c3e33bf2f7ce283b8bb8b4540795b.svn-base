@@ -1,0 +1,412 @@
+<%-- <%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>배너 수정</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmBanner" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="noticbd_divn_cd" value="">
+							<input type="hidden" name="noticbd_id" value="">
+							
+							<fieldset>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="title" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="제목">
+									</div>
+								</div>
+																
+								<div class="form-group">
+									<label class="col-md-2 control-label">설명</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="content" data-valid-symbol="true" data-valid-max="108" data-valid-title="설명">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">게시기간 <sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="ntce_start_dd" name="ntce_start_dd" data-valid-use="true" data-date-format='yyyyMMdd' data-valid-title="게시기간 시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="ntce_end_dd" name="ntce_end_dd" data-valid-use="true" data-date-format='yyyyMMdd' data-valid-title="게시기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">
+									</label>
+									<label class="col-md-10 control-label ta-l">
+										<i class="fa fa-info-circle"></i> APP 화면 디자인에 영향을 주지 않는 동시 노출 개수는 최대 14개까지입니다. 
+										<br />단, 노출 개수가 5개를 초과할 경우 단말기 종류에 따라 속도가 느려질 수 있습니다. 
+
+									</label>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">연결방법</label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="link_method_cd" value="APPLIST" onclick="f_applyType(this.value);" checked="checked" data-valid-use="true" data-check-only="true" data-valid-title="연결방법">
+											APP 내부 페이지 연결</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="link_method_cd" value="URL" onclick="f_applyType(this.value);" data-valid-use="true" data-check-only="true" data-valid-title="연결방법">
+											외부 페이지 연결 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="link_method_cd" value="USELESS" onclick="f_applyType(this.value);" data-valid-use="true" data-check-only="true" data-valid-title="연결방법">
+											링크 사용 안함 </label>
+									</div>
+								</div>
+								
+								<div class="form-group" id="linkUrlA">
+									<label class="col-md-2 control-label">페이지경로</label>
+									<div class="col-md-2">
+										<select class="form-control" name="noticbd_divn_cd_temp" onChange="f_noticbdType(this.value);">
+											<option value="NOTICE" selected="selected">공지사항</option>
+											<option value="BENEFIT" >특별한혜택</option>
+											<option value="DADUNG" >쿠폰북</option>
+											<option value="FCFS" >달려라선착순</option>
+											<option value="STAMP" >M스탬프</option>
+											<option value="RECEIPT" >전자영수증</option>
+											<option value="POLL" >POLL</option>
+											<option value="PEVENT" >걷기쿠폰</option>
+										</select>
+									</div>
+									<div class="col-md-8">
+										<select class="form-control" name="link_noticbd_id" id="link_noticbd_id">
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group" id="linkUrlB" style="display: none;">
+									<label class="col-md-2 control-label">페이지경로</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="ot_link_url" data-valid-max="200" data-valid-title="페이지경로">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">배너 이미지 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 사이즈: 1080px X 390px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_bannerList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#ntce_start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#ntce_end_dd').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#ntce_end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#ntce_start_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* 연결 방법에 따른 URL 
+/* --------------------------------------------------------------------------------------------
+/* radio 선택에 따른 visible 변경
+/* ============================================================================================ */
+function f_applyType(v) {
+	
+	if(v == 'APPLIST') {
+		$('#linkUrlA').show();
+		$('#linkUrlB').hide();
+	}else if (v == 'URL'){
+		$('#linkUrlB').show();
+		$('#linkUrlA').hide();
+	}else if (v == 'USELESS'){
+		$('#linkUrlB').hide();
+		$('#linkUrlA').hide();
+	}
+}
+
+/* ============================================================================================
+/* APP 내부 페이지 연결
+/* --------------------------------------------------------------------------------------------
+/* 배너 클릭시 연결될 내부게시판 호출
+/* ============================================================================================ */
+function f_noticbdType(val){
+	$.ajax({
+		url: api_url + "/backoffice/common/board/inlink/list",
+		type: "GET",
+		async: false,
+		data: encodeURI('params={"empno":"${sessionScope.sessionEmpno}", "noticbd_divn_cd":"'+val+'"}'),
+		success: function(obj) {
+			if(obj.code == "S0000") {
+				var options = "";
+				$.each(obj.data.in_link_noticbd_list, function(i, item) {
+					options += "<option value='"+item.noticbd_id+"'>"+item.title+"</option>";
+    			});
+				$("#link_noticbd_id").html(options);
+			} else {
+				alert(obj.message);
+				return;
+			}
+		}	
+	});
+}
+
+/**
+* ==================================================================================
+* 등록/수정 : 파일 업로드
+* ==================================================================================
+*/
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this),'IMG_MAINBANNER');
+});
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+
+	if($('#frmBanner').formValid() ) {
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		
+		if($("input[name=link_method_cd]:checked").val() == 'URL' && $("input[name=ot_link_url]").val() == ''){
+			alert("외부 페이지 URL을 입력해주세요.");
+			return;
+		} else {
+			if( $("input[name=ot_link_url]").val().indexOf("http://") == -1 && $("input[name=ot_link_url]").val().indexOf("https://") == -1) {
+				
+				$("input[name=ot_link_url]").val("http://" + $("input[name=ot_link_url]").val());
+			}
+		}
+		
+		if( !$("#preview_uploadfile").next().hasClass("alert")){
+			alert("배너 이미지를 등록해주세요.");
+			return;
+		}
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		
+		$('input[name=noticbd_divn_cd]').val( $("#frmKeepData").find("input[name=noticbd_divn_cd]").val() );
+		$('input[name=noticbd_id]').val( $("#frmKeepData").find("input[name=noticbd_id]").val() );
+		var data = cf_boardFileObject($('#frmBanner'));
+			
+		// 실제 데이터 전송
+		$.ajax({
+			url: api_url+"/backoffice/common/board/update",
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_bannerView();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+	
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 내부게시판
+	f_noticbdType('NOTICE');
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/board/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	$("input[name=title]").val(obj.data.title);
+	    	$("input[name=content]").val(obj.data.content);
+	    	$("input[name=ntce_start_dd]").val(obj.data.ntce_start_dd);
+	    	$("input[name=ntce_end_dd]").val(obj.data.ntce_end_dd);
+	    	
+	    	$("input[name=link_method_cd][value="+obj.data.link_method_cd+"]").attr("checked","checked");
+    		f_applyType(obj.data.link_method_cd);
+    		
+	    	if (obj.data.link_method_cd == 'APPLIST'){
+	    		f_noticbdType(obj.data.sel_noticbd_divn_cd);
+		    	$("select[name=noticbd_divn_cd_temp] option[value="+obj.data.sel_noticbd_divn_cd+"]").attr('selected','selected');
+		    	$("select[name=link_noticbd_id] option[value="+obj.data.link_noticbd_id+"]").attr('selected','selected');
+	    	} else if(obj.data.link_method_cd == 'URL'){
+		    	$("input[name=ot_link_url]").val(obj.data.ot_link_url);
+	    	} else {
+	    	}
+	    	
+	    	// -------------------------- 이미지 영역 시작 -------------------------- // 
+    		var preview = $('#preview_uploadfile');
+			preview.find('img').attr('src',obj.data.noticbd_img_list[0].prvw_url);
+			
+			var fName = '<p class="alert alert-info bd0">'+obj.data.noticbd_img_list[0].img_orgin_file_nm+'</p>';
+			preview.parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_uploadfile');
+			var aTag = $('<a>')
+						.addClass('btn btn-danger btn-sm')
+						.attr('href','javascript:cf_fileDelete(\'uploadfile\')')
+						.text('파일삭제');
+			
+			var input_file_divn_cd = $('<input>')
+				.attr('type', 'hidden')
+				.attr('name', 'file_divn_cd')
+				.val(obj.data.noticbd_img_list[0].file_divn_cd);
+			
+			var input_local_file_name = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'img_strge_file_nm')
+						.val(obj.data.noticbd_img_list[0].img_strge_file_nm);
+			
+			var input_atch_file_nm = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'img_orgin_file_nm')
+						.val(obj.data.noticbd_img_list[0].img_orgin_file_nm);
+			
+			var img_file_divn_cd = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'img_file_divn_cd')
+						.val('BANNER');
+
+			span.append(aTag);
+			span.append(input_file_divn_cd);
+			span.append(input_local_file_name);
+			span.append(input_atch_file_nm);
+			span.append(img_file_divn_cd);
+			
+			if(typeof obj.data.noticbd_img_list[0].file_divn_cd != 'undefined') {
+				var img_file_divn_cd = $('<input>')
+					.attr('type', 'hidden')
+					.attr('name', 'img_file_divn_cd')
+					.val(obj.data.noticbd_img_list[0].img_file_divn_cd);
+				span.append(img_file_divn_cd);
+			}
+			
+			var btn_div = $("#uploadfile").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			// -------------------------- 이미지 영역 끝 -------------------------- // 
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+
+</script>		
+ --%>

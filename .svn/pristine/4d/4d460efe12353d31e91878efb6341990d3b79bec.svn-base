@@ -1,0 +1,432 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록지점</label>
+									<div class="col-md-3">
+										<select class="form-control"  id="str_cd" name="str_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									
+									<label class="col-md-1 control-label">발급기간</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="s_mod_date" name="s_mod_date" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="e_mod_date" name="e_mod_date" data-dateformat='yy-mm-dd' data-valid-date='true' data-valid-use='true' data-valid-title="종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-6 text-danger ta-l">
+										<i class="fa fa-info-circle"></i> 기간은 최근 3개월까지 조회하실 수 있습니다.
+									</div>								
+									<div class="col-md-6">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+			<div class="jarviswidget" id="wid-id-3" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+					<h2>스탬프 유형별 발급 비율 </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div class="widget-body" id="div_chart_area_1">
+						<i class="fa fa-info-circle"></i> 그룹스탬프카드의 경우 참여인원이 아닌 그룹ID기준으로 계산됩니다.<p>
+						<div align="right" id="chart_canvas_txt_1"></div><hr/>
+						<canvas id="chart_canvas_1" height="120"></canvas>
+						<div id="legend_chart_canvas_1"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+			<div class="jarviswidget" id="wid-id-4" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+					<h2>스탬프 유형별 발급/완료/달성수 </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div class="widget-body" id="div_chart_area_2">
+						<i class="fa fa-info-circle"></i> 완료는 미달성을 포함 종료된 건, 달성은 완료보상 기준으로 계산됩니다.<p>
+						<div align="right" id="chart_canvas_txt_2"></div><hr/>
+						<div id="div_canvas_container_2"><canvas id="chart_canvas_2" height="120"></canvas></div>
+						<div id="legend_chart_canvas_2"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-7" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>스탬프 유형별 통계</h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_data_stats_grid" class="widget-body no-padding">
+						<table id="data_stats_grid"></table>
+					</div>
+					<div id="data_stats_grid_page" class="ta-r" style="padding:5px;">
+						<a href="javascript:excel_down();" id="btn_excel" class="btn btn-sm btn-success">엑셀 다운로드</a>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js"></script>
+<script type="text/javascript">
+pageSetUp();
+var _url = api_url+"/backoffice/statistics/stamp/type/show";
+//API list object 추출
+var _list = function(obj){
+	return obj.data.stamp_type_stat_list;
+};
+//request param settting : api call, excel call
+var _data = function(){
+	var data = {
+		empno: '${sessionScope.sessionEmpno}', 
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}', 
+		stts_xls_dwld_type : 'STAMP_TYPE',
+		stts_str_cd: $('#str_cd option:selected').val(),
+		s_stts_dd: $('#s_mod_date').cvtDateDefault(),
+		e_stts_dd: $('#e_mod_date').cvtDateDefault(),
+		_search : true,
+		sidx : 'reg_date',
+		sord : 'desc'
+	};
+	return data;
+};
+
+var pagefunction = function() {
+	
+	// 엑셀 다운로드 본사일 경우만 버튼 존재
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#btn_excel').remove();	
+	}
+
+	// 초기데이터 설정 : 달력 
+	f_setCalendar();	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCode($("#str_cd"));	
+	
+	// 서버 통신
+	f_ajaxSubmit();
+};
+
+/* ============================================================================================
+/* Server와 통신 
+/* ============================================================================================ */
+function f_ajaxSubmit() {
+	// 실제 데이터 전송
+	$.ajax({
+		url : _url,
+	    type: 'GET',
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(_data())),
+	    success: function(obj){ 
+	    	var list = _list(obj);
+	    	// 차트 텍스트 세팅
+	    	f_setChartTxt();
+	    	// chart
+	    	drawChart(list);
+	    	// grid	    	
+	    	run_jqgrid_function(list);	   
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+} 
+/* ============================================================================================
+/* Grid Data 생성
+/* ============================================================================================ */
+function run_jqgrid_function(jsonData) {
+	$('#data_stats_grid').clearGridData();  // 이전 데이터 삭제
+	var pageWidth = $("#data_stats_grid").parent().width() - 100;
+	jQuery("#data_stats_grid").jqGrid({
+		datatype : 'local',
+		data : jsonData,
+		colNames : ['스템프유형', '발급수', '완료수', '달성수', '발급 대비 완료율', '완료 대비 달성률'],
+		colModel : [
+			{ name : 'mst_cd_nm', 				index : 'mst_cd_nm',			align : "center",	sortable : false, 	width : (pageWidth*(30/100))},
+			{ name : 'totalcnt',				index : 'totalcnt', 			align : "center", 	sortable : false, 	width : (pageWidth*(35/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'total_fnsh_cnt',			index : 'total_fnsh_cnt', 		align : "center", 	sortable : false, 	width : (pageWidth*(35/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'achievecnt',				index : 'achievecnt', 			align : "center", 	sortable : false, 	width : (pageWidth*(35/100)),
+				formatter : function(cellvalue, options, rowObject) {
+					return cf_setComma(cellvalue);
+				}
+			},
+			{ name : 'total_fnsh_ratio',		index : 'total_fnsh_ratio',	align : "center", 	sortable : false, 	width : (pageWidth*(35/100)), 
+				formatter : function(cellvalue, options, rowObject) {
+					if(cellvalue.toString().indexOf('%') == -1){
+						cellvalue =  cf_setComma(cf_mathRound(cellvalue)) + ' %';
+					} 
+					return cellvalue;
+				}
+			},
+			{ name : 'total_achieve_ratio',		index : 'total_achieve_ratio', 	align : "center", 	sortable : false, 	width : (pageWidth*(35/100)), 
+				formatter : function(cellvalue, options, rowObject) {
+					if(cellvalue.toString().indexOf('%') == -1){
+						cellvalue =  cf_setComma(cf_mathRound(cellvalue)) + ' %';
+					} 
+					return cellvalue;
+				}
+			}
+		],
+		rowNum : 100,
+		autowidth : true,
+		height : 'auto',
+		viewsortcols : [true, 'vertical', true],  
+		shrinkToFit : true,
+		loadComplete : function(){ 
+			var rowData = $("#data_stats_grid").jqGrid('getRowData', 1);
+			for(var nCol=0; nCol < Object.keys(rowData).length; nCol++){
+                $('#data_stats_grid').setCell(1,nCol,'',{'font-weight':'bold'});
+			}
+		},
+		gridComplete: function(data){}
+	});
+
+  	$("#data_stats_grid").gridCss();
+  	$("#data_stats_grid_cb").css("border-left-width","0");
+  	$("#data_stats_grid_cb").css("padding-left","4px");
+  	$("#jqgh_data_stats_grid_cb").css("padding","7px 0");
+  
+    // auto resize grid
+    $(window).on('resize.jqGrid', function () {
+		jQuery("#data_stats_grid").jqGrid( 'setGridWidth', $("#target_data_stats_grid").width() );
+	});
+    
+    $("#data_stats_grid").jqGrid('setGridParam', {datatype : 'local', data:jsonData}).trigger('reloadGrid');	    
+}
+/* ============================================================================================
+/* Chart 생성
+/* ============================================================================================ */
+function drawChart(dataset){
+	var arr_color = ["rgba(79,129,189,1)", "rgba(192,80,77,1)", "rgba(155,187,89,1)"];
+	var arr_highlight = ["rgba(79,129,189,0.8)", "rgba(192,80,77,0.8)", "rgba(155,187,89,0.8)"];
+	var arr_data=[];
+
+	var _label = [];
+	var _data1 = [];
+	var _data2 = [];
+	var _data3 = [];
+
+	if(dataset.length > 0){
+		for(var nRow=1; nRow < dataset.length; nRow++){
+			var data = dataset[nRow];
+			// Chart 데이터 처리 시작 =========================
+			_label.push(data.mst_cd_nm);
+			_data1.push(data.totalcnt);							// 발급수
+			_data2.push(data.total_fnsh_cnt);					// 완료수
+			_data3.push(data.achievecnt);						// 달성수
+
+			var _data = {
+				value: data.totalcnt,
+				color: arr_color[nRow-1],
+				highlight: arr_highlight[nRow-1],
+				label: data.mst_cd_nm
+			};
+			arr_data.push(_data);
+			// Chart 데이터 처리 시작 =========================
+		}	
+	}
+	// ---------------------- 스템프 유형별 사용 비율 ---------------------- //     
+    var chart1_data = arr_data;
+    
+    var chart1_options = {
+	    	//Boolean - Whether we should show a stroke on each segment
+	        segmentShowStroke: true,
+	        //String - The colour of each segment stroke
+	        segmentStrokeColor: "#fff",
+	        //Number - The width of each segment stroke
+	        segmentStrokeWidth: 2,
+	        //Number - Amount of animation steps
+	        animationSteps: 100,
+	        //String - types of animation
+	        animationEasing: "easeOutBounce",
+	        //Boolean - Whether we animate the rotation of the Doughnut
+	        animateRotate: true,
+	        //Boolean - Whether we animate scaling the Doughnut from the centre
+	        animateScale: false,
+	        //Boolean - Re-draw chart on page resize
+	        responsive: true
+	    };
+  
+	if (window.pieChart){ 
+        window.pieChart.destroy();
+    }
+    var pie_chart = document.getElementById("chart_canvas_1").getContext("2d");
+    pieChart = new Chart(pie_chart).Pie(chart1_data, chart1_options);
+    legend($("#legend_chart_canvas_1"), chart1_data);
+	
+ 	// ---------------------- 스템프 유형별 발급수 ---------------------- //
+ 	var chart2_data = {
+        //labels: ["지정상품구매", "일정구매금액", "특정지역방문"],
+        labels: _label,
+        datasets: [
+	 		{
+	            label: "발급수",
+	            fillColor: "rgba(79,129,189,1)",
+	            strokeColor: "rgba(79,129,189,1)",
+	            highlightFill: "rgba(79,129,189,0.8)",
+	            highlightStroke: "rgba(79,129,189,0.8)",
+	            //data: [65, 59, 0]
+	 			data: _data1
+	        },
+	        {
+	            label: "완료수",
+	            fillColor: "rgba(192,80,77,1)",
+	            strokeColor: "rgba(192,80,77,1)",
+	            highlightFill: "rgba(192,80,77,0.8)",
+	            highlightStroke: "rgba(192,80,77,0.8)",
+	            //data: [28, 48, 40]
+	        	data: _data2
+	        },
+	        {
+	            label: "달성수",
+	            fillColor: "rgba(155,187,89,1)",
+	            strokeColor: "rgba(155,187,89,1)",
+	            highlightFill: "rgba(155,187,89,0.8)",
+	            highlightStroke: "rgba(155,187,89,0.8)",
+	            //data: [5, 10, 0]
+	        	data: _data3
+	        }
+        ]
+    };
+    var chart2_options = {
+    		//Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+		    scaleBeginAtZero : true,
+		    //Boolean - Whether grid lines are shown across the chart
+		    scaleShowGridLines : true,
+		    //String - Colour of the grid lines
+		    scaleGridLineColor : "rgba(0,0,0,.05)",
+		    //Number - Width of the grid lines
+		    scaleGridLineWidth : 1,
+		    //Boolean - If there is a stroke on each bar
+		    barShowStroke : true,
+		    //Number - Pixel width of the bar stroke
+		    barStrokeWidth : 1,
+		    //Number - Spacing between each of the X value sets
+		    barValueSpacing : 50,
+		    //Number - Spacing between data sets within X values
+		    barDatasetSpacing : 2,
+		    //Boolean - Re-draw chart on page resize
+	        responsive: true
+    };
+    
+	if (window.barChart2){ 
+        window.barChart2.destroy();
+    }
+    var bar_chart2 = document.getElementById("chart_canvas_2").getContext("2d");
+    barChart2 = new Chart(bar_chart2).Bar(chart2_data, chart2_options);
+    legend($("#legend_chart_canvas_2"), chart2_data);
+    
+	// ---------------------- 이벤트별 발행 쿠폰 데이터 그리드 ---------------------- //    
+}
+/* ============================================================================================
+/* Chart 좌상단 Text Setting
+/* ============================================================================================ */
+function f_setChartTxt(){
+	// 발행일 기준 text setting
+	var vdate = $('#s_mod_date').val() + " ~ " + $('#e_mod_date').val();
+	$('#chart_canvas_txt_1').html(vdate);
+	$('#chart_canvas_txt_2').html(vdate);	
+}
+/** ============================================================================================
+/* Validation 처리
+/* --------------------------------------------------------------------------------------------
+/* 일간 조회시 30일을 초과 할수 없음
+/* ============================================================================================ */
+function checkValidation(){
+	var sdate = new Date($('#s_mod_date').val());
+	var edate = new Date($('#e_mod_date').val());
+	
+	if(edate - sdate < 0){
+		alert("종료일이 시작을보다 앞일 수 없습니다.");
+		return false;
+	}
+	
+	if(f_intervalDate(sdate, edate) > 90){
+		alert("조회기간이 90일을 초과할수 없습니다.");
+		return false;
+	}	
+	return true;
+}
+/* ============================================================================================
+/* 달력 초기 데이터 설정
+/* ============================================================================================ */
+function f_setCalendar(){
+	// 달력 minDate, maxDate 값을 초기화 / default date setting
+	f_resetCalendar();
+
+	// 최대 조회기간 90일(3개월)
+	$('#s_mod_date').datepicker("option", "minDate", cf_termDate(-90));	
+	$('#s_mod_date').datepicker("option", "maxDate", $("#e_mod_date").val());
+	$('#e_mod_date').datepicker("option", "minDate", $("#s_mod_date").val());
+	$('#e_mod_date').datepicker("option", "maxDate", cf_termDate(-1));
+}
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", function(){
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/chartjs/chart.min.js", pagefunction);
+});
+
+</script>

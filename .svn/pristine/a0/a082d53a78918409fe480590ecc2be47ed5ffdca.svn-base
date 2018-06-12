@@ -1,0 +1,251 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>오늘의 혜택 수정</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmSpecial" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="noticbd_divn_cd" value="">
+							<input type="hidden" name="noticbd_id" value="">
+							
+							<fieldset>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="title" data-valid-use="true" data-valid-symbol="true" data-valid-max="78" data-valid-title="제목">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">목록 이미지 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile1" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile1" name="uploadfile1">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 사이즈: 1040px X 465px  / 파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+								
+								<div class="form-group" id="img_content">
+									<label class="col-md-2 control-label">내용 이미지</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile2" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile2" name="uploadfile2">
+										</span>
+									</div>
+								</div>
+								<div class="form-group" id="img_content_desc">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 가로사이즈: 1040px  / 세로사이즈: 무관 / 파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+																
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용 <sup>*</sup></label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="10" name="content" data-valid-use="true" data-valid-max="3000" data-valid-title="내용"></textarea>
+									</div>
+								</div>
+							</fieldset>
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_specialList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+	
+	/**
+	* ==================================================================================
+	* 등록/수정 : 파일 업로드
+	* ==================================================================================
+	*/
+	$('#uploadfile1').change(function (e) {
+		cf_fileUpload($(this),'IMG_BENEFIT_LIST');
+	});
+	
+	$('#uploadfile2').change(function (e) {
+		cf_fileUpload($(this),'IMG_BENEFIT_CONTENT');
+	});
+	
+	
+	/* ============================================================================================
+	/* 벨리데이션 체크 및 폼 전송
+	/* --------------------------------------------------------------------------------------------
+	/* 벨리데이션 체크 
+	/* 	- true	: 폼전송
+	/* 	- false : 알림창 경고
+	/* ============================================================================================ */
+	function f_submit() {
+		
+		if($('#frmSpecial').formValid()) {
+			
+			// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+
+			if( !$("#preview_uploadfile1").next().hasClass("alert")){
+				alert("목록 이미지를 등록해주세요.");
+				return;
+			}
+			// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+			
+			$('input[name=noticbd_divn_cd]').val( $("#frmKeepData").find("input[name=noticbd_divn_cd]").val() );
+			$('input[name=noticbd_id]').val( $("#frmKeepData").find("input[name=noticbd_id]").val() );
+			var data = cf_boardFileObject($('#frmSpecial'));
+			
+			if(data.noticbd_img_list.length < 2) {
+				var file_data = {};
+				file_data['file_divn_cd'] = 'IMG_BENEFIT_CONTENT';
+				file_data['img_file_divn_cd'] = 'CONTENT';
+				file_data['img_orgin_file_nm'] = '';
+				file_data['img_strge_file_nm'] = '';
+				data['noticbd_img_list'].push(file_data);
+			}
+	       	
+			// 실제 데이터 전송 
+			$.ajax({
+			    url: api_url+'/backoffice/common/board/update',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	f_specialView();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+			
+		} else {
+			return;
+		}
+	}
+
+
+	/* ============================================================================================
+	/* 페이지 정보 설정
+	/* --------------------------------------------------------------------------------------------
+	/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+	/* ============================================================================================ */
+	/* ============================================================================================
+	/* 페이지 정보 설정
+	/* --------------------------------------------------------------------------------------------
+	/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+	/* ============================================================================================ */
+	var pagefunction = function() {
+		
+		$.ajax({
+		    url: api_url+"/backoffice/common/board/show", //this is the submit URL
+		    type: "GET", // GET or POST
+		    async: true,
+		    cache: true,
+		    datatype: 'json',
+		    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+		    beforeSend : function() {},
+		    success: function(obj){
+		    	 
+		    	$("input[name=title]").val(obj.data.title);
+		    	$("textarea[name=content]").val(obj.data.content);
+
+				if(obj.data.noticbd_img_list.length == '2'){
+		    		
+					// 목록이미지
+					modifyImg($('#preview_uploadfile1'), $("#uploadfile1"), obj.data.noticbd_img_list[1], 'LIST');
+		    		
+					// 내용이미지
+					modifyImg($('#preview_uploadfile2'), $("#uploadfile2"), obj.data.noticbd_img_list[0], 'CONTENT');
+			    	
+		    	}else{
+		    		// 목록이미지
+					modifyImg($('#preview_uploadfile1'), $("#uploadfile1"), obj.data.noticbd_img_list[0], 'LIST');
+		    	}
+		    	
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    },
+		    complete: function() {}
+		    
+		});
+	};
+	
+
+	/* ============================================================================================
+	/* 페이지 셋업 (Don't remove!!!)
+	/* --------------------------------------------------------------------------------------------
+	/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+	/* ============================================================================================ */
+	pageSetUp();
+
+
+	/* ============================================================================================
+	/* 페이지 정보 설정 로드
+	/* --------------------------------------------------------------------------------------------
+	/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+	/* ============================================================================================ */
+	pagefunction();
+
+</script>

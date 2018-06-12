@@ -1,0 +1,509 @@
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="com.penta.backoffice.web.common.constant.CommonConstant"%>
+<%@page import="javax.servlet.http.HttpSession" %>
+<%
+	HttpSession ses = request.getSession(true);
+	String authCd = (String) ses.getAttribute(CommonConstant.SESSION_AUTH_CD);
+%>
+<link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/resources/css/dashboard.css">
+<script src="${pageContext.request.contextPath}/resources/js/application/dashboard.js"></script>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" 
+				data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false" 
+				data-widget-editbutton="false" data-widget-sortable="false" data-widget-togglebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>시스템 공지사항</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="widget-body-toolbar">
+							<div class="row">
+								<div class="col-sm-12 text-right">
+									<a href="javascript:f_noticeList();" class="btn btn-default">more</a>
+								</div>
+							</div>
+						</div>
+						<div class="table-responsive">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th class="col-md-3">제목</th>
+										<th class="col-md-2">첨부파일</th>
+										<th class="col-md-1">작성자</th>
+										<th class="col-md-1">작성일</th>
+									<% if ("SVC".equals(authCd) || "ADM".equals(authCd)) { %>
+										<th class="col-md-1">미조회</th>
+									<% } %>
+									</tr>
+								</thead>
+								
+								<tbody id="noti_list_td">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="stat_title pull-right">
+				24시간 기준(&nbsp;<span id="stat_start_date"></span>&nbsp;~&nbsp;<span id="stat_end_date"></span>&nbsp;)
+			</div>
+		</div>
+		
+		<article class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-1" 
+				data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false"
+				data-widget-editbutton="false" data-widget-sortable="false" data-widget-togglebutton="false">
+				<header><h2>승인건수</h2></header>
+				<div id="conf_cnt" class="cs-css-01">0</div>
+			</div>
+		</article>
+		
+		<article class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" 
+				data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false"
+				data-widget-editbutton="false" data-widget-sortable="false" data-widget-togglebutton="false">
+				<header><h2>취소건수</h2></header>
+				<div id="cnl_cnt" class="cs-css-01">0</div>
+			</div>
+		</article>
+
+		<article class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-3" 
+				data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false"
+				data-widget-editbutton="false" data-widget-sortable="false" data-widget-togglebutton="false">
+				<header><h2>자동취소건수</h2>	</header>
+				<div id="a_cnl_cnt" class="cs-css-01 red">0</div>
+			</div>
+		</article>
+		
+		<article class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-4" 
+				data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false"
+				data-widget-editbutton="false" data-widget-sortable="false" data-widget-togglebutton="false">
+				<header><h2>오류건수</h2></header>
+				<div id="err_cnt" class="cs-css-01 red">0</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-5" 
+				data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-deletebutton="false" 
+				data-widget-editbutton="false" data-widget-sortable="false" data-widget-togglebutton="false">
+				
+				<header>
+					<ul id="widget-tab-1" class="nav nav-tabs pull-left">
+						<li class="active">
+							<a data-toggle="tab" href="#a_cnl_list"><span> 자동취소 </span></a>
+						</li>
+						<li>
+							<a data-toggle="tab" href="#err_list"><span> 오류 </span></a>
+						</li>
+					</ul>	
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="tab-content no-padding">
+						
+							<div class="tab-pane fade in active no-padding" id="a_cnl_list">
+								<div class="widget-body-toolbar">
+									<div class="row">
+										<div class="col-sm-12 text-right">
+											<a href="javascript:f_csvDownload('a_cnl');" class="btn btn-default"><i class="fa fa-lg fa-download"></i>&nbsp;Download</a>
+										</div>
+									</div>
+								</div>
+								<div class="fixed-header-table-wrapper">
+									<table class="table table-bordered table-fixed-header"></table>
+									<div class="custom-scroll">
+										<table class="table table-bordered table-fixed-body">
+											<thead>
+												<tr>
+													<th>N-PMT 주문 ID</th>
+												<% if (!"MCHT".equals(authCd)) { %>
+													<th>가맹점</th>
+												<% } %>										
+													<th>결제수단</th>
+													<th>금액</th>
+													<th>자동취소시간</th>
+													<th>고객ID</th>
+												</tr>
+											</thead>
+											
+											<tbody id="a_cnl_list_td">
+												<tr>
+													<td colspan="<%=(!"MCHT".equals(authCd) ? 6 : 5)%>">
+														자동취소건이 없습니다.
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							
+							<div class="tab-pane fade no-padding" id="err_list">
+								<div class="widget-body-toolbar">
+									<div class="row">
+										<div class="col-sm-12 text-right">
+											<a href="javascript:f_csvDownload('err');" class="btn btn-default"><i class="fa fa-lg fa-download"></i>&nbsp;Download</a>
+										</div>
+									</div>
+								</div>
+								<div class="fixed-header-table-wrapper">
+									<table class="table table-bordered table-fixed-header"></table>
+									<div class="custom-scroll">
+										<table class="table table-bordered table-fixed-body">
+											<thead>
+												<tr>
+													<th>N-PMT 주문 ID</th>
+												<% if (!"MCHT".equals(authCd)) { %>
+													<th>가맹점</th>
+												<% } %>										
+													<th>결제수단</th>
+													<th>금액</th>
+													<th>오류발생시각</th>
+													<th>내용상세</th>
+												</tr>
+											</thead>
+											
+											<tbody id="err_list_td">
+												<tr>
+													<td colspan="<%=(!"MCHT".equals(authCd) ? 6 : 5)%>">
+														오류건이 없습니다.
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+		
+</section>
+
+<div id="ie_pop" style="max-height: 700px; overflow: auto; display:none;">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="well well-light">
+				<div class="row">
+			        <div class="col-xs-12 col-sm-12 col-md-12">
+			            <div class="panel panel-success pricing-big">
+			                <div class="ta-c">
+			                    <img alt="" src="${pageContext.request.contextPath}/resources/img/ie/ie_1.jpg" style="width:400px;">
+			                </div>
+			                <div class="panel-body text-align-center">
+								<ul class="list-unstyled text-left">
+						          <li><i class="fa fa-check text-success"></i> <strong> 인터넷 브라우저의 옵션창을 띄운다.</strong></li>
+						          <li><i class="fa fa-check text-success"></i> <strong> 상단의 탭메뉴 중 '보안'탭을 선택 한다.</strong></li>
+						        </ul>
+			                </div>
+			                <div class="ta-c">
+			                    <img alt="" src="${pageContext.request.contextPath}/resources/img/ie/ie_2.jpg" style="width:400px;">
+			                </div>
+			                <div class="panel-body text-align-center">
+								<ul class="list-unstyled text-left">
+						          <li><i class="fa fa-check text-success"></i> <strong> 사용자 지정 수준을 클릭한다.</strong></li>
+						        </ul>
+			                </div>
+			                <div class="ta-c">
+			                    <img alt="" src="${pageContext.request.contextPath}/resources/img/ie/ie_3.jpg" style="width:400px;">
+			                </div>
+			                <div class="panel-body text-align-center">
+								<ul class="list-unstyled text-left">
+						          <li><i class="fa fa-check text-success"></i> <strong> 보안 설정 내용 중 기타영역으로 이동한다.</strong></li>
+						          <li><i class="fa fa-check text-success"></i> <strong> '도메인 간의 데이터 원본 엑세스'를 사용으로 선택한다.</strong></li>
+						          <li><i class="fa fa-check text-success"></i> <strong> '확인' 버튼을 눌러 보안 설정을 저장한다.</strong></li>
+						        </ul>
+			                </div>
+			            </div>
+			        </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 다이얼 로그 기본 스타일 설정
+/* ============================================================================================ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/* ============================================================================================
+/* 다이얼 로그 설정
+/* ============================================================================================ */
+$('#ie_pop').dialog({
+	autoOpen : false,
+	width : 498,
+	height: 700,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> IE 설벙 변경 방법 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/* ============================================================================================
+/* 다이얼 로그 호출
+/* ============================================================================================ */
+function f_browser() {
+	$('#ie_pop').dialog('open');
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function(){
+	
+	if(navigator.userAgent.indexOf("MSIE") > 0) {
+		$.bigBox({
+			title : "브라우저 경고",
+			content : "현재 사용중인 브라우저는 Internet Explorer(이하 IE) 입니다.<br>IE로 사용하실 경우에는 버전에 따라 데이터 로드에<br>문제가 있을 수 있으니 사용자 지정 옵션을 변경 바랍니다.<br><div class='ta-r'><a href='javascript:f_browser()' class='link-white'>[ 자세히 보기 ]</a></div>",
+			color : "#C46A69",
+			//timeout: 6000,
+			icon : "fa fa-warning shake animated"
+		});
+	}
+	
+	
+	// ---------------------- 시스템 공지사항 ---------------------- // 
+	$.ajax({
+	    url: api_url+'/bo/dashboard/npmt_bo_01000',
+	    type: 'GET', 
+	    async: false,
+	    cache: true,
+	    success: function(obj){
+	    	
+	    	var tbody = $('#noti_list_td');
+	    	tbody.html('');
+	    	var row_cnt = 0;
+	    	$.each(obj.data.noti_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td><a href="javascript:f_readNoticeDetail(\''+items.noti_id+'\')">'+items.title +'</a></td>\n';
+	    		if (items.view_file_nm != '') {
+	    			tag_td += '<td class="ta-c"><a href="javascript:f_atchDownload(\''+items.noti_id+'\')">';
+	    			tag_td += items.view_file_nm;
+	    			tag_td += '&nbsp;&nbsp;<span class="widget-icon"><i class="fa fa-file"></i></span>';
+	    			tag_td += '</a></td>\n';
+	    		} else {
+	    			tag_td += '<td class="ta-c"></td>\n';
+	    		}
+	    		tag_td += '<td class="ta-c">'+items.reg_nm+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.reg_date+'</td>\n';
+	    		
+	    		if ("<%=authCd%>" == "SVC" || "<%=authCd%>" == "ADM") {
+					var tooltip_title = '';
+					if(items.unread_mcht_list.length > 0) {
+						$.each(items.unread_mcht_list, function(j, mcht_items) {
+							tooltip_title += '<div class=\'unread_mcht\' onclick=\'f_unreadMcht(this);\' data-mcht-id=\''+ mcht_items.mcht_id +'\'>';
+							tooltip_title += '· ' +  mcht_items.mcht_nm; 
+							tooltip_title += '</div>';
+						});
+						
+						tag_td += '<td class="ta-c">';
+						tag_td += '<a href="#" class="clickable-tooltip" title="' + tooltip_title + '">'+items.unread_cnt+'</a>';
+						tag_td += '</td>\n';
+					} else {
+						tag_td += '<td class="ta-c">0</td>\n';
+					}
+				}
+	    		
+	    		var tag_tr = '<tr>'+tag_td+'</tr>\n';
+	    		tbody.append(tag_tr);
+	    		row_cnt++;
+	    	});
+	    	
+	    	$('.clickable-tooltip').tooltip({placement : 'left', html:true, trigger: 'click'}); 
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	
+	var targetDate = f_getTargetDate();
+	
+	// ---------------------- 통계 ---------------------- // 
+	$('#stat_start_date').html(targetDate.start_date);
+	$('#stat_end_date').html(targetDate.end_date);
+	
+	$.ajax({
+	    url: api_url+'/bo/dashboard/npmt_bo_01002',
+	    type: 'GET', 
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(targetDate)),
+	    success: function(obj){
+	    	$('#conf_cnt').html(cf_setComma(obj.data.conf_cnt));
+	    	$('#cnl_cnt').html(cf_setComma(obj.data.cnl_cnt));
+	    	$('#a_cnl_cnt').html(cf_setComma(obj.data.a_cnl_cnt));
+	    	$('#err_cnt').html(cf_setComma(obj.data.err_cnt));
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	
+	// ---------------------- 자동취소거래목록 ---------------------- // 
+	$.ajax({
+	    url: api_url+'/bo/dashboard/npmt_bo_01003',
+	    type: 'GET',
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(targetDate)),
+	    success: function(obj){
+	    	
+	    	if (obj.data.auto_cnl_pmt_list.length > 0) {
+		    	var tbody = $('#a_cnl_list_td');
+		    	tbody.html('');
+		    	var row_cnt = 0;
+		    	$.each(obj.data.auto_cnl_pmt_list, function(i, items) {
+		    		var tag_td = '';
+		    		tag_td += '<td class="col-md-2 ta-c">'+items.npmt_order_id+'</td>\n';
+					if ("<%=authCd%>" == "SVC") {
+						tag_td += '<td class="col-md-2 ta-c">'+items.mcht_nm+'</td>\n';
+					}
+	    			tag_td += '<td class="col-md-2 ta-c">'+items.insti_nm+'</td>\n';
+		    		tag_td += '<td class="col-md-2 ta-c">'+cf_setComma(items.tot_pmt_amt)+'</td>\n';
+		    		tag_td += '<td class="col-md-2 ta-c">'+items.reg_date+'</td>\n';
+		    		tag_td += '<td class="col-md-2 ta-c">'+items.client_id+'</td>\n';
+		    		
+		    		var tag_tr = '<tr>'+tag_td+'</tr>\n';
+		    		tbody.append(tag_tr);
+		    		row_cnt++;
+		    	});
+	    	} else {
+	    		$('#a_cnl_list .widget-body-toolbar a').hide();
+	    	}
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+
+	
+	
+	// ---------------------- 오류거래목록 ---------------------- //
+	$.ajax({
+	    url: api_url+'/bo/dashboard/npmt_bo_01005',
+	    type: 'GET',
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(targetDate)),
+	    success: function(obj){
+	    	
+	    	if (obj.data.err_pmt_list.length > 0) {
+		    	var tbody = $('#err_list_td');
+		    	tbody.html('');
+		    	var row_cnt = 0;
+		    	$.each(obj.data.err_pmt_list, function(i, items) {
+		    		var tag_td = '';
+		    		tag_td += '<td class="col-md-2 ta-c">'+items.npmt_order_id+'</td>\n';
+		    		if ("<%=authCd%>" == "SVC") {
+						tag_td += '<td class="col-md-2 ta-c">'+items.mcht_nm+'</td>\n';
+					}
+	    			tag_td += '<td class="col-md-2 ta-c">'+items.insti_nm+'</td>\n';
+		    		tag_td += '<td class="col-md-2 ta-c">'+cf_setComma(items.tot_pmt_amt)+'</td>\n';
+		    		tag_td += '<td class="col-md-2 ta-c">'+items.reg_date+'</td>\n';
+		    		tag_td += '<td class="col-md-2 ta-c">'+items.pmt_result_msg+'</td>\n';
+		    		
+		    		var tag_tr = '<tr>'+tag_td+'</tr>\n';
+		    		tbody.append(tag_tr);
+		    		row_cnt++;
+		    	});
+		    	
+	    	} else {
+	    		$('#err_list .widget-body-toolbar a').hide();
+	    	}
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	f_setFixedHeader();
+	
+	$(document).resize(function() {
+		f_calculateFixedHeaderSize();
+	});
+	
+}
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+
+/* ============================================================================================
+/* 10분마다 화면 reload
+/* ============================================================================================ */
+setTimeout(function() {
+		console.log("reload!!");
+		$("#menuTree li.active a[href='/application/dashboard.do']").click();
+	}, 600000);
+</script>

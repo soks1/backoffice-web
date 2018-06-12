@@ -1,0 +1,434 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>스탬프 참여 정보</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">스탬프 유형 : </label>
+									<div class="col-md-2" style="padding-right: 1px;">
+										<span class="form-control cs-css-03" id="stamp_divn_cd_name"></span>
+									</div>
+									
+									<label class="col-md-2 control-label cs-css-05">행사 번호 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="stamp_id"></span>
+									</div>
+									
+									<label class="col-md-2 control-label cs-css-05">스탬프 누적 개수 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="stamp_seal_tot_cnt"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">스탬프명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="evt_title"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">멤버 :</label>
+									<div class="col-md-8">
+										<span class="form-control cs-css-03" id="stamp_grp_member_cnt"></span>
+									</div>
+									<label class="col-md-2 control-label">
+										<a href="#" id="bt_show_nick" class="ta-r">
+											<i class="fa fa-fw fa-plus-circle txt-color-green"></i>자세히
+										</a>
+									</label>
+								</div>
+								
+								<div class="form-group" id="effect" style="display: none;">
+									<label class="col-md-2 control-label"></label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="user_nick" style="height: 44px;"></span>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row" id="productLL">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<!-- 미션수행/보상 Tab 영역 -->
+			<div id="tabs">
+				<ul>
+					<li><a href="#tabs-a">미션수행</a></li>
+					<li><a href="#tabs-b">보상</a></li>
+				</ul>
+				<div id="tabs-a">
+					<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false">
+						<div style="border-style: none;">
+							<div class="jarviswidget-editbox"></div>
+							<div id="target_mission_grid" class="widget-body no-padding">
+								<table id="mission_grid"></table>
+								<div id="mission_grid_page"></div>
+								<!-- <input type="hidden" name="mid" value="N"> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<div id="tabs-b">
+					<div class="jarviswidget jarviswidget-color-darken" id="wid-id-4" data-widget-editbutton="false" data-widget-deletebutton="false">
+						<div class="col-md-12" style="border-style: none;">
+							<div class="table-responsive" style="max-height:230px; overflow:auto;">
+								<table class="table table-bordered">
+									<thead>
+										<tr>
+											<th class='ta-c'>미션달성일</th>
+											<th class='ta-c'>보상일</th>
+											<th class='ta-c'>미션내용</th>
+											<th class='ta-c'>보상쿠폰북번호</th>
+											<th class='ta-c'>쿠폰명</th>
+											<th class='ta-c'>유효기간</th>
+										</tr>
+									</thead>
+									<tbody id="compensation_info">
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepDataRD">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 팝업 화면 : jquery tabs widget 동작 설정. jqgrid 가로 사이즈 설정.
+ * ==================================================================================
+ */
+$('#tabs').tabs({
+	activate: function (event, ui) {
+		var $activeTab = $('#tabs').tabs('option', 'active');
+	 	if ($activeTab == 0) {
+	 		jQuery("#mission_grid").jqGrid( 'setGridWidth', $("#target_mission_grid").width() );
+	 	} else {
+	 		//jQuery("#compensation_grid").jqGrid( 'setGridWidth', $("#target_compensation_grid").width() );
+	 	}
+	 }
+});
+
+/**
+ * ==================================================================================
+ * 팝업 화면 : 멤버 자세히 버튼 클릭 이벤트 처리
+ * ==================================================================================
+ */
+$("#bt_show_nick").click(function() {
+   	var visible = $("#effect").is(":visible");
+	
+	if(visible) {  // '+','-' 아이콘 변경
+		$( "#bt_show_nick > i" ).replaceWith('<i class="fa fa-fw fa-plus-circle txt-color-green"></i>');
+	} else {
+		$( "#bt_show_nick > i" ).replaceWith('<i class="fa fa-fw fa-minus-circle txt-color-red"></i>');
+	}
+	$( "#effect" ).toggle( "blind", 300);  // toggle: Show or Hide, "blind" 블라인드 mode.
+
+    return false;
+});
+
+/* ============================================================================================
+/* 탭영역 설정
+/* --------------------------------------------------------------------------------------------
+/* 화면에서 선택한 컬럼에 따라 보여줄 탭 영역 설정함
+/* ============================================================================================ */
+function initTabSet() {
+	if($("input[name=field_name]").val() == 'stamp_seal_tot_cnt') {
+		$('#tabs').tabs('option', 'active', 0);
+	} else if( $("input[name=field_name]").val() == 'stamp_reward_cnt' ) {
+		$('#tabs').tabs('option', 'active', 1);
+	}
+}
+
+/* ============================================================================================
+/* 스탬프 적립 상세 조회
+/* --------------------------------------------------------------------------------------------
+/* 스탬프 그룹의 상세 정보를 표시.
+/* ============================================================================================ */
+function fundDeatil() {
+	
+	var action_data = {
+		empno: "${sessionScope.sessionEmpno}",
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+		stamp_card_id: $("#frmKeepDataRD").find("input[name=stamp_card_id]").val()
+	};
+		
+	$.ajax({
+		url: api_url+"/backoffice/stamp/reserve/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(action_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$("#stamp_divn_cd_name").html(obj.data.stamp_divn_cd_name);
+	    	$("#stamp_id").html(obj.data.stamp_id);
+	    	$("#evt_title").html(obj.data.evt_title);
+	    	$("#stamp_seal_tot_cnt").html(obj.data.stamp_seal_tot_cnt+" / "+obj.data.stamp_recp_tot_cnt);
+	    	$("#stamp_grp_member_cnt").html(obj.data.stamp_grp_member_cnt);
+	    	f_memberNickList(obj);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 사용자 nick name 표시
+/* --------------------------------------------------------------------------------------------
+/* 스탬프 그룹에 속한 사용자의 nick name을 설정
+/* ============================================================================================ */
+function f_memberNickList(obj) {
+	var memberNick = "";
+	$.each(obj.data.stamp_grp_member_list, function(i, item) {
+		memberNick += item.user_nick+", ";
+	});
+	memberNick = memberNick.substring(0, (memberNick.length-2));
+
+	$("#user_nick").html(memberNick);
+}
+
+/* ============================================================================================
+/* 스탬프 보상 리스트 조회
+/* --------------------------------------------------------------------------------------------
+/* 선택한 그룹의 보상관련 내용 상세히 표시함.
+/* ============================================================================================ */
+function compensationList() {
+	var action_data = {
+		empno: "${sessionScope.sessionEmpno}",
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+		stamp_card_id: $("#frmKeepDataRD").find("input[name=stamp_card_id]").val()
+	};
+	
+	$.ajax({
+		url: api_url+"/backoffice/stamp/reward/list", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(action_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$.each(obj.data.stamp_reward_list, function(i, item) {
+	    		var tag_td = "";
+	    		tag_td += "<td class='ta-c'>" + cf_cvtDateFormat(item.mison_atan_dd, 'yyyy-MM-dd') + "</td>";
+	    		tag_td += "<td class='ta-c'>" + cf_cvtDateFormat(item.reward_dd, 'yyyy-MM-dd') + "</td>";
+	    		tag_td += "<td class='ta-c'>" + item.stamp_ncnt + "</td>";
+	    		tag_td += "<td class='ta-c'>" + item.cpbook_id + "</td>";
+	    		tag_td += "<td class='ta-c'>" + item.cpbook_nm + "</td>";
+	    		tag_td += "<td class='ta-c'>" + cf_cvtDateFormat(item.vali_term_start_dd, 'yyyy-MM-dd HH')
+	    								+" ~ "+ cf_cvtDateFormat(item.vali_term_end_dd, 'yyyy-MM-dd HH')+"</td>";
+	    		
+	    		$("#compensation_info").append("<tr>" + tag_td + "</tr>");
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정 (미션수행 상세 리스트 조회)
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	initTabSet();  // 화면 진입시 탭 설정
+	fundDeatil();  // 적립 상세 호출
+	compensationList();  // 보상 정보 호출
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+	
+	function run_jqgrid_function() {
+		
+		// var pageWidth = $("#target_mission_grid").parent().width() - 100;
+		var pageWidth = $("#tabs").width();
+		
+		jQuery("#mission_grid").jqGrid({
+			url : api_url+"/backoffice/stamp/mission/list",
+			loadBeforeSend: function() {
+			},
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['미션수행일', '수행지점', '수행 멤버', '기본미션', '특별미션', '스탬프날인수', '누적스탬프', '비고'],
+			colModel : [
+				{ name : 'stamp_seal_dd', 	index : 'stamp_seal_dd', 	align : "center",	sortable : false, 	width : (pageWidth*(14/100)),
+					formatter: function(cellvalue, options, rowObject) {
+						return cf_cvtDateFormat(cellvalue, 'yyyy-MM-dd');
+					}
+				}, 
+				{ name : 'str_nm',			index : 'str_nm', 			align : "center",	sortable : false, 	width : (pageWidth*(14/100))	},
+				{ name : 'user_nick', 		index : 'user_nick',		align : "center", 	sortable : false, 	width : (pageWidth*(14/100)) 	}, 
+				{ name : 'mison_df_cnt', 	index : 'mison_df_cnt', 	align : "center", 	sortable : false, 	width : (pageWidth*(12/100)) 	}, 
+				{ name : 'mison_sp_cnt', 	index : 'mison_sp_cnt', 	align : "center", 	sortable : false, 	width : (pageWidth*(12/100)) 	},
+				{ name : 'mison_cnt_sum', 	index : 'mison_cnt_sum',	align : "center", 	sortable : true, 	width : (pageWidth*(12/100)) 	},
+				{ name : 'mison_acc_cnt',	index : 'mison_acc_cnt', 	align : "center", 	sortable : false, 	width : (pageWidth*(12/100)) 	},
+				{ name : 'mison_su_limit', 	index : 'mison_su_limit',	align : "center", 	sortable : false, 	width : (pageWidth*(24/100))	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "rnum",
+				root : 		function(obj){ return obj.data.stamp_mission_list; },	// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				stamp_card_id: $("#frmKeepDataRD").find("input[name=stamp_card_id]").val()
+			},
+			rowNum : 30,
+			rowList : [10, 20, 30],
+			//pager : '#mission_grid_page',
+			pager : '',
+			sortname : 'mison_acc_cnt',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : false,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){
+			},
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+			},
+			loadComplete : function(obj) {
+				
+				var mid_flag = false;
+				var com_flag = false;
+				var both_attainment_flag = false;
+				
+				if(typeof obj.data.stamp_mission_list[0] != 'undefined') {
+					// 중간보상 스템프 수
+					var mison_mid_limit = parseInt(obj.data.stamp_mission_list[0].mison_mid_limit);
+					
+					// 완료보상 스템프 수
+					var mison_su_limit = parseInt(obj.data.stamp_mission_list[0].mison_su_limit); 
+					
+					// rowNum 1부터 현재보는 page 까지 rowNum 의 합
+					var total_cnt = obj.data.stamp_mission_list.length;
+					
+					$.each(obj.data.stamp_mission_list, function(i,item) {
+						console.log(both_attainment_flag);
+						if(item.mison_acc_cnt >= mison_su_limit && com_flag == false) {
+							com_flag = true;
+							$('#mission_grid').jqGrid('setCell', (total_cnt-i), 'mison_su_limit', '완료보상 목표 달성');
+							if(item.mison_acc_cnt <= mison_mid_limit) {
+								both_attainment_flag = true;
+							}
+						} else if(item.mison_acc_cnt == mison_mid_limit && mid_flag == false && both_attainment_flag == false) {
+							mid_flag = true;
+							$('#mission_grid').jqGrid('setCell', (total_cnt-i), 'mison_su_limit', '중간보상 목표 달성');
+						} else if(item.mison_acc_cnt < mison_mid_limit && mid_flag == false && both_attainment_flag == false) {
+							mid_flag = true;
+							$('#mission_grid').jqGrid('setCell', (total_cnt-i+1), 'mison_su_limit', '중간보상 목표 달성');
+							$('#mission_grid').jqGrid('setCell', (total_cnt-i),   'mison_su_limit', ' ');
+						} else {
+							$('#mission_grid').jqGrid('setCell', (total_cnt-i), 'mison_su_limit', ' ');
+						}
+					});
+					
+					if(mison_mid_limit > 0 && mid_flag == false) {
+						$.each(obj.data.stamp_mission_list, function(i,item) {
+							
+							var top_next_index = $('#mission_grid').jqGrid('getCell', (total_cnt-1), 'mison_acc_cnt');
+							
+							if(item.mison_acc_cnt >= mison_su_limit && item.mison_acc_cnt >= mison_mid_limit && top_next_index < mison_mid_limit) {
+								$('#mission_grid').jqGrid('setCell', (total_cnt-i), 'mison_su_limit', '중간, 완료보상 목표 달성');
+							}
+							
+							return false;
+						});
+					};
+				}
+			}
+		});
+		jQuery("#mission_grid").jqGrid('navGrid', "#mission_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position:'right'
+		});
+		
+	  	
+	  	$("#mission_grid").gridCss();
+	  	$("#mission_grid_cb").css("border-left-width","0");
+	  	$("#mission_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_mission_grid_cb").css("padding","7px 0");
+	  	$("#mission_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#mission_grid").jqGrid( 'setGridWidth', $("#target_mission_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+	
+</script>

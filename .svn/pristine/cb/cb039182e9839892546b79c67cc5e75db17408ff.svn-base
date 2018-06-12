@@ -1,0 +1,681 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2> CRM 쿠폰북 발행 등록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="alert alert-info" id="btn_campain_area">
+							<i class="fa fa-info"></i> 캠페인을 먼저 선택해주세요. <a href="javascript:f_openCouponCampaignSD();" class="btn btn-sm btn-success"><strong>캠페인 선택</strong></a>
+						</div>
+						<form id="frmCampaign" class="form-horizontal" method="post">
+							<input type="hidden" name="campaign_id" data-valid-use="true" data-valid-title="캠페인">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="campaign_start_dy" value="">
+							<input type="hidden" name="campaign_end_dy" value="">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목 <sup>*</sup></label>
+									<div class="col-md-11">
+										<input class="form-control" type="text" name="custgp_cl_cpbook_title" data-valid-use="true" data-valid-max="108" data-valid-symbol="true" data-valid-title="캠페인 제목">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인ID</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="campaign_id"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">캠페인기간</label>
+									<div class="col-md-3">
+										<span class="form-control cs-css-03" id="campaign_dy"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">캠페인명</label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="campaign_nm"></span>
+									</div>
+								</div>
+								<div class="form-actions" id="campain_btn_area">
+									<div class="row">
+										<div class="col-md-12">
+											<a href="javascript:f_campainSubmit();" class="btn btn-primary">저장</a>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+	
+		<!-- 고객군 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-5">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>고객군 선택 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="table-responsive" style="min-height:80px; max-height:417px; overflow-y:auto;">
+							<table class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th class="ta-c">No.</th>
+										<th class="ta-c">고객군ID</th>
+										<th class="ta-c">고객군명</th>
+										<th class="ta-c">고객군별 쿠폰북매핑수 (현 / 총)</th>
+									</tr>
+								</thead>
+								<tbody id="segment_tbody">
+								
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+		
+		<!-- 고객군별 쿠폰북 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-7">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>고객군별 쿠폰북</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<form id="frmCampaignBook" class="form-horizontal" method="post">
+						<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+						<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+						<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+						<input type="hidden" name="campaign_id" data-valid-use="true" data-valid-title="캠페인">
+						<input type="hidden" name="custgp_cl_cpbook_id" data-valid-use="true" data-valid-title="캠페인">
+						<input type="hidden" id="lst_custgp_id" name="lst_custgp_id" data-valid-use="true" data-valid-title="고객군">
+						<div class="widget-body no-padding">
+							<div class="alert alert-info no-margin fade in">
+								<i class="fa-fw fa fa-square" id="icon_campaign_select"></i><span class="pl10" id="lst_custgp_nm">고객군을 선택해 주세요.</span>
+								<a href="javascript:f_openCpBookSD('couponBook_tbody');" id="btn_cpb_select" class="btn btn-success disabled">쿠폰북 선택</a>
+								<a href="javascript:cf_delTableRow('couponBook_tbody');" id="delbtn_cpb_select" class="btn btn-warning disabled">선택 삭제</a>
+								
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<span class="" id="cpbook_gbn_span" style="display:none" >쿠폰북구분 :
+								&nbsp;&nbsp;&nbsp;&nbsp; 
+									<label class="radio radio-inline" style="padding:3px 0 0px 20px">
+										<input type="radio" name="cpbook_gbn" value="A" data-check-only="true">
+									일반 </label>
+									<label class="radio radio-inline" style="padding:3px 0 0px 20px">
+										<input type="radio" name="cpbook_gbn" value="B" data-check-only="true">
+									신데렐라 </label>
+								</span>
+								
+							</div>
+							<div class="table-responsive" style="min-height:80px; max-height:417px; overflow-y:auto;">
+								<table class="table table-bordered table-striped">
+									<colgroup>
+							            <col width="3%" />
+							            <col width="8%" />
+							            <col />
+							            <col width="12%" />
+							            <col width="7%" />
+							            <col width="8%" />
+							            <col width="16%" />
+							            <col width="7%" />
+							            <col width="16%" />
+							            <col width="7%" />
+							        </colgroup>
+									<thead>
+										<tr>
+											<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+											<th class="ta-c">쿠폰북<br/> 번호</th>
+											<th class="ta-c">쿠폰북명</th>
+											<th class="ta-c">쿠폰북<br/> 유형</th>
+											<th class="ta-c">쿠폰수</th>
+											<th class="ta-c">노출<br/>설정일</th>
+											<th class="ta-c">시작일</th>
+											<th class="ta-c">시작<br/>시간</th>
+											<th class="ta-c">종료일</th>
+											<th class="ta-c">종료<br/>시간</th>
+										</tr>
+									</thead>
+									<tbody id="couponBook_tbody" style="">
+										
+									</tbody>
+								</table>
+							</div>
+							<div class="dt-toolbar-footer">
+								<div class="col-md-12 ta-r">
+									<a href="javascript:f_campainList()" class="btn btn-default">목록</a>
+									<a href="javascript:f_segCpbookSubmit()" class="btn btn-primary">저장</a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="coupon_campaign_sd" style="display:none;"></div>
+<div id="cpbook_sd" style="display:none;"></div>
+<div id="coupon_book_rd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+function f_customOverDate() {
+	
+	var over_date_flag = true;
+	
+	$('#couponBook_tbody').find('input[name=vali_term_start_dd_list]').each(function(i) {
+		var start_dd = $(this).val();
+		var end_obj = $('#couponBook_tbody').find('input[name=vali_term_end_dd_list]').eq(i);
+		var end_dd = end_obj.val();
+		
+		var from_date = start_dd.replace(/\-/g,'');
+		var to_date = end_dd.replace(/\-/g,'');
+		
+		var start_time_obj = $('#couponBook_tbody').find('input[name=vali_term_start_time_list]').eq(i);
+		var end_time_obj = $('#couponBook_tbody').find('input[name=vali_term_end_time_list]').eq(i);
+		if(start_time_obj.val().length < 2 ) {
+			start_time_obj.val('0' + start_time_obj.val());
+		}
+		if(end_time_obj.val().length < 2 ) {
+			end_time_obj.val('0' + end_time_obj.val());
+		}
+		var start_full_time = from_date + start_time_obj.val();
+		var end_full_time = to_date + end_time_obj.val();
+		if(start_full_time.length != 10 || end_full_time.length != 10){
+			alert("쿠폰북 시작일과 종료일이 유효하지 않습니다.");
+			end_obj.focus();
+			over_date_flag = false;
+			return false;
+		}
+		if(parseInt(start_full_time) > parseInt(end_full_time)) {
+			alert('종료일은 시작일 보다 클 수 없습니다.');
+			end_obj.focus();
+			over_date_flag = false;
+			return false;
+		}
+		
+		/*
+		if(parseInt(from_date) > parseInt(to_date)) {
+			alert('종료일은 시작일 보다 클 수 없습니다.');
+			end_obj.focus();
+			over_date_flag = false;
+			return false;
+		}
+		*/
+		
+		var compare_from_date = $('#frmCampaign').find('input[name=campaign_start_dy]').val().replace(/\-/g,'');
+		var compare_to_date = $('#frmCampaign').find('input[name=campaign_end_dy]').val().replace(/\-/g,'');
+		
+		if(parseInt(from_date) < parseInt(compare_from_date)) {
+			alert('쿠폰북의 시작일이 캠페인기간보다 이전입니다.\n\n쿠폰북의 유효기간은 캠페인기간 내에서 선택 가능합니다.\n\n다시한번 확인해 주세요.');
+			$(this).focus();
+			over_date_flag = false;
+			return false;
+		}
+		
+		if(parseInt(to_date) > parseInt(compare_to_date)) {
+			alert('쿠폰북의 종료일이 캠페인기간보다 이후입니다.\n\n쿠폰북의 유효기간은 캠페인기간내에서 선택 가능합니다.\n\n다시한번 확인해 주세요.');
+			end_obj.focus();
+			over_date_flag = false;
+			return false;
+		}
+		
+	});
+	
+	return over_date_flag;
+}
+
+
+/**
+ * ==================================================================================
+ * 캠페인 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#coupon_campaign_sd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 쿠폰북 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#cpbook_sd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			$("#to_tbody").find("tr").each(function(){
+				
+				var tag_td = "";
+				var key = "";
+				var chk = 0;
+				
+				// 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+				$(this).find("td").each(function(i){
+					if(i == 1) {
+						return true;
+					}
+					
+					// 각 셀 데이터 생성
+					if(i < 6) {
+						if(i == 2) {
+							key = $(this).text();
+							tag_td += "<input type='hidden' name='cpbook_id_list' data-array-always='true' value='"+key+"'>";
+						}
+						tag_td += "<td class='ta-c'>"+$(this).html()+"</td>\n";	
+					}
+				});
+// 				tag_td += "<td class='ta-c input-icon-right'><select id='open_date_list' name='open_date_list' data-array-always='true' class='form-control'><option value='0'>D-0</option><option value='1'>D-1</option><option value='3'>D-3</option><option value='5'>D-5</option><option value='7'>D-7</option><option value='10'>D-10</option><option value='15'>D-15</option></select></td>";
+				tag_td += "<td class='ta-c input-icon-right'><input type='text' id='open_date_list' name='open_date_list' data-valid-use='true' data-array-always='true' class='form-control' onkeyup='cf_numChk(this);' data-valid-title='노출설정일' style='padding:0 0 0 2px; text-align:center' value='0' maxlength='3' /></td>";
+				tag_td += "<td class='ta-c input-icon-right'><i class='fa fa-calendar' style='padding-right:10px'></i><input class='form-control datepicker' name='vali_term_start_dd_list' data-valid-use='true' onchange='cf_chg(this);' data-array-always='true' data-date-format='yyyyMMdd' type='text' data-dateformat='yy-mm-dd' data-valid-title='시작일' placeholder='시작일'></td>";
+				tag_td += "<td><input type='text' name='vali_term_start_time_list' data-valid-use='true' data-array-always='true' class='form-control' onkeyup='cf_numChk2(this);' data-valid-title='시작시간' style='padding:0 0 0 2px; text-align:center' maxlength='2' value='00' /></td>";
+				tag_td += "<td class='ta-c input-icon-right'><i class='fa fa-calendar' style='padding-right:10px'></i><input class='form-control datepicker' name='vali_term_end_dd_list' data-valid-use='true' data-array-always='true' data-date-format='yyyyMMdd' type='text' data-dateformat='yy-mm-dd' data-valid-title='종료일' placeholder='종료일'></td>";
+				tag_td += "<td><input type='text' name='vali_term_end_time_list' data-valid-use='true' data-array-always='true' class='form-control' onkeyup='cf_numChk2(this);' data-valid-title='종료시간' style='padding:0 0 0 2px; text-align:center' maxlength='2' value='23' /></td>";
+
+				var tag_tr = "<tr>"+tag_td+"</tr>";
+				
+				// 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+				$("#couponBook_tbody").find("tr > td").each(function(){
+					if($(this).text() == key) {
+						chk++;
+					}
+				});
+				
+				// 같은 데이터가 없을 경우에만 등록 시킨다.
+				if(chk == 0) {
+					$("#couponBook_tbody").append(tag_tr);	
+				}
+				
+				$("#cpbook_gbn_span").show();
+	    		$('input:radio[name=cpbook_gbn]:input[value=A]').prop("checked", true); // 쿠폰북 구분 (신규추가) (A:일반, B:신데렐라)
+	    		$('#couponBook_tbody').find('input[name=vali_term_start_time_list]').each(function(i) {
+	    			$(this).val("00");
+	    			$("#couponBook_tbody").find("input[name=vali_term_end_time_list]").eq(i).val("23");
+	    			$(this).attr('disabled','disabled');
+	    			$("#couponBook_tbody").find("input[name=vali_term_end_time_list]").eq(i).attr('disabled','disabled');
+	    		});
+				
+				pageSetUp();
+			});
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 쿠폰북 상세 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#coupon_book_rd').dialog({
+	autoOpen : false,
+	bgiframe: true,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	disable: true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 상세 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+
+/* ============================================================================================
+/* 쿠폰북 구분에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 구분 값에 따라 쿠폰북 유효기간 시간 사용여부 조정
+/* 	- A	: 일반	(유효기간의 시간설정이 필요없음, 000000 ~ 235959 초기화)
+/* 	- B	: 신데렐라	(유효기간의 시간설정이 필요함)
+/* ============================================================================================ */
+$('input[name="cpbook_gbn"]').on('change', function() {
+	if($(this).val() == 'A'){
+		$('#couponBook_tbody').find('input[name=vali_term_start_time_list]').each(function(i) {
+			$(this).val("00");
+			$("#couponBook_tbody").find("input[name=vali_term_end_time_list]").eq(i).val("23");
+			$(this).attr('disabled','disabled');
+			$("#couponBook_tbody").find("input[name=vali_term_end_time_list]").eq(i).attr('disabled','disabled');
+			$("#couponBook_tbody").find("input[name=vali_term_end_dd_list]").eq(i).removeAttr('disabled');
+		});
+	}else{
+		$('#couponBook_tbody').find('input[name=vali_term_start_time_list]').each(function(i) {
+			$(this).removeAttr('disabled');
+			$("#couponBook_tbody").find("input[name=vali_term_end_time_list]").eq(i).removeAttr('disabled');
+			$("#couponBook_tbody").find("input[name=vali_term_end_dd_list]").eq(i).attr('disabled','disabled');
+			$("#couponBook_tbody").find("input[name=vali_term_end_dd_list]").eq(i).val($("#couponBook_tbody").find("input[name=vali_term_start_dd_list]").eq(i).val());
+		});
+	}
+});
+
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 화면 : 캠페인에 속한 고객군 리스트 호출(세션 데이터가 있어서 JS 파일로 이전 못함!)
+ * ==================================================================================
+ */
+function f_segmentList(id) {
+	
+	var data = {
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			campaign_id: id,
+			custgp_cl_cpbook_id: $('input[name=custgp_cl_cpbook_id]').val()
+	}; 
+	
+	$.ajax({
+	    url: api_url+'/backoffice/campaign/custgroup/list',
+	    type: 'GET', // GET or POST
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var tbody = $('#segment_tbody');
+	    	tbody.html('');
+	    	$.each(obj.data.custgp_list, function(i, items) {
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c">'+items.rnum+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.lst_custgp_id+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.custgp_nm+'</td>\n';
+	    		tag_td += '<td class="ta-c">'+items.cpbook_mapping_cnt_now + '/' + items.cpbook_mapping_cnt_total +'</td>\n';
+	    		
+	    		var tag_tr = '<tr onclick="f_setFormCampaignId(\''+items.lst_custgp_id+'\',\''+items.custgp_nm+'\');" class="pointer">'+tag_td+'</tr>';
+	    		tbody.append(tag_tr);
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 화면 : 고객군에 속한 쿠폰북 호출(등록/수정 화면 용)
+ * ==================================================================================
+ */
+function f_couponBookList(id) {
+	
+	var data = {
+			custgp_cl_cpbook_id : $('input[name=custgp_cl_cpbook_id]').val(),
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			lst_custgp_id : id
+	};
+	
+	$.ajax({
+	    url: api_url+'/backoffice/campaign/couponbook/list', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: false,
+	    cache: true,
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var tbody = $('#couponBook_tbody');
+	    	tbody.html('');
+	    	$.each(obj.data.cpbook_list, function(i, items) {
+	    		var tag_td = '';
+	    		
+	    		tag_td += '<td><input type="checkbox" value="'+items.cpbook_id+'"></td>\n';
+	    		tag_td += '<input type="hidden" name="cpbook_id_list" data-array-always="true" value="'+items.cpbook_id+'">';
+	    		tag_td += '<td>'+items.cpbook_id+'</td>\n';
+	    		tag_td += '<td>'+items.cpbook_nm+'</td>\n';
+	    		tag_td += '<td>'+items.cpbook_type_cd_name+'</td>\n';
+	    		tag_td += '<td>'+items.coupon_cnt+'</td>\n';
+// 	    		tag_td += '<td class="ta-c input-icon-right"><select id="open_date_list" name="open_date_list" data-array-always="true"><option value="0">D-0</option><option value="1">D-1</option><option value="3">D-3</option><option value="5">D-5</option><option value="7">D-7</option><option value="10">D-10</option><option value="15">D-15</option></select></td>';
+// 				tag_td += "<td class='ta-c input-icon-right'><input type='text' id='open_date_list' name='open_date_list' data-array-always='true' class='form-control' onkeyup='cf_numChk(this);' /></td>";
+				tag_td += '<td class="ta-c input-icon-right"><input type="text" id="open_date_list" name="open_date_list" data-array-always="true" class="form-control" onkeyup="cf_numChk(this);" value='+items.open_date_dd+' style="padding:0 0 0 2px; text-align:center" maxlength="3" /></td>';
+	    		tag_td += '<td class="ta-c input-icon-right"><i class="fa fa-calendar" style="padding-right:10px"></i><input class="form-control datepicker" name="vali_term_start_dd_list" data-valid-use="true" data-array-always="true" data-date-format="yyyyMMdd" type="text" onchange="cf_chg(this);" data-dateformat="yy-mm-dd" data-valid-title="시작일" placeholder="시작일" value="'+cf_cvtDateFormat(items.vali_term_start_dd.substring(0,8), 'yyyy-MM-dd')+'"></td>\n';
+	    		tag_td += "<td><input type='text' name='vali_term_start_time_list' data-valid-use='true' data-array-always='true' class='form-control' onkeyup='cf_numChk2(this);' data-valid-title='시작시간' style='padding:0 0 0 2px; text-align:center' maxlength='2' value='" + items.vali_term_start_dd.substring(8,10) + "' /></td>";
+	    		tag_td += '<td class="ta-c input-icon-right"><i class="fa fa-calendar" style="padding-right:10px"></i><input class="form-control datepicker" name="vali_term_end_dd_list" data-valid-use="true" data-array-always="true" data-date-format="yyyyMMdd" type="text" data-dateformat="yy-mm-dd" data-valid-title="종료일" placeholder="종료일" value="'+cf_cvtDateFormat(items.vali_term_end_dd.substring(0,8), 'yyyy-MM-dd')+'"></td>\n';
+	    		tag_td += "<td><input type='text' name='vali_term_end_time_list' data-valid-use='true' data-array-always='true' class='form-control' onkeyup='cf_numChk2(this);' data-valid-title='종료시간' style='padding:0 0 0 2px; text-align:center' maxlength='2' value='" + items.vali_term_end_dd.substring(8,10) + "' /></td>";
+	    		
+	    		var tag_tr = '<tr>'+tag_td+'</tr>';
+	    		tbody.append(tag_tr);
+	    	});
+	    	
+	    	if(obj.data.cpbook_gbn == ""){
+	    		$("#cpbook_gbn_span").hide();
+	    	}else{
+	    		$("#cpbook_gbn_span").show();
+	    		$('input:radio[name=cpbook_gbn]:input[value='+ obj.data.cpbook_gbn +']').prop("checked", true); // 쿠폰북 구분 (신규추가) (A:일반, B:신데렐라)
+	    	}
+	    	
+	    	if(obj.data.cpbook_gbn == "A"){
+	    		$('#couponBook_tbody').find('input[name=vali_term_start_time_list]').each(function(i) {
+	    			$(this).attr('disabled','disabled');
+	    			$("#couponBook_tbody").find("input[name=vali_term_end_time_list]").eq(i).attr('disabled','disabled');
+	    		});
+	    	}else if(obj.data.cpbook_gbn == "B"){
+	    		$('#couponBook_tbody').find('input[name=vali_term_start_time_list]').each(function(i) {
+	    			$(this).removeAttr('disabled');
+	    			$("#couponBook_tbody").find("input[name=vali_term_end_time_list]").eq(i).removeAttr('disabled');
+	    			$("#couponBook_tbody").find("input[name=vali_term_end_dd_list]").eq(i).attr('disabled','disabled');
+	    		});
+	    	}
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+
+/* ============================================================================================
+/* 캠페인 정보 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_campainSubmit() {
+	if($('#frmCampaign').formValid()) {
+		
+		var data = $('#frmCampaign').serializeFormObject();
+		
+		$.ajax({
+		    url: api_url+'/backoffice/campaign/custgroup/couponbook/issue/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    beforeSend : function() {},
+		    success: function(obj){
+		    	// 캠페인 선택 버튼, 저장 버튼 히든처리
+		    	$('#campain_btn_area').hide();
+	    		$('#btn_campain_area').hide();
+		    	
+	    		// 리턴 정보 셋팅
+		    	$('input[name=custgp_cl_cpbook_id]').val(obj.data.custgp_cl_cpbook_id);
+	    		$('input[name=custgp_cl_cpbook_title]').addClass('cs-css-03');
+	    		
+	    		
+	    		// 고객군 리스트 정보 호출
+	    		f_segmentList($('#frmCampaign').find('input[name=campaign_id]').val());
+	    		
+	    		alert(obj.message);
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+	else {
+		return;
+	}
+}
+
+
+/* ============================================================================================
+/* 고객군별 쿠폰북 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_segCpbookSubmit() {
+		
+	if($('#frmCampaignBook').formValid()) {
+		
+		if( f_customOverDate() != true) {
+			return;
+		}
+		
+		var data = $('#frmCampaignBook').serializeFormObject();
+
+		$.ajax({
+		    url: api_url+'/backoffice/campaign/couponbook/save',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    beforeSend : function() {},
+		    success: function(obj){
+		    	alert(obj.message);
+		    	
+		    	// 고객군 리스트 정보 호출
+	    		f_segmentList($('#frmCampaign').find('input[name=campaign_id]').val());
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	}
+	else {
+		return;
+	}
+}
+
+
+function cf_numChk2(obj) {
+	  
+	var formnum = $(obj).val();
+
+	regexp = /^\$|,/g; 
+	formnum = formnum.replace(regexp, ""); 
+    
+	var fieldnum = '' + formnum;    
+
+	if (isNaN(fieldnum)) {
+		alert("숫자만 입력하실 수 있습니다.");        
+        $(obj).val("0");
+        $(obj).focus();
+        return "";
+	}
+	
+	if(parseInt(fieldnum) > 23){
+		alert("시간은 0~23까지 입력하여주십시오");
+        $(obj).val("0");
+        $(obj).focus();
+		return;
+	}
+}
+
+function cf_chg(obj) {
+	var i = $("input[name='vali_term_start_dd_list']").index($(obj)); 
+	if($(":radio[name='cpbook_gbn']:checked").val() == "B"){
+		$('#couponBook_tbody').find('input[name=vali_term_end_dd_list]').eq(i).val($(obj).val());
+	}
+}
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+</script>

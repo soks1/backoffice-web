@@ -1,0 +1,331 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">노출 구분</label>
+									<div class="col-md-3">
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="" data-check-only="true" checked="checked">전체</label>
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="M" data-check-only="true">회원</label>
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="N" data-check-only="true">비회원</label>
+                                        <label class="radio radio-inline">
+                                        <input type="radio" name="nomem_view_gbn" value="X" data-check-only="true">혼합</label>
+                                    </div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">등록일자</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="s_reg_date" name="s_reg_date" type="text" placeholder="시작일" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="e_reg_date" name="e_reg_date" type="text" placeholder="종료일" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<label class="col-md-1 control-label">키워드</label>
+									<div class="col-md-2">
+										<select class="form-control" name="stype">
+											<option value="">선택</option>
+											<option value="title" selected="selected">제목</option>
+											<option value="reg_nm">등록자</option>
+										</select>
+									</div>
+									
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="sword" >
+									</div>
+								</div>
+								
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 공지사항 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_user_notice_grid" class="widget-body no-padding">
+						<table id="user_notice_grid"></table>
+						<div id="user_notice_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 리스트 화면 : 달력 포멧 사용 정의
+ * ==================================================================================
+ */
+$('#s_reg_date').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#e_reg_date").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#e_reg_date').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#s_reg_date").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#user_notice_grid").parent().width() - 100;
+
+		jQuery("#user_notice_grid").jqGrid({
+			url : api_url + "/backoffice/common/board/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '제목', '노출구분', '게시시작일', '게시종료일','게시상태',  '등록자', '등록일자'],
+			colModel : [
+				{ name : 'no', 					index : 'no',		 			align : "center",	sortable : false, 	width : (pageWidth*(5/100))		},  
+				{ name : 'title', 				index : 'title', 				align : "center", 	sortable : false, 	width : (pageWidth*(45/100)), 	classes:'pointer' },
+				{ name : 'nomem_view_gbn_name', index : 'nomem_view_gbn_name', 	align : "center",	sortable : true, 	width : (pageWidth*(10/100))	},
+				{ name : 'ntce_start_dd', 		index : 'ntce_start_dd', 		align : "center",	sortable : true, 	width : (pageWidth*(10/100))	},
+				{ name : 'ntce_end_dd', 		index : 'ntce_end_dd',			align : "center", 	sortable : true, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'ntce_sts_cd_name', 	index : 'ntce_sts_cd_name',		align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'reg_id_name', 		index : 'reg_id_name',			align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	}, 
+				{ name : 'reg_date', 			index : 'reg_date',				align : "center", 	sortable : false, 	width : (pageWidth*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "noticbd_id",
+				root : 		function(obj){ return obj.data.noticbd_list; },		// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; 	},	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; 		}, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; 	}	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				// 기존 검색 조건 유지 부분
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#user_notice_grid").jqGrid('setGridParam', {search: true});
+					$("#user_notice_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#user_notice_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#user_notice_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				// 기존 Keep Data 삭제
+				$("#frmKeepData").empty();
+				
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				/* search_info: {
+					s_reg_date : $('#s_reg_date').cvtDateDefault(),
+					e_reg_date : $('#e_reg_date').cvtDateDefault()
+				}, */
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+				noticbd_divn_cd: "NOTICE"
+			},
+			search:false,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#user_notice_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){ },
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 2) {
+					$("#user_notice_grid").jqGrid('setGridParam', {'postData' : {'noticbd_id':rowid} });
+					var postData = $('#user_notice_grid').jqGrid("getGridParam", "postData");
+					
+					var url = "/application/board/user_notice/user_noticeRN.do";
+					var method = "POST";
+					cf_action(url, method, postData);
+			   }
+			}
+		});
+		jQuery("#user_notice_grid").jqGrid('navGrid', "#user_notice_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+					
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#user_notice_grid").jqGrid('navButtonAdd','#user_notice_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					
+					if(select_ids.length < 1) {
+						alert("삭제할 항목을 먼저 선택해 주십시오.");
+					} else {				
+						if(confirm(select_ids.length + "개의 항목을 삭제하시겠습니까?")) {
+							
+							var data = {
+								noticbd_id_list : select_ids,
+								empno: '${sessionScope.sessionEmpno}', 
+								emp_str_cd: '${sessionScope.sessionStrCd}',
+								hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+							};
+							
+							$.ajax({
+								url: api_url + "/backoffice/common/board/delete",
+								type: "POST",
+								contentType: "application/json;charset=utf-8", // POST 일때만 사용
+								async: false,
+								cache: true,
+								data: JSON.stringify(data),
+								success: function(obj) {
+									alert(obj.message);
+									$("#user_notice_grid").trigger("reloadGrid");
+								},
+								error: function(obj) {
+							    	var serverObj = obj.responseJSON;
+							    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+							    	return;
+							    }
+							});
+						}
+					}
+				}
+			});
+		}
+
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#user_notice_grid").jqGrid('navButtonAdd','#user_notice_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/board/user_notice/user_noticeWN.do";
+					var method = "POST";
+					var postData = $('#user_notice_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});
+		}
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+		
+	  	
+	  	$("#user_notice_grid").gridCss();
+	  	$("#user_notice_grid_cb").css("border-left-width","0");
+	  	$("#user_notice_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_user_notice_grid_cb").css("padding","7px 0");
+	  	$("#user_notice_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#user_notice_grid").jqGrid( 'setGridWidth', $("#target_user_notice_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+
+</script>

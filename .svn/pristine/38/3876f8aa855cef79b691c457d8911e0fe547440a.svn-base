@@ -1,0 +1,91 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<style>
+			.table01, .table01 th, .table01 td { border:1px solid #ccc;  }
+			.table01 { border-collapse:collapse; width:100%; }
+			.table01 th { background:#f9f9f9; text-align:center;}
+			.table01 td { padding:10px; }
+		
+</style>
+<section id="widget-grid" class="">
+		<div class="wrap">
+				<table class="table01">
+						<colgroup>
+								<col width="10%">
+								<col width="*">
+						</colgroup>						
+						<tbody>
+								<tr>
+										<th>에러내용 </th>
+										<td>
+											<span id="error_content"></span>
+										</td>
+								</tr>
+								<tr>
+										<th>복구방법</th>
+										<td>
+											<span id="restore_content">
+											</span>
+										</td>
+								</tr>
+						</tbody>
+				</table>	
+		</div>
+</section>
+
+
+<script type="text/javascript">
+
+
+/* ============================================================================================
+/* 
+/* --------------------------------------------------------------------------------------------
+/* 팝업 상세 화면 데이터 값 불러오기
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	var data = {			
+			empno: '${sessionScope.sessionEmpno}', 
+			log_serial_no : "<%=LangUtil.replaceInjection(request.getParameter("schedule_id"))%>"
+	};
+	
+	// 기본 정보
+	$.ajax({
+	    url: api_url+"/backoffice/system/schedule/result/show", 
+	    type: "GET", 
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){	    		    	
+	    	//에러내용
+	    	$("#error_content").html(obj.data.error_content);
+	    	//복구방법
+	    	$("#restore_content").html(obj.data.restor_method_content);	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

@@ -1,0 +1,337 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page import="com.penta.backoffice.web.common.controller.CommonController"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회조건</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch_cpzine_contents" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">제목</label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" name="cpzine_contents_subject">
+									</div>
+									<label class="col-md-1 control-label">등록일자</label>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="s_reg_date" name="s_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' onclick="f_datepickerIndex();" placeholder="시작일" >
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-4half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" id="e_reg_date" name="e_reg_date" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' onclick="f_datepickerIndex();" placeholder="종료일" >
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">컨텐츠타이틀</label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" name="cpzine_contents_title" data-valid-title="컨텐츠타이틀">
+									</div>
+									<label class="col-md-1 control-label">분류</label>
+									<div class="col-md-4">
+										<select class="form-control" name="cpzine_contents_cat_id">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+						<div class="form-actions mt0">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="javascript:void(0)" id="btn_search" onclick="f_searchCpZineContents();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row" id="bookLL">
+		<!-- 고객군 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회결과</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body no-padding">
+						<div class="alert alert-info no-margin fade in">
+							<a href="javascript:cf_addTableRow('from_tbody_cpzine_contents','to_tbody_cpzine_contents',1);" class="btn btn-info" style="width:100%">추가&nbsp;&gt;&gt;</a>
+						</div>
+						<div class="table-responsive" style="max-height:417px; overflow: auto;">
+							<table class="table table-bordered table-striped" style="width: 1024px;">
+								<thead>
+									<tr>
+										<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+										<th class="ta-c">No.</th>
+										<th class="ta-c">제목</th>
+										<th class="ta-c">컨텐츠 타이틀</th>
+										<th class="ta-c">분류</th>
+										<th class="ta-c">등록일자</th>
+									</tr>
+								</thead>
+								<tbody id="from_tbody_cpzine_contents">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<!-- 고객군별 쿠폰북 선택 영역 시작 -->
+		<article class="col-sm-12 col-md-12 col-lg-6">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-2" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>선택항목</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body no-padding">
+						<div class="alert alert-info no-margin fade in">
+							<a href="javascript:cf_delTableRow('to_tbody_cpzine_contents');" class="btn btn-info" style="width:100%">&lt;&lt;&nbsp;삭제</a>
+						</div>
+						<div class="table-responsive" style="max-height:417px; overflow: auto;">
+							<table class="table table-bordered table-striped" style="width: 1024px;">
+								<thead>
+									<tr>
+										<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+										<th class="ta-c">No.</th>
+										<th class="ta-c">제목</th>
+										<th class="ta-c">컨텐츠 타이틀</th>
+										<th class="ta-c">분류</th>
+										<th class="ta-c">등록일자</th>
+									</tr>
+								</thead>
+								<tbody id="to_tbody_cpzine_contents">
+									
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+
+<script type="text/javascript">
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#s_reg_date').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#e_reg_date').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#e_reg_date').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#s_reg_date').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/**
+ * ==================================================================================
+ * 달력 : 달력 인덱스 조정
+ * ==================================================================================
+ */
+function f_datepickerIndex() {
+	$('#ui-datepicker-div').css('z-index','10000');
+}
+
+
+
+
+function f_searchCpZineContents() {
+	
+
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if($('#frmSearch_cpzine_contents').searchValid() != true) {
+		alert('검색 조건을 입력해 주세요.');
+		return;
+	}
+
+	if( $('#s_reg_date').getObjLength() > 0 ) {
+		if( $('#e_reg_date').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_reg_date').getObjLength() > 0 ) {
+		if( $('#s_reg_date').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 검색 초기화 버튼 추가
+	f_addButton();
+
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 검색 폼 데이터 추출
+	var search_info = $("#frmSearch_cpzine_contents").serializeFormObject();
+	// 액션 데이터
+	var search_data = {};
+	
+	search_data["search_info"] = search_info;
+	search_data["empno"] = '${sessionScope.sessionEmpno}';
+	search_data["emp_str_cd"] = '${sessionScope.sessionStrCd}';
+	search_data["_search"] = true;
+	search_data["rows"] = "10";
+	search_data["page"] = 1;
+	search_data["sidx"] = "reg_date";
+	search_data["sord"] = "desc";
+	search_data["list_all_yn"] = "Y";
+	
+	$.ajax({
+	    url: api_url+"/backoffice/nomember/contents/list", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(search_data)),
+	    beforeSend : function() {},
+	    success: function(resultData){
+
+	    	$("#from_tbody_cpzine_contents").empty();
+	    	var cpzine_contents_list = resultData["data"]["cpzine_contents_list"] || [];
+	    	$.each(cpzine_contents_list, function(i, items) {
+	    		var $tr = $('<tr></tr>').data('item', items).appendTo( $("#from_tbody_cpzine_contents") );
+	    		$('<td></td>', {'class': 'ta-c'}).append( $('<input/>', {'type': 'checkbox'}).val(items["cpzine_contents_id"]) ).appendTo( $tr );
+	    		$('<td></td>', {'class': 'ta-c'}).text( i+ 1 ).appendTo( $tr );
+	    		$('<td></td>', {'class': 'ta-c'}).text( items["cpzine_contents_subject"] ).appendTo( $tr );
+	    		$('<td></td>', {'class': 'ta-c'}).text( items["cpzine_contents_title"] ).appendTo( $tr );
+	    		$('<td></td>', {'class': 'ta-c'}).text( items["cpzine_contents_cat_nm"] ).appendTo( $tr );
+	    		$('<td></td>', {'class': 'ta-c'}).text( items["reg_date"] ).appendTo( $tr );
+	    		
+	    		/*
+	    		var tag_td = '';
+	    		tag_td += '<td class="ta-c"><input type="checkbox" value="'+items["cpzine_contents_id"]+'"></td>';
+	    		tag_td += '<td class="ta-c">'+(i+1)+'</td>';
+	    		tag_td += '<td class="ta-c">'+items["cpzine_contents_subject"]+'</td>';
+	    		tag_td += '<td class="ta-c">'+items["cpzine_contents_title"]+'</td>';
+	    		tag_td += '<td class="ta-c">'+items["cpzine_contents_cat_nm"]+'</td>';
+	    		tag_td += '<td class="ta-c">'+items["reg_date"]+'</td>';
+	    		var tag_tr = "<tr>"+tag_td+"</tr>";
+	    		$("#from_tbody_cpzine_contents").append(tag_tr);
+	    		*/
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	$("#btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	
+// 	// 검색 초기화 버튼 삭제
+	$('#btn_cancel').remove();
+		
+	// 검색 폼의 항목들 초기화
+	$('#frmSearch_cpzine_contents').cleanObject();
+	
+	// 조회 리스트 초기화
+	$('#from_tbody_cpzine_contents').empty();
+	
+}
+
+
+/**
+ * ============================================================================================
+ * 체크 박스 선택에 따른 값 변경
+ * --------------------------------------------------------------------------------------------
+ * 체크 TRUE		: Y
+ * 체크 FALSE	: N
+ * ============================================================================================ 
+ */
+$('#cpzine_contents_sd .checkbox').change(function() {
+	if($(this).is(':checked')) {
+		$(this).val('Y');	
+	} else {
+		$(this).val('N');
+	}
+});
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	// 초기데이터 로드 : 쿠폰진 분류코드
+	f_ajaxNomemCpzineCateCode($('select[name=cpzine_contents_cat_id]'));
+	
+};
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+dialog_pagefunction();
+</script>

@@ -1,0 +1,258 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html('&#160;');
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰진 컨텐츠 리스트 화면 이동
+ * ==================================================================================
+ */
+function f_couponZineContentsList() {
+	var url = "/application/coupon/zineContents/couponZineContentsLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰북 수정 화면 이동
+ * ==================================================================================
+ */
+function f_couponZineContentsEdit() {
+	var url = "/application/coupon/zineContents/couponZineContentsEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+/**
+ * ==================================================================================
+ * 공통 : 쿠폰진 삭제
+ * ==================================================================================
+ */
+function f_couponZineContentsDel() {
+	if($("input[name=deletable]").val() =="N") {
+		alert("쿠폰진에 매핑된 컨텐츠는 삭제가 불가능합니다.");
+		return;
+	}
+	
+	var select_ids = [$("#frmKeepData").find("input[name=cpzine_contents_id]").val()];
+	var data = {
+		empno: $("#frmKeepData").find("input[name=empno]").val(), 
+		emp_str_cd: $("#frmKeepData").find("input[name=emp_str_cd]").val(),
+		cpzine_contents_id_list : select_ids
+	};
+	if(confirm("삭제하시겠습니까?")) {
+		$.ajax({
+			url: api_url + "/backoffice/couponzine/contents/delete",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(resultData) {
+				alert(resultData["message"]);
+				f_couponZineContentsList();
+			},
+			error: function(resultData) {
+		    	var serverObj = resultData["responseJSON"] || {};
+		    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if($('#frmSearch').searchValid() != true) {
+		alert('검색 조건을 입력해 주세요.');
+		return;
+	}
+	
+	if( $('#s_reg_date').getObjLength() > 0 ) {
+		if( $('#e_reg_date').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_reg_date').getObjLength() > 0 ) {
+		if( $('#s_reg_date').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 검색 초기화 버튼 추가
+	f_addButton();
+
+	// 검색 폼 데이터 추출
+	var searchData = $('#frmSearch').serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$('#coupon_zine_contents_grid').jqGrid('setGridParam', {search: true});
+	$("#coupon_zine_contents_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$('#coupon_zine_contents_grid').jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#btn_search').parent().append('<a href="javascript:void(0)" id="btn_cancel" onclick="f_cancel();" class="btn btn-warning"><i class="fa fa-remove"></i> 초기화 </a>');
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// KeepData 폼 안에 input 태그 삭제
+	$('#frmKeepData').empty();
+	// 검색 초기화 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#coupon_zine_contents_grid').jqGrid('setGridParam', {search: false});
+	$('#coupon_zine_contents_grid').jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$('#coupon_zine_contents_grid').jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$('#frmSearch').cleanObject();
+}
+
+
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰진 분류 관리 조회/삭제 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponZineContentsClassifyLD() {
+	$.ajax({
+		url: "/application/coupon/zineContents/couponZineContentsClassifyLD.do",
+		type: 'POST',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#coupon_zine_contents_classify_ld');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#coupon_zine_contents_classify_ld').dialog('open');
+		}
+	});
+}
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰진 분류 관리 등록 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponZineContentsClassifyWD(cpzine_contents_cat_id) {
+	var  pop_data = cpzine_contents_cat_id;
+	$.ajax({
+		url: "/application/coupon/zineContents/couponZineContentsClassifyWD.do",
+		type: 'POST',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#coupon_zine_contents_classify_wd');
+			$target.html(data);
+		},
+		complete: function() {
+			if($("#coupon_zine_contents_classify_wd").parents(".ui-dialog").is(":visible") && pop_data != ""){
+				$("#wid-id-2 input[name='cpzine_contents_cat_id']").val(cpzine_contents_cat_id);
+				f_cpzineCategoryDetail();
+			} else{
+				$('#coupon_zine_contents_classify_wd').data("cpzine_contents_id",cpzine_contents_cat_id).dialog('open');	
+			}
+			
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰진 미리보기
+ * ==================================================================================
+ */
+function f_openCouponZinePreview(){
+	$.ajax({
+		url: "/application/coupon/zineContents/couponZineContentsPreviewLD.do",
+		type: 'POST',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#coupon_zine_contents_preview_ld');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#coupon_zine_contents_preview_ld').dialog('open');
+		}
+	});
+}
+
+$.initialzineContentsEdit = function() {
+	var linkBannerTypeOption = {
+		  'STAMP': { 'item': 'stamp_list', 'uri': api_url + '/backoffice/stamp/activelist', 'option': {'key': 'stamp_id', 'label': 'evt_title'} }
+		, 'JOINTPURCHASE': { item: 'jointpurchase_list', 'uri': api_url + '/backoffice/event/jointpurchase/activelist', 'option': {'key': 'fcfs_evnt_id', 'label': 'evt_title'} }
+	};
+
+	var $linkBannerId = $('select[name=link_banner2_type_id]')
+		.bind('init', function(_self, options) {
+			var self = this;
+			$(self).empty();
+			$(self).append( $('<option></option>').val('').text('선택') );
+
+			if (options)
+				if ($.isArray(options['data']))
+					$.each(options['data'], function() { $(self).append( $('<option></option>').val(this[options['key']]).text(this[options['label']]) ); });
+				else
+					$(self).children(':first').text('선택 가능한 항목이 없습니다.');
+
+			$(self).val( $(self).data('default') || '' );
+		});
+	$('select[name=link_banner2_type]').on('change', function() {
+		var self = this;
+
+		if ($(self).val() == "") $linkBannerId.triggerHandler('init');
+		else
+			$.ajax({
+				url: linkBannerTypeOption[$(self).val()]['uri'],
+				type: 'GET',
+				data: encodeURI('params='+JSON.stringify($.getSessionData())),
+				success: function(response) {
+					if (response['code'] == 'S0000') $linkBannerId.triggerHandler('init', $.extend({'data': response['data'][linkBannerTypeOption[$(self).val()]['item']]}, linkBannerTypeOption[$(self).val()]['option']));
+					else alert(response['message']);
+				}
+			});
+	});
+
+	$('select[name=link_banner2_type]').val( $('select[name=link_banner2_type]').data('default') || '').trigger('change');
+};

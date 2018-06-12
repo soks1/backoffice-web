@@ -1,0 +1,132 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+<!-- 			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false"> -->
+<!-- 				<header> -->
+<!-- 					<span class=""> <i class="fa fa-table"></i> </span> -->
+<!-- 				</header> -->
+				<div id="wid-id-2">
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmSearchCampain">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">분류명</label>
+									<div class="col-md-10">
+										<input type="hidden" name="cpzine_contents_cat_id"/>
+										<input class="form-control" type="text" name="cpzine_contents_cat_nm"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">분류설명</label>
+									<div class="col-md-10">
+										<textarea class="form-control" name="cpzine_contents_cat_desc" rows="5" data-valid-max="1000" data-valid-title='분류설명'></textarea>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+					</div>
+<!-- 				</div> -->
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+
+/**
+ * ==================================================================================
+ * 달력 : 컨텐츠 분류 상세조회
+ * ==================================================================================
+ */
+function f_cpzineCategoryDetail() {
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["cpzine_contents_cat_id"] = $("#wid-id-2 input[name='cpzine_contents_cat_id']").val();
+	
+	$.ajax({
+	    url: api_url+"/backoffice/couponzine/contents/category/show",
+	    type: "GET", 
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	$("#wid-id-2 input[name='cpzine_contents_cat_nm']").val(resultData["data"]["cpzine_contents_cat_nm"]);
+	    	$("#wid-id-2 textarea[name='cpzine_contents_cat_desc']").val(resultData["data"]["cpzine_contents_cat_desc"]);
+	    	 
+	    },
+	    error: function(resultData) {
+	    	var serverObj = resultData["responseJSON"] || {};
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    }
+	});
+}
+
+/**
+ * ==================================================================================
+ * 달력 : 컨텐츠 분류 입력/수정
+ * ==================================================================================
+ */
+function f_cpzineCategorySave() {
+	
+	if($("input[name='cpzine_contents_cat_nm']").val().trim() == 0) {
+		alert('분류명을 입력해주세요');
+		return;
+	}
+	
+	if($('#wid-id-2 textarea').val().trim() == 0 ) {
+		alert('분류설명을 입력해주세요');
+		return;
+	}
+	
+	var returnData ="";
+	var url =""
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["cpzine_contents_cat_id"] = $("#wid-id-2 input[name='cpzine_contents_cat_id']").val();
+	data["cpzine_contents_cat_nm"] = $("#wid-id-2 input[name='cpzine_contents_cat_nm']").val();
+	data["cpzine_contents_cat_desc"] = $("#wid-id-2 textarea[name='cpzine_contents_cat_desc']").val();
+
+	if($("#wid-id-2 input[name='cpzine_contents_cat_id']").val() == ""){
+		url = "/backoffice/couponzine/contents/category/create";
+	} else{
+		url = "/backoffice/couponzine/contents/category/update";
+	}
+
+	$.ajax({
+	    url: api_url+url,
+	    type: "POST", 
+	    async: false,
+	    cache: false,
+	    datatype: 'json',
+	    data: JSON.stringify(data) ,
+	    contentType: "application/json;charset=utf-8",
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	returnData = resultData["code"];
+	    	if(resultData["code"] == "S0000"){
+	    		alert("완료처리되었습니다.");
+	    	}
+	    },
+	    error: function(resultData) {
+	    	var serverObj = resultData["responseJSON"] || {};
+	    	returnData = serverObj["code"];
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    }
+	});
+	
+	return returnData;
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+</script>

@@ -1,0 +1,209 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+
+<%
+// 	Enumeration<?> e = request.getParameterNames();
+// 	while(e.hasMoreElements()){
+// 		String key = (String)e.nextElement();
+// 		String values[] = request.getParameterValues(key);
+// 		for(int i = 0; i < values.length; i++) {
+// 			out.println("<input type=\"text\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+// 		}
+// 	}
+%>
+
+<% 
+	String img_path = request.getParameter("img_path") == null ? "" : (String)request.getParameter("img_path");
+	String img_view_nm = request.getParameter("img_view_nm") == null ? "" : (String)request.getParameter("img_view_nm");
+	String template_id = request.getParameter("template_id") == null ? "" : (String)request.getParameter("template_id");
+	String gen_content1 = request.getParameter("gen_content1") == null ? "" : (String)request.getParameter("gen_content1");
+	String gen_content2 = request.getParameter("gen_content2") == null ? "" : (String)request.getParameter("gen_content2");
+	String gen_content3 = request.getParameter("gen_content3") == null ? "" : (String)request.getParameter("gen_content3");
+	String gen_content4 = request.getParameter("gen_content4") == null ? "" : (String)request.getParameter("gen_content4");
+	String gen_content5 = request.getParameter("gen_content5") == null ? "" : (String)request.getParameter("gen_content5");
+	String gen_content6 = request.getParameter("gen_content6") == null ? "" : (String)request.getParameter("gen_content6");
+	String gen_content7 = request.getParameter("gen_content7") == null ? "" : (String)request.getParameter("gen_content7");
+	String gen_content8 = request.getParameter("gen_content8") == null ? "" : (String)request.getParameter("gen_content8");
+	String gen_content9 = request.getParameter("gen_content9") == null ? "" : (String)request.getParameter("gen_content9");
+	String gen_content10 = request.getParameter("gen_content10") == null ? "" : (String)request.getParameter("gen_content10");
+
+	gen_content1 = gen_content1.replaceAll("(\r\n|\n)", "<br>");
+	gen_content2 = gen_content2.replaceAll("(\r\n|\n)", "<br>");
+ 	gen_content3 = gen_content3.replaceAll("(\r\n|\n)", "<br>");
+	gen_content4 = gen_content4.replaceAll("(\r\n|\n)", "<br>");
+	gen_content5 = gen_content5.replaceAll("(\r\n|\n)", "<br>");
+	gen_content6 = gen_content6.replaceAll("(\r\n|\n)", "<br>");
+	gen_content7 = gen_content7.replaceAll("(\r\n|\n)", "<br>");
+	gen_content8 = gen_content8.replaceAll("(\r\n|\n)", "<br>");
+	gen_content9 = gen_content9.replaceAll("(\r\n|\n)", "<br>");
+	gen_content10 = gen_content10.replaceAll("\r\n", "<br>");
+%>
+
+<!--
+<html>
+<head>
+<meta name="viewport" content="width=device-width, minimum-scale=0.1">
+</head>
+<body class="" style="margin: 0px;">
+-->
+
+	<div id="preview" class="" style="margin: 0 !important; padding: 0 !important;">
+		<div id="wrapper" style="
+		    background-image: url(<%=img_path %>);
+		    background-repeat: no-repeat;
+		    position: relative;
+		    width: 1120px;
+		    height: 745px;
+		">
+
+<%
+	if(template_id.equals("000000000000001"))
+	{
+%>
+			<div id="txt_title" class="" style="position: absolute; top: 83px; left: 279px; width: 560px; height: 75px;">
+				<div class="" style="font-size: 52px; font-family: '12롯데마트드림Bold'; color: rgb(249, 70, 99); text-align: center; transform: translateY(-50%); position: relative; top: 50%;white-space: nowrap; overflow: hidden;"><%=gen_content1 %></div>
+			</div>
+			<div id="txt_main" class="" style="position: absolute; top: 242.922px; left: 100px; width: 920px; height: 86px;">
+				<div class="" style="font-size: 55px; font-family: '12롯데마트드림Bold'; text-align: center; transform: translateY(-50%); position: relative; top: 50%;white-space: nowrap; overflow: hidden;"><%=gen_content2 %></div>
+			</div>
+			<div id="txt_detail" class="" style="position: absolute; top: 330px; left: 100px; width: 920px; height: 185px;">
+				<div class="" style="font-size: 40px; font-family: '12롯데마트드림Medium'; line-height: 46px; text-align: left; transform: translateY(-50%); position: relative; top: 50%;white-space: nowrap; overflow: hidden;"><%=gen_content3 %></div>
+			</div>
+			<div id="txt_period" class="" style="position: absolute; top: 523px; left: 100px; width: 920px; height: 55px;">
+				<div class="" style="font-size: 35px; font-family: '12롯데마트드림Bold'; text-align: center; transform: translateY(-50%); position: relative; top: 50%;white-space: nowrap; overflow: hidden;"><%=gen_content4 %></div>
+			</div>
+			<div id="txt_notice" class="" style="position: absolute; top: 617px; left: 100px; width: 920px; height: 65px;">
+				<div class="" style="font-size: 36px; font-family: '12롯데마트드림Bold'; text-align: center; transform: translateY(-50%); position: relative; top: 50%;white-space: nowrap; overflow: hidden;"><%=gen_content5 %></div>
+			</div>
+<%
+	}
+	else if(template_id.equals("000000000000002"))
+	{
+%>
+			<div id="txt_title" style="position: absolute; top: 122.844px; left: 52.8438px; width: 324px; height: 65px;">
+				<div style="font-size: 43px; font-family: '12롯데마트드림Bold'; color: rgb(255, 255, 255); text-align: center; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content2 %></div>
+			</div>
+			<div id="txt_main" style="position: absolute; top: 60.8594px; left: 722.906px; width: 324px; height: 65px;">
+				<div style="font-size: 33px; font-family: '12롯데마트드림Bold'; color: rgb(216, 49, 73); text-align: right; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content1 %></div>
+			</div>
+			<div id="txt_impact" style="position: absolute; top: 125.868px;left: 722.906px; width: 324px;height: 65px;">
+				<div style="font-size: 34px; font-family: '12롯데마트드림Bold'; color: white; text-align: right; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content5 %></div>
+			</div>
+			<div id="txt_detail" style="position: absolute;top: 227px;left: 590px; width: 460px;height: 115px;">
+				<div style="font-size: 36px; font-family: '12롯데마트드림Medium'; line-height: 45px; text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content6 %></div>
+			</div>
+			<div id="txt_detail" style="position: absolute;top: 357px;left: 590px; width: 460px;height: 115px;">
+				<div style="font-size: 36px; font-family: '12롯데마트드림Medium'; line-height: 45px; text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content7 %></div>
+			</div>
+			<div id="txt_detail" style="position: absolute;top: 487px;left: 590px;width: 460px; height: 115px;">
+				<div style="font-size: 36px; font-family: '12롯데마트드림Medium'; line-height: 45px; text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content8 %></div>
+			</div>
+			<div id="txt_impact" style="position: absolute;top: 225px;lef t: 74.9688px;left: 70px; width: 285px;height: 125px;">
+				<div style="font-size: 73px; font-family: '12롯데마트드림Bold'; color: white; text-shadow: rgb(208, 126, 0) 4px 4px 2px; text-align: center; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content3 %></div>
+			</div>
+			<div id="txt_impact2" style="position: absolute;top: 368px;left: 70px;width: 285px;height: 235px;">
+				<div style="font-size: 46px; font-family: '12롯데마트드림Medium'; line-height: 56px; text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden; padding: 15px;"><%=gen_content4 %></div>
+			</div>
+			<div id="txt_notice" style="position: absolute; top: 621px; left: 79px; width: 960px; height: 65px;">
+				<div style="font-size: 36px; font-family: '12롯데마트드림Bold'; color: rgb(104, 49, 63); text-align: center; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content9 %></div>
+			</div>
+<%
+	}
+	else if(template_id.equals("000000000000003"))
+	{
+%>
+			<div id="txt_impact" style="position: absolute; top: 77.8438px;left: 320px;width: 475px;height: 55px;">
+				<div style="font-size: 33px; font-family: '12롯데마트드림Bold'; color: rgb(115, 72, 41); text-align: center; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content1 %></div>
+			</div>
+			<div id="txt_title" style="position: absolute; top: 134.826px; left: 320px; width: 475px; height: 65px; ">
+				<div style="font-size: 43px; font-family: '12롯데마트드림Bold'; color: rgb(255, 255, 255); text-align: center; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content2 %></div>
+			</div>
+			<div id="txt_detail" style="position: absolute;top: 315px;height: 285px;left: 70px;width: 320px;">
+				<div style="font-size: 41px; font-family: '12롯데마트드림Medium'; line-height: 50px;text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;padding: 20px;"><%=gen_content3 %></div>
+			</div>
+			<div id="txt_detail" style="position: absolute;top: 315px;height: 285px;left: 401px;width: 320px;">
+				<div style="font-size: 41px; font-family: '12롯데마트드림Medium'; line-height: 50px;text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;padding: 20px;"><%=gen_content4 %></div>
+			</div>
+			<div id="txt_detail" style="position: absolute;top: 315px;height: 285px;left: 732px;width: 320px;">
+				<div style="font-size: 41px; font-family: '12롯데마트드림Medium'; line-height: 50px;text-align: left; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;padding: 20px;"><%=gen_content5 %></div>
+			</div>
+			<div id="txt_notice" style="position: absolute;top: 613px;left: 70px;width: 982px;  height: 65px;">
+				<div style="font-size: 35px; font-family: '12롯데마트드림medium'; font-weight: bold; color: rgb(115, 72, 41); text-align: center; transform: translateY(-50%); position: relative; top: 50%; white-space: nowrap; overflow: hidden;"><%=gen_content6 %></div>
+			</div>
+<%
+	}
+%>
+
+		</div>
+	</div>
+
+	<form class="form-horizontal" id="frmGenImg">
+	    <input type="hidden" id="gen_img_data" name="gen_img_data">
+		<input type="hidden" id="gen_img_view_nm" value="<%=request.getParameter("img_view_nm") %>">
+		<input type="hidden" id="gen_img_path" value="<%=request.getParameter("img_path") %>">
+		<input type="hidden" id="gen_content_type" value="image/png">
+		<input type="hidden" id="gen_img_ext" value="png">
+	</form>
+
+	<div id="canvasImg" class=""></div>
+
+<!--
+</body>
+</html>
+-->
+
+
+
+<script src="${pageContext.request.contextPath}/resources/js/libs/html2canvas.js"></script>
+<script type="text/javascript">
+html2canvas($('#preview'), {  
+    onrendered: function (canvas) {
+    	
+    	if (typeof FlashCanvas != "undefined") {
+            FlashCanvas.initElement(canvas);
+        }
+    	
+
+		$('#gen_img_data').val(canvas.toDataURL("image/png"));
+		$('#canvasImg').html('<img style="" src="'+$('#gen_img_data').val()+'" title="미리보기 결과">');
+
+ 		$('#preview').hide();
+
+    
+		// 이미지 확장자 체크 및 변경
+		var file_nm1 = changeExtension($('#gen_img_view_nm').val(), "png")
+		$('#gen_img_view_nm').val(file_nm1);
+		
+		var file_nm2 = changeExtension($('#gen_img_path').val(), "png")
+		$('#gen_img_path').val(file_nm1);
+    
+    }
+// 	,logging : true
+});
+
+// 확장자 변경
+function changeExtension(fileName, ext) {
+
+	var newFileName = String.valueOf(fileName);
+
+	if (fileName == null || fileName == "undefined" || fileName.trim() == "") {
+		newFileName = "temp." + ext;
+	}
+	else {
+		var temps = fileName.split(".");
+		var extension = temps[temps.length - 1];
+		if(ext == extension) newFileName = fileName;
+		else {
+			for(var i=0; i<temps.length-1; i++) {
+				newFileName += temps[i] + "."
+			}
+			newFileName += temps[i] + "." + ext;
+		}
+	}
+
+	return newFileName;
+}
+
+
+</script>

@@ -1,0 +1,63 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<div class="form-group">
+	<div class="col-md-2 control-label radio">
+		<label><input type="radio" name="bsis_mison_yn_temp" value="06" onchange="f_basicMissionChange(this.value)"></label>
+		<input type="hidden" id="06" name="bsis_mison_yn_list" data-array-always="true" value="N">
+	</div>
+	<div class="col-md-10">
+		<div class="form-group">
+			<div class="col-md-12">
+				<div>
+					<p class="alert alert-info">참여 미션 상세 설정<br/>사용자가 1일 1회 참여 가능한 스탬프를 생성합니다. App화면에서 참여하기를 터치하면 스탬프가 날인됩니다. 최대값 31회</p>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-md-3half control-label ta-l">중간보상 여부</label>
+				<div class="col-md-2">
+					<select class="form-control" id="join_middle_reward_yn" name="join_middle_reward_yn" data-array-always="true" data-valid-use="true" data-valid-title="중간보상 여부" onchange="f_changeMiddleReward();">
+						<option value=""  disabled="disabled">선택</option>
+						<option value="Y" selected="selected">Y</option>
+						<option value="N">N</option>
+					</select>
+					<input type="hidden" id="join_fulfill_chanel" name="fulfill_chanel_cd_list" value="" />
+				</div>
+			<label class="col-md-3half control-label ta-l">미션횟수(스탬프수)</label>
+			<div class="col-md-3 ta-l">
+				<input class="form-control ta-l" id="join_stamp_mison_base_cnt" name="stamp_mison_base_cnt_list" type="text" data-array-always="true" data-valid-use="true" data-valid-num="true" data-valid-minnum="1" data-valid-maxnum="31" data-valid-title="미션횟수(스탬프수)">
+				<input type="hidden" name="stamp_apply_to_cd_list" value="JOIN" data-array-always="true">
+			</div>			
+		</div>
+		<div class="form-group">
+			<label class="col-md-3half control-label ta-l">참여방식 설명<sup>*</sup></label>
+			<div class="col-md-7 ta-l">
+			<!-- <div class="input-group"> -->
+				<input class="form-control ta-l" name="stamp_mison_desc" type="text"  data-valid-use="true"  data-valid-max="300" data-valid-title="참여방식 설명">					
+			<!-- </div> -->
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var joinFunction = function() {
+	
+	// 초기데이터 로드 : 온라인몰, 매장
+	f_ajaxPublerCode($('#join_fulfill_chanel'));
+
+};
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+joinFunction();
+
+</script>

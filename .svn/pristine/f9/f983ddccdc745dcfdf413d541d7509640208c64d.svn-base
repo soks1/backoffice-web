@@ -1,0 +1,2539 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>M스탬프 등록</h2>
+				</header>
+
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmStamp" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" id="campaign_id" name="campaign_id" value="">
+							<input type="hidden" name="campaign_start_dy" value="">
+							<input type="hidden" name="campaign_end_dy" value="">
+							<fieldset>
+								<legend>M스탬프 기본 정보</legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label">스탬프 유형<sup>*</sup></label>
+									<!-- <div class="col-md-3">
+										<label class="radio radio-inline">
+											<input type="radio" name="stamp_divn_cd" value="CRM" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형">
+											혼자하기 - CRM연계 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="stamp_divn_cd" value="PERSONAL" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형">
+											혼자하기 - CRM미연계 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="stamp_divn_cd" value="GROUP" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형">
+											함께하기 </label>
+									</div>
+									<div class="col-md-1 ta-l" id="div_user_cnt" style="display: none;">
+										<div class="input-group">
+											<input class="form-control" id="stamp_psbt_user_cnt" name="stamp_psbt_user_cnt" placeholder="정원" type="text" disabled="disabled">
+											<span class="input-group-addon">명</span>
+										</div>
+									</div> -->
+									
+									<div class="col-md-10">
+										<div class="col-md-2">
+											<div class="input-group">
+												<!-- <input type="radio" name="stamp_divn_cd" value="CRM" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형"> 혼자하기 - CRM연계 -->
+												<label class="radio radio-inline">
+													<input type="radio" name="stamp_divn_cd" value="CRM" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형">
+													혼자하기 - CRM연계
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<!-- <input type="radio" name="stamp_divn_cd" value="PERSONAL" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형"> 혼자하기 - CRM미연계 -->
+												<label class="radio radio-inline">
+													<input type="radio" name="stamp_divn_cd" value="PERSONAL" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형">
+													혼자하기 - CRM미연계
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<!-- <input type="radio" name="stamp_divn_cd" value="GROUP" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형"> 함께하기 -->
+												<label class="radio radio-inline">
+													<input type="radio" name="stamp_divn_cd" value="GROUP" data-valid-use="true" data-check-only="true" data-valid-title="스탬프 유형">
+													함께하기
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2 ta-l" id="div_user_cnt" style="display: none;">
+											<div class="input-group">
+												<input class="form-control" id="stamp_psbt_user_cnt" name="stamp_psbt_user_cnt" placeholder="정원" type="text" disabled="disabled">
+												<span class="input-group-addon">명</span>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group" id="campaign_custgp" style="display: none;">
+									<label class="col-md-2 control-label">캠페인/고객군<sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<a href="javascript:f_openStampCampaignSD();" id="btn_campaign" class="btn btn-primary btn-sm">선택</a>
+											<a href="javascript:f_delCampaign();" class="btn btn-danger btn-sm">삭제</a>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="stamp_campaign_id"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="stamp_campaign_term"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="stamp_custgp_cnt"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="stamp_campaign_nm"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-04" id="stamp_custgp"></span>
+											</div>
+										</div>
+									</div>
+									<legend></legend>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사 제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="evt_title" data-valid-use='true' data-valid-symbol='true' data-valid-max="108" data-valid-title='행사제목'>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사 설명</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="evt_desc" data-valid-max="108" data-valid-title='행사내용'>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">게시 구분<sup>*</sup></label>
+									<div class="col-md-1">
+										<div class="input-group">
+											<label class="radio radio-inline">
+												<input type="radio" name="rserv_ntce_yn" value="N" data-check-only="true" checked="checked">
+												즉시게시
+											</label>
+										</div>
+									</div>
+									<div class="col-md-1">
+										<div class="input-group">
+											<label class="radio radio-inline">
+												<input type="radio" name="rserv_ntce_yn" value="Y" data-check-only="true">
+												예약게시
+											</label>
+										</div>
+										<!-- <label class="radio radio-inline">
+											<input type="radio" name="rserv_ntce_yn" value="N" data-check-only="true" checked="checked">
+											즉시게시 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="rserv_ntce_yn" value="Y" data-check-only="true">
+											예약게시 </label> -->
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="rserv_ntce_dd" name="rserv_ntce_dd"  data-dateformat="yy-mm-dd" placeholder="예약일" disabled="disabled">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사 유형<sup>*</sup></label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="affiliate_yn" value="N" data-check-only="true" checked="checked">
+											비제휴 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="affiliate_yn" value="Y" data-check-only="true">
+											제휴 </label>
+									</div>
+								</div>
+								
+								<div class="form-group" id="event_alliance" style="display:none;">	
+									<label class="col-md-2 control-label">제휴사 코드<sup>*</sup></label>
+									<div class="col-md-2">
+										<div class="input-group">
+											<input type="hidden" id="ven_cd_search"  />
+											<span class="input-group-btn">
+						                        <button class="btn btn-default" id="btn_add_alliance" type="button" onclick="f_addAllianceCode();">추가</button>
+						                    </span>
+										</div>
+									</div>
+									<div class="col-md-2">
+										<input class="form-control tagsinput" value="" data-role="tagsinput">
+										<input name="ven_cd" type="hidden">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">미션 수행 지점<sup>*</sup></label>
+									<div class="col-md-4">
+										<!-- <select multiple id="event_branch" name="event_branch" style="width:100%">
+										</select> -->
+										<input type="hidden" id="str_cd" name="str_cd" value="">
+									</div>
+									
+									<div class="col-md-2">
+										<label class="checkbox-inline" >
+											  <input type="checkbox" class="checkbox style-2" name="" value="" id="ck_all_event_branch">
+											  <span>전체선택</span>
+										</label>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">APP노출지점<sup>*</sup></label>
+									<div class="col-md-4">
+										<label class="radio radio-inline">
+											<input type="radio" name="use_psbt_brnch_yn" value="Y" data-check-only="true" checked="checked">
+											사용가능매장 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="use_psbt_brnch_yn" value="N" data-check-only="true">
+											사용제외매장 </label>
+									</div>
+									<div class="col-md-6">
+										<input class="form-control" type="text" name="use_psbt_excp_brnch_content" placeholder="APP노출지점 입력" data-valid-use='true' data-valid-symbol='true' data-valid-max="78" data-valid-title='APP노출지점'>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사 기간<sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="evt_term_start_dd" name="evt_term_start_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="행사기간 시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 ta-c" type="text" id="evt_term_end_dd" name="evt_term_end_dd" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="행사기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지 <sup>*</sup></label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 사이즈: 350px X 350px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+								<!-- 20160404 jsm6125 행사 이미지 추가 -->
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사 이미지 </label>
+									<div class="col-md-2">
+										<div id="preview_evt_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="upload_evt_file" name="upload_evt_file">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 사이즈: 350px X 350px  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+								<!-- 20160404 jsm6125 행사 이미지 추가  END -->
+								<!-- 20160404 jsm6125 행사 안내 추가 -->
+								<div class="form-group">
+									<label class="col-md-2 control-label">행사 안내</label>
+									<div class="col-md-10">
+										<textarea class="form-control" name="evt_info" rows="3" data-valid-max="1000" data-valid-title='행사 안내'></textarea>
+									</div>
+								</div>
+								<!-- 20160404 jsm6125 행사 안내 추가 -->
+								<div class="form-group">
+									<label class="col-md-2 control-label">꼭! 읽어주세요</label>
+									<div class="col-md-10">
+										<textarea class="form-control" name="note_content" rows="5" data-valid-max="1000" data-valid-title='꼭! 읽어주세요'>
+&middot; 1인당 혼자하기 스탬프 카드 3개, 함께하기 스탬프 카드 1개만 보유할 수 있습니다.
+&middot; 대장은 서비스 탈퇴 시 대장 넘기기를 하신 후 탈퇴할 수 있습니다.</textarea>
+									</div>
+								</div>							
+								
+							</fieldset>
+							
+							<fieldset>
+								<legend>미션정보</legend>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">미션유형 선택<sup>*</sup></label>
+									<!--  단일, 혼합, 참여 -->
+									<div class="col-md-10">
+										<div class="form-group">
+											<div class="col-md-1 control-label radio">
+												<input type="radio" id="singleCond" name="condType" value="single"/><label for="singleCond">단일조건</<label>
+											</div>
+											<div class="col-md-9">
+												<div class="col-md-2">
+													<label class="checkbox-inline">
+														  <input type="checkbox" class="checkbox style-0" id="prod_ck" onchange="f_appoint(this);">
+														  <!-- <span>이거사면 쾅!쾅!(지정상품구매)</span> -->
+														  <span>상품구매</span>
+													</label>
+												</div>
+												<div class="col-md-2 ta-l">
+													<select class="form-control" id="prod_ck_cnt" name="prod_select_cnt" onchange="f_appointDisplayNum(this.value);" disabled="disabled">
+														<option value="0" selected="selected" disabled="disabled">선택</option>
+														<option value="1">1개</option>
+														<option value="2">2개</option>
+													</select>
+												</div>
+												<div class="col-md-1"></div>
+												<!-- <div class="col-md-3half">	
+													<label class="checkbox-inline">
+														  <input type="checkbox" class="checkbox style-0" id="zone_ck" onchange="f_locationVisited(this);" data-valid-chkone="mission" data-valid-title="미션 유형 선택">
+														  <span>특정지역방문</span>
+													</label>
+												</div> -->
+												<div class="col-md-2">
+													<label class="checkbox-inline">
+														  <input type="checkbox" class="checkbox style-0" id="price_ck" onchange="f_buyMoney(this);">
+														  <!-- <span>이만큼사면 쾅!쾅!(일정구매금액)</span> -->
+														  <span>구매금액</span>
+													</label>
+												</div>
+												<div class="col-md-2">
+													<select class="form-control" id="price_ck_cnt" name="price_select_cnt" onchange="f_amountDisplayNum(this.value);" disabled="disabled" style="display:none;">
+														<option value="0" selected="selected" disabled="disabled">선택</option>
+														<option value="1">1개</option>
+														<option value="2">2개</option>
+													</select>
+												</div>
+												<!-- <div class="col-md-2">
+													<label class="checkbox-inline">
+														  <input type="checkbox" class="checkbox style-0" id="join_ck" onchange="f_changeJoin(this);" data-valid-chkone="mission" data-valid-title="참여">
+														  <span>참여</span>
+													</label>
+												</div> -->
+											</div>
+										</div>
+										<div class="form-group">
+											<div class="col-md-1 control-label radio">
+												<input type="radio" id="mixCond" name="condType" value="mix" /><label for="mixCond">혼합조건</<label>
+											</div>
+											<div class="col-md-11">
+												<p class="alert" style="margin-bottom:0px">상품구매 + 구매금액</p>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<div class="col-md-1 control-label radio">
+												<input type="radio" id="joinCond" name="condType" value="join" /><label for="joinCond">참여조건</<label>
+											</div>
+											<div class="col-md-11">
+												<p class="alert">1일 1회 참여 (함께하기 선택 불가)</p>
+											</div>
+										</div>
+										<input type="hidden" id="cond_type_val" name="cond_type_val" value="" />
+									</div>
+									<!--  단일, 혼합, 참여 end -->
+									
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<i class="fa fa-info-circle"></i> 미션 유형은 최대 2개까지 선택 가능, 단 지정상품구매를 2로 선택한 경우 다른 미션 유형을 선택할 수 없습니다.
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label" id="lb_base_mission">기본미션 지정<sup>*</sup></label>
+									<div class="col-md-10 control-label">
+										<div style="text-align: center;">
+											<!-- <p style="text-align: center;">미션 상세 설정<sup>*</sup>&nbsp;(미션 횟수 합계는 최대 30회까지입니다.)</p> -->
+											미션 상세 설정<sup>*</sup>&nbsp;(미션 횟수 합계는 최대 31회까지입니다.)
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<fieldset id="appoint_1" style="display:none;">
+								<!-- 이벤트로 페이지 호출하고 있음. -->
+							</fieldset>
+							
+							<fieldset id="appoint_2" style="display:none;">
+								<!-- 이벤트로 페이지 호출하고 있음. -->
+							</fieldset>
+							
+							<fieldset id="location_visited" style="display:none;">
+								<!-- 이벤트로 페이지 호출하고 있음. -->
+							</fieldset>
+							
+							<fieldset id="buy_money_1" style="display:none;">
+								<!-- 이벤트로 페이지 호출하고 있음. -->
+							</fieldset>
+							
+							<fieldset id="buy_money_2" style="display:none;">
+								<!-- 이벤트로 페이지 호출하고 있음. -->
+							</fieldset>
+							<fieldset id="join_mission" style="display:none;">
+								<!-- 이벤트로 페이지 호출하고 있음. -->
+							</fieldset>
+							<fieldset id="mix_mission" style="display:none;">
+								<!-- 이벤트로 페이지 호출하고 있음. -->
+							</fieldset>
+							<fieldset>
+								<legend>보상정보</legend>
+								<div class="form-group" id="div_half_compensation">
+									<div class="col-md-1"></div>
+									<div class="col-md-11">
+										<div class="form-group">
+											<div>
+												<!-- <p class="alert alert-info" style="margin-bottom: 0;">중간보상</p> -->
+												<strong style="font-size: medium;">중간보상</strong>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-1 control-label ta-l">스탬프 개수</label>
+											<div class="col-md-4">
+												<input class="form-control" type="text" name="stamp_ncnt01" value="" data-valid-minnum="1" data-valid-maxnum="31" data-valid-title="중간보상 스탬프 개수">
+											</div>
+											
+											<label class="col-md-2 control-label ta-r">쿠폰북 구분</label>
+											<div class="col-md-3">
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_gbn01" value="A" data-check-only="true" checked>
+												일반 </label>
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_gbn01" value="B" data-check-only="true">
+												신데렐라 </label>
+											</div>
+										</div>
+											
+										<div class="form-group">
+											<label class="col-md-1 control-label ta-l">쿠폰북<br/>유효기간</label>
+											<div class="col-md-2">
+												<div class="input-group">
+													<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_start_dd_list1" name="vali_term_start_dd_list" data-valid-use="false" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="중간보상 쿠폰북 유효기간 시작일" placeholder="시작일">
+													<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+											<div class="col-md-1">
+												<select class="form-control" id="vali_term_start_time_list1" name="vali_term_start_time_list" data-valid-use="false" data-valid-title="시작시간" disabled></select>
+											</div>
+											<div class="col-md-2">
+												<div class="input-group">
+													<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_end_dd_list1" name="vali_term_end_dd_list" data-valid-use="false" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="중간보상 쿠폰북 유효기간 종료일" placeholder="종료일">
+													<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+											<div class="col-md-1">
+												<select class="form-control" id="vali_term_end_time_list1" name="vali_term_end_time_list" data-valid-use="false" data-valid-title="종료시간" disabled></select>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label ta-l">중간보상 안내문구</label>
+											<div class="col-md-11">
+												<input class="form-control" type="text" id="reward_info_text1" name="reward_info_text_list" value="" data-array-always="true" data-valid-max="150" data-valid-title="중간보상 안내문구">
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-1 control-label ta-l">보상 상세</label>
+											<div class="col-md-11">
+												<div class="form-group">
+													<div class="col-md-10">
+														<a href="javascript:f_openCpBookSD('half_compensation_tbody');" id="btn_half_cpb" class="btn btn-primary btn-sm">쿠폰북 추가</a>
+														<a href="javascript:cf_delTableRow('half_compensation_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+													</div>
+												</div>
+												
+												<div class="table-responsive" style="max-height:230px; overflow:auto;">
+													<table class="table table-bordered">
+														<thead>
+															<tr>
+																<th class="ta-c" style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+																<th class="ta-c">쿠폰북 번호</th>
+																<th class="ta-c">쿠폰북명</th>
+																<th class="ta-c">쿠폰북 유형</th>
+																<th class="ta-c">쿠폰수</th>
+															</tr>
+														</thead>
+														<tbody id="half_compensation_tbody" data-valid-title="중간보상 쿠폰북">
+		
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group" id="div_full_compensation" style="margin-bottom: 0;">
+									<div class="col-md-1"></div>
+									<div class="col-md-11">
+										<div class="form-group">
+											<div>
+												<!-- <p class="alert alert-info" style="margin-bottom: 0;">완료보상 <sup>*</sup></p> -->
+												<strong style="font-size: medium;">완료보상</strong> <sup>*</sup>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-1 control-label ta-l">스탬프 개수</label>
+											<div class="col-md-4">
+												<input class="form-control" placeholder="전체" type="text" value="" readonly="readonly">
+												<input type="hidden" name="stamp_ncnt02">
+											</div>
+											
+											<label class="col-md-2 control-label ta-r">쿠폰북 구분</label>
+											<div class="col-md-3">
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_gbn02" value="A" data-check-only="true" checked>
+												일반 </label>
+												<label class="radio radio-inline">
+													<input type="radio" name="cpbook_gbn02" value="B" data-check-only="true">
+												신데렐라 </label>
+											</div>
+										</div>
+											
+										<div class="form-group">
+											<label class="col-md-1 control-label ta-l">쿠폰북<br/>유효기간</label>
+											<div class="col-md-2">
+												<div class="input-group">
+													<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_start_dd_list2" name="vali_term_start_dd_list" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="완료보상 쿠폰북 유효기간 시작일" placeholder="시작일">
+													<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+											<div class="col-md-1">
+												<select class="form-control" id="vali_term_start_time_list2" name="vali_term_start_time_list" data-valid-use="false" data-valid-title="시작시간" disabled></select>
+											</div>
+											<div class="col-md-2">
+												<div class="input-group">
+													<input class="form-control datepicker pr12 ta-c" type="text" id="vali_term_end_dd_list2" name="vali_term_end_dd_list" data-valid-use="true" data-date-format="yyyyMMdd" data-dateformat="yy-mm-dd" data-valid-title="완료보상 쿠폰북 유효기간 종료일" placeholder="종료일">
+													<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+												</div>
+											</div>
+											<div class="col-md-1">
+												<select class="form-control" id="vali_term_end_time_list2" name="vali_term_end_time_list" data-valid-use="false" data-valid-title="종료시간" disabled></select>
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-1 control-label ta-l">완료보상 안내문구</label>
+											<div class="col-md-11">
+												<input class="form-control" type="text" id="reward_info_text2" name="reward_info_text_list" value="" data-array-always="true" data-valid-max="150" data-valid-title="완료보상 안내문구">
+											</div>
+										</div>
+										
+										<div class="form-group">
+											<label class="col-md-1 control-label ta-l">보상 상세</label>
+											<div class="col-md-11">
+												<div class="form-group">
+													<div class="col-md-10">
+														<a href="javascript:f_openCpBookSD('full_compensation_tbody');" id="btn_full_cpb" class="btn btn-primary btn-sm">쿠폰북 추가</a>
+														<a href="javascript:cf_delTableRow('full_compensation_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+													</div>
+												</div>
+												
+												<div class="table-responsive" style="max-height:230px; overflow:auto;">
+													<table class="table table-bordered">
+														<thead>
+															<tr>
+																<th class="ta-c" style="width:20px"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+																<th class="ta-c">쿠폰북 번호</th>
+																<th class="ta-c">쿠폰북명</th>
+																<th class="ta-c">쿠폰북 유형</th>
+																<th class="ta-c">쿠폰수</th>
+															</tr>
+														</thead>
+														<tbody id="full_compensation_tbody" data-valid-title="완료보상 쿠폰북">
+		
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-1 control-label"></div>
+									<div class="col-md-10">
+										<i class="fa fa-info-circle"></i> 보상은 최대 2개 조건(중간보상 1조건, 완료보상 1조건)만 설정할 수 있으나, 미션수행채널에 롯데마트몰이 포함될 경우 중간보상은 설정할 수 없습니다.
+										<p>쿠폰 유효기간 행사시작일 이후~행사종료일 기준 30일 이내로만 설정할 수 있습니다.</p>
+									</div>
+								</div>
+							</fieldset>
+
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_stampList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="stamp_campaign_sd" style="display:none;"></div>
+<div id="product_multi_sd" style="display:none;"></div>
+<div id="zone_sd" style="display:none;"></div>
+<div id="cpbook_sd" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+/* 미션유형 참여 클릭 이벤트 */
+function f_changeJoin(joinObj) {
+	console.log("f_changeJoin");
+	if (joinObj.is(":checked")) {
+		console.log("joinObj is checked");
+		if ($("input[name=stamp_divn_cd]:checked").val() == "GROUP") {
+			alert("함께하기는 참여형 미션 유형은 선택 할 수 없습니다.");
+			joinObj.attr("checked", false);
+			return;
+		}
+		// 참여형 미션 선택시 다른 미션 선택 불가
+		$("#prod_ck").attr("disabled", true);
+		$("#price_ck").attr("disabled", true);
+		
+		// 다른 미션 갯수 select 박스 활성화 되어 있으면 비활성화 및 미션 hide
+		$("#prod_ck_cnt").val("0");
+		$("#prod_ck_cnt").attr("disabled", true);
+		
+		$("#appoint_1").hide();
+		$("#appoint_2").hide();
+		$("#appoint_1").empty();
+		$("#appoint_2").empty();
+		
+		$("#price_ck_cnt").val("0");
+		$("#price_ck_cnt").attr("disabled", true);
+		
+		$("#buy_money_1").hide();
+		$("#buy_money_2").hide();
+		$("#buy_money_1").empty();
+		$("#buy_money_2").empty();
+		
+		f_joinDisplayNum(1);
+		//f_missionChannelChange();
+		f_changeMiddleReward();
+		
+	} else {
+		$("input:radio[name=bsis_mison_yn_temp]:input[value='06']").attr("checked", false);
+		$("#prod_ck").attr("disabled", false);
+		$("#price_ck").attr("disabled", false);
+		f_joinDisplayNum(0);
+	}
+	
+	
+}
+
+/* ============================================================================================
+/* 참여하기 체크박스 클릭시
+/* --------------------------------------------------------------------------------------------
+/* 0 - 숨기기, 그 외 - 보이기
+/* ============================================================================================ */
+function f_joinDisplayNum(value) {
+	
+	if (value > 0) {
+		$("#join_mission").empty();
+		
+		$.get("/application/stamp/stamp/join.do", function(data) {
+			$("#join_mission").append(data);
+			
+			$("input:radio[name=bsis_mison_yn_temp]:input[value='06']").attr("checked", true);
+		})
+		.done(function() {
+			$("#prod_ck").attr("checked", false);
+			$("#price_ck").attr("checked", false);
+		});
+		
+		$("#join_mission").show();		
+		
+	} else {
+		$("input:radio[name=bsis_mison_yn_temp]:input[value='06']").attr("checked", false);
+		$("#join_middle_reward_yn").val("Y");
+		f_changeMiddleReward();
+		$("#join_mission").hide();
+		$("#join_mission").empty();
+	}
+	
+}
+// taginput init
+$('.tagsinput').tagsinput({
+	itemValue: 'id',
+	itemText: 'text',
+	typeaheadjs: {displayKey: 'text'}
+});
+// taginput 박스에 아이템 추가될때 이벤트
+$('.tagsinput').on('itemAdded', function(event) {
+	showHideAddBtn();
+});
+// taginput 박스에 아이템 제거될때 이벤트
+$('.tagsinput').on('itemRemoved', function(event) {
+	showHideAddBtn();
+});
+// 제휴사코드 추가버튼 enable or disable
+function showHideAddBtn() {
+	var count = $('.tagsinput').tagsinput('items').length;
+
+	if(count <= 0) {
+		$("#btn_add_alliance").removeClass("disabled");
+	} else {
+		$("#btn_add_alliance").addClass("disabled");
+	}
+}
+
+/**
+ * ==================================================================================
+ * 캠페인 ID 추가/삭제 시 버튼 텍스트 변경
+ * @param campaign_id  캠페인 ID
+ * ==================================================================================
+ */
+function changeCampaignId(campaign_id) {
+	if(campaign_id == '') {
+		$('#btn_campaign').text('선택');
+	} else {
+		$('#btn_campaign').text('수정');
+	}
+}
+
+/* ============================================================================================
+/* 기본미션 지정 라디오버튼
+/* --------------------------------------------------------------------------------------------
+/* 기본미션 지정 라디오버튼 선택시 호출
+/* 기본미션으로 지정된 경우 미션횟수를 31개까지로 설정
+/* value 01	: 지정상품구매 첫번째 
+/*       02	: 지정상품구매 두번째
+/*       03	: 특정지역방문
+/*       04	: 일정구매금액 첫번째
+/*       05	: 일정구매금액 두번째
+/* ============================================================================================ */
+function f_basicMissionChange(value) {
+	var bsis_mison_val =  value;
+	
+	$('#stamp_mison_base_cnt1').attr('data-valid-maxnum','31');
+	$('#stamp_mison_base_cnt2').attr('data-valid-maxnum','31');
+	$('#stamp_mison_base_cnt3').attr('data-valid-maxnum','31');
+	$('#buyMoney01_stamp_cnt').attr('data-valid-maxnum','31');
+	$('#buyMoney02_stamp_cnt').attr('data-valid-maxnum','31');
+	$("#join_stamp_mison_base_cnt").attr("data-valid-maxnum", "31");
+	$("#mix_stamp_mison_base_cnt1").attr("data-valid-maxnum", "31");
+	if(bsis_mison_val == '01') { //product1
+		$('#stamp_mison_base_cnt1').attr('data-valid-maxnum','31');
+	} else if(bsis_mison_val == '02') {//product2
+		$('#stamp_mison_base_cnt2').attr('data-valid-maxnum','31');
+	} else if(bsis_mison_val == '03') {//zone?
+		$('#stamp_mison_base_cnt3').attr('data-valid-maxnum','31');
+	} else if(bsis_mison_val == '04') {//price1
+		$('#buyMoney01_stamp_cnt').attr('data-valid-maxnum','31');
+	} else if(bsis_mison_val == '05') {//price2
+		$('#buyMoney02_stamp_cnt').attr('data-valid-maxnum','31');
+	} else if(bsis_mison_val == '06') {//참여형
+		$('#join_stamp_mison_base_cnt').attr('data-valid-maxnum','31');
+	} else if(bsis_mison_val == '07') {//혼합형
+		$('#mix_stamp_mison_base_cnt1').attr('data-valid-maxnum','31');
+	}
+	
+}
+
+/**
+ * ==================================================================================
+ * 캠페인/고객군 삭제 버튼 클릭시 호출되는 메소드
+ * ==================================================================================
+ */
+function f_delCampaign() {
+	$("input[name=campaign_id]").val('');
+	$("input[name=campaign_start_dy]").val('');
+	$("input[name=campaign_end_dy]").val('');
+	$("input[name=lst_custgp_id_list]").remove();
+	
+	$("#stamp_campaign_id").text('');
+	$("#stamp_campaign_term").text('');
+	$("#stamp_custgp_cnt").text('');
+	$("#stamp_campaign_nm").text('');
+	$("#stamp_custgp").text('');
+	changeCampaignId($("input[name=campaign_id]").val());
+}
+
+/**
+ * ==================================================================================
+ * 캠페인 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#stamp_campaign_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인/고객군 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 취소",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			var check_items_cnt = 0;
+			var custgroup_text = "";
+			var today_date = cf_toDate().replace(/\-/g,'');
+			
+			if(cf_getTrElementCount($("#custgroup_tbody")) < 1) {
+				alert("고객군 항목을 조회해 주십시오.");
+				return;
+			} else {
+				$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+					if($(this).is(":checked") == true) {
+						check_items_cnt++;
+					}
+				});
+			}
+			
+			if(check_items_cnt < 1) {
+				alert("고객군 항목을 선택해 주십시오.");
+				return;
+			} else {
+				$("input[name=lst_custgp_id_list]").remove();
+			}
+			
+			$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+				if($(this).is(":checked")) {
+					var row = $(this).parent().parent();
+					var key = "";
+					var tag_input = "";
+					
+					// 루프문을 돌면서 Append 할 Tag 생성, index가 2인 위치에서 Key가 될 값 추출
+					row.find("td").each(function(idx){
+						// 각 셀 데이터 생성
+						if(idx < 4) {
+							if(idx == 2) {
+								key = $(this).text();
+								// console.log("key =======> " + key);
+								tag_input += "<input type='hidden' name='lst_custgp_id_list' data-array-always='true' value='"+key+"'>";
+								custgroup_text += key;
+							}
+							if(idx == 3) {
+								custgroup_text += " - " + $(this).text() + "&nbsp;│&nbsp;";
+							}
+						}
+					});
+					
+					$('#campaign_custgp').append(tag_input);
+				}
+			});
+			
+			if( today_date > $("#campaign_end_dy_tmp").val() ) {
+				alert("선택한 캠페인의 캠페인기간이 행사기간으로 설정하기 부적합 합니다.\n\n다시한번 확인해 주세요.");
+				$("input[name=lst_custgp_id_list]").remove();
+				return;
+			}
+			
+			$("input[name=campaign_id]").val($("#campaign_id_tmp").val());
+			$("#stamp_campaign_id").text($("#campaign_id_tmp").val());
+			$("#stamp_campaign_term").text(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+			$("#stamp_custgp_cnt").text($("input[name=lst_custgp_id_list]").length);
+			$("#stamp_campaign_nm").text($("#campaign_nm_tmp").val());
+			custgroup_text = custgroup_text.substring(0, (custgroup_text.length-8));
+			$("#stamp_custgp").html(custgroup_text);
+			
+			if( today_date > $("#campaign_start_dy_tmp").val() ) {
+				$('input[name=evt_term_start_dd]').val(cf_toDate());
+			} else {
+				$('input[name=evt_term_start_dd]').val(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd'));
+			}
+			$('input[name=evt_term_end_dd]').val(cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+			
+			$("input[name=campaign_start_dy]").val($("#campaign_start_dy_tmp").val());
+			$("input[name=campaign_end_dy]").val($("#campaign_end_dy_tmp").val());
+			
+			changeCampaignId($("input[name=campaign_id]").val());
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 스탬프 유형에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 스탬프 유형 값에 따라 함께하기정원 입력란 활성여부.
+/* 	- PERSONAL	: 혼자하기	(정원 입력란 disable)
+/* 	- GROUP 	: 함께하기	(정원 입력란 enable)
+/* ============================================================================================ */
+$('input[name="stamp_divn_cd"]').on('change', function() {
+	//var stamp_divn_cd_flag     = ($(this).val() == 'GROUP');
+	
+	if($(this).val() == 'GROUP') {
+		$('#stamp_psbt_user_cnt').removeAttr('disabled')
+								.attr('data-valid-use', 'true')
+								.attr('data-valid-minnum', '2')
+								.attr('data-valid-maxnum', '20')
+								.attr('data-valid-title', '정원');
+		
+		$('#div_user_cnt').show();
+		$('#campaign_custgp').hide();
+		$('input[name=campaign_id]').removeAttr('data-valid-use')
+									.removeAttr('data-valid-title');
+		
+		$('input[name=evt_term_start_dd]').val(cf_toDate());
+		$('input[name=evt_term_end_dd]').val(cf_termDate(30));
+	} else if($(this).val() == 'CRM') {
+		$('#stamp_psbt_user_cnt').attr('disabled', 'disabled')
+								.removeAttr('data-valid-use')
+								.removeAttr('data-valid-minnum')
+								.removeAttr('data-valid-maxnum')
+								.removeAttr('data-valid-title');
+		
+		$('#div_user_cnt').hide();
+		$('#campaign_custgp').show();
+		$('input[name=campaign_id]').attr('data-valid-use', 'true')
+									.attr('data-valid-title', '혼자하기-CRM연계 선택 시 캠페인/고객군');
+	} else {
+		$('#stamp_psbt_user_cnt').attr('disabled', 'disabled')
+								.removeAttr('data-valid-use')
+								.removeAttr('data-valid-minnum')
+								.removeAttr('data-valid-maxnum')
+								.removeAttr('data-valid-title');
+		
+		$('#div_user_cnt').hide();
+		$('#campaign_custgp').hide();
+		$('input[name=campaign_id]').removeAttr('data-valid-use')
+									.removeAttr('data-valid-title');
+		
+		$('input[name=evt_term_start_dd]').val(cf_toDate());
+		$('input[name=evt_term_end_dd]').val(cf_termDate(30));
+	}
+});
+
+/* ============================================================================================
+/* 게시 구분에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 게시 구분 값에 따라 예약일 입력란 활성여부.
+/* 	- N	: 즉시게시	(예약일 입력란 disable)
+/* 	- Y	: 예약게시	(예약일 입력란 enable)
+/* ============================================================================================ */
+$('input[name="rserv_ntce_yn"]').on('change', function() {
+	var rserv_ntce_yn_flag     = ($(this).val() == 'Y');
+	
+	if(rserv_ntce_yn_flag) {
+		$("#rserv_ntce_dd").removeAttr("disabled")
+						.attr('data-valid-use', 'true')
+						.attr('data-date-format', 'yyyyMMdd')
+						.attr('data-valid-title', '예약일');
+		// 예약일 default 설정(today+1) 
+		$('input[name=rserv_ntce_dd]').val(cf_termDate(1));
+	} else {
+		$("#rserv_ntce_dd").val("");
+		$("#rserv_ntce_dd").attr('disabled', 'disabled')
+						.removeAttr('data-valid-use')
+						.removeAttr('data-date-format')
+						.removeAttr('data-valid-title');
+		$('input[name=rserv_ntce_dd]').val('');
+	}
+});
+
+/* ============================================================================================
+/* 행사 유형에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 행사 유형 값에 따라 제휴사 코드 입력란 활성여부.
+/* 	- N	: 비제휴	(제휴사 코드 레이아웃 비활성)
+/* 	- Y	: 제휴		(제휴사 코드 레이아웃 활성)   affiliate_yn
+/* ============================================================================================ */
+$('input[name="affiliate_yn"]').on('change', function() {
+	var affiliate_yn_flag     = ($(this).val() == 'Y');
+	
+	if(affiliate_yn_flag) {
+		$("#event_alliance").show();
+	} else {
+		f_resetVenCode();  // 제휴사 코드 초기화
+		$("#event_alliance").hide();
+	}
+});
+
+/* ============================================================================================
+/* 제휴사 코드 초기화
+/* --------------------------------------------------------------------------------------------
+/* 실제로 입력된 제휴사를 화면상에서 제거.
+/* ============================================================================================ */
+function f_resetVenCode() {
+	$('#ven_cd_search').select2('val','');
+	$('.tagsinput').tagsinput('removeAll');
+	$('.tagsinput').tagsinput('refresh');
+	$("#btn_add_alliance").removeClass("disabled");
+}
+
+/* ============================================================================================
+/* 제휴사 코드 셀렉트 박스
+/* --------------------------------------------------------------------------------------------
+/* 제휴사 코드 6자리 입력시 제휴사 검색 결과 호출
+/* ============================================================================================ */
+$("#ven_cd_search").select2({
+    placeholder: "제휴사 코드 (6자리)",
+    minimumInputLength: 6,
+    width: '100%',
+    ajax: {
+        url: api_url + "/backoffice/common/partner/show",
+        dataType: 'json',
+        async: false,
+		cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            var data = {
+                empno: "${sessionScope.sessionEmpno}",
+                ven_cd: term
+            };
+            return encodeURI('params='+JSON.stringify(data));
+        },
+        results: function (obj, page) {
+            var results = [];
+            results.push({
+                id: obj.data.ven_cd,
+                text: obj.data.ven_nm
+            });
+            return {
+                results: results
+            };
+        }
+    },
+    escapeMarkup: function (m) { return m; }
+});
+
+/* ============================================================================================
+/* 제휴사 코드 추가 버튼 클릭 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 제휴사 코드 입력 후 '추가'버튼 클릭하였을때 실제로 제휴사가 입력 됨
+/* ============================================================================================ */
+function f_addAllianceCode() {
+	var count = $('.tagsinput').tagsinput('items').length;
+	
+	if(count > 0) {
+		alert('제휴사는 1개만 선택 가능 합니다');
+		return;
+	}
+	
+	var select_id = $('#ven_cd_search').select2('data').id;
+	var select_text = $('#ven_cd_search').select2('data').text;
+	
+	$('.tagsinput').tagsinput('add', { id: select_id, text: select_id+" - "+select_text });
+	$('.tagsinput').tagsinput('refresh');
+}
+
+/* ============================================================================================
+/* 미션수행지점 셀렉트 박스
+/* --------------------------------------------------------------------------------------------
+/* 미션수행지점 INPUT BOX 값으로 검색 결과 리스트 갱신
+/* ============================================================================================ */
+$("#str_cd").select2({
+    placeholder: "미션 수행 지점 검색",
+    width: '100%',
+    multiple: true,
+    ajax: {
+        url: api_url + "/backoffice/common/branch/list",
+        dataType: 'json',
+        cache: true,
+        quietMillis: 250,
+        data: function (term, page) {
+            var data = {
+                sys_type : "BACKOFFICE",
+                svc_type : "STAMP",
+                empno: "${sessionScope.sessionEmpno}",
+                hq_base_yn: "${sessionScope.sessionHqBaseYn}",
+                use_type : "USE_BRANCH",
+                str_cd : "${sessionScope.sessionStrCd}",
+                str_nm: term
+            };
+            return encodeURI('params='+JSON.stringify(data));
+        },
+        results: function (obj, page) {
+            var results = [];
+            $.each(obj.data.brnch_list, function(index, item){
+                results.push({
+                    id: item.str_cd,
+                    text: item.str_nm
+				});
+            });
+            return {
+                results: results
+            };
+        }
+    }
+});
+
+/* ============================================================================================
+/* 미션수행지점 전체선택 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 체크 TRUE	: 미션 수행 지점 입력박스 disalbe
+/* 체크 FALSE	: 미션 수행 지점 입력박스 enable
+/* ============================================================================================ */
+$("#ck_all_event_branch").click(function(){
+    if($("#ck_all_event_branch").is(':checked')){
+        $("#str_cd").select2("enable", false);
+    } else {
+        $("#str_cd").select2("enable", true);
+    }
+});
+
+/* ============================================================================================
+/* 예약일 minDate 설정
+/* ============================================================================================ */
+$('#rserv_ntce_dd').datepicker(
+	$.extend({
+		minDate: cf_toDate()
+	}, date_opts)
+);
+
+/* ============================================================================================
+/* 행사기간 입력박스 달력 컨트롤러
+/* ============================================================================================ */
+$('#evt_term_start_dd').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#evt_term_end_dd").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#evt_term_end_dd').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#evt_term_start_dd").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* 중간보상 쿠폰북 유효기간 입력박스 달력 컨트롤러
+/* ============================================================================================ */
+$('#vali_term_start_dd_list1').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#vali_term_end_dd_list1").datepicker('option','minDate', selected);
+            if($(":radio[name='cpbook_gbn01']:checked").val() == "B"){
+            	$("#vali_term_end_dd_list1").val($(this).val());
+            }
+        }
+    }, date_opts)
+);
+$('#vali_term_end_dd_list1').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#vali_term_start_dd_list1").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* 완료보상 쿠폰북 유효기간 입력박스 달력 컨트롤러
+/* ============================================================================================ */
+$('#vali_term_start_dd_list2').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#vali_term_end_dd_list2").datepicker('option','minDate', selected);
+            if($(":radio[name='cpbook_gbn02']:checked").val() == "B"){
+            	$("#vali_term_end_dd_list2").val($(this).val());
+            }
+        }
+    }, date_opts)
+);
+$('#vali_term_end_dd_list2').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $("#vali_term_start_dd_list2").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* 쿠폰북 구분에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 구분 값에 따라 쿠폰북 유효기간 시간 사용여부 조정
+/* 	- A	: 일반	(유효기간의 시간설정이 필요없음, 000000 ~ 235959 초기화)
+/* 	- B	: 신데렐라	(유효기간의 시간설정이 필요함)
+/* ============================================================================================ */
+$('input[name="cpbook_gbn01"]').on('change', function() {
+	if($(this).val() == 'A'){
+		$("#vali_term_start_time_list1").val('00');
+		$("#vali_term_end_time_list1").val('23');
+		$("#vali_term_start_time_list1").attr('disabled','disabled');
+		$("#vali_term_end_time_list1").attr('disabled','disabled');
+		$("#vali_term_end_dd_list1").removeAttr('disabled');
+	}else{
+		$("#vali_term_start_time_list1").removeAttr('disabled');
+		$("#vali_term_end_time_list1").removeAttr('disabled');
+		$("#vali_term_end_dd_list1").val($("#vali_term_start_dd_list1").val());
+		$("#vali_term_end_dd_list1").attr('disabled','disabled');
+	}
+});
+
+/* ============================================================================================
+/* 쿠폰북 구분에 따른 컨트롤러
+/* --------------------------------------------------------------------------------------------
+/* 쿠폰북 구분 값에 따라 쿠폰북 유효기간 시간 사용여부 조정
+/* 	- A	: 일반	(유효기간의 시간설정이 필요없음, 000000 ~ 235959 초기화)
+/* 	- B	: 신데렐라	(유효기간의 시간설정이 필요함)
+/* ============================================================================================ */
+$('input[name="cpbook_gbn02"]').on('change', function() {
+	if($(this).val() == 'A'){
+		$("#vali_term_start_time_list2").val('00');
+		$("#vali_term_end_time_list2").val('23');
+		$("#vali_term_start_time_list2").attr('disabled','disabled');
+		$("#vali_term_end_time_list2").attr('disabled','disabled');
+		$("#vali_term_end_dd_list2").removeAttr('disabled');
+	}else{
+		$("#vali_term_start_time_list2").removeAttr('disabled');
+		$("#vali_term_end_time_list2").removeAttr('disabled');
+		$("#vali_term_end_dd_list2").val($("#vali_term_start_dd_list2").val());
+		$("#vali_term_end_dd_list2").attr('disabled','disabled');
+	}
+});
+
+/* ============================================================================================
+/* 지성상품 구매 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 지성상품 구매 체크박스 클릭시 호출
+/* 기존 추가된 다른미션이 2개이면 체크 안됨.
+/* 체크 TRUE	: 지정상품 구매 미션 셀렉트 박스 enable 
+/* 체크 FALSE	: 지정상품 구매 미션 셀렉트 박스 disalbe
+/* ============================================================================================ */
+function f_appoint(obj) {
+	if(!obj.checked) {
+		$("#prod_ck_cnt").attr("disabled", true);
+		//$("#prod_ck_cnt option:eq(0)").attr("selected", true);
+		$("#prod_ck_cnt").val("0");
+		f_appointDisplayNum(0);
+		f_missionChannelChange();
+	}
+	
+	var missionTypeCnt = $("input[name='bsis_mison_yn_list']").length;
+	if(missionTypeCnt > 1) {
+		alert('미션 유형은 최대 2개까지 가능합니다.');
+		obj.checked = false;
+		return;
+	}
+	
+	if(obj.checked) {
+		$("#prod_ck_cnt").attr("disabled", false);
+		$("#prod_ck_cnt").removeAttr("disabled");
+	}
+}
+
+/* ============================================================================================
+/* 특정지역방문 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 특정지역방문 체크박스 클릭시 호출
+/* 기존 추가된 다른미션이 2개이면 체크 안됨.
+/* 체크 TRUE	: 특정지역방문 미션 정보 입력 레이아웃 추가 
+/* 체크 FALSE	: 특정지역방문 미션 정보 입력 레이아웃 제거
+/* ============================================================================================ */
+function f_locationVisited(obj) {
+	if(!obj.checked) {
+		$("#location_visited").hide();
+		$("#location_visited").empty();
+	}
+	
+	var missionTypeCnt = $("input[name='bsis_mison_yn_list']").length;
+	if(missionTypeCnt > 1) {
+		alert('미션 유형은 최대 2개까지 가능합니다.');
+		obj.checked = false;
+		return;
+	}
+	
+	if(obj.checked) {
+		$.get("/application/stamp/stamp/locationVisited.do", function(data) {
+			$("#location_visited").append(data);
+		})
+		.done(function() {
+			f_missionTypeVaild();
+			f_missionChannelChange();
+		});
+		
+		$("#location_visited").show();
+	}
+}
+
+/* ============================================================================================
+/* 일정구매금액 체크박스
+/* --------------------------------------------------------------------------------------------
+/* 일정구매금액 체크박스 클릭시 호출
+/* 기존 추가된 다른미션이 2개이면 체크 안됨.
+/* 체크 TRUE	: 일정구매금액 미션 셀렉트 박스 enable 
+/* 체크 FALSE	: 일정구매금액 미션 셀렉트 박스 disalbe
+/* ============================================================================================ */
+function f_buyMoney(obj) {
+	if(!obj.checked) {
+		$("#price_ck_cnt").attr("disabled", true);
+		//$("#price_ck_cnt option:eq(0)").attr("selected",true);
+		$("#price_ck_cnt").val("0"); 
+		f_amountDisplayNum(0);
+		f_missionChannelChange();
+	}
+	
+	var missionTypeCnt = $("input[name='bsis_mison_yn_list']").length;
+	if(missionTypeCnt > 1) {
+		alert('미션 유형은 최대 2개까지 가능합니다.');
+		obj.checked = false;
+		return;
+	}
+	
+	if(obj.checked) {
+		$("#price_ck_cnt").attr("disabled", false);
+		$("#price_ck_cnt").removeAttr("disabled");
+		//$("#price_ck_cnt option:eq(1)").attr("selected",true);
+		
+		$("#price_ck_cnt").val("1");
+		f_amountDisplayNum(1);
+		f_missionChannelChange();
+	}
+}
+
+/* ============================================================================================
+/* 지정상품구매 갯수 선택박스
+/* --------------------------------------------------------------------------------------------
+/* 선택한 지정상품구매 갯수에 따라 보여줄 레이아웃 컨트롤러
+/* value  1	: 지정상품구매 첫번째 레이아웃 호출 
+/* value  2	: 지정상품구매 첫번째,두번째 레이아웃 호출
+/* ============================================================================================ */
+function f_appointDisplayNum(value) {
+	if(value == 1) {
+		$("#appoint_1").empty();
+		$("#appoint_2").empty();
+		
+		$.get("/application/stamp/stamp/appoint1.do", function(data) {
+			$("#appoint_1").append(data);
+		})
+		.done(function() {
+			f_missionTypeVaild();
+		});
+		
+		$("#appoint_1").show();
+		$("#appoint_2").hide();
+	} else if(value == 2) {
+		var missionTypeCnt = $("input[name='bsis_mison_yn_list']").length;
+		if(missionTypeCnt > 0 && $("input[name='bsis_mison_yn_temp']").val() != '01' || missionTypeCnt == 2) {
+			alert('미션 유형은 최대 2개까지 가능합니다.');
+			if(missionTypeCnt == 1) {
+				$("#prod_ck_cnt option:eq(0)").attr("selected",true);
+			} else if(missionTypeCnt == 2) {
+				$("#prod_ck_cnt option:eq(1)").attr("selected",true);
+			}
+			return;
+		}
+		
+		$("#appoint_1").empty();
+		$("#appoint_2").empty();
+		
+		$.get("/application/stamp/stamp/appoint1.do", function(data) {
+			$("#appoint_1").append(data);
+		})
+		.done(function() {
+			$.get("/application/stamp/stamp/appoint2.do", function(data) {
+				$("#appoint_2").append(data);
+			})
+			.done(function() {
+				f_missionTypeVaild();
+			});
+		});
+		
+		$("#appoint_1").show();
+		$("#appoint_2").show();
+		
+	} else {
+		$("#appoint_1").hide();
+		$("#appoint_2").hide();
+		$("#appoint_1").empty();
+		$("#appoint_2").empty();
+	}
+	f_missionChannelChange();
+}
+
+/* ============================================================================================
+/* 일정구매금액 갯수 선택박스
+/* --------------------------------------------------------------------------------------------
+/* 선택한 일정구매금액 갯수에 따라 보여줄 레이아웃 컨트롤러
+/* value  1	: 일정구매금액 첫번째 레이아웃 호출 
+/* value  2	: 일정구매금액 첫번째,두번째 레이아웃 호출
+/* ============================================================================================ */
+function f_amountDisplayNum(value) {
+	if(value == 1) {
+		$("#buy_money_1").empty();
+		$("#buy_money_2").empty();
+		
+		$.get("/application/stamp/stamp/buyMoney1.do", function(data) {
+			$("#buy_money_1").append(data);
+		})
+		.done(function() {
+			f_missionTypeVaild();
+		});
+		
+		$("#buy_money_1").show();
+		$("#buy_money_2").hide();
+	} else if(value == 2) {
+		var missionTypeCnt = $("input[name='bsis_mison_yn_list']").length;
+		if(missionTypeCnt > 0 && $("input[name='bsis_mison_yn_temp']").val() != '04' || missionTypeCnt == 2) {
+			alert('미션 유형은 최대 2개까지 가능합니다.');
+			if(missionTypeCnt == 1) {
+				$("#price_ck_cnt option:eq(0)").attr("selected",true);
+			} else if(missionTypeCnt == 2) {
+				$("#price_ck_cnt option:eq(1)").attr("selected",true);
+			}
+			return;
+		}
+		
+		$("#buy_money_1").empty();
+		$("#buy_money_2").empty();
+		
+		$.get("/application/stamp/stamp/buyMoney1.do", function(data) {
+			$("#buy_money_1").append(data);
+		})
+		.done(function() {
+			$.get("/application/stamp/stamp/buyMoney2.do", function(data) {
+				$("#buy_money_2").append(data);
+			})
+			.done(function() {
+				f_missionTypeVaild();
+				$("#buyMoney01_channel").children('option').each(function() {
+					if ( $(this).val() === 'ON/OFFLINE' ) {
+						$(this).attr('disabled', true);
+					}
+				});
+				$("#buyMoney02_channel").children('option').each(function() {
+					if ( $(this).val() === 'ON/OFFLINE' ) {
+						$(this).attr('disabled', true);
+					}
+				});
+			});
+		});
+		
+		$("#buy_money_1").show();
+		$("#buy_money_2").show();
+
+	} else {
+		$("#buy_money_1").hide();
+		$("#buy_money_2").hide();
+		$("#buy_money_1").empty();
+		$("#buy_money_2").empty();
+	}
+	f_missionChannelChange();
+}
+
+/**
+ * ==================================================================================
+ * 미션수행채널에 온라인(롯데마트몰) 만 선택되었을때 중간보상입력폼 숨김
+ * ==================================================================================
+ */
+function f_missionChannelChange() {
+	var online_flag = false;
+	$.each($("select[name='fulfill_chanel_cd_list']"), function() {
+		if($(this).val() != null) {
+			if($(this).val() == 'ONLINE' || $(this).val() == 'ON/OFFLINE') {  
+				online_flag = true;
+			}
+		}
+	});	
+	
+	if(online_flag) {
+		$("#div_half_compensation").hide();
+		$("input[name=stamp_ncnt01]").removeAttr('data-valid-minnum').removeAttr('data-valid-maxnum').removeAttr('data-valid-title');
+		$("#vali_term_start_dd_list1").removeAttr('data-date-format').removeAttr('data-valid-title');
+		$("#vali_term_end_dd_list1").removeAttr('data-date-format').removeAttr('data-valid-title');
+	} else {
+		$("#div_half_compensation").show();
+		$("input[name=stamp_ncnt01]").attr('data-valid-minnum', '1').attr('data-valid-maxnum', '31').attr('data-valid-title', '중간보상 스탬프 개수');
+		$("#vali_term_start_dd_list1").attr('data-date-format', 'yyyyMMdd').attr('data-valid-title', '쿠폰북 유효기간 시작일');
+		$("#vali_term_end_dd_list1").attr('data-date-format', 'yyyyMMdd').attr('data-valid-title', '쿠폰북 유효기간 종료일');
+	}
+}
+
+/**
+ * ==================================================================================
+ * 참여형 미션 중간보상 여부 선택시
+ * ==================================================================================
+ */ 
+function f_changeMiddleReward() {
+	var middle_reward_flag = false;
+	
+	if ($("#join_middle_reward_yn").val() != "") {
+		if ($("#join_middle_reward_yn").val() == "N") {
+			middle_reward_flag = true;
+		}
+	}
+	
+	if (middle_reward_flag) {
+		$("#div_half_compensation").hide();
+		$("input[name=stamp_ncnt01]").removeAttr('data-valid-minnum').removeAttr('data-valid-maxnum').removeAttr('data-valid-title');
+		$("#vali_term_start_dd_list1").removeAttr('data-date-format').removeAttr('data-valid-title');
+		$("#vali_term_end_dd_list1").removeAttr('data-date-format').removeAttr('data-valid-title');
+	} else {
+		$("#div_half_compensation").show();
+		$("input[name=stamp_ncnt01]").attr('data-valid-minnum', '1').attr('data-valid-maxnum', '31').attr('data-valid-title', '중간보상 스탬프 개수');
+		$("#vali_term_start_dd_list1").attr('data-date-format', 'yyyyMMdd').attr('data-valid-title', '쿠폰북 유효기간 시작일');
+		$("#vali_term_end_dd_list1").attr('data-date-format', 'yyyyMMdd').attr('data-valid-title', '쿠폰북 유효기간 종료일');
+	}	
+}
+
+/**
+ * ==================================================================================
+ * 미션유형 갯수가 2개 일 경우 불필요한 checkbox의 체크상태를 해제.
+ * ==================================================================================
+ */
+function f_missionTypeVaild() {
+	var missionTypeCnt = $("input[name='bsis_mison_yn_list']").length;
+	
+	if(missionTypeCnt == 2) {
+		if( $("#price_ck").is(":checked") == true && $("#price_ck_cnt option:eq(0)").is(':selected') ) {
+			$("#price_ck").attr("checked", false);
+		}
+		
+		if( $("#prod_ck").is(":checked") == true && $("#prod_ck_cnt option:eq(0)").is(':selected') ) {
+			$("#prod_ck").attr("checked", false);
+		}
+	}
+}
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰북 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#cpbook_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 768,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			
+			var targetTbody = $("#"+$(this).data('targetTbody'));
+			
+			if(cf_getTrElementCount(targetTbody) >= 1) {
+				alert("이미 등록하셨습니다.\n1건만 등록 가능 합니다.");
+				return;
+			}
+			if(cf_getTrElementCount($("#to_tbody")) > 1) {
+				alert("1건만 등록 가능 합니다.");
+				return;
+			}
+			
+			$("#to_tbody").find("tr").each(function(){
+				
+				var tag_td = "";
+				var key = "";
+				
+				// 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+				
+				$(this).find("td").each(function(i){
+					if(i == 1) {
+						return true;
+					}
+					// 각 셀 데이터 생성
+					if(i < 6) {
+						if(i == 2) {
+							key = $(this).text();
+							tag_td += "<input type='hidden' name='cpbook_id_list' data-array-always='true' value='"+key+"'>";
+						}
+						tag_td += "<td class='ta-c'>"+$(this).html()+"</td>\n";	
+					}
+				});
+				
+				var tag_tr = "<tr>"+tag_td+"</tr>";
+				
+				// 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+				var chk = 0;
+				targetTbody.find("tr > td").each(function(){
+					if($(this).text() == key) {
+						chk++;
+					}
+				});
+				
+				// 같은 데이터가 없을 경우에만 등록 시킨다.
+				if(chk == 0) {
+					targetTbody.append(tag_tr);
+				}
+				
+			});
+			pageSetUp();
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 이미지 파일 업로드
+/* --------------------------------------------------------------------------------------------
+/* 스탬프 이미지 등록/변경시 호출되는 이벤트
+/* ============================================================================================ */
+$('#uploadfile').change(function (e) {
+	cf_fileUpload($(this), "IMG_STAMP_LIST");
+});
+
+/**
+* ==================================================================================
+* 등록/수정 : 달력 validation
+* ==================================================================================
+*/
+function f_customOverDate() {
+	
+		var event_reserve_day = $('#frmStamp').find('input[name=rserv_ntce_dd]').val().replace(/\-/g,'');		// 예약일
+		var event_start_date = $('#frmStamp').find('input[name=evt_term_start_dd]').val().replace(/\-/g,'');
+		var event_end_date = $('#frmStamp').find('input[name=evt_term_end_dd]').val().replace(/\-/g,'');
+		var limit_end_date = cf_termDate(31, $('input[name=evt_term_end_dd]').val()).replace(/\-/g,'');
+		var today_date = cf_toDate().replace(/\-/g,'');
+		
+		var start_date_mid = $("#vali_term_start_dd_list1").val().replace(/\-/g,'');
+		var end_date_mid = $("#vali_term_end_dd_list1").val().replace(/\-/g,'');
+		var start_time_mid = start_date_mid + $("#vali_term_start_time_list1").val();
+		var end_time_mid = end_date_mid + $("#vali_term_end_time_list1").val();
+		
+		var start_date_full = $("#vali_term_start_dd_list2").val().replace(/\-/g,'');
+		var end_date_full = $("#vali_term_end_dd_list2").val().replace(/\-/g,'');
+		var start_time_full = start_date_full + $("#vali_term_start_time_list2").val();
+		var end_time_full = end_date_full + $("#vali_term_end_time_list2").val();
+		
+		if(parseInt(event_start_date) < parseInt(today_date)) {
+			alert('행사기간의 시작일은 금일 이전으로 선택 불가능합니다.\n\n다시한번 확인해 주세요.');
+			$("#evt_term_start_dd").focus();
+			return false;
+		}
+		
+		if(start_date_mid != "" && end_date_mid != ""){
+			if(parseInt(start_time_mid) > parseInt(end_time_mid)) {
+				alert('중간보상 쿠폰북 유효기간 종료일이 시작일보다 이전입니다.\n\n다시한번 확인해 주세요.');
+				$("#vali_term_start_dd_list1").focus();
+				return false;
+			}
+		}
+		
+		if(parseInt(start_time_full) > parseInt(end_time_full)) {
+			alert('완료보상 쿠폰북 유효기간 종료일이 시작일보다 이전입니다.\n\n다시한번 확인해 주세요.');
+			$("#vali_term_start_dd_list2").focus();
+			return false;
+		}
+		
+		if($("input[name='stamp_divn_cd']").val() == 'CRM') {
+			if(parseInt(event_start_date) < parseInt($("input[name=campaign_start_dy]").val()) ) {
+				alert('혼자하기-CRM연계의 행사기간은 캠페인 기간 내에서만 설정할 수 있습니다.\n\n다시한번 확인해 주세요.');
+				$("#evt_term_start_dd").focus();
+				return false;
+			}
+			if(parseInt(event_end_date) > parseInt($("input[name=campaign_end_dy]").val()) ) {
+				alert('혼자하기-CRM연계의 행사기간은 캠페인 기간 내에서만 설정할 수 있습니다.\n\n다시한번 확인해 주세요.');
+				$("#evt_term_end_dd").focus();
+				return false;
+			}
+		}
+		
+		if(parseInt(event_start_date) > parseInt(event_reserve_day) ) {
+			alert('예약일은 행사기간 이전으로 선택할 수 없습니다.\n\n다시한번 확인해 주세요.');
+			$("#rserv_ntce_dd").focus();
+			return false;
+		}
+		
+		if (cf_getTrElementCount($("#half_compensation_tbody")) > 0 && $("input[name=stamp_ncnt01]").val() != '') {
+			if(start_date_mid == '' && start_date_mid == null) {
+				alert('쿠폰북 유효기간 시작일을 입력해 주세요.');
+				$("#vali_term_start_dd_list1").focus();
+				return false;
+			}
+			
+			if(end_date_mid == '' && end_date_mid == null) {
+				alert('쿠폰북 유효기간 종료일을 입력해 주세요.');
+				$("#vali_term_end_dd_list1").focus();
+				return false;
+			}
+			
+			if(parseInt(start_date_mid) < parseInt(event_start_date)) {
+				alert('쿠폰북의 시작일이 행사기간보다 이전입니다.\n\n쿠폰북의 시작일은 행사시작일 이전으로 선택 불가능합니다.\n\n다시한번 확인해 주세요.');
+				$("#vali_term_start_dd_list1").focus();
+				return false;
+			}
+			
+			if(parseInt(end_date_mid) > parseInt(limit_end_date)) {
+				alert('쿠폰북의 종료일은 행사종료일 기준 31일까지 선택 가능합니다.\n\n다시한번 확인해 주세요.');
+				$("#vali_term_end_dd_list1").focus();
+				return false;
+			}
+		}
+		
+		if(parseInt(start_date_full) < parseInt(event_start_date)) {
+			alert('쿠폰북의 시작일이 행사기간보다 이전입니다.\n\n쿠폰북의 시작일은 행사시작일 이전으로 선택 불가능합니다.\n\n다시한번 확인해 주세요.');
+			$("#vali_term_start_dd_list2").focus();
+			return false;
+		}
+		
+		if(parseInt(end_date_full) > parseInt(limit_end_date)) {
+			alert('쿠폰북의 종료일은 행사종료일 기준 31일까지 선택 가능합니다.\n\n다시한번 확인해 주세요.');
+			$("#vali_term_end_dd_list2").focus();
+			return false;
+		}
+	
+	return true;
+}
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	if($('#frmStamp').formValid() ) {
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		var table_length_flag = false;
+		
+		// 행사유형 '제휴' 선택시 제휴사코드 입력 validation 
+    	if( $("input[name=affiliate_yn]:checked").val() == 'Y' ) {
+    		if($(".tagsinput").val() == "") {
+    			alert("제휴사 코드를 추가해 주세요.");
+    			$("button[type=submit]").attr("disabled",false);
+    			$("#ven_cd_search").select2("open");
+    			return;
+    		} else {
+    			$("input[name=ven_cd]").val($(".tagsinput").val());
+    		}
+    	}
+    	
+    	// 전체지점 체크시 value All로 set.
+    	var eventStrCd = $("#str_cd").select2("val");
+    	if($("#ck_all_event_branch").is(':checked') ){
+    		$("input[name=str_cd]").val('ALL');
+    	} else {
+
+    		if(eventStrCd.length < 1) {
+    			alert("미션 수행 지점을 선택해 주세요.");
+    			$("button[type=submit]").attr("disabled",false);
+    			$("#str_cd").select2("open");
+    			return;
+    		} else {
+	    		$("input[name=str_cd]").val(eventStrCd);
+    		}
+    	}
+    	
+    	if( !$("#preview_uploadfile").next().hasClass("alert")){
+    		alert("이미지를 등록해주세요.");
+    		return;
+    	}
+    	
+    	if ($("#cond_type_val") == "") {
+    		alert("미션 유형을 선택해주세요.");
+    		return;
+    	}
+    	
+    	// 기본 미션 체크 - 단일조건 선택
+    	if ($("#singleCond").is(":checked")) {
+    		
+    		if( $("#prod_ck").is(":checked") == true && $("#prod_ck_cnt option:eq(0)").is(':selected') ) {
+    			alert("지정상품 구매 미션을 선택하셨습니다. 미션갯수를 선택해 주세요.");
+    			$("button[type=submit]").attr("disabled",false);
+    			return;
+    		} else if( $("#price_ck").is(":checked") == true && $("#price_ck_cnt option:eq(0)").is(':selected') ) {
+    			alert("일정구매금액 미션을 선택하셨습니다. 미션갯수를 선택해 주세요.");
+    			$("button[type=submit]").attr("disabled",false);
+    			return;
+    		} else {
+    			if(typeof $("input[name=bsis_mison_yn_temp]:checked").val() == 'undefined' ) {
+        			$( "#lb_base_mission" ).focus();
+    				alert("기본 미션을 선택해 주십시오.");
+        			$("button[type=submit]").attr("disabled",false);
+        			return;
+    			}
+    		}
+    	}
+    	
+    	
+    	$.each($("#frmStamp tbody"), function() {
+			var tbody_id = $(this).attr('id');
+			console.log("~~~~~~~~~ " + tbody_id);
+			if(tbody_id == 'appoint_product_1') { //지정상품 1번째
+				if ($("input[name=misoin_target_1]:checked").val() == "product") {
+					if($('#'+tbody_id).tableRowValid() != true ) {
+						$("#appoint01_prod_select").focus();
+						table_length_flag = true;
+						return false;
+					}
+				}
+				
+			} else if(tbody_id == 'appoint_category_1') {
+				if ($("input[name=misoin_target_1]:checked").val() == "category") {
+					if($('#'+tbody_id).tableRowValid() != true ) {
+						$("#appoint01_category_select").focus();
+						table_length_flag = true;
+						return false;
+					}
+				}
+			} else if(tbody_id == 'appoint_product_2') { //지정상품 2번째
+				if ($("input[name=misoin_target_2]:checked").val() == "product") {
+					if($('#'+tbody_id).tableRowValid() != true ) {
+						$("#appoint02_prod_select").focus();
+						table_length_flag = true;
+						return false;
+					}
+				}
+				
+			} else if (tbody_id == 'appoint_category_2') {
+				if ($("input[name=misoin_target_2]:checked").val() == "category") {
+					if($('#'+tbody_id).tableRowValid() != true ) {
+						$("#appoint02_category_select").focus();
+						table_length_flag = true;
+						return false;
+					}
+				}
+			} else if(tbody_id == 'mission_zone_tbody') { // ??
+				if($('#'+tbody_id).tableRowValid() != true ) {
+					$("#zone_select").focus();
+					table_length_flag = true;
+					return false;
+				}
+			} else if(tbody_id == 'full_compensation_tbody') { // 완료보상
+				if($('#'+tbody_id).tableRowValid() != true ) {
+					$("#btn_full_cpb").focus();
+					table_length_flag = true;
+					return false;
+				}
+			}
+		});
+    	if(table_length_flag) {
+    		$("button[type=submit]").attr("disabled",false);
+			return;
+    	}
+    	
+    	if (cf_getTrElementCount($("#half_compensation_tbody")) > 0 || $("input[name=stamp_ncnt01]").val() != '') {
+			if( cf_getTrElementCount($("#half_compensation_tbody")) < 1 ) {
+				alert('중간보상 쿠폰북을 추가해 주세요');
+				$("#btn_half_cpb").focus();
+				return;
+			}
+			if( $("input[name=stamp_ncnt01]").val() == '' ) {
+				alert('스탬프 개수를 입력해 주세요');
+				$("input[name=stamp_ncnt01]").focus();
+				return;
+			}
+		}
+    	
+    	if( f_customOverDate() != true) {
+    		return;
+    	}
+    	
+    	// 카테고리 대상 소분류코드 validation 체크
+    	$("select[name=small_category]").each(function(i) {
+			if ($(this).val() == "") {
+				alert("소분류 코드가 지정되지 않은 행이 있습니다.");
+				$(this).focus();
+				return;
+			}
+		});
+    	// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		
+		if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+			var array_Cnt = 1;
+	    	
+	    	//--------------------------------------서브밋 할때 서버에서 원하는 값으로 변경 라인 --------------------------------
+	    	
+	    	// 스탬프 전체 갯수
+	    	var stampAllCnt = 0;
+	    	$("input[name=stamp_mison_base_cnt_list]").each(function (index, element) {
+	    		stampAllCnt = stampAllCnt + parseFloat($(element).val());
+	        });
+	    	if(stampAllCnt > 31) {
+	    		alert("기본미션과 특별미션의 합계는 31을 초과할 수 없습니다.");
+    			$("button[type=submit]").attr("disabled",false);
+    			return;
+	    	}
+	    	
+	    	if(cf_isNull($("input[name=stamp_ncnt01]").val())) {  //중간보상 스탬프 개수
+	    		if(parseInt($("input[name=stamp_ncnt01]").val()) >= stampAllCnt) {
+		    		alert("중간보상 스탬프 개수는 완료보상 스탬프 개수보다 작아야 합니다.");
+		    		$("input[name=stamp_ncnt02]").focus();
+		    		$("button[type=submit]").attr("disabled",false);
+	    			return;
+		    	}	
+	    	}
+	    	
+	    	$("input[name=stamp_ncnt02]").val(stampAllCnt); //완료보상 스탬프 개수
+	    	
+			// submit 시 라디오 박스는 체크된 것만 날리기 때문에 input hidden 에 저장해서 보냄. 
+			$.each($("input[name='bsis_mison_yn_list']"), function() {
+				if($(this).attr('id') === $("input[name='bsis_mison_yn_temp']:checked").val()) {
+					$(this).val('Y');
+				}
+			});	
+			
+			// 2개 미션유형 name값을 submit 시 biz에서 원하는값으로 변경
+			$.each($("#frmStamp tbody"), function() {
+				var tbody_id = $(this).attr('id');
+				//console.log("tbody_id==============>" + tbody_id);
+				
+				if(tbody_id != 'half_compensation_tbody' || tbody_id != 'full_compensation_tbody') {  //중간보상? 완료보상?
+					//alert(tbody_id + " .... " + $("input[name='"+tbody_id+"']").val());
+					if ($("input[name='"+tbody_id+"']").val() != undefined) {
+						
+						if (tbody_id == "appoint_product_1") {
+							$("input[name='"+tbody_id+"']").attr('name', 'mison_info01_list');
+						} else if (tbody_id == "appoint_product_2") {
+							$("input[name='"+tbody_id+"']").attr('name', 'mison_info02_list');
+						} else {
+							$("input[name='"+tbody_id+"']").attr('name', 'mison_info0' + array_Cnt + '_list');
+						}
+						
+						//alert("input name tbody ========== " + $("input[name='mison_info0"+array_Cnt+"_list']").attr('name'));
+						array_Cnt = array_Cnt + 1;
+					}
+					
+				}
+			});
+			
+			// 혼자하기 선택시 정원 인원을 1명으로 set.
+			if($("input[name='stamp_divn_cd']:checked").val() == 'PERSONAL' || $("input[name='stamp_divn_cd']:checked").val() == 'CRM') {
+				$("input[name='stamp_psbt_user_cnt']").val('1');
+			}
+			
+			// 중간보상 영역이 hide 되었을때 중간보상 cpbook_id_list 을 빈값으로 set  
+			if($("#div_half_compensation").css('display') == 'none' || (cf_getTrElementCount($("#half_compensation_tbody")) < 1 && $("input[name=stamp_ncnt01]").val() == '') ) {
+				$("#half_compensation_tbody tr").remove();
+				/* if (cf_getTrElementCount($("#half_compensation_tbody")) > 0) {
+					$("#half_compensation_tbody tr").remove();
+				} */
+				var tag_tmp = $("<input>").attr("name","cpbook_id_list").attr("type","hidden");
+				if ($("input[name=cpbook_id_list]").length < 2) {
+					console.log("........ cpbook_id_list.length < 2 ...");
+					$("#div_half_compensation").append(tag_tmp);
+					$("#vali_term_start_dd_list1").val('');
+					$("#vali_term_end_dd_list1").val('');
+					$("#vali_term_start_time_list1").val('');
+					$("#vali_term_end_time_list1").val('');
+					$("input[name=stamp_ncnt01]").val('');
+					//중간보상안내문구
+					$("#reward_info_text1").val('');
+				}
+				
+			}
+			
+			
+			var data = $("#frmStamp").serializeFormObject();
+			/*	행사 이미지   */
+			if ($('input[name=upload_evt_file]').val() != ""	) {
+				$.extend(data, {
+					//'recipe_use_yn': $('input[name=recipe_yn]').is(':checked') ? 'Y' : 'N',
+					'file_divn_cd2' : "IMG_STAMP_LIST" ,
+					'img_orgin_file_nm2': $('input[name=upload_evt_file]').upload('fileinfo')['atch_file_nm'] || '',
+					'img_strge_file_nm2': $('input[name=upload_evt_file]').upload('fileinfo')['local_file_nm'] || ''
+				});	
+			}
+			
+			// 카테고리 정보
+			//var top_cate_list1 = [];
+			//var mid_cate_list1 = [];
+			var low_cate_list1 = [];
+			var apply_text_list1 = [];
+			
+			//var top_cate_list2 = [];
+			//var mid_cate_list2 = [];
+			var low_cate_list2 = [];
+			var apply_text_list2 = [];
+			if ($(":radio[name=condType]:checked").val() == "single" || $(":radio[name=condType]:checked").val() == "mix") {
+				console.log(".... 대상유형 체크");
+								
+				/* $.each($("select[name=large_category]"), function() {
+					top_cate_list.push($(this).val());
+				});
+				
+				$.each($("select[name=mid_category]"), function() {
+					mid_cate_list.push($(this).val());
+				}); */
+												
+				$.each($("#appoint_category_1 select[name=small_category]"), function() {
+					low_cate_list1.push($(this).val());
+				});
+				
+				$.each($("#appoint_category_2 select[name=small_category]"), function() {
+					low_cate_list2.push($(this).val());
+				});
+				
+				$.each($("#appoint_category_1 input[name=apply_text]"), function() {
+					apply_text_list1.push(backSlashToMoneySymbol($(this).val()));
+				});
+				
+				$.each($("#appoint_category_2 input[name=apply_text]"), function() {
+					apply_text_list2.push(backSlashToMoneySymbol($(this).val()));
+				});
+				
+			}
+			
+			// 원화표시 
+			data["evt_title"] = backSlashToMoneySymbol(data["evt_title"]); // 행사설명
+			data["evt_desc"] = backSlashToMoneySymbol(data["evt_desc"]); // 행사설명
+			data["evt_info"] = backSlashToMoneySymbol(data["evt_info"]); // 행사안내
+			data["stamp_mison_desc"] = backSlashToMoneySymbol(data["stamp_mison_desc"]); // 행사안내
+			data["reward_info_text_list"][0] = backSlashToMoneySymbol(data["reward_info_text_list"][0]);
+			data["reward_info_text_list"][1] = backSlashToMoneySymbol(data["reward_info_text_list"][1]);
+			// 원화표시
+			
+			data["low_cate_list1"] = low_cate_list1;
+			data["low_cate_list2"] = low_cate_list2;
+			data["apply_text_list1"] = apply_text_list1;
+			data["apply_text_list2"] = apply_text_list2;
+			//data["low_cate_list"] = low_cate_list;
+			
+			console.log(JSON.stringify(data));
+			
+			//return;
+			// 실제 데이터 전송
+			$.ajax({
+			    url: api_url+"/backoffice/stamp/create",
+			    type: "POST",
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: "application/json;charset=utf-8",
+			    data: JSON.stringify(data),
+			    beforeSend : function() {},
+			    success: function(obj){
+			    	alert(obj.message);
+			    	f_stampList();
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+			    	$("button[type=submit]").attr("disabled",false);
+			    	
+			    	if( cf_getTrElementCount($("#half_compensation_tbody")) < 1 ) {
+			    		$("#div_half_compensation input[name=cpbook_id_list]").remove();
+			    	}
+			    	
+			    	if($("#ck_all_event_branch").is(':checked') ){
+			    		$("#str_cd").select2('val', '');
+			    	}
+			    	return;
+			    }
+			});
+		} else {
+			$("button[type=submit]").attr("disabled",false);
+		}
+	} else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+
+	// 본사여부에 다른 사용 지점
+	if('${sessionScope.sessionHqBaseYn}' != 'Y') {
+		$('#ck_all_event_branch').attr('disabled', true);
+		$('#str_cd').select2('enable', false);
+		var info_data = [];
+		var items = {};
+		items["id"] = '${sessionScope.sessionStrCd}';
+		items["text"] = '${sessionScope.sessionStrNm}';
+		info_data[0] = items;
+		$('#str_cd').select2("data",info_data);
+	}
+	
+	$('input[name=upload_evt_file]').upload({'type': 'image/*', 'maxsize': 300, 'file_divn_cd': 'IMG_STAMP_LIST', 'preview': '#preview_evt_uploadfile img'});
+	
+	// 시간 SelectBox Option 생성
+	for(var i = 0; i < 24 ; i++) {
+		var option1 = $('<option/>');
+		var option2 = $('<option/>');
+		
+		if(i < 10) {
+			i = '0' + i;
+		}
+		
+		option1.val(i).text(i);
+		option2.val(i).text(i);
+		
+		if(i == 23) {
+			option2.attr('selected', 'selected');
+		}
+
+		$('select[id=vali_term_start_time_list1]').append(option1);
+		$('select[id=vali_term_end_time_list1]').append(option2);
+	}
+	
+	// 시간 SelectBox Option 생성
+	for(var i = 0; i < 24 ; i++) {
+		var option1 = $('<option/>');
+		var option2 = $('<option/>');
+		
+		if(i < 10) {
+			i = '0' + i;
+		}
+		
+		option1.val(i).text(i);
+		option2.val(i).text(i);
+		
+		if(i == 23) {
+			option2.attr('selected', 'selected');
+		}
+		
+		$('select[id=vali_term_start_time_list2]').append(option1);
+		$('select[id=vali_term_end_time_list2]').append(option2);
+	}
+	// 단일조건 selectbox disable
+	$("#prod_ck").attr("disabled", true);
+	$("#price_ck").attr("disabled", true);
+};
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+$(document).ready(function() {
+	
+	 // 미션 유형 radio 버튼 클릭 event
+	 $("input[name=condType]:radio").change(function() { 
+		//var checkedVal = $(':radio[name="condType"]:checked').val();
+		var radio_val = $(this).val();
+		console.log(".............. radio value is .. " + radio_val);
+		switch (radio_val) {
+			case "single" :
+				//단일조건
+				console.log("... 단일 조건 ~");
+				f_defaultSingle($(this));
+				/* $("input:radio[name=bsis_mison_yn_temp]:input[value='06']").attr("checked", false);
+				$("#prod_ck").attr("disabled", false);
+				$("#price_ck").attr("disabled", false);
+				f_joinDisplayNum(0); */
+				break;
+			
+			case "mix" :
+				//혼합조건
+				console.log("... 혼합조건~");
+				f_defaultMix($(this));				
+				
+				break;
+				
+			case "join" :
+				//참여형
+				/* 미션유형 참여 클릭 이벤트 */
+				console.log("참여~");
+				//f_changeJoin($(this));
+				f_defaultJoin($(this));
+				break;
+		}
+		
+		//히든 인풋에 미션 유형값 저장
+		$("#cond_type_val").val(radio_val);
+	 });	 
+	 
+});
+
+function f_defaultJoin(joinObj) {
+	//if (joinObj.is(":checked")) {
+		console.log("joinObj is checked");
+		if ($("input[name=stamp_divn_cd]:checked").val() == "GROUP") {
+			alert("함께하기는 참여형 미션 유형은 선택 할 수 없습니다.");
+			joinObj.attr("checked", false);
+			return;
+		}
+		// 참여형 미션 선택시 다른 미션 선택 불가
+		$("#prod_ck").attr("disabled", true);
+		$("#price_ck").attr("disabled", true);
+		
+		// 다른 미션 갯수 select 박스 활성화 되어 있으면 비활성화 및 미션 hide
+		$("#prod_ck_cnt").val("0");
+		$("#prod_ck_cnt").attr("disabled", true);
+		
+		$("#appoint_1").hide();
+		$("#appoint_2").hide();
+		$("#appoint_1").empty();
+		$("#appoint_2").empty();
+		
+		$("#price_ck_cnt").val("0");
+		$("#price_ck_cnt").attr("disabled", true);
+		
+		$("#buy_money_1").hide();
+		$("#buy_money_2").hide();
+		$("#buy_money_1").empty();
+		$("#buy_money_2").empty();
+		
+		$("#mix_mission").hide();
+		$("#mix_mission").empty();
+		
+		f_joinDisplayNum(1);
+		//f_missionChannelChange();
+		f_changeMiddleReward();	
+	
+}
+	
+function f_defaultSingle(singleObj) {
+	// 참여형 미션 선택시 다른 미션 선택 불가
+	$("#prod_ck").attr("disabled", false);
+	$("#price_ck").attr("disabled", false);
+	
+	// 다른 미션 갯수 select 박스 활성화 되어 있으면 비활성화 및 미션 hide
+	$("#prod_ck_cnt").val("0");
+	$("#prod_ck_cnt").attr("disabled", true);
+	
+	$("#appoint_1").hide();
+	$("#appoint_2").hide();
+	$("#appoint_1").empty();
+	$("#appoint_2").empty();
+	
+	$("#price_ck_cnt").val("0");
+	$("#price_ck_cnt").attr("disabled", true);
+	
+	$("#buy_money_1").hide();
+	$("#buy_money_2").hide();
+	$("#buy_money_1").empty();
+	$("#buy_money_2").empty();
+	
+	$("#join_mission").hide();
+	$("#join_mission").empty();
+	
+	$("#mix_mission").hide();
+	$("#mix_mission").empty();
+	
+}
+
+function f_defaultMix(mixObj) {
+	// 참여형 미션 선택시 다른 미션 선택 불가
+	//$("#prod_ck").attr("disabled", true);
+	//$("#price_ck").attr("disabled", true);
+	
+	// 다른 미션 갯수 select 박스 활성화 되어 있으면 비활성화 및 미션 hide
+	//$("#prod_ck_cnt").val("1");
+	//$("#prod_ck_cnt").attr("disabled", true);
+	
+	//f_appointDisplayNum($("#prod_ck_cnt").val());
+	//$("#appoint_1").hide();
+	//$("#appoint_2").hide();
+	//$("#appoint_1").empty();
+	//$("#appoint_2").empty();
+	
+	//$("#price_ck_cnt").val("1");
+	//$("#price_ck_cnt").attr("disabled", true);
+	
+	//f_amountDisplayNum($("#price_ck_cnt").val());
+	//$("#buy_money_1").hide();
+	//$("#buy_money_2").hide();
+	//$("#buy_money_1").empty();
+	//$("#buy_money_2").empty();
+	
+	//$("#join_mission").hide();
+	//$("#join_mission").empty();
+	
+	console.log("mixObj is checked");
+	/* if ($("input[name=stamp_divn_cd]:checked").val() == "GROUP") {
+		alert("함께하기는 참여형 미션 유형은 선택 할 수 없습니다.");
+		joinObj.attr("checked", false);
+		return;
+	} */
+	// 혼합조건 선택시 다른 미션 선택 불가
+	$("#prod_ck").attr("disabled", true);
+	$("#price_ck").attr("disabled", true);
+	
+	// 다른 미션 갯수 select 박스 활성화 되어 있으면 비활성화 및 미션 hide
+	$("#prod_ck_cnt").val("0");
+	$("#prod_ck_cnt").attr("disabled", true);
+	
+	$("#appoint_1").hide();
+	$("#appoint_2").hide();
+	$("#appoint_1").empty();
+	$("#appoint_2").empty();
+	
+	$("#price_ck_cnt").val("0");
+	$("#price_ck_cnt").attr("disabled", true);
+	
+	$("#buy_money_1").hide();
+	$("#buy_money_2").hide();
+	$("#buy_money_1").empty();
+	$("#buy_money_2").empty();
+	
+	$("#join_mission").hide();
+	$("#join_mission").empty();
+	
+	f_mixDisplayNum();
+	//f_missionChannelChange();
+	f_changeMiddleReward();	
+}
+
+function f_mixDisplayNum() {
+	$("#mix_mission").empty();
+	
+	$.get("/application/stamp/stamp/appointMoney.do", function(data) {
+		$("#mix_mission").append(data);
+		
+		$("input:radio[name=bsis_mison_yn_temp]:input[value='07']").attr("checked", true);
+	})
+	.done(function() {
+		$("#prod_ck").attr("checked", false);
+		$("#price_ck").attr("checked", false);
+	});
+	
+	$("#mix_mission").show();
+}
+
+/* 대상유형 onchange 이벤트 */
+function changeMisonTarget(targetVal, gubun) {
+	console.log(".... changeMisonTarget targetVal " + targetVal + ", gubun " + gubun);
+	var table_surfix = "";
+	var apply_index = 0;
+	if (gubun == "appoint_1") {
+		table_surfix = "_1";
+		apply_index = 0;
+	} else {
+		table_surfix = "_2";
+		apply_index = 1;
+	}
+	
+	if (targetVal == "product") {
+		 $("#table_product" + table_surfix).show();
+		 $("#table_category" + table_surfix).hide();
+		 $("#appoint_category" + table_surfix).empty();
+		 
+		 $("input[name=stamp_mison_target_cd_list]").eq(apply_index).val("PRODUCT");
+		 
+		 $("#btn_product" + table_surfix).show();
+		 $("#btn_category" + table_surfix).hide();
+		 
+		 // 대상상품 레이블 컨트롤
+		 $("#product_label" +table_surfix).show();
+		 $("#category_label" +table_surfix).hide();		 
+		 
+	 } else {
+		 $("#table_product" + table_surfix).hide();
+		 $("#appoint_product" + table_surfix).empty();
+		 $("#table_category" + table_surfix).show();
+	 	 
+		 $("input[name=stamp_mison_target_cd_list]").eq(apply_index).val("CATEGORY");
+		 
+		 $("#btn_product" + table_surfix).hide();
+		 $("#btn_category" + table_surfix).show();
+		 
+		// 대상상품 레이블 컨트롤
+		 $("#product_label" +table_surfix).hide();
+		 $("#category_label" +table_surfix).show();
+	 }
+	
+	 $("#prodCount" + table_surfix.replace("_", "")).text("0");
+	 $("#catgCount" + table_surfix.replace("_", "")).text("0");
+}
+
+/* 카테고리 row idx 전역변수  */
+var category_row_idx = 0;
+
+/* 카테고리 테이블 row 추가 */
+function addCategoryRow(targetTbody) {
+	//var targetRows = $("#" + targetTbody).find("tr").length;
+	
+	console.log("...... category add row " + targetTbody);
+	var targetRows = $("#" + targetTbody + " select[name=large_category]").length;
+	console.log(".... targetRows ~ : " + targetRows);
+	if (targetRows >= 5) {
+		alert("카테고리는 미션당 5개까지 추가 가능합니다");
+		return;
+	}
+	
+	console.log(".... category_row_idx ~ : " + category_row_idx);
+	
+	
+	var appendRowData = "";
+	
+	appendRowData += "<tr>";
+	appendRowData += "<td class='ta-c'><input type='checkbox' name='del_check' value='"+category_row_idx+"'></td>";
+	appendRowData += "<td class='ta-c'>";
+	appendRowData += "<select name='large_category' id='large_category" + category_row_idx + "' data-valid-use='true' data-valid-title='대분류' style='width:139px;' onchange='change_large_category(this.id, \"" + targetTbody + "\");'>";
+	appendRowData += "<option value='' selected='selected'>선택</option>";
+	appendRowData += "</select>";
+	appendRowData += "</td>";
+	appendRowData += "<td class='ta-c'>";
+	appendRowData += "<select name='mid_category' id='mid_category" + category_row_idx + "' data-valid-use='true' data-valid-title='중분류' style='width:139px;' onchange='change_mid_category(this.id, \"" + targetTbody + "\");'>";
+	appendRowData += "<option value='' selected='selected'>선택</option>";
+	appendRowData += "</select>";
+	appendRowData += "</td>";
+	appendRowData += "<td class='ta-c'>";
+	appendRowData += "<select name='small_category' id='small_category" + category_row_idx + "' data-valid-use='true' data-valid-title='소분류' style='width:139px;' onchange='change_small_category(this.id, \"" + targetTbody + "\", this.value);'>";
+	appendRowData += "<option value='' selected='selected'>선택</option>";
+	appendRowData += "</select>";	
+	appendRowData += "</td>";
+	appendRowData += "<td class='ta-c'>";
+	appendRowData += "<input type='text' id='apply_text" + category_row_idx + "' name='apply_text' data-valid-use='true'  data-valid-max='300' data-valid-title='대상적용문구' style='width:550px;'/>";
+	appendRowData += "</td>";
+	appendRowData += "</tr>";
+	
+	$("#" + targetTbody).append(appendRowData);
+	
+	// 대상카테고리 수 표시
+	var tbodyRows = $("#" + targetTbody + " tr").length;
+	if (targetTbody == "appoint_category_1") {
+		$("#catgCount1").text(tbodyRows + "");
+	} else {
+		$("#catgCount2").text(tbodyRows + "");
+	}
+	
+	console.log("~~~ target id : " + "#large_category" + category_row_idx);
+	setCategoryList($("#" + targetTbody + " #large_category" + category_row_idx));
+	
+	category_row_idx++;
+}
+
+function setCategoryList(targetSelect) {
+	
+	console.log("... targetSelect : " + targetSelect.id);
+	
+	f_ajaxProductCategoryCode(targetSelect, '', 'TGRP');
+	
+}
+
+function change_large_category(select_id, targetTbody) {
+	console.log("select_id : " + select_id);
+	var mid_category_id = select_id.replace("large_category", "mid_category");
+	var small_category_id = select_id.replace("large_category", "small_category");
+	// 선택 select 시
+	if ($("#" + targetTbody + " #" + select_id).val() == "") {
+		
+		$("#" + targetTbody + " #" + mid_category_id).html("<option value=''>선택</option>");
+		$("#" + targetTbody + " #" + small_category_id).html("<option value=''>선택</option>");
+		return;
+	}	
+	
+	console.log("~~~ mid_category_id : " +  mid_category_id);
+	f_ajaxProductCategoryCode($("#" + targetTbody + " #" + mid_category_id), $("#" + targetTbody + " #" + select_id).val(), 'MGRP');
+}
+
+function change_mid_category(select_id, targetTbody) {
+	console.log("select_id : " + select_id);
+	var small_category_id = select_id.replace("mid_category", "small_category");
+	
+	// 선택 select 시
+	if ($("#" + targetTbody + " #" + select_id).val() == "") {
+		
+		$("#" + targetTbody + " #" + small_category_id).html("<option value=''>선택</option>");
+		return;
+	}	
+	
+	f_ajaxProductCategoryCode($("#" + targetTbody + " #" + small_category_id), $("#" + targetTbody + " #" + select_id).val(), 'SGRP');
+	
+	$("#" + targetTbody + " #" + small_category_id).find("option").eq(0).text("선택");
+}
+
+function change_small_category(select_id, targetTbody, value) {
+	
+	if (value == "") {
+		return;
+	}
+	
+	console.log("select_id : " + select_id + ", value : " + value);
+	//var selectVal = $("#" + select_id).val();
+	console.log("select_id value : " + value);
+	$.each($("select[name=small_category]"), function(i, item) {
+		var target_id = $(this).attr("id");
+		console.log("...... target_id : " + target_id + ", target_Val : " + $(this).val());
+		if (value == $(this).val() && select_id != target_id) {
+			alert("이미 존재하는 카테고리입니다. 다시 선택해 주시기 바랍니다.");
+			$("#" + select_id).val("");
+			$("#" + select_id).focus();
+			return;
+		}
+	});
+}
+
+function testValidation() {
+	var array_Cnt = 1;
+	// 2개 미션유형 name값을 submit 시 biz에서 원하는값으로 변경  
+	$.each($("#frmStamp tbody"), function() {
+		var tbody_id = $(this).attr('id');
+		//console.log("tbody_id==============>" + tbody_id);
+		
+		if(tbody_id != 'half_compensation_tbody' || tbody_id != 'full_compensation_tbody') {  //중간보상? 완료보상?
+			alert(tbody_id + " .... " + $("input[name='"+tbody_id+"']").val());
+			if ($("input[name='"+tbody_id+"']").val() != undefined) {
+				$("input[name='"+tbody_id+"']").attr('name', 'mison_info0'+ array_Cnt + '_list');
+				alert("input name tbody ========== " + $("input[name='mison_info0"+array_Cnt+"_list']").attr('name'));
+				array_Cnt = array_Cnt + 1;
+			}
+			
+		}
+	});
+}
+</script>

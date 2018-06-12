@@ -1,0 +1,259 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>채널콕 상세</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<div class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">등록일자 : </label>
+									<div class="col-md-2" style="width:120px !important">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">등록자 : </label>
+									<div class="col-md-2"  style="width:120px !important">
+										<span class="form-control cs-css-03" id="reg_nm"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">진행상태 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="process_status_cd_nm"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">제목 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="title"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">URL : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="media_url"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">내용 : </label>
+									<div class="col-md-10">
+										<textarea class="form-control cs-css-03" id="desc_content" rows="10" readonly="readonly"></textarea>
+									</div>
+								</div>
+								
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">카테고리 :</label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="category_cd_nm"></span>
+									</div>
+									
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">상품링크 :</label>
+									<div class="col-md-1">
+										<span class="form-control cs-css-03" id="prod_mapp_yn_nm"></span>
+									</div>
+								</div>
+								
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:125px !important">동영상노출기간 :</label>
+										<div class="col-md-2">
+											<span class="form-control cs-css-03" id="ntce_st_date"></span>
+										</div>
+										<div class="col-md-2">
+											<span class="form-control cs-css-03" id="ntce_ed_date"></span>
+										</div>
+
+									<div id="prod_disabled" style="display:none">										
+										<label class="col-md-1 control-label cs-css-05" style="width:115px !important">상품노출기간 :</label>
+										<div class="col-md-2">
+											<span class="form-control cs-css-03" id="prod_op_st_date"></span>
+										</div>
+										<div class="col-md-2">
+											<span class="form-control cs-css-03" id="prod_op_ed_date"></span>
+										</div>
+									</div>
+								</div>						
+								<div id="prod_grid_disabled" style="display:none">		
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05" style="width:120px !important">상품</label>
+										<div class="col-md-10">
+											<div class="table-responsive" style="max-height:230px; overflow:auto;">
+												<table class="table table-bordered">
+													<thead>
+														<tr>
+															<th class="ta-c">판매코드</th>
+															<th class="ta-c">상품코드</th>
+															<th class="ta-c">상품명</th>
+															<th class="ta-c">규격</th>
+															<th class="ta-c">업체명</th>
+															<th class="ta-c">원가</th>
+															<th class="ta-c">매가</th>
+															<th class="ta-c">이익율</th>
+															<th class="ta-c">거래형태</th>
+														</tr>
+													</thead>
+													<tbody id="prod_list" data-valid-title="적용대상">
+														
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05" style="width:120px !important">해시태그 :</label>
+										<div class="col-md-10">
+											<span class="form-control cs-css-03" id="hashtag_words"></span>
+										</div>
+								</div>
+							<!-- 적용 대상(상품) -->
+							</fieldset>
+							
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_chkokList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_chkokEdit();" class="btn btn-warning btn_auth_update">수정</a>
+									</div>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="couponbook_info_rd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+var pagefunction = function() {
+	
+	// 권한에 따른 버튼 처리
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').hide();
+	}
+	
+	// 채널콕 카테고리 초기값.
+	f_ajaxCategoryCode("category_cd", "");
+	
+	$.ajax({
+	    url: api_chkok_url+'/backoffice/chkok/media/show', //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify($('#frmKeepData').serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var detailData = obj.data;
+	    	
+	    	$("#reg_date").html(detailData['reg_date']);
+	    	$("#reg_nm").html(detailData['reg_nm']);
+	    	$("#mod_date").html(detailData['mod_date']);
+	    	$("#mod_nm").html(detailData['mod_nm']);
+	    	
+	    	$("#process_status_cd_nm").html(detailData['process_status_cd_nm']);
+	    	$("#title").html(detailData['title']);
+	    	$("#media_url").html(detailData['media_url']);
+	    	$("#desc_content").html(detailData['desc_content']);
+	    	
+	    	$("#category_cd_nm").html(detailData['category_cd_nm']);
+	    	$("#prod_mapp_yn_nm").html(detailData['prod_mapp_yn_nm']);
+	    	
+	    	$("#prod_mapp_yn").html(detailData['prod_mapp_yn']);
+	    	if(detailData.prod_mapp_yn == 'Y'){
+	    		$('#prod_disabled').show();	
+	    		$('#prod_grid_disabled').show();	
+	    	}
+	    	
+	    	$("#ntce_st_date").html(detailData['ntce_st_date']);
+	    	$("#ntce_ed_date").html(detailData['ntce_ed_date']);
+	    	
+	    	$("#prod_op_st_date").html(detailData['prod_op_st_date']);
+	    	$("#prod_op_ed_date").html(detailData['prod_op_ed_date']);
+
+	    	$("#hashtag_words").html(detailData['hashtag_words']);
+	    	
+	    	
+	    	if(detailData['prod_list']) {
+	    		$.each(detailData['prod_list'], function(i, prodItem) {
+		    		var tag_td = '';
+		    		tag_td += '<td class="ta-c">' + prodItem.prod_sell_cd + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.prod_cd + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.prod_nm + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.standard_content + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.ven_nm + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.buy_prc + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.sell_prc + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.prftrat + '</td>';
+		    		tag_td += '<td class="ta-c">' + prodItem.trd_typ_nm + '</td>';
+		    		$('#prod_list').append('<tr>' + tag_td + '</tr>');
+		    	});
+	    	}
+	    	$("#direct_buy_yn_nm").html(detailData['direct_buy_yn_nm']);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

@@ -1,0 +1,293 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>쿠폰 등록</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" method="post" id="frmLifekok" name="frmLifekok">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="_templ_kind_cd" value="LKOKCOUPONIMG">
+							<input type="hidden" name="img_templ_yn" value="N">
+							<input type="hidden" name="orgin_nm" value="">
+							<input type="hidden" name="strge_nm" value="">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목 <sup>*</sup></label>
+									<div class="col-md-6">
+										<input class="form-control" type="text" name="coupon_nm" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="제목(쿠폰명)">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이미지</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									
+									<div class="col-md-4">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+										<a href="javascript:f_lifekokOpenTenantEventTemplatesLD();" class="btn btn-primary btn-sm">이미지 선택</a>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 이미지 등록시, 사이즈: 350px X 450px  /  파일종류: jpg, gif, png  / 최대파일용량: 300KB</p>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">품목명/할인유형 </label>
+									<label class="col-md-1 control-label">품목명</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="item_nm" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="품목명">
+									</div>
+									<label class="col-md-1 control-label">할인유형</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="dc_type_cont" data-valid-use="true" data-valid-symbol="false" data-valid-max="100" data-valid-title="할인유형">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">등록일자 </label>
+									<div class="col-md-2">
+										<span class="form-control" id="reg_date"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">설명<sup>*</sup></label>
+									<div class="col-md-8">
+										<textarea class="form-control" rows="6" name="coupon_desc_content" data-valid-use="true" data-valid-symbol="false" data-valid-max="500" data-valid-title="쿠폰설명"></textarea>
+									</div>
+								</div>
+								
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_tenantEventList()" class="btn btn-default">취소</a>
+										<a href="javascript:f_tenantEventCouponSubmit()" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							</fieldset>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<div id="select_str_sd" style="display:none;"></div>
+<div id="edit_str_sd" style="display:none;"></div>
+<div id="templates_sd" style="display:none;"></div>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 템플릿 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#templates_sd').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 600,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 템플릿 이미지 선택 </h6></div>",
+	buttons : [{
+		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+		"class" : "btn btn-primary",
+		click : function() {
+			var chk_obj = $("input[name=templ_list]:checked");
+			
+			$('input[name=img_templ_yn]').val('Y');			
+			$('input[name=orgin_nm]').val(chk_obj.attr('img_view_nm'));
+			$('input[name=strge_nm]').val(chk_obj.attr('img_local_nm'));
+			
+			var v_nm = chk_obj.attr('img_view_nm');
+// 			var img_path = chk_obj.attr('img_path').replace("http://imagecoupond.lottemart.com","http://10.52.53.33");
+			var img_path = chk_obj.attr('img_path');
+			var str_nm = chk_obj.attr('img_local_nm');
+			
+			$('#preview_uploadfile').find('img').attr('src',img_path);			
+			var fName = '<p class="alert alert-info bd0">'+v_nm+'</p>';
+			$('#preview_uploadfile').parent().append(fName); 
+			
+			var span = $('<span>').addClass('btn_del_uploadfile');
+			var aTag = $('<a>').addClass('btn btn-danger btn-sm').attr("href","javascript:f_lifekokTemplateFileDelete()").text('파일삭제');						
+			var templ_id = $('<input>').attr('type', 'hidden').attr('name', 'img_templ_id').val(chk_obj.val());
+			span.append(aTag);
+			span.append(templ_id);
+			
+			var btn_div = $("#uploadfile").parent().parent();
+			btn_div.find("a").attr("disabled", true);
+			btn_div.find("span").attr("disabled", true);
+			btn_div.append(span);
+			
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$('#templates_sd').empty();
+			$(this).dialog("close");
+		}
+	}]
+});
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 파일 업로드
+ * ==================================================================================
+ */
+$('#uploadfile').change(function (e) {
+		
+		var limitWidth = 350,
+			limitHeight = 450,
+			limitSize = 300;
+		
+		var intpuFile = $(this);
+		var file = this.files[0];
+	    var reader = new FileReader();
+	    var image  = new Image();
+		var boolFile = true;
+	 
+		reader.readAsDataURL(file);  
+	    
+		reader.onload = function(_file) {
+	        image.src    = _file.target.result;              // url.createObjectURL(file);
+	        image.onload = function() {
+	            var w = this.width,
+	                h = this.height,
+	                t = file.type,                           // ext only: // file.type.split('/')[1],
+	                n = file.name,
+	                s = ~~(file.size/1024);
+//	                 s = ~~(file.size/1024) +'KB';
+
+	            if(w > limitWidth || h > limitHeight){
+	             	alert("제한 사이즈를 초과하셨습니다.( "+limitWidth+" * "+limitHeight+" )\n너비 : " + w + " 높이 : " + h);
+	             }else if(s > limitSize){
+	             	alert("제한 파일용량을 초과하셨습니다.( "+limitSize+" kb )\n파일용량 : " + s);
+	             }else{
+	            	f_lifekok_fileUpload(intpuFile, "LKOKCOUPON");
+	            }
+	        };
+	        image.onerror= function() {
+	        	alert("유효한 파일타입이 아닙니다. 이미지 파일을 등록해 주세요");
+//	             alert('Invalid file type: '+ file.type);
+		};
+	};
+});
+// $('input[name*=uploadfile]').change(function (e) {
+// 	f_lifekok_fileUpload($(this), 'LKOKCOUPON');
+// });
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_tenantEventCouponSubmit() {
+		
+	if($('#frmLifekok').formValid() ){
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+	
+		var data = $('#frmLifekok').serializeFormObject();
+		
+		data['empno'] = '${sessionScope.sessionEmpno}';
+		
+// 		실제 데이터 전송
+		$.ajax({
+		    //로컬
+// 			url: api_lifekok_img_url+'/backoffice/lifekok/coupon/create',
+			
+			//개발
+		    url: api_lifekok_url+'/backoffice/lifekok/coupon/create',
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_tenantEventLN();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});	
+	} else {
+		return;
+	}
+}
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+// 	f_ajaxCategoryCode("category_cd", "");
+	
+// 	오늘날짜 
+	var Now = new Date();
+	var NowTime = Now.getFullYear() + '-';
+	var m_zero = "";
+	if((Now.getMonth() + 1) < 10){m_zero = "0";}
+	var d_zero = "";
+	if((Now.getDate()) < 10){d_zero = "0";}
+	NowTime += m_zero+""+ (Now.getMonth() + 1)+'-' ;
+	NowTime += d_zero+""+ Now.getDate();
+	$('#reg_date').html(NowTime);
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

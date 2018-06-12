@@ -1,0 +1,88 @@
+/**
+ * String Format.
+ * @returns {string}
+ */
+if (!String.prototype.getFormatted) {
+    String.prototype.getFormatted = function () {
+        var args = arguments;
+        return this.replace(/{(\d+)}/g, function (match, number) {
+            return typeof args[number] != 'undefined' ? args[number] : match;
+        });
+    };
+}
+
+/**
+ * 설문 유형
+ * @type {{JOIN: string, LEAVE: string}}
+ */
+var SURVEY_TYPE = {
+
+    /**
+     * 가입 설문
+     */
+    JOIN: 'J',
+
+    /**
+     * 탈퇴 설문
+     */
+    LEAVE: 'L'
+};
+
+/**
+ * M클럽 승인 상태 코드
+ * @type {{REQUEST: string, STANDBY: string, APPROVE: string, REJECT: string, CLOSED: string}}
+ */
+var MCLUB_APPROVAL_STATUS_CODE = {
+    REQUEST: 'REQUEST',
+    STANDBY: 'STANDBY',
+    APPROVE: 'APPROVE',
+    REJECT: 'REJECT',
+    CLOSED: 'CLOSED'
+};
+
+/**
+ * M클럽 이벤트 승인 상태 코드
+ * @type {{REQUEST: string, STANDBY: string, APPROVE: string, REJECT: string}}
+ */
+var MCLUB_EVNT_APPROVAL_STATUS_CODE = {
+    REQUEST: 'REQUEST',
+    STANDBY: 'STANDBY',
+    APPROVE: 'APPROVE',
+    REJECT: 'REJECT'
+};
+
+/**
+ * 설문 질문 유형
+ * @type {{SHORT_ANSWER: {name: string, code: string}, MULTIPLE_CHOICE: {name: string, code: string}}}
+ */
+var QUESTION_TYPE = {
+    SHORT_ANSWER: {name: '주관식', code: 'S'},
+    MULTIPLE_CHOICE: {name: '객관식', code: 'M'},
+
+    getNameByCode: function (code) {
+        for (var prop in this) {
+            if (this.hasOwnProperty(prop)) {
+                if (this[prop].code === code)
+                    return this[prop].name;
+            }
+        }
+
+        return '';
+    }
+};
+
+var TERM_TYPE = {
+	VALI : {name: '유효기간', code: 'vali'},
+	APPLY : {name: '적용기간', code:'apply'},
+	
+	getNameByCode: function (code) {
+        for (var prop in this) {
+            if (this.hasOwnProperty(prop)) {
+                if (this[prop].code === code)
+                    return this[prop].name;
+            }
+        }
+
+        return '';
+    }
+};

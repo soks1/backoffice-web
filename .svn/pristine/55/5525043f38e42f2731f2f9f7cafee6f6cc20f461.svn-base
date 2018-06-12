@@ -1,0 +1,6 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script src="${pageContext.request.contextPath}/resources/js/application/chkok.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/application/stats.js"></script>
+<div id="targetHtml">
+	<jsp:include page="/WEB-INF/jsp/application/stats/chkok/chkokSN.jsp" flush="false" />
+</div>

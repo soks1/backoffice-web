@@ -1,0 +1,140 @@
+
+/**
+ * ==================================================================================
+ * 검색 초기화 버튼 생성(function btn cancel sample)
+ * ==================================================================================
+ */
+function f_bc_sample() {
+	$('#btn_sample_search_cancel').remove();
+	var btn_icon = $('<i>').addClass('fa fa-remove');
+	var reset_btn = $('<a>')
+		.attr('id', 'btn_sample_search_cancel')
+		.attr('href', 'javascript:void(0);')
+		.attr('onclick', 'f_sc_sample();')
+		.addClass('btn btn-warning');
+	reset_btn.text(' 초기화 ');
+	reset_btn.prepend(btn_icon);
+	$('#btn_sample_search').parent().append(reset_btn);
+}
+
+
+/**
+ * ==================================================================================
+ * 검색 액션(function search sample)
+ * ==================================================================================
+ */
+function f_s_sample() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_bc_sample();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $('#frmSearch').serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#mcoupon_jqgrid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#mcoupon_jqgrid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#mcoupon_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+	
+	//f_mcoupon_list();
+}
+
+
+/**
+ * ==================================================================================
+ * 검색 초기화 액션(function search cancel sample)
+ * ==================================================================================
+ */
+function f_sc_sample() {
+	
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepParams").empty();
+	
+	// 검색 초기화 버튼 삭제
+	$("#btn_sample_search_cancel").remove();
+	
+	$("#mcoupon_jqgrid").jqGrid('setGridParam', {search: false});
+	$("#mcoupon_jqgrid").jqGrid('setGridParam', {page: 1});
+	
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#mcoupon_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+}
+
+
+
+/**
+ * ==================================================================================
+ * M쿠폰 알림관리 이벤트
+ * ==================================================================================
+ */
+function f_mcoupon_list() {
+	
+	$.ajax({
+	    url: api_url+'//backoffice/push/mcoupon/list', 
+	    type: 'POST', 
+	    async: false,
+	    cache: true,
+	    data: encodeURI('search_info='+JSON.stringify($("#frmSearch").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n\n'+'message:'+serverObj.message+'\n');
+	    	return;
+	    }
+	});
+
+}
+
+
+/**
+ * ==================================================================================
+ * M쿠폰 알림 예약취소
+ * ==================================================================================
+ */
+function f_mcoupon_cancel(msg_id) {
+	
+	var sessionScope = $.getSessionData();
+
+	var send_data = {
+			empno: sessionScope.empno, 
+			emp_str_cd: sessionScope.str_cd,
+			hq_base_yn: sessionScope.hq_base_yn,
+			search_info : msg_id
+	};
+	
+	$.ajax({
+	    url: api_url+'/backoffice/push/mcoupon/cancel',
+	    type: 'POST', 
+	    async: false,
+	    cache: true,
+	    data: send_data,
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    		alert("예약 취소가 완료 되었습니다.");
+	    		$("#mcoupon_jqgrid").trigger("reloadGrid");
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n\n'+'message:'+serverObj.message+'\n');
+	    	return;
+	    }
+	});
+
+}
+
+

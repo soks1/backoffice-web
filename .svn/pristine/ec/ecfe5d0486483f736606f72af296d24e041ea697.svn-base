@@ -1,0 +1,198 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>시스템공지사항 수정</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmSystemNotice" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}">
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}">
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}">
+							<input type="hidden" name="noticbd_divn_cd" value="">
+							<input type="hidden" name="noticbd_id" value="">
+							<fieldset>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="title" data-valid-use='true' data-valid-symbol='true' data-valid-max="78" data-valid-title='제목'>
+									</div>
+								</div>
+																
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용 <sup>*</sup></label>
+									<div class="col-md-10">
+										<textarea class="form-control summernote" name="content" rows="10" data-valid-use='true' data-valid-max="3000" data-valid-title="내용"></textarea>
+									</div>
+								</div>
+								
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_noticeList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/plugin/summernote/summernote.js"></script>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+	// -------------------------- edit box의 html 모든 tag 텍스트 문구 check 시작 -------------------------- // 
+	var allTagTextCnt = 0;
+	$('.note-editable *').each(function(i, item){
+		var tagText = $(this).text();
+		if(cf_isNull(tagText) == true) {
+			allTagTextCnt++;
+		}
+	});
+	if($('.note-editable').text() != '') {
+		allTagTextCnt++;
+	}
+	
+	if (allTagTextCnt < 1){
+		$("textarea[name=content]").html("");
+	} else {
+		$("textarea[name=content]").html($(".summernote").code());
+	}
+	// -------------------------- edit box의 html 모든 tag 텍스트 문구 check 종료 -------------------------- // 
+	
+	if( $('#frmSystemNotice').formValid() ) {
+		
+		if(confirm("모든 항목을 정확히 입력하셨습니까?")) {
+			
+			$('input[name=noticbd_divn_cd]').val( $("#frmKeepData").find("input[name=noticbd_divn_cd]").val() );
+			$('input[name=noticbd_id]').val( $("#frmKeepData").find("input[name=noticbd_id]").val() );
+			
+			// 실제 데이터 전송
+			$.ajax({
+				url: api_url+"/backoffice/common/board/update",
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify($('#frmSystemNotice').serializeFormObject()),
+			    success: function(obj){
+			    	alert(obj.message);
+			    	
+			    	var url = "/application/board/system_notice/noticeRN.do";
+			    	var method = "POST";
+			    	cf_action(url, method, $("#frmKeepData").serialize());
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});
+		} else {
+			$("button[type=submit]").attr("disabled",false);
+		}
+	} else {
+		return;
+	}
+}
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	$("textarea[name=content]").summernote({
+		height: 400,
+		focus : false,
+		tabsize : 2,
+		toolbar: [
+          ['style', ['style']],
+          ['font', ['bold', 'italic', 'underline', 'clear']],
+          ['fontname', ['fontname']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['height', ['height']],
+          //['table', ['table']],
+          ['insert', ['link']],
+          ['view', ['codeview']],
+          ['help', ['help']]
+        ],
+	});
+	// 공지사항 데이터 로드
+	$.ajax({
+	    url: api_url+"/backoffice/common/board/show", //this is the submit URL
+	    type: 'GET', // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$("input[name=title]").val(obj.data.title);
+	    	$(".summernote").code(obj.data.content);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

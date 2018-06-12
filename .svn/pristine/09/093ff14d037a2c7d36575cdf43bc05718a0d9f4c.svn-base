@@ -1,0 +1,176 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>쿠폰별 쿠폰북 정보</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<div class="form-horizontal" id="dialogZoneHistory">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">지점 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="str_cd_name"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">Zone ID : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="zone_id"><%=LangUtil.replaceInjection(request.getParameter("zone_id"))%></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">연결된 비콘수 : </label>
+									<div class="col-md-4">
+										<span class="form-control cs-css-03" id="link_bcon_cnt"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">Zone 명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="zone_nm"></span>
+									</div>
+								</div>
+							</fieldset>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+	<!-- 존 사용정보 목록 -->
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_zone_history_grid" class="widget-body no-padding">
+						<table id="zone_history_grid"></table>
+						<div id="zone_history_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var dialog_pagefunction = function() {
+	
+	var data = {
+			search_info: "",
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			zone_id : "<%=LangUtil.replaceInjection(request.getParameter("zone_id"))%>"
+	};
+
+	$.ajax({
+	    url: api_url+"/backoffice/system/device/zone/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI('params='+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	$('#dialogZoneHistory #str_cd_name').html(obj.data.str_cd_name);
+	    	$('#dialogZoneHistory #link_bcon_cnt').html(obj.data.link_bcon_cnt);
+	    	$('#dialogZoneHistory #zone_nm').html(obj.data.zone_nm);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+	    	return;
+	    }
+	});
+		
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		
+		// TODO : 이벤트 연결 해제 부분 구현 해야 함!
+		
+		var pageWidth = $("#zone_history_grid").parent().width() - 100;
+		
+		jQuery("#zone_history_grid").jqGrid({
+			url : api_url+"/backoffice/system/device/zone/usehistory/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['구분', '행사명', '승인상태', '이벤트 상태', '행사기간/행사일시', '이벤트 연결해제' ],
+			colModel : [
+				{ name : 'zone_type_cd_name', 		index : 'zone_type_cd_name',		align : "center",	sortable : true, 	width : (pageWidth*(6/100)) 	},
+				{ name : 'evt_title', 				index : 'evt_title', 				align : "center",	sortable : false, 	width : (pageWidth*(23/100))	}, 
+				{ name : 'aprv_sts_cd_name', 		index : 'aprv_sts_cd_name', 		align : "center", 	sortable : true, 	width : (pageWidth*(18/100)) 	}, 
+				{ name : 'evnt_sts_name', 			index : 'evnt_sts_name',			align : "center",	sortable : true, 	width : (pageWidth*(18/100)) 	}, 
+				{ name : 'evt_term', 				index : 'evt_term', 				align : "center", 	sortable : false, 	width : (pageWidth*(18/100)) 	}, 
+				{ name : 'evnt_link_rvc_sts_name', 	index : 'evnt_link_rvc_sts_name', 	align : "center", 	sortable : false, 	width : (pageWidth*(18/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "evnt_id",
+				root : 		function(obj){ return obj.data.coupon_list; },		// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			search : false,
+			serializeRowData: function (postData) { return "params="+encodeURI(JSON.stringify(postData)); },
+			serializeGridData: function(postData) { return "params="+encodeURI(JSON.stringify(postData)); },
+			postData: data,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#zone_history_grid_page',
+			sortname : 'evnt_id',
+			sortorder : "asc",
+			viewsortcols : [true, 'vertical', true],
+			multiselect : false,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			gridComplete: function(){ },
+		});
+		jQuery("#zone_history_grid").jqGrid('navGrid', "#zone_history_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		$("#zone_history_grid").gridCss();
+	  	$("#zone_history_grid_cb").css("border-left-width","0");
+	  	$("#zone_history_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_zone_history_grid_cb").css("padding","7px 0");
+	  	$("#zone_history_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#zone_history_grid").jqGrid( 'setGridWidth', $("#target_zone_history_grid").width() );
+		});
+	} 
+	// end function
+};
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+</script>

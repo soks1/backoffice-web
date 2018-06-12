@@ -1,0 +1,1204 @@
+
+/**
+ * ==================================================================================
+ * 검색 초기화 버튼 생성(function btn cancel sample)
+ * ==================================================================================
+ */
+function f_bc_searchCencle() {
+	$('#btn_search_cancel').remove();
+	var btn_icon = $('<i>').addClass('fa fa-remove');
+	var reset_btn = $('<a>')
+		.attr('id', 'btn_search_cancel')
+		.attr('href', 'javascript:void(0);')
+		.attr('onclick', 'f_searchCancel();')
+		.addClass('btn btn-warning');
+	reset_btn.text(' 초기화 ');
+	reset_btn.prepend(btn_icon);
+	$('#btn_search').parent().append(reset_btn);
+}
+
+
+/**
+ * ==================================================================================
+ * 검색 액션(function search sample)
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	// 초기화 버튼 추가
+	f_bc_searchCencle();
+
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#crm_jqgrid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#crm_jqgrid").jqGrid('setGridParam', {page: 1});
+
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#crm_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+
+/**
+ * ==================================================================================
+ * 검색 초기화 액션(function search cancel sample)
+ * ==================================================================================
+ */
+function f_searchCancel() {
+	
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepParams").empty();
+	
+	// 검색 초기화 버튼 삭제
+	$("#btn_search_cancel").remove();
+	
+	$("#crm_jqgrid").jqGrid('setGridParam', {search: false});
+	$("#crm_jqgrid").jqGrid('setGridParam', {page: 1});
+	
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#crm_jqgrid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+
+	$('#str_cd').val($.getSessionData().str_cd); // 지점 초기값 설정
+}
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponCampaignSD() {
+	$.ajax({
+		url: "/application/crm/campaignWrite.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#coupon_campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#coupon_campaign_sd').dialog('open');
+		}
+	});
+}
+
+/**
+ * 페이지 전환 (타겟 지정 가능)
+ * @param url
+ * @param method
+ * @param data
+ * @param target
+ */
+function cf_actionTarget(url, method, data, target) {
+	
+	$.ajax({
+		
+	    url: url, //this is the submit URL
+	    type: method, // GET or POST
+	    async: true,
+	    cache: false,
+	    data: data,
+	    beforeSend : function() {},
+	    success: function(html){
+	    	target.html(html);
+	    },
+	    error: function() {
+	    	ajaxError('ERR','901');
+	    }
+	});
+}
+
+/**
+ * 페이지 전환 (타겟 고정:targetHtml)
+ * @param url
+ * @param method
+ * @param data
+ */
+function cf_mCouponAction(url, method, data) {
+	$.ajax({
+	    url: url, //this is the submit URL
+	    type: method, // GET or POST
+	    async: true,
+	    cache: false,
+	    data: data,
+	    beforeSend : function() {},
+	    success: function(html){
+	    	$("#targetHtml").html(html);
+	    },
+	    error: function() {
+	    	ajaxError('ERR','901');
+	    },
+	    complete: function() {}
+	});
+}
+function f_mCouponList() {
+	var url = "/application/push/crm/crmLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 상세 : 알림등록 다이얼로그 호출
+ * ==================================================================================
+ */
+//function f_openCrmSendWrite() {
+//	
+//	if($("#custgp_nm").val() == ""){
+//		alert("고객군을 선택해 주세요.");
+//	}else {
+//		$.ajax({
+//			url: "/application/crm/crmSendWrite.do",
+//			type: 'GET',
+//			async: true,
+//			cache: false,
+//			success: function(data) {
+//				var $target = $('#crmSendWrite');
+//				$target.html(data);
+//			}	
+//		});
+//		$('#crmSendWrite').dialog('open');
+//	}
+//
+//}
+
+
+/**
+ * ==================================================================================
+ * 상세 : 알림등록 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+//$('#crmSendWrite').dialog({
+//	autoOpen : false,
+//	width : 500,
+//	minHeight: 300,
+//	resizable : false,
+//	modal : true,
+//	title : "",
+//	buttons : [{
+//		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+//		"class" : "btn btn-default",
+//		click : function() {
+//			$(crmSendWrite).dialog("close");
+//		}
+//	},{
+//		html : "<i class='fa fa-times'></i>&nbsp; 적용",
+//		"class" : "btn btn-primary push_send",
+//		click : function() {
+//			$('.push_send').addClass('disabled');
+//			f_pushTimeChk(1);
+//		}
+//	}]
+//});
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 화면 : 고객군 선택시 이벤트
+ * ----------------------------------------------------------------------------------
+ * - 명칭 및 고객군 아이디 등록*
+ * - 버튼 활성화
+ * - 아이콘 변경
+ * - 고객군에 속한 쿠폰북 리스트 호출
+ * ==================================================================================
+ */
+function f_setFormCampaignId(id, name) {
+	$("#lst_custgp_nm").text("["+id+"] - "+name);	
+	$("#custgp_nm").val(name);
+	$("#lst_custgp_id").val(id);
+	$("#btn_cpb_select").removeClass("disabled");
+	$("#delbtn_cpb_select").removeClass("disabled");
+	$("#icon_campaign_select").removeClass("fa-square").addClass("fa-check-square");
+	f_couponBookList(id);
+}
+
+
+/**
+ * ==================================================================================
+ * 등록 : 푸시 등록 버튼 이벤트
+ * ==================================================================================
+ */
+function f_pushSend() {
+	var url_type = $('select[name=link_url]').val();	
+	var data_mapp_digit = $("select[name=issue_cpbook] option:selected").attr("data-mapp-digit");
+	var data_cpbook_id = $("select[name=issue_cpbook] option:selected").attr("data-cpbook-id");
+	var data_cpbook_cd = $("select[name=issue_cpbook] option:selected").attr("data-cpbook-cd");
+	var data_cpbook_type_cd = $("select[name=issue_cpbook] option:selected").attr("data-cpbook-type-cd");
+	var _issue_cpbook = $("select[name=issue_cpbook] option:selected").val();
+	var _cpbook_cp_type = $("select[name=issue_cpbook] option:selected").attr("data-cpbook-cptype-cd");
+	var _coupon_detail = $("select[name=zine_ord_seq] option:selected").val();
+
+	var url = "";
+	var rn_url = "application/main/main.html";
+	if(url_type == "CRM") {
+		if(_coupon_detail != "") {
+			url = rn_url + "#/coupon?coupon_id=" + _coupon_detail + "&cpbook_mapp_digit=" + data_mapp_digit + "&cpbook_id=" + data_cpbook_id + "&issue_coupon_no_digit=" + data_mapp_digit + data_cpbook_id +"__DIGIT__" +_coupon_detail;
+		}else {
+			if(_cpbook_cp_type == "PRICE") {
+				url = rn_url + "#/couponbooklist?index=1";
+			}else {
+				if(data_cpbook_type_cd == "A") {
+					url = rn_url + "#/couponbook?event_id=" + $('select[name=issue_cpbook]').val() + "&cpbook_mapp_digit=" + data_mapp_digit;
+				}else if(data_cpbook_type_cd == "C") {
+					url = rn_url + "#/smartcouponbook?event_id=" + $('select[name=issue_cpbook]').val() + "&cpbook_mapp_digit=" + data_mapp_digit;
+				}
+			}
+		}
+			
+	}else if(url_type == "CPZINE") {
+		if($("select[name=zine_ord_seq] option:selected").val() == "") {
+			alert("페이지경로를 모두 선택해 주세요.");
+			return;
+		}else {
+			if(data_cpbook_cd == "MLIFE") {
+				url = rn_url + "#/mlifemain?event_id=" + $('select[name=issue_cpbook]').val() + "&active=" + $("select[name=zine_ord_seq] option:selected").val();
+			}else {
+				url = rn_url + "#/couponbookzine?event_id=" + $('select[name=issue_cpbook]').val() + "&active=" + $("select[name=zine_ord_seq] option:selected").val();
+			}
+		}
+	}else if(url_type == "STAMP")  {
+		url = "application/stamp/stampDetailRN.html?stamp_id="+$('select[name=issue_cpbook]').val();
+	}else if(url_type == "FCFS") {
+		url = "application/with/withRN.html?fcfs_evnt_id="+$('select[name=issue_cpbook]').val();
+	}else if(url_type == "EVENTCOK") {
+		url = rn_url + "#/event?noticbd_id="+$('select[name=issue_cpbook]').val();
+	}else if(url_type == "CHANNELCOK") {
+		url = rn_url + "#/channelkoklist?category_cd="+$('select[name=issue_cpbook]').val();
+	}else if(url_type == "LIST") {
+		if(_issue_cpbook == "MAIN") {
+			url = rn_url;
+		}else if(_issue_cpbook == "MCOUPON") {
+			url = rn_url + "#/couponbooklist";
+		}else if(_issue_cpbook == "MPRICE") {
+			url = rn_url + "#/couponbooklist?index=1";
+		/*}else if(_issue_cpbook == "MLIFE") {
+			url = rn_url + "#/mlifelist";*/
+		}else if(_issue_cpbook == "EVENTCOK") {
+			url = rn_url + "#/eventlist";
+		}else if(_issue_cpbook == "LIFECOK") {
+			url = rn_url + "#/lifekokmain";
+		}else if(_issue_cpbook == "CHANNELCOK") {
+			url = rn_url + "#/channelkokmain";
+		}else if(_issue_cpbook == "MCLUB") {
+			url = rn_url + "#/mclubList";
+		}else if(_issue_cpbook == "LEAFLET") {
+			url = rn_url + "#/leaflet";
+		}else if(_issue_cpbook == "NOTICE") {
+			url = rn_url + "#/notice";
+		}else if(_issue_cpbook == "FCFS") {
+			url = "application/with/withMainLN.html";
+		}else if(_issue_cpbook == "STAMP") {
+			url = "application/stamp/stampMainLN.html";
+		}else if(_issue_cpbook == "RECEIPT") {
+			url = "application/receipt/receiptMainLN.html";
+		}else if(_issue_cpbook == "POLL") {
+			url = "application/poll/pollMainLN.html";
+		}else if(_issue_cpbook == "PEVENT") {
+			url = "application/event/pedometer/pedometerMainLN.html";
+		}else if(_issue_cpbook == "") {
+			
+		}
+	}else if(url_type == "OUTSIDE") {
+		var out_url = $("#outside_url").find("input[name=issue_cpbook]").val();
+		
+//		if (!out_url.startswith("http://")){
+//			out_url = "http://" + out_url;
+//		}
+//		if (out_url.substring(0, 7) != "http://" || out_url.substring(0, 8) == "https://"){
+//			out_url = "http://" + out_url;
+//		}
+		
+		if ( out_url.indexOf("http://") < 0 && out_url.indexOf("https://") < 0 ) {
+			out_url = "http://" + out_url; 
+		}
+		
+//		url = "application/main/main.html#/?out_url=" + out_url;
+		
+		url = "" + out_url;
+	}
+	
+	var data = $('#searchProduct').serializeFormObject();
+	
+	var cust_grd_cd_list = ""; // $("#cust_grd_cd01").val() + "," + $("#cust_grd_cd02").val() + "," + $("#cust_grd_cd03").val() + "," + $("#cust_grd_cd04").val();
+	cust_grd_cd_list += $("input:checkbox[id='cust_grd_cd01']").is(":checked") ? "01" : "";
+	cust_grd_cd_list += $("input:checkbox[id='cust_grd_cd02']").is(":checked") ? ",02" : ",";
+	cust_grd_cd_list += $("input:checkbox[id='cust_grd_cd03']").is(":checked") ? ",03" : ",";
+	cust_grd_cd_list += $("input:checkbox[id='cust_grd_cd04']").is(":checked") ? ",04" : ",";
+
+	var sessionScope = $.getSessionData();
+	var sendData = {
+			empno: sessionScope.empno, 
+			emp_str_cd: sessionScope.str_cd,
+			hq_base_yn: sessionScope.hq_base_yn,
+			cust_grd_cd_list : cust_grd_cd_list,
+			campaignId 	: $("#groupbuy_campaign_id").text(),
+			lstCustgpId : $("#groupbuy_custgp").text().split("-")[0].trim(), //lst_custgp_id, //$("input[name=lst_custgp_id]").val(),
+			custgpNm 	: $("#groupbuy_custgp").text().split("-")[1].trim(), //$("input[name=custgp_nm]").val(),
+			crmDesc 	: $("#crm_desc").val(),
+			image 		: $("input[name=img_strge_file_nm]").val(),
+			file_divn_cd : 'IMG_PUSH',
+			img_orgin_file_nm : data.img_orgin_file_nm,
+			img_strge_file_nm : data.img_strge_file_nm,
+			msgGubun 	: $(':radio[name="userYn"]:checked').val(),
+			crmTitle   : $("input[name=crm_title]").val(),
+			view_title   : $("input[name=view_title]").val(),
+			s_campaign_start_dy   : $("#s_push_start_dy").val(),
+			evt_end_hour   : $("#evt_end_hour").val(),
+			evt_end_min   : $("#evt_end_min").val(),
+			campaign_nm_val   : $("#groupbuy_campaign_nm").text(),
+			campaign_start_dy   : $("#groupbuy_campaign_term").text().split(" ~ ")[0].trim(),
+			campaign_end_dy   : $("#groupbuy_campaign_term").text().split(" ~ ")[1].trim(),
+			link_yn : $('input[name=linkYn]:checked').val(),
+			url : url,
+			url_type : url_type,
+			expose : $(':radio[name="expose"]:checked').val()
+			
+			,imgViewNm     : data.imgViewNm
+			,use_divn_cd   : 'CRM_PUSH'
+            ,template_id   : data.template_id
+            ,gen_content1  : data.gen_content1
+            ,gen_content2  : data.gen_content2
+            ,gen_content3  : data.gen_content3
+            ,gen_content4  : data.gen_content4
+            ,gen_content5  : data.gen_content5
+            ,gen_content6  : data.gen_content6
+            ,gen_content7  : data.gen_content7
+            ,gen_content8  : data.gen_content8
+            ,gen_content9  : data.gen_content9
+            ,gen_content10 : data.gen_content10
+	};
+	$.ajax({
+		url: api_url+"/backoffice/push/crm/create",
+		type: 'POST',
+		async: false,
+		cache: false,
+	    datatype: 'json',
+	    contentType: 'application/json;charset=utf-8',
+		data: JSON.stringify(sendData),
+		success: function(data) {
+			if(data.data.ccode == "S000"){
+				alert("알림 등록이 완료되었습니다.");
+//				$("#crmSendWrite").dialog("close");
+//				pageSetUp();
+				f_mCouponList()
+//				f_couponBookList($("#lst_custgp_id").val());
+			}else if(data.data.ccode == "S001"){
+				alert("현재 시각 1시간 이후부터 등록 가능합니다.");
+//				$("#crmSendWrite").dialog("close");
+//				pageSetUp();
+//				f_mCouponList()
+			}
+			
+		},error: function(data) {
+	    	var serverObj = data["responseJSON"];
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    },
+	});
+}
+
+
+/**
+ * ==================================================================================
+ * 시간 설정
+ * ==================================================================================
+ */
+function f_setTimeStr() {
+	for(var h=0; h<24; h++) {
+		var hour = h+"";
+		if(hour.length < 2) {
+			hour = "0" + hour;
+		}
+		
+		$('#evt_start_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+		$('#evt_end_hour').append("<option value='"+hour+"'>"+hour+"</option>");
+	
+	}
+	
+	for(var m=0; m<60; m++) {
+		var min = m+"";
+		if(min.length < 2) {
+			min = "0" + min;
+		}
+		
+		$('#evt_start_min').append("<option value='"+min+"'>"+min+"</option>");
+		$('#evt_end_min').append("<option value='"+min+"'>"+min+"</option>");
+		
+	}
+}
+
+/**
+ * ==================================================================================
+ * CRM 알림 예약취소
+ * ==================================================================================
+ */
+function f_crm_cancel(msg_id) {
+	var sessionScope = $.getSessionData();
+
+	if(confirm("전송예약을 취소하시겠습니까?")) {
+		var send_data = {
+			empno: sessionScope.empno, 
+			emp_str_cd: sessionScope.str_cd,
+			hq_base_yn: sessionScope.hq_base_yn,
+			crm_info : msg_id
+		};
+		
+		var rslt = $.ajax({
+		    url: api_url+"/backoffice/push/crm/cancel", 
+		    type: 'POST', 
+		    async: false,
+		    cache: true,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+			data: JSON.stringify(send_data),
+		    beforeSend : function() {},
+		    success: function(obj){
+	    		alert("예약 취소가 완료 되었습니다.");
+	    		$("#crm_del").hide();
+	    		$("#crm_jqgrid").trigger("reloadGrid");
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n\n'+'message:'+serverObj.message+'\n');
+		    	return;
+		    }
+		});
+
+		return rslt;
+	}
+}
+
+/**
+ * ==================================================================================
+ * 상세 : 알림수정 다이얼로그 호출
+ * ==================================================================================
+ */
+//function f_openCrmSendMod(scdlId,msg_id,custgpId,campaignId) {
+//	
+//	var send_data = {
+//			msg_info : msg_id,
+//			scdl_info : scdlId,
+//			custgpId : custgpId,
+//			campaignId : campaignId
+//	};
+//
+//
+//	$.ajax({
+//		url: "/application/push/crm/crmSendDtl.do",
+//		type: 'GET',
+//		async: true,
+//		cache: false,
+//		data: send_data,
+//		success: function(data) {
+//			
+//			var $target = $('#crmSendMod');
+//			$target.html(data);
+//			
+//		}	
+//	});
+//	$('#crmSendMod').dialog('open');
+//
+//}
+
+
+/**
+ * ==================================================================================
+ * 상세 : 알림수정 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+$('#crmSendMod').dialog({
+	autoOpen : false,
+	width : 500,
+	minHeight: 300,
+	resizable : false,
+	modal : true,
+	title : "",
+	buttons : [{
+		html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+		"class" : "btn btn-default",
+		click : function() {
+			$(this).dialog("close");
+		}
+	},{
+		html : "<i class='fa fa-times'></i>&nbsp; 적용",
+		"class" : "btn btn-primary push_send",
+		click : function() {
+			$('.push_send').addClass('disabled');
+			f_pushTimeChk(2);
+		}
+	}]
+});
+
+
+/**
+ * ==================================================================================
+ * 수정 : 푸시 적용 버튼 이벤트
+ * ==================================================================================
+ */
+function f_pushMod() {
+
+	var url_type = $('select[name=link_url]').val();
+	// function 사용시.
+//	var data_cpbook_cd = $("select[name=issue_cpbook]").triggerHandler('getData', ['ctype']);
+//	var data_mapp_digit = $("select[name=issue_cpbook]").triggerHandler('getData', ['cpbook_mapp_digit']);
+	
+	// function 미사용시.
+	var $currentOption = $("select[name=issue_cpbook]").children(':selected').data('item') || {};
+	var data_mapp_digit = $currentOption['cpbook_mapp_digit'] || ''; 
+	var data_cpbook_cd = $currentOption['ctype'] || '_';
+	var data_cpbook_type_cd = $currentOption['cpbook_type_cd'] || '';
+	var _issue_cpbook = $("select[name=issue_cpbook] option:selected").val();
+	
+	var data_cpbook_id = $currentOption['evnt_id'] || '_';
+	var _cpbook_cp_type = $currentOption['c_type'] || '_';
+	var _coupon_detail = $("select[name=zine_ord_seq] option:selected").val();
+
+	var url = "";
+	var rn_url = "application/main/main.html";
+	if(url_type == "CRM") {
+		if(_coupon_detail != "") {
+			url = rn_url + "#/coupon?coupon_id=" + _coupon_detail + "&cpbook_mapp_digit=" + data_mapp_digit + "&cpbook_id=" + data_cpbook_id + "&issue_coupon_no_digit=" + data_mapp_digit + data_cpbook_id +"__DIGIT__" +_coupon_detail;
+		}else {
+			if(_cpbook_cp_type == "PRICE") {
+				url = rn_url + "#/couponbooklist?index=1";
+			}else {
+				if(data_cpbook_type_cd == "A") {
+					url = rn_url + "#/couponbook?event_id=" + $('select[name=issue_cpbook]').val() + "&cpbook_mapp_digit=" + data_mapp_digit;
+				}else if(data_cpbook_type_cd == "C") {
+					url = rn_url + "#/smartcouponbook?event_id=" + $('select[name=issue_cpbook]').val() + "&cpbook_mapp_digit=" + data_mapp_digit;
+				}
+			}
+		}
+			
+	}else if(url_type == "CPZINE") {
+		if($("select[name=zine_ord_seq] option:selected").val() == "") {
+			alert("페이지경로를 모두 선택해 주세요.");
+			return;
+		}else {
+			if(data_cpbook_cd == "MLIFE") {
+				url = rn_url + "#/mlifemain?event_id=" + $('select[name=issue_cpbook]').val() + "&active=" + $("select[name=zine_ord_seq] option:selected").val();
+			}else {
+				url = rn_url + "#/couponbookzine?event_id=" + $('select[name=issue_cpbook]').val() + "&active=" + $("select[name=zine_ord_seq] option:selected").val();
+			}
+		}
+	}else if(url_type == "STAMP")  {
+		url = "application/stamp/stampDetailRN.html?stamp_id="+$('select[name=issue_cpbook]').val();
+	}else if(url_type == "FCFS") {
+		url = "application/with/withRN.html?fcfs_evnt_id="+$('select[name=issue_cpbook]').val();
+	}else if(url_type == "EVENTCOK") {
+		url = rn_url + "#/event?noticbd_id="+$('select[name=issue_cpbook]').val();
+	}else if(url_type == "CHANNELCOK") {
+		url = rn_url + "#/channelkoklist?category_cd="+$('select[name=issue_cpbook]').val();
+	}else if(url_type == "LIST") {
+		if(_issue_cpbook == "MAIN") {
+			url = rn_url;
+		}else if(_issue_cpbook == "MCOUPON") {
+			url = rn_url + "#/couponbooklist";
+		}else if(_issue_cpbook == "MPRICE") {
+			url = rn_url + "#/couponbooklist?index=1";
+		/*}else if(_issue_cpbook == "MLIFE") {
+			url = rn_url + "#/mlifelist";*/
+		}else if(_issue_cpbook == "EVENTCOK") {
+			url = rn_url + "#/eventlist";
+		}else if(_issue_cpbook == "LIFECOK") {
+			url = rn_url + "#/lifekokmain";
+		}else if(_issue_cpbook == "CHANNELCOK") {
+			url = rn_url + "#/channelkokmain";
+		}else if(_issue_cpbook == "MCLUB") {
+			url = rn_url + "#/mclubList";
+		}else if(_issue_cpbook == "LEAFLET") {
+			url = rn_url + "#/leaflet";
+		}else if(_issue_cpbook == "NOTICE") {
+			url = rn_url + "#/notice";
+		}else if(_issue_cpbook == "FCFS") {
+			url = "application/with/withMainLN.html";
+		}else if(_issue_cpbook == "STAMP") {
+			url = "application/stamp/stampMainLN.html";
+		}else if(_issue_cpbook == "RECEIPT") {
+			url = "application/receipt/receiptMainLN.html";
+		}else if(_issue_cpbook == "POLL") {
+			url = "application/poll/pollMainLN.html";
+		}else if(_issue_cpbook == "PEVENT") {
+			url = "application/event/pedometer/pedometerMainLN.html";
+		}else if(_issue_cpbook == "") {
+			
+		}
+	}else if(url_type == "OUTSIDE") {
+		var out_url = $("#outside_url").find("input[name=issue_cpbook]").val();
+		
+//		if (!out_url.startswith("http://")){
+//			out_url = "http://" + out_url;
+//		}
+//		if (out_url.substring(0, 7) != "http://" || out_url.substring(0, 8) == "https://"){
+//			out_url = "http://" + out_url;
+//		}
+		
+		if ( out_url.indexOf("http://") < 0 && out_url.indexOf("https://") < 0 ) {
+			out_url = "http://" + out_url;
+		}
+		
+//		url = "application/main/main.html#/?out_url=" + out_url;
+		
+		url = "" + out_url;
+	}
+	
+	var data = $('#searchProduct').serializeFormObject();
+	var sessionScope = $.getSessionData();
+	var modData = {
+			empno: sessionScope.empno, 
+			emp_str_cd: sessionScope.str_cd,
+			hq_base_yn: sessionScope.hq_base_yn,
+			campaignId 	: $("input[name=lst_campaign_id]").val(),
+			lstCustgpId : $("input[name=lst_custgp_id]").val(),
+			scdlId 		: $("#scdl_id").val(),
+			msgId		: $("#msg_id").val(),
+			crmDesc 	: $("#crm_desc").val(),
+			image 		: $("input[name=img_strge_file_nm]").val(),
+			file_divn_cd : 'IMG_PUSH',
+			img_orgin_file_nm : data.img_orgin_file_nm,
+			img_strge_file_nm : data.img_strge_file_nm,
+			msgGubun 	: $(':radio[name="userYn"]:checked').val(),
+			crmTitle   : $("input[name=crm_title]").val(),
+			view_title   : $("input[name=view_title]").val(),
+			s_campaign_start_dy   : $("#s_push_start_dy").val(),
+			evt_end_hour   : $("#evt_end_hour").val(),
+			evt_end_min   : $("#evt_end_min").val(),
+			campaign_start_dy   : $("input[name=campaign_start_dy]").val(),
+			campaign_end_dy   : $("input[name=campaign_end_dy]").val(),
+			campaign_nm_val   : $("#campaign_nm_val").val(),
+			link_yn : $('input[name=linkYn]:checked').val(),
+			url : url,
+			url_type : url_type,
+			expose 	: $(':radio[name="expose"]:checked').val()
+
+			,imgViewNm     : data.imgViewNm
+			,use_divn_cd   : 'CRM_PUSH'
+            ,template_id   : data.template_id
+            ,gen_content1  : data.gen_content1
+            ,gen_content2  : data.gen_content2
+            ,gen_content3  : data.gen_content3
+            ,gen_content4  : data.gen_content4
+            ,gen_content5  : data.gen_content5
+            ,gen_content6  : data.gen_content6
+            ,gen_content7  : data.gen_content7
+            ,gen_content8  : data.gen_content8
+            ,gen_content9  : data.gen_content9
+            ,gen_content10 : data.gen_content10
+	};
+	
+//	$.extend(sendData, {url : ($target_url[url_type] || {})[data_cpbook_cd] || ''});
+
+
+	$.ajax({
+		url: api_url+"/backoffice/push/crm/update",
+		type: 'POST',
+		async: true,
+		cache: false,
+	    datatype: 'json',
+	    contentType: 'application/json;charset=utf-8',
+		data: JSON.stringify(modData),//encodeURI($("#searchProduct").serialize()),
+		success: function(data) {
+			if(data.data.ccode == "S000"){
+				alert("수정 완료");
+				f_mCouponList();
+//				$("#crmSendMod").dialog("close");
+//				$("#crm_jqgrid").trigger("reloadGrid");
+			}else if(data.data.ccode == "S001"){
+				alert("현재 시각 1시간 이후부터 등록 가능합니다.");
+//				f_mCouponList();
+//				$("#crmSendMod").dialog("close");
+			}
+			
+		},error: function(data) {
+	    	var serverObj = data["responseJSON"];
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    },
+	});
+}
+
+
+/**
+ * ==================================================================================
+ * 등록 : 이미지 업로드 이벤트
+ * ==================================================================================
+ */
+
+//$('#fileParamId').fileupload({
+//    url : '/application/crm/pushImgReg.do', 
+//    dataType: 'json',
+//    method: "POST",
+//    //replaceFileInput: false,
+//    add: function(e, data){
+//        var uploadFile = data.files[0];
+//        var isValid = true;
+//        if (!(/png|jpe?g|gif/i).test(uploadFile.name)) {
+//            alert('png, jpg, gif 만 가능합니다');
+//            isValid = false;
+//        } else if (uploadFile.size > 512000) { // 5mb
+//            alert('500KB 이상의 파일은 업로드 할 수 없습니다.');
+//            isValid = false;
+//        }
+//        if (isValid) {
+//            data.submit();              
+//        }
+//    }, progressall: function(e,data) {
+//        var progress = parseInt(data.loaded / data.total * 100, 10);
+//        $('#progress .bar').css(
+//            'width',
+//            progress + '%'
+//        );
+//    }, done: function (e, data) {
+//    	
+//    }, fail: function(e, data){
+//    	alert("파일 업로드 실패."); 
+//        foo = data;
+//    },success: function(data) {
+//		$("#imgPath").val(data.path);
+//		readURL(this);
+//	}
+//});
+
+//function readURL(input) {
+//    if (input.files && input.files[0]) {
+//    var reader = new FileReader();
+//
+//    reader.onload = function (e) {
+//            $('#preview_uploadfile2').attr('src', e.target.result);
+//        };
+//
+//      reader.readAsDataURL(input.files[0]);
+//    }
+//}
+
+//function popCancel() {
+//	$("#crmSendWrite").dialog("close");
+//}
+/**
+ * ==================================================================================
+ * 등록 : 동일날짜 시각 체크 
+ * ==================================================================================
+ */
+
+function f_pushTimeChk(chkVal) {
+	
+	if($('#groupbuy_campaign_id').text() == "") {
+		alert("캠페인/고객군을 먼저 선택해 주세요.");
+		return;
+	}
+	
+	if ($('input[name=crm_title]').val() == '' || $('input[name=crm_title]').val() == null) {
+		alert('제목을 입력하세요');
+		$('#crm_title').focus();
+		$('.push_send').removeClass('disabled');
+		return;
+	}
+	if ($("#crm_desc").val() == '' || $("#crm_desc").val()== null) {
+		alert('내용을 입력하세요');
+		$('#crm_desc').focus();
+		$('.push_send').removeClass('disabled');
+		return;
+	}
+	
+	if($('input[name=userYn]:checked').val() == "N" || $('input[name=userYn]:checked').val() == "Z") {
+		if( !$("#preview_uploadfile").next().hasClass("alert")){
+			alert("이미지를 등록해주세요.");
+			return;
+		}
+	}
+	if($('input[name=userYn]:checked').val() == "Z") {
+		if( $("#gen_img_reg_yn").val() != "Y" ){
+			alert("이미지를 등록해주세요.");
+			return;
+		}
+	}
+	
+	if($('input[name=linkYn]:checked').val() == "Y") {
+		if($('select[name=link_url]').val() == "") {
+			alert("연결할 URL을 선택해 주세요.");
+			$('.push_send').removeClass('disabled');
+			return;
+		}
+		
+		if($('select[name=link_url]').val() === "OUTSIDE") {
+			if($("#outside_url").find("input[name=issue_cpbook]").val() == ""){
+				alert("상세 URL을 입력해 주세요.");
+				$('#link_url').focus();
+				$('.push_send').removeClass('disabled');
+				
+				return;
+			}
+		}else {
+			if($('select[name=link_url]').val() != "" && $('select[name=issue_cpbook]').val() == "") {
+				alert("상세 URL을 선택해 주세요.");
+				$('.push_send').removeClass('disabled');
+				return;
+			}
+			
+			if($('select[name=link_url]').val() === "CPZINE" && $("select[name=zine_ord_seq]").val() == "") {
+				alert("상세 URL을 선택해 주세요.");
+				$('.push_send').removeClass('disabled');
+				return;
+			}
+		}
+	}
+	
+	if ($("#s_push_start_dy").val() == '' || $("#s_push_start_dy").val()== null) {
+		alert('발송일을 선택하세요');
+		$('.push_send').removeClass('disabled');
+		return;
+	}
+	
+	if ($("#evt_end_hour").val() == '' || $("#evt_end_hour").val()== null) {
+		alert('시간 선택하세요');
+		$('#evt_end_hour').focus();
+		$('.push_send').removeClass('disabled');
+		return;
+	}
+	
+	if ($("#evt_end_min").val() == '' || $("#evt_end_min").val()== null) {
+		alert('분 을 선택하세요');
+		$('#evt_end_min').focus();
+		$('.push_send').removeClass('disabled');
+		return;
+	}
+	
+	var lst_custgp_id = [];
+	$.each($("#groupbuy_custgp").text().split(","), function(i,items){
+		lst_custgp_id.push(items.split("-")[0].trim());
+	});
+
+	var scdlId = $("#scdl_id").val() == undefined ? "0" : $("#scdl_id").val();
+	if(scdlId == null || scdlId == "") scdlId = "0";
+	
+	var sessionScope = $.getSessionData();
+	var sendData = {
+			empno: sessionScope.empno, 
+			emp_str_cd: sessionScope.str_cd,
+			hq_base_yn: sessionScope.hq_base_yn,
+			campaignId 	: $("#groupbuy_campaign_id").text(),
+			custgpId : $("#groupbuy_custgp").text().split("-")[0].trim(), //lst_custgp_id, //$("input[name=lst_custgp_id]").val(),				
+			s_campaign_start_dy   : $("#s_push_start_dy").val(),
+			evt_end_hour   : $("#evt_end_hour").val(),
+			evt_end_min   : $("#evt_end_min").val(),
+			scdlId 		: scdlId,
+			str_cd      : sessionScope.str_cd,
+			chk   : chkVal	
+	};
+		
+	$.ajax({
+		url: api_url+"/backoffice/push/crm/time/check",
+		type: 'POST',
+		async: false,
+		cache: false,
+	    datatype: 'json',
+	    contentType: 'application/json;charset=utf-8',
+		data: JSON.stringify(sendData),
+		success: function(data) {
+			if(data.data.ccode == "S000"){
+				if (confirm("10분이내의 다른 알림이\n"+data.data.data +"건 등록되어 있습니다.\n 등록하시겠습니까?") == true){    //확인
+			    	if(data.data.chk == "1"){
+			    		f_pushSend();
+			    	}
+			    	else if(data.data.chk == "2"){
+			    		f_pushMod();
+			    	}
+				}
+				else{   //취소
+					$('.push_send').removeClass('disabled');		
+					return;
+					$("#crmSendMod").dialog("close");
+				}
+//				$('.push_send').removeClass('disabled');
+			}
+			else if(data.data.ccode == "S001"){
+				if(data.data.chk == "1"){
+					f_pushSend();
+		    	}
+				else if(data.data.chk == "2"){
+		    		f_pushMod();
+		    	}
+			}
+			
+		},error: function(data) {
+	    	var serverObj = data["responseJSON"];
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+//	    	ajaxError('ERR','오류');
+	    }
+	});
+}
+/**
+ * ==================================================================================
+ * 메세지 내용 byte chk
+ * ==================================================================================
+ */
+
+function byteChk(obj){
+	if(!checklen(obj,255)) {	//내용 길이 체크 255
+		obj.focus();
+	}
+	var maxCnt = getByteLength(obj);
+}
+function byteChk2(obj){
+	if(!checklen(obj,236)) {	//내용 길이 체크 236
+		obj.focus();
+	}
+	var maxCnt = getByteLength(obj);
+}
+function checklen(fform,maxlength) {
+	var msgtext;
+	msgtext = fform.value;
+	var i=0;
+	var l=0;
+	var temp;
+	var lastl;
+
+
+	//길이를 구한다.
+	while(i < msgtext.length)
+	{
+		temp = msgtext.charAt(i);
+		if (escape(temp).length > 4){
+			l+=3;
+		}
+		else if (temp!='\r'){
+			l++;
+		}
+		// OverFlow
+		if(l>maxlength)
+		{
+			alert("허용 길이 이상의 글을 쓰셨습니다.\n한글 "+ parseInt(maxlength/3) +"자, 영문"+ maxlength +"자까지만 쓰실 수 있습니다.");
+			temp = fform.value.substr(0,i);
+			fform.value = temp;
+			l = lastl;
+			return false;
+			//break;
+		}
+		lastl = l;
+		i++;
+	}
+	return true;
+}
+
+function getByteLength(input) {
+    var byteLength = 0;
+    for (var inx = 0; inx < input.value.length; inx++) {
+        var oneChar = escape(input.value.charAt(inx));
+        if ( oneChar.length == 1 ) {
+            byteLength ++;
+        } else if (oneChar.indexOf("%u") != -1) {
+            byteLength += 3;
+        } else if (oneChar.indexOf("%") != -1) {
+            byteLength += oneChar.length/3;
+        }
+    }
+    return byteLength;
+}
+
+
+
+
+
+
+// 여기부터 추가
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰진 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCampaignSD() {
+	$.ajax({
+		url: "/application/groupbuy/campaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#groupbuy_campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#groupbuy_campaign_sd').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 쿠폰진 캠페인/고객군 삭제 버튼 클릭시 호출되는 메소드
+ * ==================================================================================
+ */
+function f_delCampaign() {
+	$("input[name=campaign_id]").val('');
+	$("input[name=campaign_end_dy]").val('');
+	$("input[name=lst_custgp_id]").remove();
+	
+	$("#groupbuy_campaign_id").text('');
+	$("#groupbuy_campaign_term").text('');
+	$("#groupbuy_custgp_cnt").text('');
+	$("#groupbuy_campaign_nm").text('');
+	$("#groupbuy_custgp").text('');
+}
+
+
+
+
+
+
+
+/**
+ * ==================================================================================
+ * PUSH CRM : 승인 요청
+ * ==================================================================================
+ */
+function f_approve_ask() {
+	if(confirm("승인요청 하시겠습니까?")) {
+		console.log($("#frmKeepData").serializeFormObject());
+		$.ajax({
+			url: api_url+"/backoffice/push/crm/approval/req",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(resultData) {
+				alert(resultData["message"]);
+				var url = '/application/push/crm/crmRN.do';
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData.responseJSON;
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+/**
+ * ==================================================================================
+ * PUSH CRM : 승인 처리
+ * ==================================================================================
+ */
+function f_approve() {
+	if(confirm("승인 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url+"/backoffice/push/crm/approve",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(resultData) {
+				alert(resultData["message"]);
+				var url = '/application/push/crm/crmRN.do';
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData.responseJSON;
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * PUSH CRM : 반려
+ * ==================================================================================
+ */
+function f_reject() {
+	if(confirm("반려 처리를 하시겠습니까?")) {
+		$.ajax({
+			url: api_url+"/backoffice/push/crm/reject",
+			type: "POST",
+			contentType: "application/json;charset=utf-8", // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(resultData) {
+				alert(resultData["message"]);
+				var url = '/application/push/crm/crmRN.do';
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+		    error: function(resultData) {
+		    	var serverObj = resultData.responseJSON;
+		    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 템플릿 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openTemplateLD() {
+	var data = {
+			use_divn_cd:'CRM_PUSH'
+		};
+
+	$.ajax({
+		url: "/application/push/crm/templatesLD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data: data,
+		success: function(data) {
+			var $target = $('#templates_ld');
+			$target.html(data);
+		}	
+	});
+	$('#templates_ld').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 등록/수정 : 템플릿 파일 삭제 버튼 이벤트
+ * ==================================================================================
+ */
+function f_templateGenFileDelete() {
+	var preview = $('#preview_uploadfile');
+	preview.find('img').attr('src',noImgPath);
+	preview.parent().find('p').remove();
+	var btn_span = $('.btn_del_gen_uploadfile').parent().find(".btn");
+	btn_span.attr("disabled", false);
+	btn_span.find("input[type=file]").val("");
+	$('.btn_del_gen_uploadfile').remove();
+//	$('input[name=template_use_yn]').val('N');
+
+	// 템플릿입력폼 제거
+	$('#gen_template').html("");
+	// 생성이미지 미리보기 버튼 숨기기
+	$("#btn_gen_preview").hide();
+
+	// 이미지등록여부 제거
+	$('#gen_img_reg_yn').val("");
+}
+
+
+/**
+ * ==================================================================================
+ * 지점 작업가능 요일체크
+ * ==================================================================================
+ */
+function f_isWeekNumber() {
+	return true;
+}

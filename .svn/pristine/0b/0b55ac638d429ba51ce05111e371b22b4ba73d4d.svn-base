@@ -1,0 +1,264 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page import="com.penta.backoffice.web.common.controller.CommonController"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+							
+								<div class="form-group">
+									<label class="col-md-1 control-label">조회일</label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="s_info_date" name="s_info_date" type="text" placeholder="시작일" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" id="e_info_date" name="e_info_date" type="text" placeholder="종료일" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd'>
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<label class="col-md-1 control-label">키워드</label>
+									<div class="col-md-2">
+										<select class="form-control" name="stype">
+											<option value="">선택</option>
+											<!-- 
+											<option value="membs_card_no" selected="selected">APP CARD NO.</option>
+											<option value="login_id">아이디</option>
+											 -->
+											<option value="empno" selected="selected">사원번호</option>
+										</select> 
+									</div>
+									
+									<div class="col-md-5">
+										<input class="form-control" type="text" name="sword" >
+									</div>
+								</div>
+								
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false" data-widget-colorbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 페이지 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_custinfo_grid" class="widget-body no-padding">
+						<table id="custinfo_grid"></table>
+						<div id="custinfo_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// -------------------- 초기데이터 설정 : 달력 시작 -------------------- //
+	//$('input[name=s_info_date]').val(cf_termDate(-30));
+	//$('input[name=e_info_date]').val(cf_toDate());
+	
+	$('#s_info_date').datepicker();
+	$('#s_info_date').datepicker("option", "maxDate", $("#e_info_date").val());
+	$('#s_info_date').datepicker("option", "onClose", function ( selectedDate ) {
+		$("#e_info_date").datepicker( "option", "minDate", selectedDate );
+	});
+	
+	$('#e_info_date').datepicker();
+	$('#e_info_date').datepicker("option", "minDate", $("#s_info_date").val());
+	$('#e_info_date').datepicker("option", "onClose", function ( selectedDate ) {
+		$("#s_info_date").datepicker( "option", "maxDate", selectedDate );
+	});
+	
+	// -------------------- 초기데이터 설정 : 달력 종료 -------------------- //
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+
+	function run_jqgrid_function() {
+		var valFormat = "";
+		var valIdx = 0;
+		var pageWidth = $("#custinfo_grid").parent().width() - 100;
+
+		jQuery("#custinfo_grid").jqGrid({
+			url : api_url + '/backoffice/system/auth/customerinfolog',
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '사번', '사원', 'IP', '메뉴', '조회페이지', '조회정보', '조회날짜'],
+			colModel : [
+				{ name : 'no', 				index : 'no',		 		align : "center",	sortable : false, 	width : (pageWidth*(5/100))			},
+				{ name : 'empno',		 	index : 'empno',			align : "center", 	sortable : false, 	width : (pageWidth*(7/100)) 		},
+				{ name : 'emp_nm',		 	index : 'emp_nm',			align : "center", 	sortable : false, 	width : (pageWidth*(7/100)) 		},
+				{ name : 'ip_addr', 		index : 'ip_addr', 			align : "center", 	sortable : false, 	width : (pageWidth*(12/100)) 		},
+				{ name : 'api_menu', 		index : 'api_menu', 		align : "center", 	sortable : false, 	width : (pageWidth*(15/100)) 		},
+				{ name : 'api_nm', 			index : 'api_nm', 			align : "center", 	sortable : false, 	width : (pageWidth*(20/100)) 		},
+				{ name : 'api_key',		 	index : 'api_key',			align : "center", 	sortable : false, 	width : (pageWidth*(12/100)) 		},
+				{ name : 'conn_date',	 	index : 'conn_date',		align : "center", 	sortable : true, 	width : (pageWidth*(12/100))		}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "conn_date",
+				root : 		function(obj){ return obj.data.emp_list; 		},	// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; 	},	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; 		}, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; 	}	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				// 기존 검색 조건 유지 부분
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					var s_info_date = $("#frmSearch").find('input[name=s_info_date]').val();
+					var e_info_date = $("#frmSearch").find('input[name=e_info_date]').val();
+					// 시작일
+					$("input[name=s_info_date]").val(cf_cvtDateFormat(s_info_date, "yyyy-MM-dd"));
+					// 종료일
+					$("input[name=e_info_date]").val(cf_cvtDateFormat(e_info_date, "yyyy-MM-dd"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();	// 검색 폼 데이터 추출
+					postData._search = true;
+					$("#custinfo_grid").jqGrid('setGridParam', {search: true});
+					$("#custinfo_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#custinfo_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#custinfo_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				// 기존 Keep Data 삭제
+				$("#frmKeepData").empty();
+				
+				return "params="+encodeURI(JSON.stringify(postData)); 
+			},
+			postData:{
+				/* search_info: {
+					s_info_date : $('#s_info_date').cvtDateDefault(),
+					e_info_date : $('#e_info_date').cvtDateDefault()
+				}, */
+				empno: '${sessionScope.sessionEmpno}', 
+				emp_str_cd: '${sessionScope.sessionStrCd}',
+				hq_base_yn: '${sessionScope.sessionHqBaseYn}'
+			},
+			search:false,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#custinfo_grid_page',
+			sortname : 'conn_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : false,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function() {
+				$("td:eq(3)", $("#custinfo_grid tr[id]")).each(function() {
+					if ($(this).html() == "회원별 쿠폰북 발행 리스트 조회") $(this).html("회원별 APP 가입정보 페이지 조회");
+				});
+			}
+		});
+		jQuery("#custinfo_grid").jqGrid('navGrid', "#custinfo_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+
+	  	$("#custinfo_grid").gridCss();
+	  	$("#custinfo_grid_cb").css("border-left-width","0");
+	  	$("#custinfo_grid_cb").css("padding-left","4px");
+	  	
+	  	$("#jqgh_custinfo_grid_cb").css("padding","7px 0");
+	  	$("#custinfo_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#custinfo_grid").jqGrid( 'setGridWidth', $("#target_custinfo_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+
+</script>

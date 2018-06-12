@@ -1,0 +1,424 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">지점</label>
+									<div class="col-md-3">
+										<select class="form-control" id="str_cd" name="str_cd" >
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">승인상태</label>
+									<div class="col-md-3">
+										<select class="form-control" name="aprv_sts_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+									<label class="col-md-1 control-label">제목</label>
+									<div class="col-md-3">
+										<input class="form-control" type="text" name="noti_title">
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-1 control-label">대상</label>
+									<div class="col-md-3">
+										<select class="form-control" name="cust_grd_cd">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+							</fieldset>
+						</form>
+						<div class="form-actions mt0">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 지점혜택 및 공지 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_branch_notice_grid" class="widget-body no-padding">
+						<table id="branch_notice_grid"></table>
+						<div id="branch_notice_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 초기데이터 로드 : 승인상태
+	f_ajaxApprovalStatusCode($('select[name=aprv_sts_cd]'));
+
+	//공통코드 조회 : 마트고객등급
+	f_ajaxCommonCode({
+		target:"select[name=cust_grd_cd]", 
+		cd_divn_id: "CUST_GRD_CD",
+		codeId : "",
+		fnSuccess : ""
+	});
+	$('select[name=cust_grd_cd]').children("[value='99']").remove(); // 미상(99) 제거
+
+	// 지점 호출
+	f_ajaxStrCdCode($('#str_cd'));
+	var session_str_cd = '${sessionScope.sessionStrCd}' == '999' ? '' : '${sessionScope.sessionStrCd}';
+	$('#str_cd').val(session_str_cd); // 지점 초기값 설정
+ 	$("#str_cd option[value='999']").remove();
+	
+	// 본부일때는 지점선택 가능
+	if('${sessionScope.sessionStrCd}' == '999') {
+		$('#str_cd').attr({"readonly":false,"disabled":false}); // 지점 readonly 설정
+	}
+	else {
+		$('#str_cd').attr({"readonly":true,"disabled":true}); // 지점 readonly 설정
+	}
+
+	loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js', branch_notice_grid_function);
+
+	function branch_notice_grid_function() {
+		var pageWidth = $('#branch_notice_grid').parent().width() - 100;
+
+		jQuery('#branch_notice_grid').jqGrid({
+			url : api_url+'/backoffice/branch/benefit/list',
+			mtype: 'GET',
+			datatype : 'json',
+			colNames : ['No.', '등록지점', '제목', '대상', '시작일자', '종료일자', '승인상태', '등록일자', '점포코드', '지점혜택공지ID', '승인상태코드' ],
+			colModel : [
+				{ name : 'rnum', index : 'rnum', align : 'center',	sortable : false,	width : (pageWidth*(5/100))		},
+				{ name : 'str_nm',	index : 'str_nm',	align : 'center',	sortable : false, 	width : (pageWidth*(10/100))	}, 
+				{ name : 'noti_title',	index : 'noti_title',	align : 'center',	sortable : false, 	width : (pageWidth*(30/100)),	classes:'pointer' }, 
+				{ name : 'str_cust_grd_list',	index : 'str_cust_grd_list',	align : 'center',	sortable : false, 	width : (pageWidth*(20/100))	}, 
+				{ name : 'vali_term_start_dd',	index : 'vali_term_start_dd',	align : 'center', 	sortable : false, 	
+					formatter : function(cellvalue, options, rowObject) {
+						return cf_changeDateFormat(cellvalue,'yy-mm-dd');
+					}, 	width : (pageWidth*(10/100))}, 
+				{ name : 'vali_term_end_dd',	index : 'vali_term_end_dd',	align : 'center', 	sortable : false, 	
+						formatter : function(cellvalue, options, rowObject) {
+							return cf_changeDateFormat(cellvalue,'yy-mm-dd');
+						}, 	width : (pageWidth*(10/100)) 	}, 
+				{ name : 'aprv_sts_nm',	index : 'aprv_sts_nm',	align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	}, 
+				{ name : 'reg_date', 			index : 'reg_date',				align : 'center', 	sortable : false, 	
+					formatter : function(cellvalue, options, rowObject) {
+						return cf_changeDateFormat(cellvalue,'yy-mm-dd');
+					}, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'str_cd',	index : 'str_cd',	align : 'center', 	hidden:true, sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'brnc_bene_noti_id',	index : 'brnc_bene_noti_id',	align : 'center', 	hidden:true, sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'aprv_sts_cd',	index : 'aprv_sts_cd',	align : 'center', 	hidden:true, sortable : false, 	width : (pageWidth*(10/100)) 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : 'rnum',
+				root : 		function(obj){ return obj.data.notice_list; },		// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { 
+				return encodeURI('params='+JSON.stringify(postData)); 
+			},
+			serializeGridData: function(postData) { 
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#branch_notice_grid").jqGrid('setGridParam', {search: true});
+					$("#branch_notice_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#branch_notice_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#branch_notice_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+									
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+				
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{ 
+				search_info: "", 
+				empno: "${sessionScope.sessionEmpno}", 
+				emp_str_cd: "${sessionScope.sessionStrCd}", 
+				row : "10",
+				_search: false 
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#branch_notice_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+				if(index == 3) {
+					
+					var brnc_bene_noti_id = $("#branch_notice_grid").jqGrid('getCell', rowid, 'brnc_bene_noti_id');
+// 					var str_cd = $("#str_cd").val();
+					var str_cd = $("#branch_notice_grid").jqGrid('getCell', rowid, 'str_cd');
+
+					var postData = {
+							empno : '${sessionScope.sessionEmpno}'
+							,emp_str_cd : '${sessionScope.sessionStrCd}'
+							,hq_base_yn : '${sessionScope.sessionHqBaseYn}'
+							,str_cd : str_cd
+							,brnc_bene_noti_id : brnc_bene_noti_id
+					};
+					
+					$('#branch_notice_grid').jqGrid('setGridParam', {'postData' : postData });
+					var postData = $('#branch_notice_grid').jqGrid('getGridParam', 'postData');
+					var url = '/application/branch/benefit/benefitRN.do';
+					var method = 'POST';
+					cf_action(url, method, postData);
+				}
+			}
+		});
+		jQuery('#branch_notice_grid').jqGrid('navGrid', '#branch_notice_grid_page', {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+		// -------------------------- 버튼 영역 시작 -------------------------- //
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery('#branch_notice_grid').jqGrid('navButtonAdd','#branch_notice_grid_page',{
+				caption: '삭제',
+				id: 'delete_button',
+				buttonicon: 'ui-icon-trash',
+				onClickButton: function(){
+
+					var select_ids =$("#branch_notice_grid").jqGrid('getGridParam', 'selarrrow');
+					var aprv_cnt = 0;
+					
+					if(select_ids.length == 0){
+						alert("삭제할 컨텐츠를 선택하세요");
+						return false;
+					}
+					var deleteData = [];
+					var deleteMessage = "";
+					var del_id = "";
+					$.each(select_ids, function(i, items){
+						del_id = $("#branch_notice_grid").jqGrid('getCell', select_ids[i], 'brnc_bene_noti_id');
+						if($("#branch_notice_grid").getRowData(items)["aprv_sts_cd"] != "REQUEST"){
+							deleteMessage = deleteMessage + "No."+$("#branch_notice_grid").getRowData(items)["rnum"] + " : " + $("#branch_notice_grid").getRowData(items)["noti_title"] +"\n";
+							aprv_cnt ++;
+						} else{
+							deleteData.push(del_id);
+						}
+						if (select_ids.length == (i+1) && deleteMessage.length != 0){
+							deleteMessage = deleteMessage + "는(은) 삭제하실수 없습니다\n위 내역을 제외하고 ";
+						}
+					});
+					
+					if(select_ids.length == aprv_cnt) {
+						alert("삭제 할 수 없습니다");
+						return false;
+					}else {
+						deleteMessage = deleteMessage + "삭제하시겠습니까?";
+					}
+					$.debug = deleteData;
+					
+					var str_cd = $("#str_cd").val();
+					var data = {
+						empno : '${sessionScope.sessionEmpno}'
+						,emp_str_cd : '${sessionScope.sessionStrCd}'
+						,hq_base_yn : '${sessionScope.sessionHqBaseYn}'
+						,str_cd : str_cd
+						,notice_id_list : deleteData
+					};
+					
+					if(confirm(deleteMessage)){
+						$.ajax({
+							url: api_url + "/backoffice/branch/benefit/delete",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+ 								alert(obj["message"]);
+ 								$("#branch_notice_grid").trigger("reloadGrid");
+ 							},
+							error: function(obj) {
+ 						    	var serverObj = obj.responseJSON;
+ 						    	alert("code:"+serverObj["code"]+"\n"+"message:"+cf_msg(serverObj["message"])+"\n");
+ 						    	return;
+ 						    }
+						});
+					}
+				}
+			});
+		}
+		
+		
+		// btn_modify
+		if('${sessionScope.menuAuth.U}' == 'Y') {
+			jQuery('#branch_notice_grid').jqGrid('navButtonAdd','#branch_notice_grid_page',{
+				caption: '수정',
+				id: 'btn_modify',
+				buttonicon: 'ui-icon-plus',
+				onClickButton: function(){
+
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					var noti_id_cnt = $("#branch_notice_grid").jqGrid('getCell', select_ids, 'brnc_bene_noti_id');
+
+					if(select_ids.length > 1){
+						alert("하나만 체크하세요");
+					}else if(select_ids.length <= 1){
+						if(select_ids == ""){
+							alert("수정 대상을 체크해야 합니다.");
+						}else{
+							var str_cd = $("#branch_notice_grid").jqGrid('getCell', select_ids, 'str_cd');
+							var brnc_bene_noti_id = $("#branch_notice_grid").jqGrid('getCell', select_ids, 'brnc_bene_noti_id');
+							var aprv_sts_cd = $("#branch_notice_grid").jqGrid('getCell', select_ids, 'aprv_sts_cd');
+
+							if(aprv_sts_cd == 'APPROVE') {
+								alert("승인상태는 수정이 불가능합니다.");
+								return;
+							}
+
+							var postData = {
+									empno : '${sessionScope.sessionEmpno}'
+									,emp_str_cd : '${sessionScope.sessionStrCd}'
+									,hq_base_yn : '${sessionScope.sessionHqBaseYn}'
+									,str_cd : str_cd
+									,brnc_bene_noti_id : brnc_bene_noti_id
+							};
+
+							if(noti_id_cnt != ""){
+								var url = '/application/branch/benefit/benefitEN.do';
+								var method = 'POST';
+								cf_action(url, method, postData);
+							}
+						}
+					}
+				}
+			});
+		}
+		
+		// btn_create
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery('#branch_notice_grid').jqGrid('navButtonAdd','#branch_notice_grid_page',{
+				caption: '등록',
+				id: 'add_button',
+				buttonicon: 'ui-icon-plus',
+				onClickButton: function(){
+
+					var str_cd = $("#str_cd").val();
+					if(str_cd == undefined || str_cd == "") {
+						alert("지점이 선택되지 않았습니다.");
+						return;
+					}
+					
+					var url = '/application/branch/benefit/benefitWN.do';
+					var method = 'POST';
+					var postData = $('#branch_notice_grid').jqGrid('getGridParam', 'postData'); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$('#branch_notice_grid').gridCss();
+	  	$('#branch_notice_grid_cb').css('border-left-width','0');
+	  	$('#branch_notice_contetns_grid_cb').css('padding-left','4px');
+	  	$('#jqgh_branch_notice_grid_cb').css('padding','7px 0');	  	
+	  	$('#branch_notice_grid_page_right').find('.ui-pg-table, .navtable').css('float','right');
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery('#branch_notice_grid').jqGrid( 'setGridWidth', $('#target_branch_notice_grid').width() );
+		});
+	} 
+	// end function
+};
+
+
+
+
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript('${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js', pagefunction);
+</script>

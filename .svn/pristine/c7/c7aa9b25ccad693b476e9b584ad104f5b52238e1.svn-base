@@ -1,0 +1,218 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>미션 카테고리 상세</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="searchProduct">
+							
+							<fieldset id="searchTypeFieldSetA">
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">스탬프 유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_stamp_divn_cd_name"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">스탬프 번호 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_stamp_id"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">행사기간 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_evt_term_dd" ></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">스탬프명 : </label>
+									<div class="col-md-10">
+										<span class="form-control cs-css-03" id="rd_evt_title"></span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label cs-css-05">미션 유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_stamp_apply_to_cd_name"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">미션수행채널 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_fulfill_chanel_cd_name"></span>
+									</div>
+									<label class="col-md-2 control-label cs-css-05">미션횟수 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="rd_stamp_mison_base_cnt"></span>
+									</div>
+								</div>
+							</fieldset>
+
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row" id="couponLL">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					
+					<div id="target_compensation_grid" class="widget-body no-padding">
+						<table id="compensation_grid"></table>
+						<div id="compensation_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepDataSD">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+function missionDeatil() {
+	
+	var action_data = {
+		empno: "${sessionScope.sessionEmpno}",
+		emp_str_cd: '${sessionScope.sessionStrCd}',
+		hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+		stamp_id: $("#frmKeepDataSD").find("input[name=stamp_id]").val(),
+		bsis_mison_yn: $("#frmKeepDataSD").find("input[name=mison_yn]").val(),
+		mili_time : new Date().getTime()
+	};
+		
+	$.ajax({
+	    url: api_url+"/backoffice/stamp/basic/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: false,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(action_data)),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	console.log("... missionDetail success : " + obj.data);
+	    	$("#rd_stamp_divn_cd_name").html(obj.data.stamp_divn_cd_name);
+	    	$("#rd_stamp_id").html(obj.data.stamp_id);
+	    	$("#rd_evt_term_dd").html(cf_cvtDateFormat(obj.data.evt_term_start_dd, 'yyyy-MM-dd') + " ~ " + cf_cvtDateFormat(obj.data.evt_term_end_dd, 'yyyy-MM-dd'));
+	    	$("#rd_fulfill_chanel_cd_name").html(obj.data.fulfill_chanel_cd_name);
+	    	$("#rd_evt_title").html(obj.data.evt_title);
+	    	$("#rd_stamp_apply_to_cd_name").html(obj.data.stamp_apply_to_cd_name);
+	    	$("#rd_stamp_mison_base_cnt").html(obj.data.stamp_mison_base_cnt);
+	    	console.log("... missionDetail success end: " + obj.data);
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+}
+
+pageSetUp();
+
+var pagefunction = function() {
+	
+	missionDeatil();
+	console.log("..... before jqGrid.... ");
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+	console.log("..... after jqGrid.... ");
+	function run_jqgrid_function() {
+		var pageWidth = $("#compensation_grid").parent().width() - 100;
+		
+		jQuery("#compensation_grid").jqGrid({
+			url : api_url+"/backoffice/stamp/category/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['스탬프ID', '기본미션여부', '카테고리코드', '카테고리명', '대상적용문구'],
+			colModel : [
+				{ name : 'stamp_id', 			index : 'stamp_id',				align : "center",	sortable : false, 	width : (pageWidth*(20/100)) 	},
+				{ name : 'bsis_mison_yn', 		index : 'bsis_mison_yn', 		align : "center",	sortable : false, 	width : (pageWidth*(10/100))	}, 
+				{ name : 'category_cd', 		index : 'category_cd',			align : "center",	sortable : false, 	width : (pageWidth*(20/100)) 	}, 
+				{ name : 'category_nm', 		index : 'category_nm',			align : "center", 	sortable : false, 	width : (pageWidth*(20/100)) 	}, 
+				{ name : 'apply_text', 			index : 'apply_text', 			align : "center", 	sortable : false, 	width : (pageWidth*(30/100)) 	} 
+				/* { name : 'buy_prc', 			index : 'buy_prc', 				align : "center", 	sortable : false, 	width : (pageWidth*(7/100)) 	},
+				{ name : 'sell_prc', 			index : 'sell_prc', 			align : "center", 	sortable : false, 	width : (pageWidth*(7/100)) 	},
+				{ name : 'prftrat', 			index : 'prftrat', 				align : "center", 	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'trd_type_divn_cd_name', index : 'trd_type_divn_cd_name', align : "center", 	sortable : false, 	width : (pageWidth*(5/100)) 	} */
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "category_cd",
+				root : 		function(obj){ return obj.data.category_list; },				// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+			//search : false,
+			serializeRowData: function (postData) { return "params="+encodeURI(JSON.stringify(postData)); },
+			serializeGridData: function (postData) {
+				return "params="+encodeURI(JSON.stringify(postData));
+			},
+			postData:{
+				empno: "${sessionScope.sessionEmpno}",
+				stamp_id: $("#frmKeepDataSD").find("input[name=stamp_id]").val(),
+				bsis_mison_yn: $("#frmKeepDataSD").find("input[name=mison_yn]").val()
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#compensation_grid_page',
+			sortname : 'category_cd',
+			sortorder : "asc",
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : false,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){ },
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 1) {
+					var cm = $("#compensation_grid").jqGrid('getGridParam','colModel');
+					// console.log((cm[index].name +"|"+rowid));
+			   }
+			}
+		});
+		jQuery("#compensation_grid").jqGrid('navGrid', "#compensation_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+
+	  	$("#compensation_grid").gridCss();
+	  	$("#compensation_grid_cb").css("border-left-width","0");
+	  	$("#compensation_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_compensation_grid_cb").css("padding","7px 0");
+	  	$("#compensation_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#compensation_grid").jqGrid( 'setGridWidth', $("#target_compensation_grid").width() );
+		});
+	} 
+	// end function
+};
+
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

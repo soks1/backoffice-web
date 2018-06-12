@@ -1,0 +1,295 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html("&#160;");
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+
+/**
+ * ==================================================================================
+ * 공통 : 리스트 화면 가기
+ * ==================================================================================
+ */
+function f_beaconCpbookList() {
+	var url = "/application/beacon/beaconCpbookLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 공통 : 수정 화면 가기
+ * ==================================================================================
+ */
+function f_beaconCpbookEdit() {
+	var url = "/application/beacon/beaconCpbookEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	
+	var obj_cooperate_cpbook_id = $("#frmSearch").find('input[name=cooperate_cpbook_id]');
+	
+	if( obj_cooperate_cpbook_id.getObjLength() > 0 && obj_cooperate_cpbook_id.alphanumeric() != true ) {
+		return;
+	}
+	
+	if($("#frmSearch").searchValid() != true) {
+		alert("검색 조건을 입력해 주세요.");
+		return;
+	}
+	
+	if( $('#s_prgs_dd').getObjLength() > 0 ) {
+		if( $('#e_prgs_dd').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_prgs_dd').getObjLength() > 0 ) {
+		if( $('#s_prgs_dd').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 초기화 버튼 추가
+	f_addButton();
+	
+	// 검색 폼 데이터 추출
+	var searchData = $("#frmSearch").serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$("#cooperate_grid").jqGrid('setGridParam', {search: true});
+	
+	// 첫 페이지 셋팅
+	$("#cooperate_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$("#cooperate_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton() {
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+}
+
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// 달력 minDate, maxDate 값을 초기화
+	$( "#s_prgs_dd, #e_prgs_dd" ).datepicker( "option", {minDate: null, maxDate: null});
+	// KeepData 폼 안에 input 태그 삭제
+	$("#frmKeepData").empty();
+	// 검색 초기화 버튼 삭제
+	$("#btn_cancel").remove();
+	$("#cooperate_grid").jqGrid('setGridParam', {search: false});
+	$("#cooperate_grid").jqGrid('setGridParam', {page: 1});
+	// 검색 데이터 초기화 후 그리드 리로드
+	$("#cooperate_grid").jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	// 검색 폼의 항목들 초기화
+	$("#frmSearch").cleanObject();
+}
+
+
+/**
+ * ==================================================================================
+ * 등록/수정 화면 : 쿠폰북 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCouponBookSD() {
+	$.ajax({
+		url: "/application/common/couponBookSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#cpbook_sd');
+			$target.html(data);
+			
+			$("select[name=cpbook_type_cd] option[value=A]").prop("selected", true);
+			$("select[name=cpbook_type_cd]").attr("disabled", "disabled");
+		}
+	});
+	$('#cpbook_sd').dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * 등록/수정 화면 : 비컨그룹 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openGroupSD() {
+	var evt_start_dd = $("#evt_term_start_dd").val();
+	var evt_end_dd = $("#evt_term_end_dd").val();
+	
+	if(evt_start_dd == "" || evt_end_dd == "") {
+		alert("행사기간을 먼저 선택해 주세요.");
+		return;
+	}else {
+		$.ajax({
+			url: "/application/common/beaconGroupSD.do",
+			type: 'GET',
+			async: true,
+			cache: false,
+			success: function(data) {
+				var $target = $('#beacon_group_sd');
+				$target.html(data);
+			}
+		});
+		$('#beacon_group_sd').dialog('open');
+	}
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 승인요청/ 승인/ 반려 처리
+ * ==================================================================================
+ */
+function f_beaconCpbookApprove(option) {
+	var confirmMsg = "";
+	var url = "";
+	var inputLen = $('#frmKeepData input[name="up_aprv_sts_cd"]').length;
+	if(inputLen > 1) {
+		$('#frmKeepData input[id="up_aprv_sts_cd"]').remove();
+	}
+	$('#frmKeepData input[name="up_aprv_sts_cd"]').val(""); 
+	if(option == "STANDBY") {
+		confirmMsg = "승인요청을 하시겠습니까?";
+		$('#frmKeepData input[name="up_aprv_sts_cd"]').val(option);
+		url = "/backoffice/event/o2o/approval/ask";
+	}else if(option == "REJECT") {
+		confirmMsg = "반려 처리를 하시겠습니까?";
+		$('#frmKeepData input[name="up_aprv_sts_cd"]').val(option);
+		url = "/backoffice/event/o2o/reject";
+	}else if(option == "APPROVE") {
+		confirmMsg = "승인 처리를 하시겠습니까?";
+		$('#frmKeepData input[name="up_aprv_sts_cd"]').val(option);
+		url = "/backoffice/event/o2o/approve";
+	}
+	var data = {
+			empno: $("#frmKeepData").find("input[name=empno]").val(),
+            o2o_evnt_id : $("#o2o_evnt_id").html()
+        };
+	if(confirm(confirmMsg)) {
+		$.ajax({
+			url: api_url+url,
+			type: 'POST',
+			async: true,
+			cache: false,
+			contentType: "application/json;charset=utf-8",
+			data: JSON.stringify(data), //JSON.stringify($("#frmKeepData").serializeFormObject()),
+			success: function(obj) {
+				alert(obj.message);
+				var url = "/application/beacon/beaconCpbookRN.do";
+				var method = "POST";
+				cf_action(url, method, $("#frmKeepData").serialize());
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});	
+	}
+}
+
+/**
+ * ==================================================================================
+ * 상세 화면 : 쿠폰 삭제
+ * ==================================================================================
+ */
+function f_beaconCpbookDel() {
+	
+	if($('#aprv_sts_cd').val() == 'APPROVE') {
+		alert("승인상태의 비컨 쿠폰북은 삭제가 불가능합니다.");
+		return;
+	}
+	
+	if(confirm("정말 삭제하시겠습니까?")) {
+		var select_ids = [$("#frmBreakData").find("input[name=o2o_evnt_id_list]").val()];
+		var data = {
+			empno: $("#frmKeepData").find("input[name=empno]").val(), 
+			o2o_evnt_id_list : select_ids
+		};
+		$.ajax({
+			url: api_url + '/backoffice/event/o2o/delete',
+			type: 'POST',
+			contentType: 'application/json;charset=utf-8', // POST 일때만 사용
+			async: false,
+			cache: true,
+			data: JSON.stringify(data),
+			success: function(obj) {
+				alert(obj.message);
+				f_beaconCpbookList();
+			},
+			error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+		    	return;
+		    }
+		});
+	}
+}
+
+
+/**
+ * ==================================================================================
+ * 등록 화면 : 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCampaignSD() {
+	$.ajax({
+		url: "/application/groupbuy/campaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#beacon_campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#beacon_campaign_sd').dialog('open');
+		}
+	});
+}
+/**
+ * ==================================================================================
+ * 등록/수정 : 대상 쿠폰 선택삭제 이벤트
+ * ----------------------------------------------------------------------------------
+ * 선택된 테이블 로우를 삭제 후 총 카운트 수 반영
+ * ==================================================================================
+ */
+function f_selectBeaconGroupDelete() {
+	cf_delTableRow('beacon_group_tbody');
+}

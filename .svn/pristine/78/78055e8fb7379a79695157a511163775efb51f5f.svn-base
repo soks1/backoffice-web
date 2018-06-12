@@ -1,0 +1,139 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 날짜 선택 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmLifekokDate">
+						<input type="hidden" id="empno" name="empno" value="${sessionScope.sessionEmpno}"/>
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12">
+										<div class="col-md-12">
+											<div class="input-group">
+												<input type="text" style="width: 0px; height: 0px; border: 0px;" />
+												<input class="form-control datepicker pr12 tac" type="text" id="selected_dy" name="selected_dy" style="z-index:1100 !important;" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="새로운 유효기간">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+									</div>							
+								</div>
+								
+							</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_extension_validity_cancel();" class="btn btn-danger"><i class="fa fa-search"></i> 취소 </a>
+										<a href="javascript:void(0)" id="btn_search" onclick="f_extension_validity_submit();" class="btn btn-primary"><i class="fa fa-search"></i> 설정 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+
+$('#selected_dy').datepicker(
+	    $.extend({
+	    	minDate:$('input[name=login_vali_end_dy]').val(),
+	    }, date_opts)
+);
+
+var dialog_pagefunction = function(){
+};
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_extension_validity_submit() {
+
+	if($('#selected_dy').val() != ""){
+		var _data = $('#frmLifekokDate').serializeFormObject();
+		var data = {
+			login_vali_end_dy : _data.selected_dy,
+			tenant_cd :$('input[name=tenant_cd]').val(),
+			empno	  : '${sessionScope.sessionEmpno}'
+		};
+		
+		if(confirm("적용 시 app에 즉시 반영됩니다. 유효기간을 연장 하시겠습니까?")){
+			
+			$.ajax({
+			    url: api_lifekok_url+'/backoffice/lifekok/tenant/pwextension',
+// 			    url: api_lifekok_img_url+'/backoffice/lifekok/tenant/pwextension',
+			    type: 'POST',
+			    async: true,
+			    cache: false,
+			    datatype: 'json',
+			    contentType: 'application/json;charset=utf-8',
+			    data: JSON.stringify(data),
+			    success: function(obj){
+			    	alert(obj.message);
+					$('#extension_validity').dialog("close");
+					var url = "/application/cooperateService/tenant/tenantRN.do";
+			    	var method = "GET";
+			    	var postData ={
+			    			tenant_cd : $("input[name=tenant_cd]").val(),
+			    			empno	  : '${sessionScope.sessionEmpno}'
+			    	}; 
+			    	cf_action(url, method, postData);
+			    },
+			    error: function(obj) {
+			    	var serverObj = obj.responseJSON;
+			    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+			    	return;
+			    }
+			});	
+		}
+	} else {
+		alert("새로운 유효기간을 선택해 주세요");
+		return;
+	}
+}
+
+function f_extension_validity_cancel(){
+	$('#extension_validity').dialog("close");
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+dialog_pagefunction();
+</script>

@@ -1,0 +1,363 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-1 control-label">지점</label>
+									<div class="col-md-3">
+										<select class="form-control" name="str_cd">
+											<option value="">전체</option>
+										</select> 
+									</div>
+									
+									<label class="col-md-1 control-label">조회기간</label>
+									<div  class="col-md-1">
+										<a href="javascript:void(0);" class="btn btn-sm bg-color-blue txt-color-white">월간</a>
+										<a href="javascript:void(0);" class="btn btn-sm bg-color-blueDark txt-color-white">일간</a>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" data-dateformat='yy-mm-dd' placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac" type="text" data-dateformat='yy-mm-dd' placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+							</fieldset>
+							
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+			<div class="jarviswidget" id="wid-id-3" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<h2>이벤트 개설 현황(건) </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div class="widget-body">
+						<canvas id="event_open_patten" height="120"></canvas>
+					</div>
+				</div>
+			</div>
+		</article>
+		<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+			<div class="jarviswidget" id="wid-id-4" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<h2>이벤트 참여 현황(명) </h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div class="widget-body">
+						<canvas id="event_participate_patten" height="120"></canvas>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>이벤트 현황 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_event_stats_grid" class="widget-body no-padding">
+						<table id="event_stats_grid"></table>
+						<div id="event_stats_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+
+<script type="text/javascript">
+
+function f_search() {
+	
+	// TODO : 검색 조건에 대한 밸리데이션 체크!
+	
+	$("#btn_cancel").remove();	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$("#btn_search").parent().append("<a href=\"javascript:void(0)\" id=\"btn_cancel\" onclick=\"f_cancel();\" class=\"btn btn-warning\"><i class=\"fa fa-remove\"></i> 초기화 </a>");
+	var searchData = $("#frmSearch").serializeObject();	// 검색 폼 데이터 추출
+	$("#groupbuy_grid").jqGrid('setGridParam', {search: true});	// 검색 사용 중으로 변경
+	$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search':searchData} }).trigger('reloadGrid');	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+}
+
+function f_cancel() {
+	
+	// TODO : 검색 폼 데이터 리셋 해야함!
+	
+	$("#btn_cancel").remove();	// 검색 초기화 버튼 삭제
+	$("#groupbuy_grid").jqGrid('setGridParam', {search: false});	// 검색 사용 중으로 변경
+	$("#groupbuy_grid").jqGrid('setGridParam', {'postData' : {'search':''} }).trigger('reloadGrid');	// 검색 데이터 초기화 후 그리드 리로드
+}
+
+pageSetUp();
+
+var pagefunction = function() {
+	
+	
+	// ---------------------- 쿠폰 유형별 사용 패턴 ---------------------- // 
+        
+    var event_open_patten_data = [
+	 	{
+			value: 160,
+			color:"rgba(79,129,189,1)",
+			highlight: "rgba(79,129,189,0.8)",
+			label: "스탬프"
+		},
+		{
+			value: 40,
+			color: "rgba(192,80,77,1)",
+			highlight: "rgba(192,80,77,0.8)",
+			label: "경매"
+		},
+		{
+			value: 100,
+			color: "rgba(155,187,89,1)",
+			highlight: "rgba(155,187,89,0.8)",
+			label: "공동구매"
+		},
+		{
+			value: 160,
+			color: "rgba(128,100,162,1)",
+			highlight: "rgba(128,100,162,0.8)",
+			label: "전자영수증"
+		},
+		{
+			value: 140,
+			color: "rgba(75,172,198,1)",
+			highlight: "rgba(75,172,198,0.8)",
+			label: "O2O"
+		}
+    ];
+    
+    var event_open_patten_options = {
+	        segmentShowStroke: true,
+	        segmentStrokeColor: "#fff",
+	        segmentStrokeWidth: 2,
+	        animationSteps: 100,
+	        animationEasing: "easeOutBounce",
+	        animateRotate: true,
+	        animateScale: false,
+	        responsive: true
+	};
+    
+    var pie_chart1 = document.getElementById("event_open_patten").getContext("2d");
+    pieChart1 = new Chart(pie_chart1).Pie(event_open_patten_data, event_open_patten_options);
+
+	
+ 	// ---------------------- 이벤트 유형별 사용패턴 ---------------------- //
+ 	var event_participate_patten_data = [
+ 	 	{
+			value: 260,
+			color:"rgba(79,129,189,1)",
+			highlight: "rgba(79,129,189,0.8)",
+			label: "스탬프"
+		},
+		{
+			value: 30,
+			color: "rgba(192,80,77,1)",
+			highlight: "rgba(192,80,77,0.8)",
+			label: "경매"
+		},
+		{
+			value: 110,
+			color: "rgba(155,187,89,1)",
+			highlight: "rgba(155,187,89,0.8)",
+			label: "공동구매"
+		},
+		{
+			value: 100,
+			color: "rgba(128,100,162,1)",
+			highlight: "rgba(128,100,162,0.8)",
+			label: "전자영수증"
+		},
+		{
+			value: 100,
+			color: "rgba(75,172,198,1)",
+			highlight: "rgba(75,172,198,0.8)",
+			label: "O2O"
+		}
+    ];
+    var event_participate_patten_options = {
+	        segmentShowStroke: true,
+	        segmentStrokeColor: "#fff",
+	        segmentStrokeWidth: 2,
+	        animationSteps: 100,
+	        animationEasing: "easeOutBounce",
+	        animateRotate: true,
+	        animateScale: false,
+	        responsive: true
+    };
+    var pie_chart2 = document.getElementById("event_participate_patten").getContext("2d");
+    pieChart2 = new Chart(pie_chart2).Pie(event_participate_patten_data, event_participate_patten_options);
+    
+    
+ 	// ---------------------- 이벤트 데이터 그리드 ---------------------- //
+ 
+    loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", run_jqgrid_function);
+ 	
+	function run_jqgrid_function() {
+		
+		var pageWidth = $("#event_stats_grid").parent().width() - 100;
+
+		jQuery("#event_stats_grid").jqGrid({
+			url : "/application/coupon/list_api.do",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['일자', '개설건수', '스템프', '경매', '공동구매', '전자영수증', 'O2O', '참여자', '스템프' , '경매', '공동구매', '전자영수증', 'O2O'],
+			colModel : [
+				{ name : 'regDate', 	index : 'regDate',		align : "center",	sortable : true, 	width : (pageWidth*(16/100)) 	},
+				{ name : 'idx1',		index : 'idx1', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx2',		index : 'idx2', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx3',		index : 'idx3', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx4',		index : 'idx4', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx5',		index : 'idx5', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx6',		index : 'idx6', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx7',		index : 'idx7', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx8',		index : 'idx8', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx9',		index : 'idx9', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx10',		index : 'idx10', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx11',		index : 'idx11', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		},
+				{ name : 'idx12',		index : 'idx12', 		align : "center", 	sortable : false, 	width : (pageWidth*(7/100))		}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "couponId",
+				root : 		function(obj){ return obj.data.list; },				// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page.total_count; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page.page_num; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page.page_size; }	// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return "params="+encodeURI(JSON.stringify(postData)); },
+			serializeGridData: function(postData) {	return "params="+encodeURI(JSON.stringify(postData)); },
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#event_stats_grid_page',
+			sortname : 'reg_date',
+			sortorder : "desc",
+			viewrecords : true,
+			recordpos : "left",
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : true,
+			gridComplete: function(){}
+		});
+		jQuery("#event_stats_grid").jqGrid('setGroupHeaders', {
+			useColSpanStyle: true, 
+			groupHeaders:[
+				{startColumnName: 'idx1', numberOfColumns: 6, titleText: '개설현황(건)'},
+				{startColumnName: 'idx7', numberOfColumns: 6, titleText: '참여현황(명)'}
+			]
+		});
+		jQuery("#event_stats_grid").jqGrid('navGrid', "#event_stats_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+		
+			
+		// btn_excel
+		jQuery("#event_stats_grid").jqGrid('navButtonAdd','#event_stats_grid_page',{
+			caption: "엑셀 다운로드",
+			id: "add_button",
+			buttonicon: "ui-icon-check",
+			onClickButton: function(){
+				var url = "/application/board/faq/faqWN.do";
+				var method = "POST";
+				var postData = $('#event_stats_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+				cf_action(url, method, postData);
+			}
+		});	
+		
+		/* Add tooltips */
+		$('.navtable .ui-pg-button').tooltip({
+			container : 'body'
+		});
+		
+		// remove classes
+		$(".ui-jqgrid").removeClass("ui-widget ui-widget-content");
+	    $(".ui-jqgrid-view").children().removeClass("ui-widget-header ui-state-default");
+	    $(".ui-jqgrid-labels, .ui-search-toolbar").children().removeClass("ui-state-default ui-th-column ui-th-ltr");
+	    $(".ui-jqgrid-pager").removeClass("ui-state-default");
+	    $(".ui-jqgrid").removeClass("ui-widget-content");
+	    
+	    // add classes
+	    $(".ui-jqgrid-htable").addClass("table table-bordered table-hover");
+	    $(".ui-jqgrid-btable").addClass("table table-bordered table-striped");
+
+	    $(".ui-pg-div").removeClass().addClass("btn btn-sm btn-primary");
+
+	    $(".ui-icon.ui-icon-check").removeClass().parent(".btn-primary").removeClass("btn-primary").addClass("btn-success");
+
+		$(".ui-icon.ui-icon-seek-prev").wrap( "<div class='btn btn-sm btn-default'></div>" );
+		$(".ui-icon.ui-icon-seek-prev").removeClass().addClass("fa fa-backward");
+		$(".ui-icon.ui-icon-seek-first").wrap( "<div class='btn btn-sm btn-default'></div>" );
+	  	$(".ui-icon.ui-icon-seek-first").removeClass().addClass("fa fa-fast-backward");		  	
+	  	$(".ui-icon.ui-icon-seek-next").wrap( "<div class='btn btn-sm btn-default'></div>" );
+	  	$(".ui-icon.ui-icon-seek-next").removeClass().addClass("fa fa-forward");
+	  	$(".ui-icon.ui-icon-seek-end").wrap( "<div class='btn btn-sm btn-default'></div>" );
+	  	$(".ui-icon.ui-icon-seek-end").removeClass().addClass("fa fa-fast-forward");
+	  	
+	  	
+	  	$("#event_stats_grid_cb").css("border-left-width","0");
+	  	$("#event_stats_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_event_stats_grid_cb").css("padding","7px 0");
+	  	$(".ui-jqgrid-sortable").css("padding","7px 0");
+	  	$(".ui-jqgrid-labels th").css("text-align","center");
+	  	
+	  	$("#event_stats_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#event_stats_grid").jqGrid( 'setGridWidth', $("#target_event_stats_grid").width() );
+		});
+	}
+};
+
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", function(){
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/chartjs/chart.min.js", pagefunction);
+});
+
+</script>

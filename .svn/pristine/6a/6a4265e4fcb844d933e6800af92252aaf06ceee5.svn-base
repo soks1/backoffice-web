@@ -1,0 +1,480 @@
+/**
+ * ==================================================================================
+ * 공통 : 다이얼로그  TITLE 영역 CSS 변경
+ * ==================================================================================
+ */
+$.widget('ui.dialog', $.extend({}, $.ui.dialog.prototype, {
+	_title : function(title) {
+		if (!this.options.title) {
+			title.html('&#160;');
+		} else {
+			title.html(this.options.title);
+		}
+	}
+}));
+
+/**
+ * ==================================================================================
+ * 공통 : POLL 리스트 화면 이동
+ * ==================================================================================
+ */
+function f_pollList() {
+	var url = "/application/poll/write/pollWriteLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : POLL 리스트 화면 이동
+ * ==================================================================================
+ */
+function f_pollRead() {
+	var url = "/application/poll/write/pollWriteRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : POLL 수정 화면 이동
+ * ==================================================================================
+ */
+function f_pollEdit() {
+	var url = "/application/poll/write/pollWriteEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 리스트 화면 : 검색 초기화 버튼 추가
+ * ==================================================================================
+ */
+function f_addButton(type) {
+	var onClickObj = 'f_cancel();';
+	if(type == 'issue') {
+		onClickObj = 'f_issueCancel();';
+	}
+	
+	// 중복 취소 버튼 생성을 막기위한 기존 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#btn_search').parent().append('<a href="javascript:void(0)" id="btn_cancel" onclick="'+onClickObj+'" class="btn btn-warning"><i class="fa fa-remove"></i> 초기화 </a>');
+}
+
+/**
+ * ==================================================================================
+ * POLL 작성관리 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_search() {
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if($('#frmSearch').searchValid() != true) {
+		alert('검색 조건을 입력해 주세요.');
+		return;
+	}
+	
+	if( $('#s_reg_date').getObjLength() > 0 ) {
+		if( $('#e_reg_date').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_reg_date').getObjLength() > 0 ) {
+		if( $('#s_reg_date').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 검색 초기화 버튼 추가
+	f_addButton();
+
+	// 검색 폼 데이터 추출
+	var searchData = $('#frmSearch').serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$('#poll_write_grid').jqGrid('setGridParam', {search: true});
+	$("#poll_write_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$('#poll_write_grid').jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * POLL 작성관리 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_cancel() {
+	// KeepData 폼 안에 input 태그 삭제
+	$('#frmKeepData').empty();
+	
+	// 검색 초기화 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#poll_write_grid').jqGrid('setGridParam', {search: false});
+	$('#poll_write_grid').jqGrid('setGridParam', {page: 1});
+	
+	// 검색 데이터 초기화 후 그리드 리로드
+	$('#poll_write_grid').jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	
+	// 검색 폼의 항목들 초기화
+	$('#frmSearch').cleanObject();
+}
+
+/**
+ * ==================================================================================
+ * POLL 작성관리 수정 : 이미지 관리 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_pollImgLD(type) {
+	var $target = $('#img_list_ld');
+	
+	var frm = $('#frmKeepData');
+	if(frm.find('input[name=img_pop_type]').length == 0) {
+		var inpImgPopType = $('<input/>').attr('type', 'hidden').attr('name', 'img_pop_type').val(type);
+		frm.append(inpImgPopType);
+	}
+	else {
+		frm.find('input[name=img_pop_type]').val(type);
+	}
+	
+	$.ajax({
+		url: "/application/poll/write/pollImageLD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			$target.html(data);
+			
+			// type 'M' 일 경우 적용버튼 숨김 : 관리모드('M'), 선택모드('S') 
+			if(type == 'M') {
+				$target.parent().find('#delImgBtn').show();
+				$target.parent().find('#setImgBtn').hide();
+			}
+			else {
+				$target.parent().find('#delImgBtn').hide();
+				$target.parent().find('#setImgBtn').show();
+			}
+			
+			$target.dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * POLL 작성관리 이미지 관리 팝업 : 이미지 업로드 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_ImgUploadSD(type) {
+	var $target = $('#img_upload_sd');
+	
+	$.ajax({
+		url: "/application/poll/write/pollImageUploadSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			$target.html(data);
+			
+			$target.dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * POLL 작성관리 수정 화면 : 로직 관리 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_logicEditSD(type, qstnId, qstnPrto) {
+	var $target = $('#logic_edit_sd');
+	
+	$.ajax({
+		url: "/application/poll/write/logicEditSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(html) {
+			$target.html(html);
+			
+			$target.dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * POLL 작성관리 수정 화면 : 질문 등록 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_qstnEditSD(type, qstnId, qstnPrto) {
+	var $target = $('#qstn_edit_sd');
+	
+	$.ajax({
+		url: "/application/poll/write/qstnEditSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(html) {
+			$target.html(html);
+			
+			var pollId = $('#frmKeepData').find('input[name=poll_id]').val();
+			
+			if(type == 'create') {
+				if(POLL_TYPE_CD == 'PRS') {
+					qstnPrto = $('#poll_qstn_tbody tr').length;
+				}
+				else if(POLL_TYPE_CD == 'SNGL') {
+					qstnPrto = $('#poll_qstn_tbody tr').length + 1;
+				}
+			}
+			
+			var frmQstn = $('#frmPollQstn');
+			
+			frmQstn.find('input[name=poll_id]').val(pollId);
+			frmQstn.find('input[name=qstn_id]').val(qstnId);
+			frmQstn.find('input[name=qstn_prto]').val(qstnPrto);
+			frmQstn.find('#qstn_prto').append(qstnPrto);
+			
+			// 질문 ID가 있을 경우
+			if(qstnId != '') {
+				f_loadQstnInfo();
+			}
+		}
+	});
+	
+	$target.dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * POLL 작성관리 수정 화면 : 질문 미리보기 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_preViewQstnSD(type, qstnId) {
+	var $target = $('#pre_view_qstn_sd');
+	
+	$.ajax({
+		url: "/application/poll/write/qstnPreviewSD.do?qstn_id="+qstnId+"&qstn_type="+type,
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(html) {
+			$target.html(html);
+			
+			$target.find('input[name=qstn_id]').val(qstnId);
+			$target.find('input[name=qstn_type]').val(type);
+		}
+	});
+	
+	$target.dialog('open');
+}
+
+/**
+ * ==================================================================================
+ * POLL 작성관리 질문 등록/수정 : 이미지 적용 처리
+ * ================================================================================== 
+ */
+function f_setQstnShowType(obj) {
+	var chk_obj = $("input[name=img_list]:checked");
+	
+	if(chk_obj.length < 1) {
+		alert('적용 대상 이미지를 선택하세요');
+		return;
+	}
+	
+	var imgFileSeq 	  = chk_obj.attr('img_file_seq');
+	var atchFileNm    = chk_obj.attr('atch_file_nm');
+	var preViewImgUrl = chk_obj.attr('pre_view_img_url');
+	
+	if(obj == 'QSTN') {
+		var frm = $('#frmPollQstn');
+		
+		frm.find('#showCardImgDelBtn').show();
+		
+		frm.find('#showCardImgUrl').attr('href', preViewImgUrl).html(atchFileNm);
+		frm.find('input[name=show_card_img_seq]').val(imgFileSeq);
+	}
+	else {
+		var imgObj = IMAGE_SET_OBJ;
+		imgObj.find('span[name=deleteShowImgBtn]').show();
+		
+		imgObj.find('a[name=showImgUrl]').attr('href', preViewImgUrl).html('<br/><br/>' + atchFileNm);
+		imgObj.find('input[name=show_img_seq]').val(imgFileSeq);
+	}
+	
+	$('#img_list_ld').dialog("close");
+}
+
+/**
+ * ==================================================================================
+ * 공통 : POLL 발행 리스트 화면 이동
+ * ==================================================================================
+ */
+function f_pollIssueList() {
+	var url = "/application/poll/issue/pollIssueLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * POLL 발행관리 리스트 화면 : 검색 이벤트
+ * ==================================================================================
+ */
+function f_issueSearch() {
+	// ------------------ 검색 벨리데이트 시작 ------------------ //
+	if($('#frmSearch').searchValid() != true) {
+		alert('검색 조건을 입력해 주세요.');
+		return;
+	}
+	
+	if( $('#s_apply_start_dt').getObjLength() > 0 ) {
+		if( $('#e_apply_start_dt').getObjLength() < 1 ) {
+			alert('종료일을 선택해 주세요');
+			return;
+		}
+	}
+	
+	if( $('#e_apply_start_dt').getObjLength() > 0 ) {
+		if( $('#s_apply_start_dt').getObjLength() < 1 ) {
+			alert('시작일을 선택해 주세요');
+			return;
+		}
+	}
+	// ------------------ 검색 벨리데이트 종료 ------------------ //
+	
+	// 검색 초기화 버튼 추가
+	f_addButton('issue');
+
+	// 검색 폼 데이터 추출
+	var searchData = $('#frmSearch').serializeFormObject();
+	
+	// 검색 사용 중으로 변경
+	$('#poll_issue_grid').jqGrid('setGridParam', {search: true});
+	$("#poll_issue_grid").jqGrid('setGridParam', {page: 1});
+	
+	// setGridParam을 이용해서 postData에 새로 설정해준 postData의 search에 설정 후 그리드를 다시 불러온다.
+	$('#poll_issue_grid').jqGrid('setGridParam', {'postData' : {'search_info':searchData} }).trigger('reloadGrid');
+}
+
+/**
+ * ==================================================================================
+ * POLL 발행관리 리스트 화면 : 검색 초기화 이벤트
+ * ==================================================================================
+ */
+function f_issueCancel() {
+	// KeepData 폼 안에 input 태그 삭제
+	$('#frmKeepData').empty();
+	
+	// 검색 초기화 버튼 삭제
+	$('#btn_cancel').remove();
+	$('#poll_issue_grid').jqGrid('setGridParam', {search: false});
+	$('#poll_issue_grid').jqGrid('setGridParam', {page: 1});
+	
+	// 검색 데이터 초기화 후 그리드 리로드
+	$('#poll_issue_grid').jqGrid('setGridParam', {'postData' : {'search_info':''} }).trigger('reloadGrid');
+	
+	// 검색 폼의 항목들 초기화
+	$('#frmSearch').cleanObject();
+}
+
+/**
+ * ==================================================================================
+ * 공통 : POLL 발행 리스트 화면 이동
+ * ==================================================================================
+ */
+function f_pollIssueList() {
+	var url = "/application/poll/issue/pollIssueLN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : POLL 발행 상세화면 이동
+ * ==================================================================================
+ */
+function f_pollIssueRead() {
+	var url = "/application/poll/issue/pollIssueRN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * 공통 : POLL 발행 수정 화면 이동
+ * ==================================================================================
+ */
+function f_pollIssueEdit() {
+	var url = "/application/poll/issue/pollIssueEN.do";
+	var method = "POST";
+	cf_action(url, method, $("#frmKeepData").serialize());
+}
+
+/**
+ * ==================================================================================
+ * POLL 발행 등록 화면 : 쿠폰진 캠페인 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openCampaignSD() {
+	$.ajax({
+		url: "/application/groupbuy/campaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#campaign_sd').dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * POLL 발행관리 등록/수정 : POLL 선택 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openPollLD(type) {
+	var $target = $('#poll_ld');
+	
+	$.ajax({
+		url: "/application/poll/issue/pollLD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(html) {
+			$target.html(html);
+			$target.dialog('open');
+		}
+	});
+}
+
+/**
+ * ==================================================================================
+ * POLL 발행관리 상세화면 : 적용 종료일 변경 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_openClosingDateRD() {
+	var poll_issu_id = $('#frmKeepData').find('input[name=poll_issu_id]').val();
+	
+	$.ajax({
+		url: "/application/poll/issue/pollIssueClosingDateRD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		data: {"poll_issu_id" : poll_issu_id},
+		success: function(data) {
+			var $target = $('#closing_date_rd');
+			$target.html(data);
+		}	
+	});
+	$('#closing_date_rd').dialog('open');
+}

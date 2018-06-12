@@ -1,0 +1,63 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<div class="form-group">
+	<div class="col-md-2 control-label radio">
+		<label><input type="radio" name="bsis_mison_yn_temp" value="04" onchange="f_basicMissionChange(this.value)"></label>
+		<input type="hidden" id="04" name="bsis_mison_yn_list" data-array-always="true" value="N">
+	</div>
+	<div class="col-md-10">
+		<div class="form-group">
+			<div class="col-md-12">
+				<div>
+					<p class="alert alert-info">이만큼사면 쾅!쾅! (일정구매금액)미션 상세설정<br/>(구매금액 단위에 따라 스탬프가 찍힙니다. 예:기준금액 1만원일 경우 1만원 사면 1개, 3만원 사면 3개)</p>
+				</div>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="col-md-1 control-label ta-l">미션 수행채널</label>
+			<div class="col-md-2">
+				<select class="form-control" id="buyMoney01_channel" name="fulfill_chanel_cd_list" data-array-always="true" data-valid-use="true" data-valid-title="미션 수행채널" onchange="f_missionChannelChange();">
+					<option value="" selected="selected" disabled="disabled">선택</option>
+				</select>
+			</div>
+			<label class="col-md-2 control-label">미션횟수(스탬프수)</label>
+			<div class="col-md-1 ta-l">
+				<input class="form-control ta-r" id="buyMoney01_stamp_cnt" name="stamp_mison_base_cnt_list" type="text" data-array-always="true" data-valid-use="true" data-valid-num="true" data-valid-minnum="1" data-valid-maxnum="31" data-valid-title="미션횟수(스탬프수)">
+				<input type="hidden" name="stamp_apply_to_cd_list" value="PRICE" data-array-always="true">
+				<input type="hidden" id="stamp_mison_target_cd_1" name="stamp_mison_target_cd_list" value="" data-array-always="true"/>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label class="col-md-1 control-label ta-l">기준구매금액</label>
+			<div class="col-md-2">
+				<div class="input-group">
+					<input class="form-control ta-r" name="base_buy_amt01" type="text" data-valid-use="true" data-valid-num="true" onkeyup="this.value=cf_fmtComma(this);" data-valid-max="10" data-valid-title="기준구매금액">
+					<span class="input-group-addon">원</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var buy1function = function() {
+	
+	// 초기데이터 로드 : 온라인몰, 매장
+	f_ajaxPublerCode($('#buyMoney01_channel'));
+
+};
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+buy1function();
+</script>

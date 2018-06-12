@@ -1,0 +1,138 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+<!-- 			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false"> -->
+<!-- 				<header> -->
+<!-- 					<span class=""> <i class="fa fa-table"></i> </span> -->
+<!-- 				</header> -->
+				<div id="wid-id-2">
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmSearchCampain">
+							<fieldset>
+								<div class="form-group">
+									<label class="col-md-3 control-label">카테고리명</label>
+									<div class="col-md-9">
+										<input type="hidden" name="mst_cd"/>
+										<input class="form-control" type="text" name="mst_cd_nm"/>
+									</div>
+								</div>
+								<!-- 
+								<div class="form-group">
+									<label class="col-md-3 control-label">카테고리 설명</label>
+									<div class="col-md-9">
+										<input class="form-control" type="text" name="desc"/>
+									</div>
+								</div>
+								 -->
+							</fieldset>
+						</form>
+					</div>
+<!-- 				</div> -->
+			</div>
+		</article>
+	</div>
+</section>
+<script type="text/javascript">
+
+
+/**
+ * ==================================================================================
+ * 달력 : 컨텐츠 분류 상세조회
+ * ==================================================================================
+ */
+function f_couponCategoryDetail() {
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["cd_divn_id"] = 'COUPON_CATE_CD';
+	data["mst_cd"] = $("#wid-id-2 input[name='mst_cd']").val();
+// 	data["desc"] = $("#wid-id-2 input[name='desc']").val();
+	$.ajax({
+	    url: api_url+"/backoffice/common/code/list",
+	    type: "GET", 
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify(data)),
+	    beforeSend : function() {},
+	    success: function(resultData){
+			var cd_list = resultData.data.cd_list;
+			$.each(cd_list, function(i, items) {
+		    	$("#wid-id-2 input[name='mst_cd_nm']").val(items.mst_cd_nm);
+		    	$("#wid-id-2 input[name='mst_cd']").val(items.mst_cd);
+// 		    	$("#wid-id-2 input[name='desc']").val(items.desc);
+	    	});
+	    },
+	    error: function(resultData) {
+	    	var serverObj = resultData["responseJSON"] || {};
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    	return;
+	    }
+	});
+}
+
+/**
+ * ==================================================================================
+ * 달력 : 컨텐츠 분류 입력/수정
+ * ==================================================================================
+ */
+function f_couponCategorySave() {
+	
+	if($("input[name='mst_cd_nm']").val().trim() == 0) {
+		alert('카테고리명을 입력해주세요');
+		return;
+	}
+// 	if($("input[name='desc']").val().trim() == 0) {
+// 		alert('카테고리 설명을 입력해주세요');
+// 		return;
+// 	}
+	
+	
+	var returnData ="";
+	var url =""
+	var data = {};
+	data["empno"] = '${sessionScope.sessionEmpno}';
+	data["mst_cd"] = $("#wid-id-2 input[name='mst_cd']").val();
+	data["mst_cd_nm"] = $("#wid-id-2 input[name='mst_cd_nm']").val();
+// 	data["desc"] = $("#wid-id-2 input[name='desc']").val();
+	data["cd_divn_id"] = "COUPON_CATE_CD";
+	
+	if($("#wid-id-2 input[name='mst_cd']").val() == ""){
+		url = "/backoffice/common/code/create";
+	} else{
+		url = "/backoffice/common/code/update";
+	}
+	$.ajax({
+	    url: api_url+url,
+	    type: "POST", 
+	    async: false,
+	    cache: false,
+	    datatype: 'json',
+	    data: JSON.stringify(data) ,
+	    contentType: "application/json;charset=utf-8",
+	    beforeSend : function() {},
+	    success: function(resultData){
+	    	returnData = resultData["code"];
+	    	if(resultData["code"] == "S0000"){
+	    		alert("완료처리되었습니다.");
+	    	}
+	    },
+	    error: function(resultData) {
+	    	var serverObj = resultData["responseJSON"] || {};
+	    	returnData = serverObj["code"];
+	    	alert('code:'+serverObj["code"]+'\n'+'message:'+cf_msg(serverObj["message"])+'\n');
+	    }
+	});
+	
+	return returnData;
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+</script>

@@ -1,0 +1,184 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>자주묻는질문 상세</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+									
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id_name"></span>
+									</div>
+									
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+									
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id_name"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label">노출 구분 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="nomem_view_gbn_name"></span>
+									</div>
+									<label class="col-md-1 control-label">분류 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="faq_cat_cd"></span>
+									</div>
+									
+									<label class="col-md-1 control-label">게시상태 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="ntce_sts_cd"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내용 이미지 : </label>
+									<div class="col-md-10" id="board_img">
+									</div>
+								</div>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내용 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-04" id="contentB"></span>
+									</div>
+								</div>
+								
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_faqList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_faqEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_faqDelete();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	//버튼 권한별 설정
+	if('${sessionScope.menuAuth.U}' != 'Y') {
+		$('.btn_auth_update').remove();
+	}
+	if('${sessionScope.menuAuth.D}' != 'Y') {
+		$('.btn_auth_delete').remove();
+	}
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/board/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	
+	    	$("#reg_date").html(obj.data.reg_date_name);
+	    	$("#reg_id_name").html(obj.data.reg_id_name);
+	    	$("#mod_date").html(obj.data.mod_date_name);
+	    	$("#mod_id_name").html(obj.data.mod_id_name);
+	    	$("#title").html(obj.data.title);
+	    	$("#faq_cat_cd").html(obj.data.faq_cat_cd_name);
+	    	$("#ntce_sts_cd").html(obj.data.ntce_sts_cd_name);
+	    	$("#nomem_view_gbn_name").html(obj.data.nomem_view_gbn_name);
+	    	
+	    	if(obj.data.atch_file_nm != "") {
+		    	$.each(obj.data.noticbd_img_list, function(i, item) {
+		    		var tag_img = $('<img>').attr('src', item.prvw_url).attr('alt', item.img_orgin_file_nm).addClass('img-responsive');
+		        	$("#board_img").append(tag_img);
+		    	});
+	    	}
+	    	
+	    	// [주의]id 명과 data field 명이 같으면 화면에 출력이 안됨.
+	    	$("#contentB").html((obj.data.content).replaceAll("\\n","<br/>"));
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+	
+</script>

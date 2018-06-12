@@ -1,0 +1,731 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-search"></i> </span>
+					<h2> 조회 조건 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmSearch" class="form-horizontal">
+							<fieldset>
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">카테고리</label>
+										<div class="col-md-2">
+											<select class="form-control" id="category_cd" name="category_cd">
+												<option value="">전체</option>
+											</select>
+										</div>
+										
+										<div class="col-md-2">
+											<a href="javascript:f_chkCategoryRegist()" id="btn_regist" class="btn btn-success"> 카테고리 추가 </a>
+										</div>
+										
+										<label class="col-md-1 control-label">진행상태</label>
+										<div class="col-md-2">
+											<select class="form-control" id="process_status_cd" name="process_status_cd">
+												<option value="">전체</option>
+											</select> 
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<div class="col-md-12">
+										<label class="col-md-1 control-label">제목</label>
+										<div class="col-md-3">
+											<input class="form-control" type="text" id="title" name="title" data-valid-title="제목">
+										</div>
+										<div class="col-md-1"></div>
+										<label class="col-md-1 control-label">적용시작일</label>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="st_date_from" name="st_date_from" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="시작일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>
+										<div class="col-md-4half">
+											<div class="input-group">
+												<input class="form-control datepicker pr12 tac" type="text" id="st_date_to" name="st_date_to" data-date-format="yyyyMMdd" data-dateformat='yy-mm-dd' placeholder="종료일">
+												<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+											</div>
+										</div>	
+									</div>							
+								</div>
+								
+							</fieldset>
+							<div class="form-actions mt0">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:void(0)" id="btn_search" onclick="f_search();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 채널콕 목록 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_chk_grid" class="widget-body no-padding">
+						<table id="chk_grid"></table>
+						<div id="chk_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-1" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 채널콕 카테고리 노출 순서 </h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div id="target_cate_grid" class="widget-body no-padding">
+						<table id="cate_grid"></table>
+						<div id="cate_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<div id="chk_category_regist_sd" style="display:none;"></div>
+<div id="cate_set" style="display:none;"></div>
+
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript">
+/* ============================================================================================
+/* 조회 화면 : 달력 컨트롤
+/* ============================================================================================ */
+ 
+$('#st_date_from').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#st_date_to").datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#st_date_to').datepicker(
+    $.extend({
+       	onSelect: function(selected) {
+            $("#st_date_from").datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+
+/**
+ * ==================================================================================
+ * 채널콕 리스트 : 카테고리 추가 다이얼로그 호출
+ * ==================================================================================
+ */
+function f_chkCategoryRegist(){
+	$.ajax({
+		url		: "/application/chkok/chkokCategoryRegistSD.do",
+		type	: 'POST',
+		cache	: false,
+		success	: function(data){
+			var $target = $('#chk_category_regist_sd');
+			$target.empty();
+			$target.html(data);
+		}
+	});
+	//엔터키 사용불가
+	$("#chk_category_regist_sd").keypress(function(e){
+		if(e.keyCode ==13) e.preventDefault();
+	});
+	
+	$("#chk_category_regist_sd").keypress(function(e){ if(e.keyCode == 13)  return false;});
+	$('#chk_category_regist_sd').dialog('open');
+}
+//--------------카테고리 추가 다이얼로그 화면 구문-----------------//
+$('#chk_category_regist_sd').dialog({
+	autoOpen : false,
+	width : 550,
+	minHeight: 100,
+	resizable : false,
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 카테고리 추가 </h6></div>",
+});
+
+
+/* ============================================================================================
+/* 채널콕 카테고리 순서정렬 다이얼로그 화면 구문
+/* --------------------------------------------------------------------------------------------
+/* 카테고리 리스트 수정 클릭시 다이얼로그 호출
+/* ============================================================================================ */
+$('#cate_set').dialog({
+	autoOpen : false,
+	width : 1024,
+	minHeight: 300,
+	resizable : false,
+	position : "top",
+	modal : true,
+	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 채널콕 카테고리 노출 순서 </h6></div>",
+	buttons : [
+	           		{
+	           			html : "카테고리명변경",
+								"class" : "btn btn-primary",
+						click : function() {
+							var select_ids = $("#cate_set_grid").jqGrid('getGridParam', 'selarrrow');
+						
+							
+							if(select_ids.length < 1) {
+								alert('이름변경할 카테고리를 선택해 주세요.');
+								return;
+							} else if(select_ids.length > 1){
+								alert('카테고리 이름변경은 한개씩만 가능합니다.');
+								return;
+							} else {
+								
+								var data = jQuery("#cate_set_grid").jqGrid('getRowData',select_ids);
+								
+								var data = {
+									category_cd : data.category_cd,
+									category_nm : data.category_nm,
+									order_seq	: data.order_seq,
+									empno : '${sessionScope.sessionEmpno}'
+								}
+								f_chkokCategoryNameModifySD(data);
+							}
+						}
+	           		}
+	           		,
+					{
+						html : "<i class='fa fa-times'></i>&nbsp; 삭제",
+								"class" : "btn btn-danger",
+						click : function() {
+								
+								var select_ids = $("#cate_set_grid").jqGrid('getGridParam', 'selarrrow');
+								
+								if(select_ids.length < 1) {
+									alert('삭제할 카테고리를 선택해 주세요.');
+									return;
+								} else if(select_ids.length > 1){
+									alert('카테고리 삭제는 한개씩만 가능합니다.');
+									return;
+								} else {
+									
+									if(confirm("선택한 카테고리를 삭제하시겠습니까?")) {
+										
+										var data = {
+											category_cd : select_ids[0],
+											empno : '${sessionScope.sessionEmpno}'
+										};
+										
+										$.ajax({
+											url: api_chkok_url + "/backoffice/chkok/category/delete",
+											type: "POST",
+											contentType: "application/json;charset=utf-8", // POST 일때만 사용
+											async: false,
+											cache: true,
+											data: JSON.stringify(data),
+											success: function(obj) {
+												alert(obj.message);
+												$("#cate_set_grid").trigger("reloadGrid");
+											},
+											error: function(obj) {
+										    	var serverObj = obj.responseJSON;
+										    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+										    	return;
+										    }
+										});
+									}
+								}
+						}
+					}
+					,
+					{
+						html : "<i class='fa fa-times'></i>&nbsp; 닫기",
+								"class" : "btn btn-default",
+						click : function() {
+							$(this).dialog("close");
+							f_chkokList(); 
+						}
+					}
+					,
+					
+						{
+						html : "<i class='fa fa-save'></i></button>&nbsp; 적용",
+								"class" : "btn btn-primary btn_sd",
+						click : function() {
+									if(confirm("변경된 순서를 저장하시겠습니까?")){
+										
+										var _temp_cate_list = jQuery("#cate_set_grid").getRowData();
+										var _cate_list = []; 
+										
+										for(var i = 0; i < _temp_cate_list.length ; i++){
+											_temp_cate_list[i].order_seq = i+1;
+											_temp_cate_list[i].no = i+1;
+											var delevery_item = {};
+											delevery_item['category_nm'] = _temp_cate_list[i].category_nm; 
+											delevery_item['category_cd'] = _temp_cate_list[i].category_cd; 
+											delevery_item['order_seq'] = _temp_cate_list[i].order_seq+"";
+											_cate_list.push(delevery_item);
+										}
+										
+										var data = {
+											empno : '${sessionScope.sessionEmpno}',
+											category_list : _cate_list
+										};
+										
+										$.ajax({
+											url: api_chkok_url + "/backoffice/chkok/category/modify",
+											type: "POST",
+											contentType: "application/json;charset=utf-8", // POST 일때만 사용
+											async: false,
+											cache: true,
+											data: JSON.stringify(data),
+											success: function(obj) {
+												alert(obj.message);
+												$("#cate_set_grid").trigger("reloadGrid");
+											},
+											error: function(obj) {
+										    	var serverObj = obj.responseJSON;
+										    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+										    	return;
+										    }
+										});
+										
+										$('#cate_set').dialog("close");
+										f_chkokList(); 
+									}
+								}
+					}
+	           ]
+});
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+ 
+//이미지 미리보기 툴팁
+$(document).tooltip({
+	selector: '.toooltip',
+	container: '#widget-grid',
+	placement: 'right',
+	html: true
+});
+
+var pagefunction = function() {
+
+	
+	f_ajaxCategoryCode("category_cd", "");
+	
+	// 초기데이터 로드 : 등록지점
+	f_ajaxStrCdCpCode($("#str_cd"));
+	
+	// 초기데이터 로드 : 적용대상유형
+	f_ajaxApplyToTypeCode($("select[name=apply_to_type_cd]"));
+	
+	f_ajaxCommonCode({
+		target:"select[name=process_status_cd]", 
+		cd_divn_id: "CHKOK_PRGS_STS_CD",
+		codeId : "",
+		fnSuccess : ""
+	});
+		
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", chk_grid_function);
+	function chk_grid_function() {
+		
+		var pageWidth = $("#chk_grid").parent().width() - 100;
+		var pageHeigth = $("#chk_grid").parent().height() - 100;
+
+		jQuery("#chk_grid").jqGrid({
+			url : api_chkok_url+"/backoffice/chkok/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '카테고리', '동영상 제목', '상품 적용여부', '게시시작일시', '게시종료일시', '진행상태', '등록자', '등록일자', '동영상ID','메인여부' ],
+			colModel : [
+				{ name : 'no', 					index : 'no',		 			align : 'center',	sortable : false, 	width : (pageWidth*(5/100)) 	},
+				{ name : 'category_cd_nm', 		index : 'category_cd_nm', 		align : 'center', 	sortable : false, 	width : (pageWidth*(20/100))	},
+				{ name : 'title', 				index : 'title', 				align : 'center',	sortable : false, 	width : (pageWidth*(30/100)), 	classes:'pointer toooltip'  }, 
+				{ name : 'prod_mapp_yn_nm', 	index : 'prod_mapp_yn_nm', 		align : 'center',	sortable : false, 	width : (pageWidth*(9/100))		},
+				{ name : 'ntce_st_date', 		index : 'ntce_st_date',			align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'ntce_ed_date', 		index : 'ntce_ed_date', 		align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'process_status_cd_nm',index : 'process_status_cd',	align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'reg_nm', 				index : 'reg_nm', 				align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'reg_date', 			index : 'reg_date', 			align : 'center', 	sortable : false, 	width : (pageWidth*(10/100)) 	},
+				{ name : 'media_id', 			index : 'media_id', 			hidden : true, 		width : 0 },
+				{ name : 'main_yn', 			index : 'main_yn', 				hidden : true, 		width : 0 }
+				
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "media_id",
+				root :		function(obj){ return obj.data.media_list; },			// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 		// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }		// 페이지 블럭수
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {
+				
+				/* 기존 검색 조건 유지 확인 데이터 로드 */
+				var _search = $("#frmKeepData").find("input[name=_search]");
+				var page = $("#frmKeepData").find("input[name=page]");
+				var rows = $("#frmKeepData").find("input[name=rows]");
+				var sidx = $("#frmKeepData").find("input[name=sidx]");
+				var sord = $("#frmKeepData").find("input[name=sord]");
+				
+				/* SEARCH_INFO : 기존에 검색 조건 등록 */
+				if(_search.val() == "true") {
+					
+					// 기존 검색 데이터 등록(특별한거는 따로 해야 함!)
+					cf_keepDataLoader($("#frmKeepData"),$("#frmSearch"));
+					
+					// 검색 폼 데이터 추출 및 post data 등록
+					var searchData = $("#frmSearch").serializeFormObject();
+					postData._search = true;
+					$("#chk_grid").jqGrid('setGridParam', {search: true});
+					$("#chk_grid").jqGrid('setGridParam', {'postData' : {'search_info':searchData} });
+					f_addButton();
+				}
+				
+				/* PAGE_INFO : 현재 정렬 정보 */
+				if(sidx.val() != undefined) {
+					postData.sidx = sidx.val();
+					postData.sord = sord.val();	
+				}
+				
+				/* PAGE_INFO : 현재 페이지 정보 */
+				if(page.val() != undefined) {
+					postData.page = parseInt(page.val());
+				}
+				
+				/* PAGE_INFO : 페이지 아이템 정보 */
+				if(rows.val() != undefined) {
+					$("#chk_grid_page_center").find(".ui-pg-selbox").val(rows.val()).attr("selected", "selected");
+					postData.rows = parseInt(rows.val());
+					$("#chk_grid").jqGrid('setGridParam', {'rowNum' : parseInt(rows.val()) });
+				}
+				
+				/*  기존 Keep Data 삭제 */
+				$("#frmKeepData").empty();
+								
+				return encodeURI("params="+JSON.stringify(postData)); 
+			},
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				rows: '10',
+				page: '1'			
+			},
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#chk_grid_page',
+			sortname : 'reg_date',
+			sortorder : 'desc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : true,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			onCellSelect: function(rowid, index, contents, event) {
+			   if(index == 3) {
+					$("#chk_grid").jqGrid('setGridParam', {'postData' : {'media_id':rowid} });
+					var postData = $('#chk_grid').jqGrid("getGridParam", "postData");
+					var url = "/application/chkok/chkokRN.do";
+					var method = "POST";
+					cf_action(url, method, postData);
+			   } 
+			},
+			gridComplete: function() {	
+				var postData = $('#chk_grid').jqGrid("getGridParam", "postData");				
+				$('#chk_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#chk_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+				
+				//설정된 메인동영상 title에 main표시
+				var row_ids = jQuery("#chk_grid").jqGrid('getDataIDs');
+				var row_data = jQuery("#chk_grid").getRowData(row_ids[0]);
+				var _title = '<span class="btn btn-xs btn-danger">main</span> &nbsp'+row_data['title'];
+				$("td:eq(3)", $("#chk_grid tr[id]")).each(function() {
+					var _main_yn = $('#chk_grid').jqGrid("getRowData", $(this).parents('tr').prop('id'))['main_yn'];
+					if(_main_yn == "Y") {
+						$(this).html(_title);
+					}else {
+						
+					}
+				});
+
+				//cate grid 호출
+				chk_cate_function();
+			}
+		});
+		
+		jQuery("#chk_grid").jqGrid('navGrid', "#chk_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+				
+		if('${sessionScope.menuAuth.U}' == 'Y') {
+			jQuery("#chk_grid").jqGrid('navButtonAdd','#chk_grid_page',{
+				caption: "동영상설정",
+				id: "video_set_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					if(select_ids.length < 1) {
+						alert('메인에 노출할 채널콕을 선택해 주세요.');
+						return;
+					} 
+					if (select_ids.length > 1){
+						alert('동영상 메인 설정은 한개만 가능합니다.');
+						return;
+					} 
+					
+					var data = {
+							empno	 : '${sessionScope.sessionEmpno}',
+							media_id : select_ids[0]+""
+					};
+					
+					if(confirm("메인 동영상으로 설정하시겠습니까?")) {
+						
+						$.ajax({
+							url: api_chkok_url + "/backoffice/chkok/media/main/regist",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$("#chk_grid").trigger("reloadGrid");
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+						    	return;
+						    }
+						});
+					}
+				}
+			});	
+		}
+		
+		if('${sessionScope.menuAuth.D}' == 'Y') {
+			jQuery("#chk_grid").jqGrid('navButtonAdd','#chk_grid_page',{
+				caption: "삭제",
+				id: "delete_button",
+				buttonicon: "ui-icon-trash",
+				onClickButton: function(){
+					
+					
+					
+					var select_ids = $(this).jqGrid('getGridParam', 'selarrrow');
+					if(select_ids.length < 1) {
+						alert('삭제할 채널콕을 선택해 주세요.');
+						return;
+					} 
+					
+					for ( var i = 0 ; i < select_ids.length ; i++){
+						if($(this).getRowData(select_ids[i])['main_yn']=="Y"){
+							alert("메인 동영상은 삭제할 수 없습니다");
+							return;
+						}
+					}
+					  
+					var chk_del_list = [];
+					for (var i = 0; i < select_ids.length; i++) {
+						var del_item = {};
+						del_item['media_id'] = select_ids[i];
+						chk_del_list.push(del_item);
+					}
+	
+					if(confirm("정말 삭제하시겠습니까?")) {
+						var data = {
+							chk_list : chk_del_list,
+							empno : '${sessionScope.sessionEmpno}'
+						};
+						
+						$.ajax({
+							url: api_chkok_url + "/backoffice/chkok/list/delete",
+							type: "POST",
+							contentType: "application/json;charset=utf-8", // POST 일때만 사용
+							async: false,
+							cache: true,
+							data: JSON.stringify(data),
+							success: function(obj) {
+								alert(obj.message);
+								$("#chk_grid").trigger("reloadGrid");
+							},
+							error: function(obj) {
+						    	var serverObj = obj.responseJSON;
+						    	alert("code:"+serverObj.code+"\n"+"message:"+cf_msg(serverObj.message)+"\n");
+						    	return;
+						    }
+						});
+					}
+				}
+			});
+		}
+					
+		if('${sessionScope.menuAuth.C}' == 'Y') {
+			jQuery("#chk_grid").jqGrid('navButtonAdd','#chk_grid_page',{
+				caption: "등록",
+				id: "add_button",
+				buttonicon: "ui-icon-plus",
+				onClickButton: function(){
+					var url = "/application/chkok/chkokWN.do";
+					var method = "POST";
+					var postData = $('#chk_grid').jqGrid("getGridParam", "postData"); // 페이지 정보와 검색 정보를 들고 이동
+					cf_action(url, method, postData);
+				}
+			});	
+		}
+		
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#chk_grid").gridCss();
+	  	$("#chk_grid_cb").css("border-left-width","0");
+	  	$("#chk_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_chk_grid_cb").css("padding","7px 0");
+	  	$("#chk_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	}
+	
+//-------------------------카테고리 목록 그리드-------------------------------------------//
+
+	function chk_cate_function() {
+	
+		var pageWidth = $("#cate_grid").parent().width() - 100;
+
+		jQuery("#cate_grid").jqGrid({
+			url : api_chkok_url+"/backoffice/chkok/category/list", 	
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '카테고리', '카테고리 코드', '노출순서'], 
+			colModel : [
+				{ name : 'order_seq', 		index : 'order_seq',	align : 'center',	sortable : false, 	width : (pageWidth*(1/100)) 	},
+				{ name : 'category_nm', 	index : 'category_nm', 	align : 'center', 	sortable : false, 	width : (pageWidth*(20/100))	},
+				{ name : 'category_cd', 	index : 'category_cd', 	hidden:true , 	width : 0	},
+				{ name : 'order_seq',	 	index : 'order_seq', 	hidden:true , 	width : 0	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "category_cd",
+				root :		function(obj){ return obj.data.category_list; }	,		// 루트가 될 데이터 셋 명칭
+			},
+			serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) {	return encodeURI("params="+JSON.stringify(postData)); },
+			postData:{
+				empno: '${sessionScope.sessionEmpno}', 
+				rows: '10',
+				page: '1'			
+			},
+			rowNumbers : true,
+			rowNum : -1,
+			pager : '#cate_grid_page',
+			sortname : 'order_seq',
+			sortorder : 'asc',
+			viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+			multiselect : false,
+			multiboxonly: true,
+			viewrecords : true,
+			shrinkToFit : true,
+			autowidth : true,
+			height : 'auto',
+			recordpos : "left",
+			gridComplete: function() {	
+				var postData = $('#cate_grid').jqGrid("getGridParam", "postData");				
+				$('#cate_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+				var sortObj = $('.ui-jqgrid-htable').find('#cate_grid_'+postData.sidx);
+				sortObj.attr('aria-selected','false');
+				$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+				$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+				sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			}
+		});
+		
+		jQuery("#cate_grid").jqGrid('navGrid', "#cate_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});		
+
+		// -------------------------- 버튼 영역 시작 -------------------------- // 
+		if('${sessionScope.menuAuth.U}' == 'Y') {
+			jQuery("#cate_grid").jqGrid('navButtonAdd','#cate_grid_page',{
+				caption: "정렬순서",
+				id: "chk_cate_order_button",
+				cache: false,
+				buttonicon: "ui-icon-check",
+				onClickButton: function(){
+					// 순서변경 팝업 호출
+					f_openchkokCateSD();
+				}
+			});
+		};
+		// -------------------------- 버튼 영역 종료 -------------------------- //
+
+	  	$("#cate_grid").gridCss();
+	  	$("#cate_grid_cb").css("border-left-width","0");
+	  	$("#cate_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_cate_grid_cb").css("padding","7px 0");
+	  	$("#cate_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  	
+	  	/* 그리드 리사이징 */
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#chk_grid").jqGrid( 'setGridWidth', $("#target_chk_grid").width() );
+			jQuery("#cate_grid").jqGrid( 'setGridWidth', $("#target_chk_grid").width() );
+		});
+	}
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", pagefunction);
+</script>

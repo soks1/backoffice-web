@@ -1,0 +1,307 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-2" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회조건</h2>
+				</header>
+				<div>
+					<form class="form-horizontal" id="frmSearch">
+						<div class="form-group">
+							<div class="col-md-12">
+								<input class="form-control" type="text" id="addr_query" name="addr_query" data-valid-max="500" data-valid-title="주소" placeholder="찾으시는 주소를 띄어쓰기 없이 입력해주세요. 예)양평로21">
+							</div>
+						</div>
+						<div class="form-actions mt0">
+							<div class="row">
+								<div class="col-md-12">
+									<a href="javascript:void(0)" id="btn_tenantFindPostnoSD_search" onclick="f_postnoSearch();" class="btn btn-success"><i class="fa fa-search"></i> 조회 </a>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+	<div class="row">
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<!-- 		<article class="col-xs-12 col-sm-12 col-md-4 col-lg-5" style="width:520px"> -->
+			<div class="jarviswidget" id="wid-id-2" data-widget-deletebutton="false" data-widget-colorbutton="false" data-widget-fullscreenbutton="false" data-widget-editbutton="false" data-widget-sortable="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2>조회 결과</h2>				
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+						<input class="form-control" type="text">	
+					</div>
+					<div id="target_addr_postno_grid" class="widget-body no-padding" style="max-height: 600px; overflow-y:auto; overflow-x:hidden;">
+						<table id="addr_postno_grid"></table>
+					</div>
+					<div id="addr_postno_grid_page" class="ta-r" style="padding:5px;">
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	
+</section>
+
+<form id="frmKeepData1">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+//input 에서 엔터키 입력시 반응하지 않도록 
+$('#open_find_post_noSD').find('input').keypress(function(e) {
+	if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+		$(this).parent().parent().parent().parent().find('.ui-dialog-buttonpane').find('button:first').click(); /* Assuming the first one is the action button */
+		return false;
+	}
+});	
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+
+function f_postnoSearch(){
+	
+	if($('#addr_query').val().length < 2){
+		alert('두글자 이상의 검색어를 입력해 주세요');
+		return;
+	}else if($.isNumeric($('#addr_query').val())){
+		alert('숫자값만으로는 조회가 불가능합니다.');
+		return;
+	}
+	$('#tmp_up_addr').val($('#addr_query').val());
+	var data = {
+			query	: $('#addr_query').val(),
+			rows	: 10,
+			page	: 1
+	}
+	$.ajax({
+	    url: api_lifekok_url+"/lifekok/common/wrap/epost",
+	    type: 'POST',
+	    async: true,
+	    cache: false,
+	    datatype: 'json',
+	    contentType: 'application/json;charset=utf-8',
+	    data: JSON.stringify(data),
+	    success: function(obj){
+			
+	    	if(Object.keys(obj.data)[0] == 'error'){
+		    	alert(obj.data.error.message);
+		    	return;
+	    	}else{
+	    		
+	    		$("#addr_postno_grid").jqGrid("GridUnload");
+	    		
+				if(obj.data.post.pageinfo.totalCount == 1){
+
+					var _addrData = [];
+					var _data = {
+						postcd		: obj.data.post.itemlist.item.postcd,
+						address		: obj.data.post.itemlist.item.address,
+						addrjibun	: obj.data.post.itemlist.item.addrjibun
+					}
+					_addrData.push(_data);
+					var pageWidth = 979;
+	    			jQuery("#addr_postno_grid").jqGrid({
+   						datatype : "local",
+						data	 : _addrData,
+						colNames : ['우편번호','도로명주소','지번주소'],
+						colModel : [
+							{ name : 'postcd', 		index : 'postcd',	 	align : 'center',	sortable : false, 	width : (pageWidth*(8/100)) 	},
+							{ name : 'address',		index : 'address', 		align : 'center', 	sortable : false, 	width : (pageWidth*(46/100)), 	classes:'pointer toooltip'  },
+							{ name : 'addrjibun', 	index : 'addrjibun', 	align : 'center',	sortable : false, 	width : (pageWidth*(46/100)), 	classes:'pointer toooltip'  } 
+						],
+						serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+						serializeGridData: function(postData) {
+							return encodeURI("params="+JSON.stringify(postData)); 
+						},
+						postData:{
+							
+						},
+						rowNum : 10,
+						rowList : [10, 20, 30],
+						viewrecords : true,
+						shrinkToFit : true,
+						autowidth : true,
+// 						width : "570",
+			// 			height : 'auto',
+						height:"320",
+						recordpos : "left",
+						scrollerbar:true,
+						onCellSelect: function(rowid, index, contents, event) {
+							
+							if(index == 1 || index == 2) {
+								var _postcd = $('#addr_postno_grid').jqGrid('getRowData', rowid).postcd;
+								var _address = $('#addr_postno_grid').jqGrid('getRowData', rowid).address;
+								$('#tenant_post_no').text(_postcd);
+								$('#up_addr').text(_address);
+								$('#dtl_addr').val('');
+								$('#open_find_post_noSD').dialog("close");
+							} 
+							
+						},
+						gridComplete: function() {	
+						}
+					});
+					
+					jQuery("#addr_postno_grid").jqGrid('navGrid', "#select_tenant_grid_page", {
+						edit : false, add : false, del : false, 
+						search : false, refresh : false, view:false, position: 'right'
+					});		
+			
+					// -------------------------- 버튼 영역 시작 -------------------------- // 
+					
+					// -------------------------- 버튼 영역 종료 -------------------------- //
+			
+					$("#addr_postno_grid").gridCss();
+				  	$("#addr_postno_grid_cb").css("border-left-width","0");
+				  	$("#addr_postno_grid_cb").css("padding-left","4px");
+				  	$("#jqgh_addr_postno_grid_cb").css("padding","7px 0");
+				  	$("#addr_postno_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+				  	
+	    		}else{
+	    			addr_postno_grid_function();
+	    		}
+	    	}
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});	
+	
+	
+
+}
+
+var dialog_pagefunction = function(){
+	
+};
+
+
+function addr_postno_grid_function() {
+	
+	var pageWidth = 979;
+
+	jQuery("#addr_postno_grid").jqGrid({
+		//로컬
+		url : api_lifekok_url+"/lifekok/common/wrap/epost",
+		mtype: 'POST',
+		datatype : "json",
+		ajaxGridOptions :{contentType: 'application/json;charset=utf-8'},
+		colNames : ['우편번호','도로명주소','지번주소'],
+		colModel : [
+			{ name : 'postcd', 		index : 'postcd',	 	align : 'center',	sortable : false, 	width : (pageWidth*(8/100)) 	},
+			{ name : 'address',		index : 'address', 		align : 'center', 	sortable : false, 	width : (pageWidth*(46/100)), 	classes:'pointer toooltip'  },
+			{ name : 'addrjibun', 	index : 'addrjibun', 	align : 'center',	sortable : false, 	width : (pageWidth*(46/100)), 	classes:'pointer toooltip'  } 
+		],
+		jsonReader: {
+// 			repeatitems : false,
+			root :		function(obj){ return obj.data.post.itemlist.item; },			// 루트가 될 데이터 셋 명칭
+			records : 	function(obj){ return obj.data.post.pageinfo.totalCount; },	// 총 레코드 수
+			page : 		function(obj){ return obj.data.post.pageinfo.currentPage; }, 		// 현재 보여지는 페이지
+			total : 	function(obj){ return obj.data.post.pageinfo.totalPage; }		// 페이지 블럭수
+		},
+		serializeRowData: function (postData) { return JSON.stringify(postData); },
+		serializeGridData: function(postData) {
+			return JSON.stringify(postData); 
+		},
+		postData:{
+			rows	: 10,
+			page	: 1,
+			query	: $('#addr_query').val()
+		},
+		rowNum : 10,
+		rowList : [10, 20, 30],
+		pager : '#addr_postno_grid_page',
+// 		sortname : 'reg_date',
+// 		sortorder : 'desc',
+		viewsortcols : [true, 'vertical', true],  //param1: isShow Icon, param2: vertical or horizontal, param3: click position true는 버튼, false는 icon
+		viewrecords : true,
+		shrinkToFit : false,
+		autowidth : true,
+		height : 320,
+// 		overflow:'auto',
+// 		height : 'auto',
+		recordpos : "left",
+		onCellSelect: function(rowid, index, contents, event) {
+							
+			if(index == 1 || index == 2) {
+				var _postcd = $('#addr_postno_grid').jqGrid('getRowData', rowid).postcd;
+				var _address = $('#addr_postno_grid').jqGrid('getRowData', rowid).address;
+				$('#tenant_post_no').text(_postcd);
+				$('#up_addr').text(_address);
+				$('#dtl_addr').val('');
+				$('#open_find_post_noSD').dialog("close");
+			} 
+			
+		},
+		gridComplete: function() {		
+			
+			var postData = $('#addr_postno_grid').jqGrid("getGridParam", "postData");				
+			$('#addr_postno_grid').jqGrid('setGridParam', {sortname: postData.sidx, sortorder: postData.sord});
+			var sortObj = $('.ui-jqgrid-htable').find('#addr_postno_grid_'+postData.sidx);
+			sortObj.attr('aria-selected','false');
+			$('.ui-jqgrid-htable').find('span[sort=asc]').addClass('ui-state-disabled');
+			$('.ui-jqgrid-htable').find('span[sort=desc]').addClass('ui-state-disabled');
+			sortObj.find('span[sort='+postData.sord+']').removeClass('ui-state-disabled');
+			
+		}
+	});
+	
+	jQuery("#addr_postno_grid").jqGrid('navGrid', "#addr_postno_grid_page", {
+		edit : false, add : false, del : false, 
+		search : false, refresh : false, view:false, position: 'right'
+	});		
+
+	// -------------------------- 버튼 영역 시작 -------------------------- // 
+	
+	// -------------------------- 버튼 영역 종료 -------------------------- //
+
+  	$("#addr_postno_grid").gridCss();
+  	$("#addr_postno_grid_cb").css("border-left-width","0");
+  	$("#addr_postno_grid_cb").css("padding-left","4px");
+  	$("#jqgh_addr_postno_grid_cb").css("padding","7px 0");
+  	$("#addr_postno_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+  	
+  	
+}
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", dialog_pagefunction);
+</script>

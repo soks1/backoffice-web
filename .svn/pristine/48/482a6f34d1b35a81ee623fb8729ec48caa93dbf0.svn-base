@@ -1,0 +1,855 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.Enumeration"%> 
+<section id="widget-grid" class=""> 
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-blueDark" id="wid-id-0" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>엘팟 이벤트 수정</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox"></div>
+					<div class="widget-body">
+						<form id="frmLpotEvnt" class="form-horizontal">
+							<input type="hidden" id="l_event_id" name="l_event_id" />
+							<input type="hidden" id="campaign_id" name="campaign_id" value="" data-valid-use="true" data-valid-title="고객군" />
+							<input type="hidden" name="campaign_start_dy" value="" />
+							<input type="hidden" name="campaign_end_dy" value="" />
+							<input type="hidden" name="lst_custgp_id" value="" />
+							<fieldset>
+								<div class="form-group" id="campaign_custgp">
+									<label class="col-md-2 control-label">캠페인/고객군<sup>*</sup></label>
+									<div class="col-md-10">
+										<!-- 
+										<div class="form-group">
+											<a href="javascript:f_openPopupCampaignSD();" id="btn_campaign" class="btn btn-primary btn-sm">선택</a>
+											<a href="javascript:f_delCampaign();" class="btn btn-danger btn-sm">삭제</a>
+										</div>
+										 -->
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="lpot_campaign_id"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="lpot_campaign_term"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="lpot_custgp_cnt"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="lpot_campaign_nm"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-04" id="lpot_custgp"></span>
+											</div>
+										</div>
+									</div>
+									<div class="col-md-6 control-label">
+										<i class="fa fa-info-circle"></i> 캠페인, 이벤트 구분,이벤트 기간 수정시 ZONE 정보가 초기화됩니다.
+									</div>
+								</div>
+								<legend></legend>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이벤트 구분<sup>*</sup></label>
+									
+									<div class="col-md-10">
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="target_type" value="CPBOOK" data-valid-use="true" data-check-only="true" data-valid-title="이벤트 구분">
+													쿠폰북
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="target_type" value="POPUP" data-valid-use="true" data-check-only="true" data-valid-title="이벤트 구분">
+													팝업
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="target_type" value="WAKEUP" data-valid-use="true" data-check-only="true" data-valid-title="이벤트 구분">
+													WAKE-UP
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이벤트 제목<sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="l_event_title" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="제목" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">이벤트 설명</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="l_event_desc" data-valid-max="108" />
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이벤트 기간 <sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac evt_start_dd" type="text" id="prgs_start_date" name="prgs_start_date" onfocus="this.blur();" data-valid-use="true" data-date-format='yyyyMMdd' data-valid-title="게시기간 시작일" placeholder="시작일" />
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac evt_end_dd" type="text" id="prgs_end_date" name="prgs_end_date" onfocus="this.blur();" data-valid-use="true" data-date-format='yyyyMMdd' data-valid-title="게시기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group">
+                                	<label class="col-md-2 control-label">이벤트 재수신 지연 시간<sup>*</sup></label>
+									<div class="col-md-3">
+										<select class="form-control" name="receive_time">
+											<option value="">전체</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group" id="divCpbookInfo">
+                                	<label class="col-md-2 control-label">쿠폰북<sup>*</sup></label>
+                                	<div class="col-md-10">
+                                        <div class="form-group">
+                                            <div class="col-md-10">
+                                                <a href="javascript:f_openLpotCpBookSD('lpot_cpbook_tbody');" id="btn_pedometer_cpb1" class="btn btn-primary btn-sm">쿠폰북 추가</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive" style="max-height:230px; overflow:auto;">
+                                            <table class="table table-bordered" id="lpot_event_cpbook_table">
+                                            	<colgroup>
+										            <col width="10%" />
+										            <col width="15%" />
+										            <col width="5%" />
+										            <col width="10%" />
+										            <col width="10%" />
+										            <col width="10%" />
+												</colgroup>
+                                                <thead>
+                                                <tr>
+                                                    <th class="ta-c">쿠폰북ID</th>
+                                                    <th class="ta-c">쿠폰북명</th>
+                                                    <th class="ta-c">쿠폰수</th>
+                                                    <th class="ta-c">쿠폰사용 시작일</th>
+                                                    <th class="ta-c">쿠폰사용 종료일</th>
+                                                    <th class="ta-c">삭제</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="lpot_cpbook_tbody" data-valid-title="쿠폰북">
+
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+								<div class="form-group" id="divPopupInfo" style="display:none">
+                                	<label class="col-md-2 control-label">팝업<sup>*</sup></label>
+                                	<div class="col-md-10">
+                                        <div class="form-group">
+                                            <div class="col-md-10">
+                                                <a href="javascript:f_openLpotPopupSD('lpot_popup_tbody');" id="btn_pedometer_cpb1" class="btn btn-primary btn-sm">팝업 선택</a>
+                                            </div>
+                                        </div>
+
+                                        <div class="table-responsive" style="max-height:230px; overflow:auto;">
+                                            <table class="table table-bordered" id="lpot_event_popup_table">
+                                            	<colgroup>
+										            <col width="10%" />
+										            <col width="15%" />
+										            <col width="5%" />
+										            <col width="15%" />
+										            <col width="10%" />
+										            <col width="10%" />
+												</colgroup>
+                                                <thead>
+                                                <tr>
+                                                    <th class="ta-c">팝업ID</th>
+                                                    <th class="ta-c">제목</th>
+                                                    <th class="ta-c">자세히 보기</th>
+                                                    <th class="ta-c">페이지 경로</th>
+                                                    <th class="ta-c">삭제</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody id="lpot_popup_tbody" data-valid-title="쿠폰북">
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">이벤트 ZONE <sup>*</sup></label>
+									<div class="col-md-8">
+										<div class="form-group">
+											<div class="col-md-10">
+												<a href="javascript:void(0);" class="btn btn-primary btn-sm" onclick="f_openLpotZoneSD('lpot_zone_tbody');">ZONE 선택</a>
+												<a href="javascript:cf_delTableRow('lpot_zone_tbody');" class="btn btn-danger btn-sm">선택삭제</a>
+											</div>
+										</div>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<colgroup>
+										            <col width="5%" />
+										            <col width="15%" />
+										            <col width="15%" />
+										            <col width="5%" />
+												</colgroup>
+												<thead>
+													<tr>
+														<th class="ta-c"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">지점명</th>
+														<th class="ta-c">ZONE 명</th>
+														<th class="ta-c">삭제</th>
+													</tr>
+												</thead>
+												<tbody id="lpot_zone_tbody" data-valid-title="이벤트 ZONE"></tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								<div class="form-actions">
+									<div class="row">
+										<div class="col-md-12" >
+											<a href="javascript:f_lpotEventList()" class="btn btn-default">취소</a>
+											<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+										</div>
+									</div>
+								</div>	
+							</fieldset>						
+						</form>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+	<div id="lpot_campaign_sd" style="display:none;"></div>
+	<div id="cpbook_sd" style="display:none;"></div>
+	<div id="popup_sd" style="display:none;"></div>
+	<div id="lpot_zone_sd" style="display:none;"></div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/common_dialog_script.js"></script>
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 이벤트 정보 저장
+ * ==================================================================================
+ */
+function f_submit() {
+	var evt_type = $(':radio[name="target_type"]:checked').val();
+	
+	var data = $('#frmLpotEvnt').serializeFormObject();
+	data['empno'] = $.getSessionData().empno;
+	data['str_cd'] = $.getSessionData().str_cd;
+	data['hq_base_yn'] = $.getSessionData().hq_base_yn;
+	data['wake_up_yn'] = 'Y';
+	
+	if(evt_type == "CPBOOK") {
+        if($('#frmLpotEvnt').formValid()) {
+            if ($('#lpot_cpbook_tbody').tableRowValid() && $('#lpot_zone_tbody').tableRowValid()) {
+    			data['target_id'] = $('.selectedCpbook').data().cpbook_id;
+    			data['vali_term_start_dd'] = $(".selectedCpbook .fromDate").val();
+    			data['vali_term_end_dd'] = $(".selectedCpbook .toDate").val();
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
+    } else if(evt_type == "POPUP") {
+        if($('#frmLpotEvnt').formValid()) {
+            if($('#lpot_popup_tbody').formValid() && $('#lpot_zone_tbody').tableRowValid()) {            
+                data['target_id'] = $("#lpot_popup_tbody").children("tr").find("td").first().text();
+            } else {
+                return;
+            }
+        } else {
+            return;
+        }
+        
+    } else {
+        if($('#frmLpotEvnt').formValid() && $('#lpot_zone_tbody').tableRowValid()){
+        } else {
+            return;
+        }        
+    }
+	
+	// 실제 데이터 전송
+	$.ajax({
+		url: api_url+"/backoffice/lpot/event/update",
+	    type: 'POST',
+	    async: true,
+	    cache: false,
+	    datatype: 'json',
+	    contentType: 'application/json;charset=utf-8',
+	    data: JSON.stringify(data),
+	    success: function(obj){
+	    	alert(obj.message);
+	    	f_lpotEventList();
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});	
+}
+/**
+ * ==================================================================================
+ * 캠페인 선택시 존 정보 초기화
+ * ==================================================================================
+ */
+$('#btn_campaign').click(function(){
+	$("#lpot_zone_tbody").find('tr').remove();
+});
+
+/**
+ * ==================================================================================
+ * 이벤트 구분에 따른 UI Setting
+ * ==================================================================================
+ */
+ $("input:radio[name=target_type]").change(function (e) {
+	 var _target_type = $(this).val();
+	 $('select[name="receive_time"]').attr("disabled", false);
+	 
+	 if(_target_type == "CPBOOK") {
+		 $("#lpot_event_popup_table tr:not(:first)").remove();
+		 $('select[name="receive_time"]').attr("disabled", true);
+		 $("input[name=prgs_start_date]").attr("disabled", false);
+		 $("input[name=prgs_end_date]").attr("disabled", false);
+		 $("#divCpbookInfo").show();
+		 $("#divPopupInfo").hide();
+		 $("#lpot_popup_tbody").find('tr').remove();
+	     $("#lpot_zone_tbody").find('tr').remove();
+	 }else if(_target_type == "POPUP") {
+		 $("#lpot_event_cpbook_table tr:not(:first)").remove();
+		 $("#divCpbookInfo").hide();
+		 $("#divPopupInfo").show();
+		 $("input[name=prgs_start_date]").attr("disabled", true);
+		 $("input[name=prgs_end_date]").attr("disabled", true);
+		 $("#lpot_cpbook_tbody").find('tr').remove();
+		 $("#lpot_zone_tbody").find('tr').remove();
+	 }else if(_target_type == "WAKEUP") {
+		 $("#lpot_event_cpbook_table tr:not(:first)").remove();
+		 $("#lpot_event_popup_table tr:not(:first)").remove();
+		 $("input[name=prgs_start_date]").attr("disabled", false);
+		 $("input[name=prgs_end_date]").attr("disabled", false);
+		 $("#divCpbookInfo").hide();
+		 $("#divPopupInfo").hide();
+		 $("#lpot_cpbook_tbody").find('tr').remove();
+		 $("#lpot_popup_tbody").find('tr').remove();
+		 $("#lpot_zone_tbody").find('tr').remove();
+	 }	 
+ });
+ 
+//삭제버튼
+ function f_deleteRow(select){
+ 	var row = select.parent().parent();
+ 	row.remove();
+ }
+ 
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#prgs_start_date').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#prgs_end_date').datepicker('option','minDate', selected);
+            $("#lpot_zone_tbody").find('tr').remove();
+        }
+    }, date_opts)
+);
+ $('#prgs_end_date').datepicker(
+     $.extend({
+         onSelect: function(selected) {
+             $('#prgs_start_date').datepicker('option','maxDate', selected);
+             $("#lpot_zone_tbody").find('tr').remove();
+         }
+     }, date_opts)
+ );
+ 
+ /* ============================================================================================
+ /* 고객군 정보 가져오기
+ /* ============================================================================================ */
+ function f_openPopupCampaignSD() {
+ 	$.ajax({
+ 		url: "/application/stamp/stamp/stampCampaignSD.do",
+ 		type: 'GET',
+ 		async: true,
+ 		cache: false,
+ 		success: function(data) {
+ 			var $target = $('#lpot_campaign_sd');
+ 			$target.html(data);
+ 		},
+ 		complete: function() {
+ 			$('#lpot_campaign_sd').dialog('open');
+ 		}
+ 	});
+ }
+ 
+ /**
+  * ==================================================================================
+  * 캠페인 ID 추가/삭제 시 버튼 텍스트 변경
+  * @param campaign_id  캠페인 ID
+  * ==================================================================================
+  */
+ function changeCampaignId(campaign_id) {
+ 	if(campaign_id == '') {
+ 		$('#btn_campaign').text('선택');
+ 	} else {
+ 		$('#btn_campaign').text('수정');
+ 	}
+ }
+ 
+ /**
+  * ==================================================================================
+  * 캠페인 선택 다이얼로그 화면 구문
+  * ==================================================================================
+  */
+ $('#lpot_campaign_sd').dialog({
+ 	autoOpen : false,
+ 	width : 1024,
+ 	minHeight: 768,
+ 	resizable : false,
+ 	modal : true,
+ 	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인/고객군 선택 </h6></div>",
+ 	buttons : [{
+ 		html : "<i class='fa fa-times'></i>&nbsp; 취소",
+ 		"class" : "btn btn-default",
+ 		click : function() {
+ 			$(this).dialog("close");
+ 		}
+ 	},{
+ 		html : "<i class='fa fa-save'></i>&nbsp; 적용",
+ 		"class" : "btn btn-primary",
+ 		click : function() {
+ 			
+ 			var check_items_cnt = 0;
+ 			var custgroup_text = "";
+ 			var today_date = cf_toDate().replace(/\-/g,'');
+ 			
+ 			if(cf_getTrElementCount($("#custgroup_tbody")) < 1) {
+ 				alert("고객군 항목을 조회해 주십시오.");
+ 				return;
+ 			} else {
+ 				$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+ 					if($(this).is(":checked") == true) {
+ 						check_items_cnt++;
+ 					}
+ 				});
+ 			}
+ 			
+ 			if(check_items_cnt < 1) {
+ 				alert("고객군 항목을 선택해 주십시오.");
+ 				return;
+ 			} else {
+ 				$("input[name=lst_custgp_id]").remove();
+ 			}
+ 			
+ 			if(check_items_cnt > 1){
+ 				alert("LPOT 고객군은 하나만 선택 가능 합니다.");
+ 				return;
+ 			}
+ 			$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+ 				if($(this).is(":checked")) {
+ 					var row = $(this).parent().parent();
+ 					var key = "";
+ 					var tag_input = "";
+ 					
+ 					// 루프문을 돌면서 Append 할 Tag 생성, index가 2인 위치에서 Key가 될 값 추출
+ 					row.find("td").each(function(idx){
+ 						// 각 셀 데이터 생성
+ 						if(idx < 4) {
+ 							if(idx == 2) {
+ 								key = $(this).text();
+ 								tag_input += "<input type='hidden' name='lst_custgp_id' value='"+key+"'>";
+ 								custgroup_text += key;
+ 							}
+ 							if(idx == 3) {
+ 								custgroup_text += " - " + $(this).text() + "&nbsp;│&nbsp;";
+ 							}
+ 						}
+ 					}); 					
+ 					$('#campaign_custgp').append(tag_input);
+ 				}
+ 			});
+ 			
+ 			if( today_date > $("#campaign_end_dy_tmp").val() ) {
+ 				alert("선택한 캠페인의 캠페인기간이 행사기간으로 설정하기 부적합 합니다.\n\n다시한번 확인해 주세요.");
+ 				$("input[name=lst_custgp_id]").remove();
+ 				return;
+ 			}
+ 			
+ 			$("input[name=campaign_id]").val($("#campaign_id_tmp").val());
+ 			$("#lpot_campaign_id").text($("#campaign_id_tmp").val());
+ 			$("#lpot_campaign_term").text(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+ 			$("#lpot_custgp_cnt").text($("input[name=lst_custgp_id]").length);
+ 			$("#lpot_campaign_nm").text($("#campaign_nm_tmp").val());
+ 			custgroup_text = custgroup_text.substring(0, (custgroup_text.length-8));
+ 			$("#lpot_custgp").html(custgroup_text);
+ 			
+ 			if( today_date > $("#campaign_start_dy_tmp").val() ) {
+ 				$('input[name=evt_term_start_dd]').val(cf_toDate());
+ 			} else {
+ 				$('input[name=evt_term_start_dd]').val(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd'));
+ 			}
+ 			$('input[name=evt_term_end_dd]').val(cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+ 			
+ 			$("input[name=campaign_start_dy]").val($("#campaign_start_dy_tmp").val());
+ 			$("input[name=campaign_end_dy]").val($("#campaign_end_dy_tmp").val());
+ 			
+ 			changeCampaignId($("input[name=campaign_id]").val());
+ 			$(this).dialog("close");
+ 		}
+ 	}]
+ });
+ /**
+  * ==================================================================================
+  * 수정 화면 : ZONE 선택 다이얼로그 화면 구문
+  * ==================================================================================
+  */
+  $('#lpot_zone_sd').dialog({
+ 		autoOpen: false,
+ 		width: 1024,
+ 		minHeight: 600,
+ 		resizable: false,
+ 	    modal: true,
+ 	    title: "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> ZONE </h6></div>",
+ 	    buttons: [{
+ 	        html: "<i class='fa fa-times'></i>&nbsp; 닫기",
+ 	        "class": "btn btn-default",
+ 	        click: function () {
+ 	            $(this).dialog("close");
+ 	        }
+ 	    }]
+  });
+
+/**
+ * ==================================================================================
+ * 수정 화면 : 팝업 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+	$('#popup_sd').dialog({
+		autoOpen: false,
+		width: 1024,
+		minHeight: 600,
+		resizable: false,
+    	modal: true,
+    	title: "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 팝업 선택 </h6></div>"
+	});
+/**
+ * ==================================================================================
+ * 수정 화면 : 쿠폰북 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+ $('#cpbook_sd').dialog({
+     autoOpen: false,
+     width: 1024,
+     minHeight: 768,
+     resizable: false,
+     modal: true,
+     title: "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 쿠폰북 선택 </h6></div>",
+     buttons: [{
+         html: "<i class='fa fa-save'></i>&nbsp; 적용",
+         "class": "btn btn-primary",
+         click: function () {
+             var targetTbody = $("#" + $(this).data('targetTbody'));
+
+             if (cf_getTrElementCount(targetTbody) >= 1) {
+                 alert("이미 등록하셨습니다.\n1건만 등록 가능 합니다.");
+                 return;
+             }             
+
+             $("#to_tbody").find("tr:has(input[type='checkbox']:checked)").each(function() {
+             	var item = $(this).data();
+             	
+             	var deleteButton = $('<button/>', {'class': 'btn btn-danger btn-sm'}).text('삭제').on('click', function() { $(this).parents('tr').remove(); });
+
+             	var from = $('<input />', {'class': 'form-control fromDate datepick', 'data-valid-title':'쿠폰사용시작일', 'data-valid-use':'true' }).datepicker(
+             		    $.extend({
+             		       	onSelect: function(selected) {
+             		            $(this).parents('tr').find("input.toDate").datepicker('option','minDate', selected);
+             		        }
+             		    }, date_opts)
+             		);
+             	var to = $('<input />', {'class': 'form-control toDate datepick', 'data-valid-title':'쿠폰사용종료일', 'data-valid-use':'true'}).datepicker(
+             		    $.extend({
+             		       	onSelect: function(selected) {
+             		       		$(this).parents('tr').find("input.fromDate").datepicker('option','maxDate', selected);
+             		        }
+             		    }, date_opts)
+             		);
+             	
+             	var tbody = $('#lpot_cpbook_tbody');
+             	var tr = $('<tr></tr>', {'class':'selectedCpbook'}).data( item )
+             		//.append( $('<td></td>').text( item['cpbook_id'] ) )
+             		//.append( $('<td></td>').text( item['cpbook_nm'] ) )
+             		//.append( $('<td></td>').text( item['coupon_cnt'] ) )
+             		//.append( $('<td></td>').append( $('<input/>') ) )
+             		//.append( $('<td></td>').append( $('<input/>') ) )
+             		//.append( $('<td></td>').append( deleteButton ) )
+             		.appendTo(tbody);
+             	
+             	$('<td class="ta-c"></td>').text( item['cpbook_id'] ).appendTo( tr );
+             	$('<td class="ta-c"></td>').text( item['cpbook_nm'] ).appendTo( tr );
+             	$('<td class="ta-c"></td>').text( item['coupon_cnt'] ).appendTo( tr );
+             	$('<td class="ta-c"></td>').append( from ).appendTo( tr );
+             	$('<td class="ta-c"></td>').append( to ).appendTo( tr );
+             	             	
+             	$('<td class="ta-c"></td>').append(deleteButton).appendTo( tr );
+             	             	
+             	return false;
+             });
+             // 공통화 가능
+             /*
+             var from = $('<input />', {'class': 'fromDate datepick'});
+             var to = $('<input />', {'class': 'toDate datepick'});
+             $('.datepick').datepicker(
+        		    $.extend({
+        		       	onSelect: function(selected) {
+        		       		console.debug(selected, $(selected))
+        		       		if ($(this).hasClass('toDate'))
+        		       			$(this).parents('tr').find("input.fromDate").datepicker('option','maxDate', selected);
+        		       		else 
+        		       			$(this).parents('tr').find("input.toDate").datepicker('option','minDate', selected);
+        		        }
+        		    }, date_opts)
+        		);
+             
+              // 얘는 아님
+             $("#to_tbody").find("input[type='checkbox']").each(function(i) {
+             	 var tag_td = "";
+                  var key = "";
+                  var app_exposure_branch = "";
+
+                  // 루프문을 돌면서 Append 할 Tag 생성, index가 1인 위치에서 Key가 될 값 추출
+
+                  $(this).find("td").each(function (i) {
+                      // 각 셀 데이터 생성
+                      if (i != 1 && i < 6) {
+                          if (i == 2) {
+                              key = $(this).text();
+                              tag_td += "<input type='hidden' name='cpbook_id' value='" + key + "'>";
+                          }
+                          tag_td += "<td class='ta-c'>" + $(this).html() + "</td>\n";
+                      }
+                  });
+                  if ($(this).find("input[name='use_psbt_brnch_yn']").val() == 'Y') {
+                      app_exposure_branch = "사용가능지점";
+                  } else {
+                      app_exposure_branch = "사용제외지점";
+                  }
+
+                  tag_td += "<td class='ta-c'>" + app_exposure_branch + " : " + $(this).find("input[name='use_psbt_excp_brnch_content']").val() + "</td>\n";
+
+                  var tag_tr = "<tr>" + tag_td + "</tr>";
+
+                  // 기존 등록 테이블을 돌면서 받은 Key 값과 같은 데이터가 있는지 확인
+                  var chk = 0;
+                  targetTbody.find("tr > td").each(function () {
+                      if ($(this).text() == key) {
+                          chk++;
+                      }
+                  });
+
+                  // 같은 데이터가 없을 경우에만 등록 시킨다.
+                  if (chk == 0) {
+                      targetTbody.append(tag_tr);
+                  }
+             });
+              */
+             pageSetUp();
+             $(this).dialog("close");
+         }
+     }, {
+         html: "<i class='fa fa-times'></i>&nbsp; 닫기",
+         "class": "btn btn-default",
+         click: function () {
+             $(this).dialog("close");
+         }
+     }]
+ });
+ 
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	// 이벤트 재수신 지연시간을 불러온다
+	f_ajaxLpotZoneReceiveCode($("select[name=receive_time]"));
+	
+	// 이벤트 구분 초기 셋팅이 쿠폰북 이므로 재수신 지연시간 값 고정 및 disable 처리
+	$('select[name="receive_time"]').attr("disabled", true);
+
+	$.ajax({
+	    url: api_url+"/backoffice/lpot/event/show",
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: encodeURI("params="+JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var objData = obj['data']['event_detail'];
+	    	$("input[name=lst_custgp_id]").val(objData['lst_custgp_id']);
+	    	
+	    	$("input[name=l_event_id]").val(objData['l_event_id']);
+	    	
+	    	var custgpStr = "";
+        	var tag_input = ""; 
+    		$('input[name=campaign_id]').attr('data-valid-use', 'true')
+    									.attr('data-valid-title', 'CRM 선택 시 캠페인/고객군');
+    		$('input[name=campaign_id]').val(objData['campaign_id']);
+    		$('input[name=campaign_start_dy]').val(objData['campaign_start_dy']);
+    		$('input[name=campaign_end_dy]').val(objData['campaign_end_dy']);
+    		$('select[name="receive_time"]').val(objData['receive_time']);
+    		
+    		$("#lpot_campaign_id").text(objData['campaign_id']);
+			$("#lpot_campaign_term").text(cf_cvtDateFormat(objData['campaign_start_dy'],'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat(objData['campaign_end_dy'],'yyyy-MM-dd'));
+ 			$("#lpot_custgp_cnt").text('1');
+			$("#lpot_campaign_nm").text(objData['campaign_nm']);
+			
+    		$("#lpot_custgp").html(objData['lst_custgp_nm']);
+//     		$('#btn_campaign').text('수정');
+
+	    	$("input[name=l_event_id]").val(objData['l_event_id']);
+	    	
+	    	$("input[name=l_event_title]").val(objData['l_evnt_title']);
+	    	$("input[name=l_event_desc]").val(objData['l_evnt_desc']);
+	    	
+	    	$("input[name=prgs_start_date]").val(cf_cvtDateFormat(objData['prgs_start_date'], 'yyyy-MM-dd'));
+			$("input[name=prgs_end_date]").val(cf_cvtDateFormat(objData['prgs_end_date'], 'yyyy-MM-dd'));
+			
+			var target_id = objData['target_id'];
+	    	var l_cpbook_nm = objData['cpbook_nm'];
+	    	var l_coupon_cnt = objData['coupon_cnt'];
+	    	
+	    	var link_nm = objData['link_nm'];
+	    	$("input[name=target_id]").html(target_id);
+	    	var deleteButton = $('<button/>', {'class': 'btn btn-danger btn-sm'}).text('삭제');
+	    	
+	    	var popup_nm = objData['popup_nm'];
+	    	var detail_show_yn = objData['detail_show_yn'];
+	    	
+	    	var _target_type = objData['target_type'];
+	    	$('input:radio[name=target_type]:input[value='+ _target_type +']').click();
+
+	    	if (_target_type == "CPBOOK") {		    	
+	    		$('#lpot_event_table_div').show();
+	    		var deleteButton = $('<button/>', {'class': 'btn btn-danger btn-sm'}).text('삭제').on('click', function() { $(this).parents('tr').remove(); });
+
+            	var from = $('<input />', {'class': 'form-control fromDate datepick', 'id':'vali_term_start_dd', 'data-valid-title':'쿠폰사용시작일', 'data-valid-use':'true' }).datepicker(
+            		    $.extend({
+            		       	onSelect: function(selected) {
+            		            $(this).parents('tr').find("input.toDate").datepicker('option','minDate', selected);
+            		        }
+            		    }, date_opts)
+            		);
+            	var to = $('<input />', {'class': 'form-control toDate datepick', 'id':'vali_term_end_dd', 'data-valid-title':'쿠폰사용종료일', 'data-valid-use':'true'}).datepicker(
+            		    $.extend({
+            		       	onSelect: function(selected) {
+            		       		$(this).parents('tr').find("input.fromDate").datepicker('option','maxDate', selected);
+            		        }
+            		    }, date_opts)
+            		);
+            	objData['cpbook_id'] = objData.target_id;
+            	var tbody = $('#lpot_cpbook_tbody');
+            	var tr = $('<tr></tr>', {'class':'selectedCpbook'}).data( objData ).appendTo(tbody);
+            	
+            	$('<td class="ta-c"></td>').text(target_id).appendTo( tr );
+            	$('<input type="hidden" id="target_id" name="target_id" value="'+target_id+'"></td>').appendTo(tr);
+            	$('<td class="ta-c"></td>').text(l_cpbook_nm).appendTo( tr );
+            	$('<td class="ta-c"></td>').text(l_coupon_cnt).appendTo( tr );
+            	$('<td class="ta-c"></td>').append( from ).appendTo( tr );
+            	$('<td class="ta-c"></td>').append( to ).appendTo( tr );            	
+            	$('<td class="ta-c"></td>').append(deleteButton).appendTo( tr );      
+
+		    	$('#vali_term_start_dd').val(objData['vali_term_start_dd']);
+		    	$('#vali_term_end_dd').val(objData['vali_term_end_dd']);
+		    	$('#target_id').val(objData['target_id']);
+// 	    		$('#lpot_event_cpbook_table > tbody:last')
+//  	    			.append('<tr class="selectedCpbook"><td class="ta-c">'+target_id+'</td><td class="ta-c">'+l_cpbook_nm+'</td><td class="ta-c">'+l_coupon_cnt+'</td><td class="ta-c"><input class="form-control fromDate datepick" name="vali_term_start_dd" data-valid-use="true" data-valid-title="쿠폰사용시작일"></td></td><td class="ta-c"><input class="form-control datepicker" name="vali_term_end_dd" data-valid-use="true" data-valid-title="쿠폰사용종료일"></td>"</td><td class="ta-c"><input id="btn_stop_page" type="button" value="삭제" class="btn btn-danger btn-sm" onclick=f_deleteRow($(this)); /></td></tr>');
+	    	} else if (_target_type == "POPUP") {
+	    		$('#lpot_event_popup_div').show();
+	    		$('#lpot_event_popup_table > tbody:last')
+	    			.append('<tr><td class="ta-c">'+target_id+'</td><td class="ta-c">'+popup_nm+'</td><td class="ta-c">'+detail_show_yn+'</td><td class="ta-c">'+link_nm+'</td><td class="ta-c"><input id="btn_stop_page" type="button" value="삭제" class="btn btn-danger btn-sm" onclick=f_deleteRow($(this)); /></td></tr>');
+	    	}	    	
+
+	    	var zoneData = obj['data']['zone_list'];
+	    	$.each(zoneData, function(i, item) {
+		    	var l_str_nm =  zoneData['l_str_nm'];
+		    	var l_zone_nm =  zoneData['l_zone_nm'];
+		    	
+		    	var tag_td = "";
+		    	tag_td += "<th class='ta-c'><input type='checkbox' value='" + item.l_zone_no + "'></th>";
+		    	tag_td += '	<input type="hidden" name="zone_no_list" data-array-always="true" value="' + item.l_zone_no + '">';
+		    	tag_td += "<td class='ta-c'>" + item.l_str_nm + "</td>";
+				tag_td += "<td class='ta-c'>" + item.l_zone_nm + "</td>";
+				tag_td += "<td class='ta-c'><input id='btn_stop_page' type='button' value='삭제' class='btn btn-danger btn-sm' onclick=f_deleteRow($(this)); /></td>";
+				$("#lpot_zone_tbody").append("<tr>" + tag_td + "</tr>");
+	    	});
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

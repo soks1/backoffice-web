@@ -1,0 +1,805 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-eye"></i> </span>
+					<h2>메인팝업 상세</h2>
+				</header>
+				
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+
+					<div class="widget-body">
+						<form class="form-horizontal">
+							<fieldset>
+								<legend></legend>
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">등록일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_date"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">등록자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="reg_id"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">수정일자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_date"></span>
+									</div>
+
+									<label class="col-md-1 control-label cs-css-05">수정자 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mod_id"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">노출 구분 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="nomem_view_gbn_name"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">대상 고객 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="ntce_tgt_cd"></span>
+									</div>
+									<!-- 
+									<label class="col-md-1 control-label cs-css-05 main-hide-div">사용 지점 : </label>
+									<div class="col-md-2 main-hide-div">
+										<span class="form-control cs-css-03" id="str_nm"></span>
+									</div>
+									 -->
+									<label class="col-md-1 control-label cs-css-05">팝업 유형 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="noticbd_divn_cd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">M클럽 : </label>
+									<div class="col-md-2">
+										<span class="form-control cs-css-03" id="mclub_nm"></span>
+									</div>
+								</div>
+								
+								<div id="campaign_layout" style="display: none;">
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+										<div class="col-md-5">
+											<span class="form-control cs-css-03" id="popup_campaign_id"></span>
+										</div>
+										<label class="col-md-1 control-label cs-css-05">캠페인기간 : </label>
+										<div class="col-md-3">
+											<span class="form-control cs-css-03" id="popup_campaign_term"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+										<div class="col-md-5">
+											<span class="form-control cs-css-03" id="popup_campaign_nm"></span>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+										<div class="col-md-10">
+											<span class="form-control cs-css-04" id="popup_custgp"></span>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">제목 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-03" id="title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">게시기간 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ntce_period"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05">게시상태 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ntce_sts_cd"></span>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">창닫기 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="popup_clos_divn_cd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >자세히보기 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="detail_show_yn"></span>
+									</div>
+								</div>
+								
+								<div class="form-group" id="detail_show_yn_visible">
+									<label class="col-md-1 control-label cs-css-05">연결방법 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="link_method_cd"></span>
+									</div>
+									<label class="col-md-1 control-label cs-css-05" >페이지경로 : </label>
+									<div class="col-md-5">
+										<span class="form-control cs-css-03" id="ot_title"></span>
+									</div>
+								</div>
+								
+								<div class="form-group pageLink" style="display: none;">
+									<label class="col-md-2 control-label">연결방법</label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="link_method_cd" value="APPLIST" onclick="f_applyType(this.value);" data-valid-use="true" data-check-only="true" data-valid-title="연결방법" checked="checked">
+											APP 내부 페이지 연결</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="link_method_cd" value="URL" onclick="f_applyType(this.value);" data-valid-use="true" data-check-only="true" data-valid-title="연결방법">
+											외부 페이지 연결 </label>
+									</div>
+								</div>
+								
+								<div class="form-group pageLink" id="linkUrlA" style="display: none;">
+									<label class="col-md-2 control-label">페이지경로</label>
+									<div class="col-md-2">
+										<select class="form-control" name="noticbd_divn_cd_temp" id="noticbd_divn_cd_temp" >
+											<option value="">선택</option>
+											<option value="LIST" >목록</option>
+										</select>
+									</div>
+									<div class="col-md-5">
+										<select class="form-control" name="link_noticbd_id" id="link_noticbd_id">
+										</select>
+									</div>
+									<div class="col-md-3" >
+										<select class="form-control" name="zine_ord_seq" id="zine_ord_seq"  style="display: none;">
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내용이미지 : </label>
+									<div class="col-md-11" id="banner_img">
+									</div>
+								</div>
+								<legend></legend>
+								
+								<div class="form-group main-hide-div">
+									<label class="col-md-1 control-label cs-css-05">행사 그룹 </label>
+									<div class="col-md-11">
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered">
+												<colgroup>
+										            <col width="10%" />
+										            <col width="10%" />
+										            <col width="15%" />
+										            <col width="20%" />
+										            <col width="10%" />
+										        </colgroup>
+												<thead>
+													<tr>
+														<th class="ta-c">지점코드</th>
+														<th class="ta-c">지점명</th>
+														<th class="ta-c">비콘그룹 ID</th>
+														<th class="ta-c">비콘그룹 명</th>
+														<th class="ta-c">비콘수</th>
+													</tr>
+												</thead>
+												<tbody id="beacon_group_tbody">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-1 control-label cs-css-05">내용 : </label>
+									<div class="col-md-11">
+										<span class="form-control cs-css-04" id="contentB"></span>
+									</div>
+								</div>
+								
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_popupList();" class="btn btn-default">목록</a>
+										<a href="javascript:f_popupEdit();" class="btn btn-warning btn_auth_update">수정</a>
+										<a href="javascript:f_popupDel();" class="btn btn-danger btn_auth_delete">삭제</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+/* ============================================================================================
+/* APP 내부 페이지 연결
+/* --------------------------------------------------------------------------------------------
+/* 배너 클릭시 연결될 내부게시판 호출
+/* ============================================================================================ */
+$('#noticbd_divn_cd_temp').change(function(){
+	var _divn_cd = $(this).val();
+	
+	$('#zine_ord_seq').hide();
+	
+	if(_divn_cd != "") {
+		
+		if($('#campaign_id').val() == "" && _divn_cd != "LIST") {
+			alert("캠페인/고객군을 먼저 선택해 주세요.");
+			$("#noticbd_divn_cd_temp").val("");
+			$("#link_noticbd_id").empty();
+		}else {
+			var crm_yn = $('input[name="ntce_tgt_cd"]:checked').val();
+			var data = $('#frmPopup').serializeFormObject();
+			data.empno = "${sessionScope.sessionEmpno}";
+			data.link_url = _divn_cd;
+			data.nomem_view_gbn = $(':radio[name="nomem_view_gbn"]:checked').val();
+			data.crm_yn = crm_yn;
+			
+			if(_divn_cd != "LIST") {
+				if(_divn_cd == "EVENTCOK" || _divn_cd == "CHANNELCOK") {
+					var _url = "";
+					if(_divn_cd == "EVENTCOK") {
+						_url = "/backoffice/common/board/issue/event/cok";
+					}else {
+						_url = "/backoffice/common/board/issue/channel/cok";
+					}
+					
+					$.ajax({
+						url: api_url + _url,
+//		 				type: 'GET', // 기본이 GET 임 주석처리.
+//		 				cache: true, // 기본이 true 임 주석처리.
+						async: false,
+						data: encodeURI('params='+JSON.stringify(data)),
+						success: function(obj){
+							var objData = obj['data'] || {};
+							$('select[name=link_noticbd_id]').data({'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '': function() {}}).triggerHandler('init');
+						},beforeSend:function(){
+							$("select[name=link_noticbd_id] option[value!='']").remove();
+						},error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+					    	return;
+					    }
+					});
+				} else {
+					$.ajax({
+						url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+						type: 'GET',
+						async: false,
+						cache: true,
+						data: encodeURI('params='+JSON.stringify(data)),
+						success: function(obj){
+	
+							var objData = obj['data'] || {};
+							$('select[name=link_noticbd_id]').data({'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '': function() {}}).triggerHandler('init');
+							
+						},beforeSend:function(){
+							$("select[name=link_noticbd_id] option[value!='']").remove();
+						},error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+					    	return;
+					    }	
+					});
+				}
+			}else if(_divn_cd == "LIST"){
+				var _items = [
+			  			{'key': 'MAIN', 'label': '메인'},
+			  			{'key': 'MCOUPON', 'label': 'M쿠폰 - 상품쿠폰'},
+			  			{'key': 'MPRICE', 'label': 'M쿠폰 -금액쿠폰'},
+						{'key': 'MLIFE', 'label': 'M-LIFE'},
+						{'key': 'EVENTCOK', 'label': '이벤트콕'},
+						{'key': 'CHANNELCOK', 'label': '채널콕'},
+						{'key': 'LIFECOK', 'label': '생활콕'},
+						{'key': 'MCLUB', 'label': 'M클럽'},
+						{'key': 'LEAFLET', 'label': '행사정보'},
+						{'key': 'NOTICE', 'label': '공지사항'},
+						{'key': 'FCFS', 'label': '달려라선착순'},
+						{'key': 'STAMP', 'label': 'M스탬프'},
+						{'key': 'RECEIPT', 'label': '스마트영수증'},
+						{'key': 'POLL', 'label': 'POLL'},
+						{'key': 'PEVENT', 'label': '걷기'}
+			  		];
+				$('select[name=link_noticbd_id]').data({'items': _items, 'key': 'key', 'label': 'label', '': function() {}}).triggerHandler('init');
+				
+			}
+		}
+	}
+});
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	
+	$('select[name=link_noticbd_id]')
+	.on('change', function() {
+		var issue_cpbook_key = "";
+		issue_cpbook_key = $(this).data().key;
+		if(issue_cpbook_key === "evnt_id") {
+			var cpz_contents_data = $('#searchProduct').serializeFormObject();
+			var ctype = $(this).children(":selected").data("item").ctype;
+			var evnt_id = $(this).children(":selected").data("item").evnt_id;
+			
+			if(ctype == "CPZINE" || ctype == "MLIFE") {
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.custgp_cl_cpbook_id = evnt_id;
+				cpz_contents_data.s_type = "CPZINE";
+				
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						if(obj.url_type=="CPBOOK") {
+							$.each(obj.result_list, function(i, item) {
+								options += "<option value='"+item.order_seq+"'>"+item.cpzine_contents_title+"</option>";
+							});
+						}
+							target.html(options);
+					}	
+				});
+				
+				$("#zine_ord_seq").show();
+				
+			}else if(ctype == "CRM"){
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.cpbook_id = $(this).children(':selected').val();
+				$.ajax({
+					url: api_url+"/backoffice/couponbook/coupon/couponlist",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						
+						$('#zine_ord_seq').show();
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						$.each(obj.coupon_list, function(i, item) {
+							options += "<option value='"+item.coupon_id+"'>"+item.coupon_nm+"</option>";
+						});
+						target.html(options);
+					}	
+				});
+				
+				$('#zine_ord_seq').show();
+			} else {
+				$("#zine_ord_seq").hide();
+			}
+		}
+	})
+	.bind('getData', function(evt, key) {
+	
+		var self = this;
+		var $option = $(self).children(':selected');
+		return ($option.data('item')||{})[key || '_'] || '';
+	})
+	.bind('init', function(evt) {
+		var self = this;
+		var _options = $(self).data();
+		$(self).empty().append( $('<option></option>').data('item', {}).val('').text('선택') );
+		$.each(_options['items'] || [], function() {
+			$('<option></option>').data('item', this).val(this[_options['key']]).text(this[_options['label']]).appendTo( $(self) );
+		});
+
+		if (_options['_select'] && $.isFunction(_options['_select'])) {
+			
+			_options['_select'].apply(self);
+			$(self).val($(self).val() || '');
+
+			delete _options['_select'];
+			
+			$(self).data( _options );
+		}
+		else if (_options['defaultValue']){
+			$(self).val(_options['defaultValue'] || '');
+		}
+		var issue_cpbook_key = "";
+		issue_cpbook_key = $("#link_noticbd_id").data().key;
+		if(issue_cpbook_key === "evnt_id") {
+			var _cpz_ord = $(self).data()._cpz_ord;
+			var ctype = $(this).children(":selected").data("item").ctype;
+			var evnt_id = $(this).children(":selected").data("item").evnt_id;
+			var cpz_contents_data = $('#searchProduct').serializeFormObject();
+
+			if(ctype == "CPZINE" || ctype == "MLIFE") {
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.custgp_cl_cpbook_id = evnt_id;
+				cpz_contents_data.s_type = "CPZINE";
+				
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						if(obj.url_type=="CPBOOK") {
+							$.each(obj.result_list, function(i, item) {
+								options += "<option value='"+item.order_seq+"'>"+item.cpzine_contents_title+"</option>";
+							});
+						}
+							target.html(options);
+					}	
+				});
+				
+				if(_cpz_ord != "") {
+					$("#zine_ord_seq").show();
+					$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+				}
+			}else if(ctype == "CRM"){
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.cpbook_id = $(this).children(':selected').data("item").evnt_id;
+				$.ajax({
+					url: api_url+"/backoffice/couponbook/coupon/couponlist",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						
+						$('#zine_ord_seq').show();
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						$.each(obj.coupon_list, function(i, item) {
+							options += "<option value='"+item.coupon_id+"'>"+item.coupon_nm+"</option>";
+						});
+						target.html(options);
+					}	
+				});
+				if(_cpz_ord != "") {
+					$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+				}
+				
+			}else{
+				$("#zine_ord_seq").hide();
+			}
+		}
+	});
+	
+	$.ajax({
+	    url: api_url+"/backoffice/common/board/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var showData = obj['data'] || {};
+	    	
+	    	// 버튼 권한별 설정
+	    	if('${sessionScope.menuAuth.U}' != 'Y' || showData['lpot_yn'] == 'Y') {
+	    		$('.btn_auth_update').remove();
+	    	}
+	    	if('${sessionScope.menuAuth.D}' != 'Y' || showData['lpot_yn'] == 'Y') {
+	    		$('.btn_auth_delete').remove();
+	    	}
+	    	
+	    	var _nt_divn_cd = showData['noticbd_divn_cd'];
+	    	var _nt_divn_nm = "메인";
+	    	if(_nt_divn_cd == "BEACON") {
+	    		_nt_divn_nm = "비컨";	
+	    	}else if(_nt_divn_cd == "EVENT") {
+	    		_nt_divn_nm = "이벤트";	
+	    	}else if(_nt_divn_cd == "LPOT") {
+	    		_nt_divn_nm = "엘팟";
+	    	}else if(_nt_divn_cd == "MCLUB") {
+	    		_nt_divn_nm = "M클럽";
+	    	}
+    		$("#noticbd_divn_cd").text(_nt_divn_nm);
+    		$("#nomem_view_gbn_name").html(showData['nomem_view_gbn_name']);
+    		if(_nt_divn_cd == "BEACON") {
+	    		$(".beacon-hide-div").hide();
+	    		$(".main-hide-div").show();
+	    		
+	    		// 행사그룹
+		    	if(showData['noticbd_zone_list']) {
+		    		$.each(showData['noticbd_zone_list'], function(i, item) {
+			    		var tag_td = '';
+			    		tag_td += '<td class="ta-c">' + item.str_cd + '</td>';
+			    		tag_td += '<td class="ta-c">' + item.str_nm + '</td>\n';
+			    		tag_td += '<td class="ta-c">' + item.zone_id + '</td>';
+			    		tag_td += '<td class="ta-c">' + item.zone_nm + '</td>';
+			    		tag_td += '<td class="ta-c">' + item.link_bcon_cnt + '</td>';
+			    		$('#beacon_group_tbody').append('<tr>' + tag_td + '</tr>');
+			    	});
+		    	}
+// 	    		$("#str_nm").html(showData['str_nm);
+	    		
+	    	}else {
+	    		$(".beacon-hide-div").show();
+	    		$(".main-hide-div").hide();
+	    	}
+	    	$("#reg_date").html(showData['reg_date_name']);
+	    	$("#reg_id").html(showData['reg_id_name']);
+	    	$("#mod_date").html(showData['mod_date_name']);
+	    	$("#mod_id").html(showData['mod_id_name']);
+	    	$("#title").html(showData['title']);
+	    	$("#contentB").html((showData['content']).replaceAll("\\n","<br/>"));
+	    	$("#noticbd_id").html(showData['noticbd_id']);
+	    	$("#ntce_period").html(showData['ntce_start_dd'] + " ~ " + showData['ntce_end_dd'] );
+	    	$("#ntce_sts_cd").html(showData['ntce_sts_cd_name']); 
+	    	$("#link_method_cd").html(showData['link_method_cd_name']);
+	    	if(_nt_divn_cd == "LPOT") {
+	    		$("#popup_clos_divn_cd").html("미사용");
+	    	}else {
+		    	$("#popup_clos_divn_cd").html(showData['popup_clos_divn_cd'] + "일 동안 열지 않기");
+	    	}
+	    	
+	    	if(showData['detail_show_yn'] == 'Y'){
+	    		$("#detail_show_yn").html('사용');
+	    	}else{
+	    		$("#detail_show_yn").html('미사용');
+	    		$("#detail_show_yn_visible").hide();
+	    	}
+	    	
+	    	if (showData['link_method_cd'] == 'APPLIST'){
+		    	if(showData['url_type'] != "LIST") {
+		    		if(showData['url_type'] == "EVENTCOK") {
+			    		var _cpz_ord = "";
+			    		if(showData['ot_link_url'].indexOf("noticbd_id") > -1) {
+			    			_cpz_ord = showData['ot_link_url'];
+			    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-15);
+			    		}
+			    		var crmData = {
+								empno: '${sessionScope.sessionEmpno}', 
+								emp_str_cd: '${sessionScope.sessionStrCd}',
+								hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+								noticbd_divn_cd_temp : showData['url_type'],
+			    				nomem_view_gbn : showData['nomem_view_gbn']	
+						};
+			    		
+			    		$.ajax({
+							url: api_url+"/backoffice/common/board/issue/event/cok",
+							cache: true,
+							datatype: 'json',
+							data: encodeURI('params='+JSON.stringify(crmData)),
+							success: function(obj) {
+								var detailData = obj['data'] || {};
+								$('select[name=link_noticbd_id]')
+								.data({
+									'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+										var self = this;
+										
+										$(self).children()
+													.filter(function() {
+														return $(this).data('item')['evnt_id'] == showData['link_noticbd_id'];
+													}).prop('selected', 'selected');
+									}
+								})
+								.triggerHandler('init');
+								$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+							}
+			    		});
+			    		
+		    		} else if(showData['url_type'] == "CHANNELCOK") {
+			    		var _cpz_ord = "";
+			    		if(showData['ot_link_url'].indexOf("media_id") > -1) {
+			    			_cpz_ord = showData['ot_link_url'];
+			    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-15);
+			    		}
+			    		var crmData = {
+								empno: '${sessionScope.sessionEmpno}', 
+								emp_str_cd: '${sessionScope.sessionStrCd}',
+								hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+								noticbd_divn_cd_temp : showData['url_type']
+						};
+			    		
+			    		$.ajax({
+							url: api_url+"/backoffice/common/board/issue/channel/cok",
+							cache: true,
+							datatype: 'json',
+							data: encodeURI('params='+JSON.stringify(crmData)),
+							success: function(obj) {
+								var detailData = obj['data'] || {};
+								$('select[name=link_noticbd_id]')
+								.data({
+									'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+										var self = this;
+										
+										$(self).children()
+													.filter(function() {
+														return $(this).data('item')['evnt_id'] == showData['link_noticbd_id'];
+													}).prop('selected', 'selected');
+									}
+								})
+								.triggerHandler('init');
+								$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+							}
+			    		});
+		    		} else {
+			    		var _cpz_ord = "";
+			    		if(showData['ot_link_url'].indexOf("coupon_id") > -1) {
+			    			_cpz_ord = showData['ot_link_url'];
+			    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-5);
+			    			
+			    		}else if(showData['ot_link_url'].indexOf("active") > -1) {
+			    			_cpz_ord = showData['ot_link_url'];
+			    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-1);
+			    		}else {
+			    			_cpz_ord = "";
+			    		}
+			    		var crmData = {
+								empno: '${sessionScope.sessionEmpno}', 
+								emp_str_cd: '${sessionScope.sessionStrCd}',
+								hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+								noticbd_divn_cd_temp : showData['url_type']
+	
+						};
+			    		$.ajax({
+							url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+							cache: true,
+							datatype: 'json',
+							data: encodeURI('params='+JSON.stringify(crmData)),
+							success: function(obj) {
+								var detailData = obj['data'] || {};
+								$('select[name=link_noticbd_id]')
+								.data({
+									'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+										var self = this;
+										
+										$(self).children()
+													.filter(function() {
+														return $(this).data('item')['evnt_id'] == showData['link_noticbd_id'];
+													}).prop('selected', 'selected');
+									}
+								})
+								.triggerHandler('init');
+								if($("#zine_ord_seq option:selected").val() == "") {
+									$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+								}else {
+									$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text() + "( " + $("#zine_ord_seq option:selected").text() + " )");
+								}
+							}
+			    		});
+		    		}
+		    	}else {
+		    		var _items = [
+		    			  			{'key': 'MAIN', 'label': '메인'},
+						  			{'key': 'MCOUPON', 'label': 'M쿠폰 - 상품쿠폰'},
+						  			{'key': 'MPRICE', 'label': 'M쿠폰 -금액쿠폰'},
+		    						{'key': 'MLIFE', 'label': 'M-LIFE'},
+		    						{'key': 'EVENTCOK', 'label': '이벤트콕'},
+		    						{'key': 'CHANNELCOK', 'label': '채널콕'},
+		    						{'key': 'LIFECOK', 'label': '생활콕'},
+		    						{'key': 'MCLUB', 'label': 'M클럽'},
+		    						{'key': 'LEAFLET', 'label': '행사정보'},
+		    						{'key': 'NOTICE', 'label': '공지사항'},
+		    						{'key': 'FCFS', 'label': '달려라선착순'},
+		    						{'key': 'STAMP', 'label': 'M스탬프'},
+		    						{'key': 'RECEIPT', 'label': '스마트영수증'},
+		    						{'key': 'POLL', 'label': 'POLL'},
+		    						{'key': 'PEVENT', 'label': '걷기'}
+		    			  		];
+		    		var _list_id = showData['link_noticbd_id'];
+   					$('select[name=link_noticbd_id]').data({'items': _items, 'key': 'key', 'label': 'label', '_select': function() { $(this).val(_list_id); }}).triggerHandler('init');
+   					$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+   					
+		    	}
+	    		
+	    	}else if(showData['link_method_cd'] == 'URL'){
+	    		$("#ot_title").text(showData['ot_link_url']);
+	    	}
+	    	
+	    	/* 
+	    	var sel_title = "";
+	    	var _sel_title = showData['url_type'];
+	    	if(_sel_title == "CPBOOK_LIST") {
+	    		sel_title = "쿠폰북목록";
+	    	}else if(_sel_title == "STAMP_LIST") {
+	    		sel_title = "스탬프목록";
+	    	}else if(_sel_title == "FCFS_LIST"){
+	    		sel_title = "달려라선착순목록";
+	    	}else if(_sel_title == "RECEIPT_LIST"){
+	    		sel_title = "전자영수증목록";
+	    	}else if(_sel_title == "POLL_LIST"){
+	    		sel_title = "POLL목록";
+	    	}else if(_sel_title == "PEVENT_LIST"){
+	    		sel_title = "걷기쿠폰목록";
+	    		
+	    	}
+	    	
+	    	if (showData['link_method_cd'] == 'APPLIST') {
+	    		if(showData['sel_noticbd_divn_cd_name'] == "") {
+	    	
+			    	$("#ot_title").html(sel_title);
+	    		}else {
+			    	$("#ot_title").html("("+showData['sel_noticbd_divn_cd_name']+") "+showData['sel_title']);
+	    		}
+// 		    	$("#ot_title").html("("+showData['sel_noticbd_divn_cd_name+") "+showData['sel_title);
+	    	} else if (showData['link_method_cd'] == 'URL'){
+		    	$("#ot_title").html(showData['ot_link_url']);
+	    	} else{ 
+				$("#ot_title").html("없음");
+	    	}
+	    	 */
+	    	if(showData['atch_file_nm'] != "") {
+		    	$.each(showData['noticbd_img_list'], function(i, item) {
+		    		var tag_img = $('<img>').attr('src', item.prvw_url).attr('alt', item.img_orgin_file_nm).addClass('img-responsive');
+		        	$("#banner_img").append(tag_img);
+		    	});
+	    	}
+	    	
+	    	$("#mclub_nm").html(showData['mclub_nm']);
+	    	$("#ntce_tgt_cd").html(showData['ntce_tgt_cd']);
+	    	if(showData['ntce_tgt_cd'] == 'CRM') {
+	    		var custgpStr = "";
+	    		$("#campaign_layout").show();
+	    		
+	    		$("#popup_campaign_id").html(showData['campaign_id'] + " (고객군수 "+ showData['custgp_list'].length +") ");
+	    		$("#popup_campaign_term").html(cf_cvtDateFormat(showData['campaign_start_dy'],'yyyy-MM-dd')+" ~ "+cf_cvtDateFormat(showData['campaign_end_dy'],'yyyy-MM-dd') );
+	    		$("#popup_campaign_nm").html(showData['campaign_nm']);
+	    		
+	    		$.each(showData['custgp_list'], function(i, items) {
+	    			if(i == 0) {
+	    				custgpStr += items.lst_custgp_id + " - " + items.custgp_nm;
+	    			} else {
+	    				custgpStr += "&nbsp;│&nbsp;" + items.lst_custgp_id + " - " + items.custgp_nm;
+	    			}
+	    		});
+	    		$("#popup_custgp").html(custgpStr);
+	    	}	
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+</script>

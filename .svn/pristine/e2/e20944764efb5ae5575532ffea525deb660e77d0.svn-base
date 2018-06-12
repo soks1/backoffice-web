@@ -1,0 +1,214 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-3" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-table"></i> </span>
+					<h2> 조회결과 </h2>
+				</header>
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox"></div>
+					<!-- end widget edit box -->
+
+					<!-- widget content -->
+					<div id="target_product_grid" class="widget-body no-padding" style="overflow: auto;">
+						<table id="product_grid"></table>
+						<div id="product_grid_page"></div>
+					</div>
+				</div>
+			</div>
+		</article>
+<form id="searchData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<script type="text/javascript">
+var layer_pagefunction = function() {
+	
+	var search_data = $("#searchData").serializeFormObject();
+	var sel_cd = 'MGRP';
+	var product_cd = $('#cate_middle').val();
+	if($('#cate_low').val() != '') {
+		sel_cd = 'SGRP';
+		product_cd = $('#cate_low').val();
+	}
+	
+	if($('#cate_detail').val() != '') {
+		sel_cd = 'SUBGRP';
+		product_cd = $('#cate_detail').val();
+	}
+	search_data['category_cd'] = product_cd;
+	search_data['category_sel_cd'] = sel_cd;
+	
+	var product_data = {
+			search_info : search_data,
+			empno: '${sessionScope.sessionEmpno}', 
+			emp_str_cd: '${sessionScope.sessionStrCd}',
+			hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+			prod_view_type : $('input[name=prod_view_type]:checked').val()
+	}
+	
+	loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/jquery.jqGrid.min.js", product_grid_function);
+
+	function product_grid_function() {
+		
+		jQuery("#product_grid").jqGrid({
+			url : api_url + "/backoffice/common/product/list",
+			mtype: 'GET',
+			datatype : "json",
+			colNames : ['No.', '판매코드', '상품코드', '상품명', '규격', '업체명', '원가', '매가', '이익률', '거래형태'],
+			colModel : [
+				{ name : 'no', 						index : 'no',		 				align : "center",	sortable : false, 	},
+				{ name : 'prod_sell_cd', 			index : 'prod_sell_cd', 			align : "center",	sortable : false, 	classes:'pointer'	}, 
+				{ name : 'prod_cd', 				index : 'prod_cd', 					align : "center",	sortable : false, 	}, 
+				{ name : 'prod_nm', 				index : 'prod_nm', 					align : "center", 	sortable : false, 	}, 
+				{ name : 'standard_content', 		index : 'standard_content', 		align : "center", 	sortable : false, 	}, 
+				{ name : 'ven_nm', 					index : 'ven_nm', 					align : "center", 	sortable : false, 	},
+				{ name : 'buy_prc', 				index : 'buy_prc', 					align : "center", 	sortable : false, 	
+					formatter : function(cellvalue, options, rowObject) {
+						if(cellvalue != '') {
+							return cf_setComma(cellvalue);
+						}
+						else {
+							return '0';
+						}
+					}
+				},
+				{ name : 'sell_prc', 				index : 'sell_prc', 				align : "center", 	sortable : false, 	
+					formatter : function(cellvalue, options, rowObject) {
+						if(cellvalue != '') {
+							return cf_setComma(cellvalue);
+						}
+						else {
+							return '0';
+						}
+					}
+				},
+				{ name : 'prftrat', 				index : 'prftrat', 					align : "center", 	sortable : false, 	},
+				{ name : 'trd_type_divn_cd_name', 	index : 'trd_type_divn_cd_name', 	align : "center", 	sortable : false, 	}
+			],
+			jsonReader: {
+				repeatitems : false,
+				id : "prod_sell_cd",
+				root : 		function(obj){ return obj.data.prod_list; },				// 루트가 될 데이터 셋 명칭
+				records : 	function(obj){ return obj.data.page_info.records; },	// 총 레코드 수
+				page : 		function(obj){ return obj.data.page_info.page; }, 	// 현재 보여지는 페이지
+				total : 	function(obj){ return obj.data.page_info.total; }	// 페이지 블럭수
+			},
+            serializeRowData: function (postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			serializeGridData: function(postData) { return encodeURI("params="+JSON.stringify(postData)); },
+			postData:product_data,
+			search : true,
+			rowNum : 10,
+			rowList : [10, 20, 30],
+			pager : '#product_grid_page',
+			sortname : 'prod_sell_cd',
+			sortorder : "desc",
+			toolbarfilter: true,
+			viewrecords : true,
+			recordpos : "left",
+			multiselect : true,
+			multiboxonly: true,
+			autowidth : true,
+			height : 'auto',
+			shrinkToFit : false,
+			gridComplete: function(){ },
+			// ID click event(row data view)
+			onCellSelect: function(rowid, index, contents, event) {
+			   /* if(index == 2) {
+					var cm = $("#product_grid").jqGrid('getGridParam','colModel');
+			   } */
+			}
+		});
+		jQuery("#product_grid").jqGrid('navGrid', "#product_grid_page", {
+			edit : false, add : false, del : false, 
+			search : false, refresh : false, view:false, position: 'right'
+		});
+					
+		// btn_add
+		jQuery("#product_grid").jqGrid('navButtonAdd','#product_grid_page',{
+			caption: "적용",
+			id: "add_button",
+			buttonicon: "ui-icon-plus",
+			onClickButton: function(){
+				var rowId = $(this).jqGrid('getGridParam', 'selarrrow');
+				var appendTbody = $("#searchProductSingle").find("input[name=targetTbody]").val();
+				
+				var tr_row_cnt = rowId.length;
+				
+				if(tr_row_cnt > 1) {
+					alert("상품등록은 1건만 가능 합니다.");
+					return;
+				}
+				
+				if( (tr_row_cnt + cf_getTrElementCount($("#"+appendTbody))) > 1 ) {
+					alert("이미 등록하셨습니다.\n상품등록은 1건만 가능 합니다.");
+					return;
+				}
+				
+				var appendData = "";
+				for(var i = 0; i < rowId.length; i++) {
+					
+					var prod_sell_cd_val = $(this).jqGrid('getCell', rowId[i], 'prod_sell_cd');
+					
+					appendData += "<tr>";
+					appendData += "	<td class='ta-c'><input type='checkbox' value='"+$(this).jqGrid('getCell', rowId[i], 'prod_sell_cd')+"'></td>";
+					appendData += "	<input type='hidden' data-array-always='true' name='"+appendTbody+"' value='"+$(this).jqGrid('getCell', rowId[i], 'prod_sell_cd')+"'>";
+					appendData += "	<input type='hidden' name='prod_sell_cd' value='"+$(this).jqGrid('getCell', rowId[i], 'prod_sell_cd')+"'>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'prod_sell_cd')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'prod_cd')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'prod_nm')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'standard_content')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'ven_nm')+"</td>";
+					appendData += "	<td class='ta-c'>"+cf_setComma($(this).jqGrid('getCell', rowId[i], 'buy_prc'))+"</td>";
+					appendData += "	<td class='ta-c'>"+cf_setComma($(this).jqGrid('getCell', rowId[i], 'sell_prc'))+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'prftrat')+"</td>";
+					appendData += "	<td class='ta-c'>"+$(this).jqGrid('getCell', rowId[i], 'trd_type_divn_cd_name')+"</td>";
+					appendData += "</tr>";
+					$("#"+appendTbody).append(appendData);	
+					
+					// 대표이미지 셀렉트 박스가 있을 경우 셀렉트 박스에 데이터 등록
+					if( $("#rep_prod_sell_cd").length > 0 ) {
+						var option_cnt = 0;
+						$("#rep_prod_sell_cd option").each(function(){
+							if( $(this).val() == prod_sell_cd_val ) {
+								option_cnt++;
+							}
+						});
+						if(option_cnt == 0) {
+							var option = '<option value="'+prod_sell_cd_val+'">'+$(this).jqGrid('getCell', rowId[i], 'prod_nm')+'</option>';
+							$("#rep_prod_sell_cd").append(option);	
+						}
+					}
+				}
+				$('#product_single_sd').dialog("close");
+			}
+		});	
+		
+		$("#product_grid").gridCss();
+	  	$("#product_grid_cb").css("border-left-width","0");
+	  	$("#product_grid_cb").css("padding-left","4px");
+	  	$("#jqgh_product_grid_cb").css("padding","7px 0");
+	  	$("#product_grid_page_right").find(".ui-pg-table, .navtable").css("float","right");
+	  
+	    // auto resize grid
+	    $(window).on('resize.jqGrid', function () {
+			jQuery("#product_grid").jqGrid( 'setGridWidth', $("#target_product_grid").width() );
+		});
+	} 
+	// end function
+};
+
+loadScript("${pageContext.request.contextPath}/resources/js/plugin/jqgrid/grid.locale-en.min.js", layer_pagefunction);
+</script>

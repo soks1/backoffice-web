@@ -1,0 +1,1592 @@
+<%@page import="com.penta.backoffice.base.util.LangUtil"%>
+<%@page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@page import="java.util.Enumeration"%>
+<section id="widget-grid" class="">
+	<div class="row">
+		<article class="col-sm-12 col-md-12 col-lg-12">
+			<div class="jarviswidget jarviswidget-color-darken" id="wid-id-0" data-widget-editbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+					<h2>메인팝업 수정</h2>
+				</header>
+				<div>
+					<div class="jarviswidget-editbox">
+					</div>
+					<div class="widget-body">
+						<form class="form-horizontal" id="frmPopup" method="post">
+							<input type="hidden" name="empno" value="${sessionScope.sessionEmpno}" />
+							<input type="hidden" name="emp_str_cd" value="${sessionScope.sessionStrCd}" />
+							<input type="hidden" name="hq_base_yn" value="${sessionScope.sessionHqBaseYn}" />
+							<input type="hidden" name="noticbd_divn_cd" value="" />
+							<input type="hidden" name="noticbd_id" value="" />
+							<input type="hidden" id="campaign_id" name="campaign_id" value="" />
+							<input type="hidden" name="campaign_start_dy" value="" />
+							<input type="hidden" name="campaign_end_dy" value="" />
+							<input type="hidden" name="url_type" value="" />
+							
+							<input type="hidden" id="detail_coupon" 	value="#/coupon?coupon_id={COUPON_ID}&cpbook_mapp_digit={MAPP_DIGIT}&cpbook_id={CPBOOK_ID}&issue_coupon_no_digit={COUPON_MAPP_DIGIT}" />
+							<input type="hidden" id="detail_cpzine" 	value="#/couponbookzine?event_id={EVENT_ID}&active={ACTIVE}" />
+							<input type="hidden" id="detail_crm" 		value="#/couponbook?event_id={EVENT_ID}&cpbook_mapp_digit={MAPP_DIGIT}" />
+							<input type="hidden" id="detail_mlife" 		value="#/mlifemain?event_id={EVENT_ID}&active={ACTIVE}" />
+							<input type="hidden" id="detail_smart" 		value="#/smartcouponbook?event_id={EVENT_ID}&cpbook_mapp_digit={MAPP_DIGIT}" />
+							<input type="hidden" id="detail_fcfs" 		value="/application/with/withRN.html?fcfs_evnt_id={EVENT_ID}" />
+							<input type="hidden" id="detail_stamp" 		value="/application/stamp/stampDetailRN.html?stamp_id={EVENT_ID}" />
+							<input type="hidden" id="detail_event" 		value="#/event?noticbd_id={EVENT_ID}" />
+							<input type="hidden" id="detail_channel" 	value="#/channelkoklist?category_cd={EVENT_ID}" />
+
+            				<input type="hidden" id="cat_mcoupon" 		value="#/couponbooklist" />
+							<!-- <input type="hidden" id="cat_mlife" 		value="#/mlifelist" /> -->
+							<input type="hidden" id="cat_event" 		value="#/eventlist" />
+							<input type="hidden" id="cat_channel" 		value="#/channelkokmain" />
+							<input type="hidden" id="cat_lifecok" 		value="#/lifekokmain" />
+							<input type="hidden" id="cat_mclub" 		value="#/mclubList" />
+							                     
+							<input type="hidden" id="list_price" 		value="#/couponbooklist?index=1" />
+							<input type="hidden" id="list_stamp" 		value="/application/stamp/stampMainLN.html" />
+							<input type="hidden" id="list_fcfs" 		value="/application/with/withMainLN.html" />
+							<input type="hidden" id="list_poll" 		value="/application/poll/pollMainLN.html" />
+							<input type="hidden" id="list_pedo" 		value="/application/event/pedometer/pedometerMainLN.html" />
+							<input type="hidden" id="list_notice" 		value="#/notice" />
+							<input type="hidden" id="list_receip" 		value="/application/receipt/receiptMainLN.html" />
+							<input type="hidden" id="list_leaflet" 		value="#/leaflet" />
+							
+							<fieldset>
+								<legend></legend>
+								<!-- 비회원 추가 START -->
+								<div class="form-group">
+									<label class="col-md-2 control-label">노출 구분<sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="nomem_view_gbn" value="M" checked="checked" data-valid-use="true" data-check-only="true" data-valid-title="회원">
+													회원
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="nomem_view_gbn" value="N" data-valid-use="true" data-check-only="true" data-valid-title="비회원">
+													비회원
+												</label>
+											</div>
+										</div>
+										<!-- 
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="nomem_view_gbn" value="X" data-valid-use="true" data-check-only="true" data-valid-title="혼합">
+													혼합
+												</label>
+											</div>
+										</div>
+										 -->
+									</div>
+								</div>
+								<!-- 비회원 추가 END -->
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">팝업 유형<sup>*</sup></label>
+									
+									<div class="col-md-10">
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="noticbd_divn_cd" value="POPUP" data-valid-use="true" data-check-only="true" data-valid-title="메인" />
+													메인
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="noticbd_divn_cd" value="BEACON" data-valid-use="true" data-check-only="true" data-valid-title="비컨" />
+													비컨
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="noticbd_divn_cd" value="LPOT" data-valid-use="true" data-check-only="true" data-valid-title="엘팟">
+													엘팟
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="noticbd_divn_cd" value="EVENT" data-valid-use="true" data-check-only="true" data-valid-title="이벤트">
+													이벤트
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="noticbd_divn_cd" value="MCLUB" data-valid-use="true" data-check-only="true" data-valid-title="M클럽">
+													M클럽
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">대상 고객<sup>*</sup></label>
+									
+									<div class="col-md-10">
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="ntce_tgt_cd" value="ALL" checked data-valid-use="true" data-check-only="true" data-valid-title="대상 고객">
+													전체
+												</label>
+											</div>
+										</div>
+										<div class="col-md-2">
+											<div class="input-group">
+												<label class="radio radio-inline">
+													<input type="radio" name="ntce_tgt_cd" value="CRM" data-valid-use="true" data-check-only="true" data-valid-title="대상 고객">
+													CRM
+												</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group" id="mclub_list" style="display: none;">
+									<label class="col-md-2 control-label">M클럽</label>
+									<div class="col-md-2">
+										<select class="form-control" name="mclub_id" id="mclub_id" >
+											<option value="">선택</option>
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group" id="campaign_custgp" style="display: none;">
+									<label class="col-md-2 control-label">캠페인/고객군<sup>*</sup></label>
+									<div class="col-md-10">
+										<div class="form-group">
+											<a href="javascript:f_openPopupCampaignSD();" id="btn_campaign" class="btn btn-primary btn-sm">선택</a>
+											<a href="javascript:f_delCampaign();" class="btn btn-danger btn-sm">삭제</a>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인ID : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="popup_campaign_id"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">캠페인기간 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="popup_campaign_term"></span>
+											</div>
+											<label class="col-md-2 control-label cs-css-05">고객군수 : </label>
+											<div class="col-md-2">
+												<span class="form-control cs-css-03" id="popup_custgp_cnt"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">캠페인명 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-03" id="popup_campaign_nm"></span>
+											</div>
+										</div>
+										<div class="form-group">
+											<label class="col-md-1 control-label cs-css-05">고객군 : </label>
+											<div class="col-md-10">
+												<span class="form-control cs-css-04" id="popup_custgp"></span>
+											</div>
+										</div>
+									</div>
+									<legend></legend>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">제목 <sup>*</sup></label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="title" data-valid-use="true" data-valid-symbol="true" data-valid-max="108" data-valid-title="제목">
+									</div>
+								</div>
+																		
+								<div class="form-group">
+									<label class="col-md-2 control-label">게시기간 <sup>*</sup></label>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac evt_start_dd" type="text" id="ntce_start_dd" name="ntce_start_dd" data-valid-use="true" data-date-format='yyyyMMdd' data-valid-title="게시기간 시작일" placeholder="시작일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+									<div class="col-md-3half">
+										<div class="input-group">
+											<input class="form-control datepicker pr12 tac evt_end_dd" type="text" id="ntce_end_dd" name="ntce_end_dd" data-valid-use="true" data-date-format='yyyyMMdd' data-valid-title="게시기간 종료일" placeholder="종료일">
+											<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+										</div>
+									</div>
+								</div>
+								<div class="form-group" id="lpot_hide">
+									<label class="col-md-2 control-label">창닫기 <sup>*</sup></label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="popup_clos_divn_cd" value="1" onclick="" data-valid-use="true" data-check-only="true" data-valid-title="창닫기" checked="checked">
+											오늘 하루 열지 않기</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="popup_clos_divn_cd" value="3" onclick="" data-valid-use="true" data-check-only="true" data-valid-title="창닫기">
+											3일 동안 열지 않기 </label>
+										<label class="radio radio-inline">
+											<input type="radio" name="popup_clos_divn_cd" value="7" onclick="" data-valid-use="true" data-check-only="true" data-valid-title="창닫기">
+											7일 동안 열지 않기 </label>
+									</div>
+								</div>
+								
+								<div class="form-group beacon-hide-div">
+									<label class="col-md-2 control-label">자세히 보기</label>
+									<div class="col-md-1">
+										<label class="checkbox-inline" >
+											<input type="checkbox" class="checkbox style-2" id="detail_show_yn" name="detail_show_yn" onclick="f_detailView(this);" value="N">
+											<span>사용</span>
+										</label>
+									</div>
+									<label class="col-md-9 control-label ta-l">
+										<i class="fa fa-info-circle"></i> 자세히보기 버튼은 팝업에 내용을 연결 시 사용합니다. 사용하실 경우 연결방법과 페이지경로를 선택해주세요.
+									</label>
+									
+								</div>
+								
+								<div class="form-group pageLink" id="linkUrl" style="display: none;">
+									<label class="col-md-2 control-label">연결방법</label>
+									<div class="col-md-10">
+										<label class="radio radio-inline">
+											<input type="radio" name="link_method_cd" value="APPLIST" onclick="f_applyType(this.value);" data-valid-use="true" data-check-only="true" data-valid-title="연결방법" checked="checked" />
+											APP 내부 페이지 연결</label>
+										<label class="radio radio-inline">
+											<input type="radio" name="link_method_cd" value="URL" onclick="f_applyType(this.value);" data-valid-use="true" data-check-only="true" data-valid-title="연결방법" />
+											외부 페이지 연결 </label>
+									</div>
+								</div>
+								
+								<div class="form-group pageLink" id="linkUrlA" style="display: none;">
+									<label class="col-md-2 control-label">페이지경로</label>
+									<div class="col-md-2">
+										<select class="form-control" name="noticbd_divn_cd_temp" id="noticbd_divn_cd_temp" >
+											<option value="">선택</option>
+											<option value="LIST" >목록</option>
+										</select>
+									</div>
+									<div class="col-md-5">
+										<select class="form-control" name="link_noticbd_id" id="link_noticbd_id">
+										</select>
+									</div>
+									<div class="col-md-3" >
+										<select class="form-control" name="zine_ord_seq" id="zine_ord_seq"  style="display: none;">
+										</select>
+									</div>
+								</div>
+								
+								<div class="form-group pageLink" id="linkUrlB" style="display: none;">
+									<label class="col-md-2 control-label">페이지경로</label>
+									<div class="col-md-10">
+										<input class="form-control" type="text" name="ot_link_url" data-valid-max="200">
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용 이미지</label>
+									<div class="col-md-2">
+										<div id="preview_uploadfile" class="files">
+											<img alt="" src="${pageContext.request.contextPath}/resources/img/noPreview.png" width="100%">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<span class="btn btn-success fileinput-button">
+										    <i class="glyphicon glyphicon-plus"></i>
+										    <span>파일선택</span>
+										    <input type="file" id="uploadfile" name="uploadfile">
+										</span>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="col-md-2 control-label">&nbsp;</label>
+									<div class="col-md-10">
+										<p><i class="fa fa-info-circle"></i> 가로 사이즈: 1040px / 세로사이즈: 무관  /  파일종류: jpg, gif, png  / 최대파일용량: 150KB</p>
+									</div>
+								</div>
+								
+								<div class="form-group main-hide-div" style="display: none;">
+									<label class="col-md-2 control-label" style="align:center">행사 그룹 <sup>*</sup></label>
+									<div class="col-md-10">
+										<p>
+											<a href="javascript:f_openGroupSD();" class="btn btn-primary btn-sm">비콘그룹선택</a>
+											<a href="javascript:f_selectBeaconGroupDelete();" class="btn btn-danger btn-sm">선택삭제</a>
+										</p>
+										<div class="table-responsive" style="max-height:230px; overflow:auto;">
+											<table class="table table-bordered table-striped">
+												<colgroup>
+										            <col width="10%" />
+										            <col width="10%" />
+										            <col width="10%" />
+										            <col width="25%" />
+										            <col width="25%" />
+										            <col width="15%" />
+										        </colgroup>
+												<thead>
+													<tr>
+														<th class="ta-c" style="width:20px;"><input type="checkbox" onchange="cf_cboxAll(this);"></th>
+														<th class="ta-c">지점코드</th>
+														<th class="ta-c">지점명</th>
+														<th class="ta-c">비콘그룹ID</th>
+														<th class="ta-c">비콘그룹 명</th>
+														<th class="ta-c">비콘수</th>
+													</tr>
+												</thead>
+												<tbody id="beacon_group_tbody" data-valid-title="비콘그룹 선택">
+													
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+								
+								<div class="form-group">
+									<label class="col-md-2 control-label">내용</label>
+									<div class="col-md-10">
+										<textarea class="form-control" rows="10" name="content"></textarea>
+									</div>
+								</div>
+							</fieldset>
+
+							<div class="form-actions">
+								<div class="row">
+									<div class="col-md-12">
+										<a href="javascript:f_popupList();" class="btn btn-default">취소</a>
+										<a href="javascript:f_submit();" class="btn btn-primary">저장</a>
+									</div>
+								</div>
+							</div>
+							
+						</form>
+
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<form id="frmKeepData">
+<%
+	Enumeration<?> e = request.getParameterNames();
+	while(e.hasMoreElements()){
+		String key = (String)e.nextElement();
+		String values[] = request.getParameterValues(key);
+		for(int i = 0; i < values.length; i++) {
+			out.println("<input type=\"hidden\" name=\""+LangUtil.replaceInjection(key)+"\" value=\""+LangUtil.replaceInjection(values[i])+"\" />\n");	
+		}
+	}
+%>
+</form>
+<div id="popup_campaign_sd" style="display:none;"></div>
+<div id="beacon_group_sd" style="display:none;"></div>
+
+<script type="text/javascript">
+/**
+ * ==================================================================================
+ * 노출구분 : 노출구분에 따른 UI 변경
+ * ==================================================================================
+ */
+
+ $("input[name=nomem_view_gbn]").change(function (e) {
+	var _mem_view_gbn = $(this).val();
+	
+	if(_mem_view_gbn == "N" || _mem_view_gbn == "X") {
+		$("input[name=ntce_tgt_cd]:radio[value=ALL]").prop('checked',true);
+		$("input[name=ntce_tgt_cd]").attr("disabled", true);
+		
+		// 대상고객 변경시 자세히보기 재조회 위해 값 비움.
+		$("#detail_show_yn").attr("checked", false);
+		$("input[name=detail_show_yn]").val("N");
+		$('.pageLink').hide();
+		$("input[name=noticbd_divn_cd]:radio[value=BEACON]").attr("disabled", true);
+		$("input[name=noticbd_divn_cd]:radio[value=LPOT]").attr("disabled", true);
+		$("input[name=noticbd_divn_cd]:radio[value=EVENT]").attr("disabled", true);
+		$("input[name=noticbd_divn_cd]:radio[value=MCLUB]").attr("disabled", true);
+		$("input[name=link_method_cd]:radio[value=APPLIST]").attr("disabled", true);
+		$("input[name=link_method_cd]:radio[value=URL]").prop('checked',true);
+		
+		$("#noticbd_divn_cd_temp").val("");
+		$("#link_noticbd_id").empty();
+		$('#campaign_custgp').hide();
+		$('input[name=campaign_id]').removeAttr('data-valid-use')
+									.removeAttr('data-valid-title');
+	}else {
+		$("input[name=ntce_tgt_cd]").attr("disabled", false);
+		$("input[name=noticbd_divn_cd]:radio[value=BEACON]").attr("disabled", false);
+		$("input[name=noticbd_divn_cd]:radio[value=LPOT]").attr("disabled", false);
+		$("input[name=noticbd_divn_cd]:radio[value=EVENT]").attr("disabled", false);
+		$("input[name=noticbd_divn_cd]:radio[value=MCLUB]").attr("disabled", false);
+		$("input[name=link_method_cd]:radio[value=APPLIST]").attr("disabled", false);
+	}
+	
+});
+
+/**
+ * ==================================================================================
+ * 달력 : 종료일이 시작일을 넘길 수 없도록 셋팅
+ * ==================================================================================
+ */
+$('#ntce_start_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#ntce_end_dd').datepicker('option','minDate', selected);
+        }
+    }, date_opts)
+);
+$('#ntce_end_dd').datepicker(
+    $.extend({
+        onSelect: function(selected) {
+            $('#ntce_start_dd').datepicker('option','maxDate', selected);
+        }
+    }, date_opts)
+);
+
+/* ============================================================================================
+/* 자세히보기
+/* --------------------------------------------------------------------------------------------
+/* radio 선택에 따른 visible 변경
+/* ============================================================================================ */
+function f_detailView(obj){
+	if(obj.checked){
+		$('.pageLink').show();
+		f_applyType($("[name=link_method_cd]:checked").val());
+		$("input[name=detail_show_yn]").val("Y");
+		
+		var crmYn = $('input[name="ntce_tgt_cd"]:checked').val();
+		var target = $('select[name=noticbd_divn_cd_temp]');
+		var options = "";
+		
+		
+		if(crmYn == "CRM") {
+			if($("input[name=lst_custgp_id_list]").length > 1){
+				alert("상세 URL 선택은 하나의 고객군 선택시 가능합니다.");
+				return false;
+			}else {
+				if($('select[name=noticbd_divn_cd_temp] option').size() == 2) {
+					options +="<option value=CRM>쿠폰북</option>";
+					options +="<option value=CPZINE>쿠폰진</option>";
+					options +="<option value=FCFS>달려라선착순</option>";
+					options +="<option value=STAMP>M스탬프</option>";
+					options +="<option value=EVENTCOK>이벤트콕</option>";
+					options +="<option value=CHANNELCOK>채널콕</option>";
+					target.append(options);
+				}
+			}
+		}else {
+			if($('select[name=noticbd_divn_cd_temp] option').size() > 2) {
+				target.empty();
+				options +='<option value="">선택</option>';
+				options +="<option value=LIST>목록</option>";
+				target.append(options);
+			}
+		}
+		
+	}else{
+		$('.pageLink').hide();
+		$("input[name=detail_show_yn]").val("N");
+	}
+}
+
+/* ============================================================================================
+/* 연결 방법에 따른 URL 
+/* --------------------------------------------------------------------------------------------
+/* radio 선택에 따른 visible 변경
+/* ============================================================================================ */
+function f_applyType(v) {
+	
+	if(v == 'APPLIST') {
+		$('#linkUrlA').show();
+		$('#linkUrlB').hide();
+	}else if (v == 'URL'){
+		$('#linkUrlB').show();
+		$('#linkUrlA').hide();
+	}else if (v == 'USELESS'){
+		$('#linkUrlB').hide();
+		$('#linkUrlA').hide();
+	}
+}
+
+/**
+ * ==================================================================================
+ * 캠페인/고객군 삭제 버튼 클릭시 호출되는 메소드
+ * ==================================================================================
+ */
+function f_delCampaign() {
+	$("input[name=campaign_id]").val('');
+	$("input[name=campaign_start_dy]").val('');
+	$("input[name=campaign_end_dy]").val('');
+	$("input[name=lst_custgp_id_list]").remove();
+	
+	$("#popup_campaign_id").text('');
+	$("#popup_campaign_term").text('');
+	$("#popup_custgp_cnt").text('');
+	$("#popup_campaign_nm").text('');
+	$("#popup_custgp").text('');
+	changeCampaignId($("input[name=campaign_id]").val());
+}
+
+/**
+ * ==================================================================================
+ * 캠페인 ID 추가/삭제 시 버튼 텍스트 변경
+ * @param campaign_id  캠페인 ID
+ * ==================================================================================
+ */
+function changeCampaignId(campaign_id) {
+	if(campaign_id == '') {
+		$('#btn_campaign').text('선택');
+	} else {
+		$('#btn_campaign').text('수정');
+	}
+}
+
+/**
+ * ==================================================================================
+ * 캠페인 선택 다이얼로그 화면 구문
+ * ==================================================================================
+ */
+ $('#popup_campaign_sd').dialog({
+		autoOpen : false,
+		width : 1024,
+		minHeight: 768,
+		resizable : false,
+		modal : true,
+		title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 캠페인/고객군 선택 </h6></div>",
+		buttons : [{
+			html : "<i class='fa fa-times'></i>&nbsp; 취소",
+			"class" : "btn btn-default",
+			click : function() {
+				$(this).dialog("close");
+			}
+		},{
+			html : "<i class='fa fa-save'></i>&nbsp; 적용",
+			"class" : "btn btn-primary",
+			click : function() {
+				
+				var check_items_cnt = 0;
+				var custgroup_text = "";
+				var today_date = cf_toDate().replace(/\-/g,'');
+				
+				if(cf_getTrElementCount($("#custgroup_tbody")) < 1) {
+					alert("고객군 항목을 조회해 주십시오.");
+					return;
+				} else {
+					$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+						if($(this).is(":checked") == true) {
+							check_items_cnt++;
+						}
+					});
+				}
+				
+				if(check_items_cnt < 1) {
+					alert("고객군 항목을 선택해 주십시오.");
+					return;
+				} else {
+					$("input[name=lst_custgp_id_list]").remove();
+				}
+				
+				var _lpot_flag = $('input[name="noticbd_divn_cd"]:checked').val();
+				if(_lpot_flag == "LPOT") {
+					if(check_items_cnt > 1) {
+						alert("LPOT 고객군은 하나만 선택 가능 합니다.");
+						return;
+					} 
+				}
+				
+				$("#custgroup_tbody").find("input[type='checkbox']").each(function(i) {
+					if($(this).is(":checked")) {
+						var row = $(this).parent().parent();
+						var key = "";
+						var tag_input = "";
+						
+						// 루프문을 돌면서 Append 할 Tag 생성, index가 2인 위치에서 Key가 될 값 추출
+						row.find("td").each(function(idx){
+							// 각 셀 데이터 생성
+							if(idx < 4) {
+								if(idx == 2) {
+									key = $(this).text();
+									tag_input += "<input type='hidden' name='lst_custgp_id_list' data-array-always='true' value='"+key+"'>";
+									custgroup_text += key;
+								}
+								if(idx == 3) {
+									custgroup_text += " - " + $(this).text() + "&nbsp;│&nbsp;";
+								}
+							}
+						});
+						
+						$('#campaign_custgp').append(tag_input);
+					}
+				});
+				
+				if( today_date > $("#campaign_end_dy_tmp").val() ) {
+					alert("선택한 캠페인의 캠페인기간이 행사기간으로 설정하기 부적합 합니다.\n\n다시한번 확인해 주세요.");
+					$("input[name=lst_custgp_id_list]").remove();
+					return;
+				}
+				
+				$("input[name=campaign_id]").val($("#campaign_id_tmp").val());
+				$("#popup_campaign_id").text($("#campaign_id_tmp").val());
+				$("#popup_campaign_term").text(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+				$("#popup_custgp_cnt").text($("input[name=lst_custgp_id_list]").length);
+				$("#popup_campaign_nm").text($("#campaign_nm_tmp").val());
+				custgroup_text = custgroup_text.substring(0, (custgroup_text.length-8));
+				$("#popup_custgp").html(custgroup_text);
+				
+				if( today_date > $("#campaign_start_dy_tmp").val() ) {
+					$('input[name=evt_term_start_dd]').val(cf_toDate());
+				} else {
+					$('input[name=evt_term_start_dd]').val(cf_cvtDateFormat($("#campaign_start_dy_tmp").val(),'yyyy-MM-dd'));
+				}
+				$('input[name=evt_term_end_dd]').val(cf_cvtDateFormat($("#campaign_end_dy_tmp").val(),'yyyy-MM-dd'));
+				
+				$("input[name=campaign_start_dy]").val($("#campaign_start_dy_tmp").val());
+				$("input[name=campaign_end_dy]").val($("#campaign_end_dy_tmp").val());
+				
+				changeCampaignId($("input[name=campaign_id]").val());
+				$(this).dialog("close");
+			}
+		}]
+	});
+//---------- 비콘그룹 선택 다이얼로그 화면 구문 ---------- //
+ $('#beacon_group_sd').dialog({
+ 	autoOpen : false,
+ 	width : 1024,
+ 	minHeight: 768,
+ 	resizable : false,
+ 	modal : true,
+ 	title : "<div class='widget-header'><h6><i class='fa fa-pencil-square-o'></i> 비콘그룹 선택 </h6></div>",
+ 	buttons : [
+         {
+         	html : "<i class='fa fa-times'></i>&nbsp; 취소",
+ 			"class" : "btn btn-default",
+ 			click : function() {
+ 				$('#beacon_group_sd').html('');
+ 				$('input[name=targetTbody]').val("");
+ 				$(this).dialog("close");
+ 			}
+ 		}
+ 	]
+ });
+/* ============================================================================================
+/* 대상고객 에 따른 컨트롤러
+/* ============================================================================================ */
+$('input[name="ntce_tgt_cd"]').on('change', function() {
+
+	if($(this).val() == 'CRM') {
+		$('#campaign_custgp').show();
+		$('input[name=campaign_id]').attr('data-valid-use', 'true')
+									.attr('data-valid-title', 'CRM 선택 시 캠페인/고객군');
+	} else {
+		$('#campaign_custgp').hide();
+		$('input[name=campaign_id]').removeAttr('data-valid-use')
+									.removeAttr('data-valid-title');
+	}
+	
+	// 대상고객 변경시 자세히보기 재조회 위해 값 비움.
+	$("#detail_show_yn").attr("checked", false);
+	$("input[name=detail_show_yn]").val("N");
+	$('.pageLink').hide();
+	$("#noticbd_divn_cd_temp").val("");
+	$("#link_noticbd_id").empty();
+});
+
+/* ============================================================================================
+/* 팝업유형 에 따른 컨트롤러
+/* ============================================================================================ */
+$('input[name="noticbd_divn_cd"]').on('change', function() {
+	// 자세히 보기 초기화
+	$("#detail_show_yn").attr("checked", false);
+	$('input[name=detail_show_yn]').val("N");
+	$('.pageLink').hide();
+	$('select[name=noticbd_divn_cd_temp]').val("");
+	$('select[name=link_noticbd_id]').val("");
+	$('input[name=ot_link_url]').val("");
+	$("#lpot_hide").show();
+	$('#mclub_list').hide();
+	$('select[name=mclub_id]').val('');
+	
+	if($(this).val() == 'BEACON') {
+		$(".beacon-hide-div").hide();
+		$(".main-hide-div").show();
+	} else if ($(this).val() == 'LPOT'){	//엘팟 선택시 대상고객 CRM으로 고정
+		$('input:radio[name="ntce_tgt_cd"][value="CRM"]').prop('checked', true);
+		$('input[name="ntce_tgt_cd"]').attr("disabled", true);
+		$('#campaign_custgp').show();
+		$('input[name=campaign_id]').attr('data-valid-use', 'true')
+									.attr('data-valid-title', 'CRM 선택 시 캠페인/고객군');
+		$("#lpot_hide").hide();
+	} else if ($(this).val() == 'MCLUB'){	//MCLUB 선택시 대상고객 전체로 고정
+		$('input:radio[name="ntce_tgt_cd"][value="ALL"]').prop('checked', true);
+		$('input[name="ntce_tgt_cd"]').attr("disabled", true);
+		$('#mclub_list').show();
+		$('#campaign_custgp').hide();
+	} else {
+		$(".beacon-hide-div").show();
+		$(".main-hide-div").hide();
+	}
+});
+
+function f_openPopupCampaignSD() {
+	$.ajax({
+		url: "/application/stamp/stamp/stampCampaignSD.do",
+		type: 'GET',
+		async: true,
+		cache: false,
+		success: function(data) {
+			var $target = $('#popup_campaign_sd');
+			$target.html(data);
+		},
+		complete: function() {
+			$('#popup_campaign_sd').dialog('open');
+		}
+	});
+}
+
+/* ============================================================================================
+/* APP 내부 페이지 연결
+/* --------------------------------------------------------------------------------------------
+/* 배너 클릭시 연결될 내부게시판 호출
+/* ============================================================================================ */
+$('#noticbd_divn_cd_temp').change(function(){
+	var _divn_cd = $(this).val();
+	
+	$('#zine_ord_seq').hide();
+	
+	if(_divn_cd != "") {
+		
+		if($('#campaign_id').val() == "" && _divn_cd != "LIST") {
+			alert("캠페인/고객군을 먼저 선택해 주세요.");
+			$("#noticbd_divn_cd_temp").val("");
+			$("#link_noticbd_id").empty();
+		}else {
+			var crm_yn = $('input[name="ntce_tgt_cd"]:checked').val();
+			var data = $('#frmPopup').serializeFormObject();
+			data.empno = "${sessionScope.sessionEmpno}";
+			data.link_url = _divn_cd;
+			data.crm_yn = crm_yn;
+			data.nomem_view_gbn = $(':radio[name="nomem_view_gbn"]:checked').val();
+			
+			if(_divn_cd != "LIST") {
+				if(_divn_cd == "EVENTCOK" || _divn_cd == "CHANNELCOK") {
+					var _url = "";
+					if(_divn_cd == "EVENTCOK") {
+						_url = "/backoffice/common/board/issue/event/cok";
+					}else {
+						_url = "/backoffice/common/board/issue/channel/cok";
+					}
+					
+					$.ajax({
+						url: api_url + _url,
+//		 				type: 'GET', // 기본이 GET 임 주석처리.
+//		 				cache: true, // 기본이 true 임 주석처리.
+						async: false,
+						data: encodeURI('params='+JSON.stringify(data)),
+						success: function(obj){
+							var objData = obj['data'] || {};
+							$('select[name=link_noticbd_id]').data({'items': objData['result_list'], 'key': 'evnt_id', 'ctype' :_divn_cd, 'label': 'evnt_nm', '': function() {}}).triggerHandler('init');
+						},beforeSend:function(){
+							$("select[name=link_noticbd_id] option[value!='']").remove();
+						},error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+					    	return;
+					    }
+					});
+				} else {
+					$.ajax({
+						url: api_url+"/backoffice/couponbook/issue/cpbook/list",
+						type: 'GET',
+						async: false,
+						cache: true,
+						data: encodeURI('params='+JSON.stringify(data)),
+						success: function(obj){
+	
+							var objData = obj['data'] || {};
+							$('select[name=link_noticbd_id]').data({'items': objData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '': function() {}}).triggerHandler('init');
+							
+						},beforeSend:function(){
+							$("select[name=link_noticbd_id] option[value!='']").remove();
+						},error: function(obj) {
+					    	var serverObj = obj.responseJSON;
+					    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+					    	return;
+					    }	
+					});
+				}
+			}else if(_divn_cd == "LIST"){
+				var _items = [
+			  			{'key': 'MAIN', 'label': '메인'},
+			  			{'key': 'MCOUPON', 'label': 'M쿠폰 - 상품쿠폰'},
+			  			{'key': 'MPRICE', 'label': 'M쿠폰 -금액쿠폰'},
+						/* {'key': 'MLIFE', 'label': 'M-LIFE'}, */
+						{'key': 'EVENTCOK', 'label': '이벤트콕'},
+						{'key': 'CHANNELCOK', 'label': '채널콕'},
+						{'key': 'LIFECOK', 'label': '생활콕'},
+						{'key': 'MCLUB', 'label': 'M클럽'},
+						{'key': 'LEAFLET', 'label': '행사정보'},
+						{'key': 'NOTICE', 'label': '공지사항'},
+						{'key': 'FCFS', 'label': '달려라선착순'},
+						{'key': 'STAMP', 'label': 'M스탬프'},
+						{'key': 'RECEIPT', 'label': '스마트영수증'},
+						{'key': 'POLL', 'label': 'POLL'},
+						{'key': 'PEVENT', 'label': '걷기'}
+			  		];
+				$('select[name=link_noticbd_id]').data({'items': _items, 'key': 'key', 'label': 'label', '': function() {}}).triggerHandler('init');
+				
+			}
+		}
+	}
+});
+
+/**
+* ==================================================================================
+* 등록/수정 : 파일 업로드
+* ==================================================================================
+*/
+$('#uploadfile').change(function (e) {	
+	cf_fileUpload($(this),'IMG_MAINPOPUP');
+});
+
+/* ============================================================================================
+/* 벨리데이션 체크 및 폼 전송
+/* --------------------------------------------------------------------------------------------
+/* 벨리데이션 체크 
+/* 	- true	: 폼전송
+/* 	- false : 알림창 경고
+/* ============================================================================================ */
+function f_submit() {
+
+	if($('#frmPopup').formValid() ) {
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 시작 ---------------- //
+		if($("input[name=detail_show_yn]").val() == "N"){
+			$("input[name=link_method_cd], select[name=noticbd_divn_cd_temp], select[name=link_noticbd_id], input[name=ot_link_url]").remove();
+		}else if($("input[name=link_method_cd]:checked").val() == 'URL' && $("input[name=ot_link_url]").val() == '' && $("input[name=detail_show_yn]").is(":checked")){
+			alert("외부 페이지 URL을 입력해주세요.");
+			return;
+		} else {
+			if($("input[name=ot_link_url]").val() != '' && $("input[name=ot_link_url]").val().indexOf("http://") == -1 && $("input[name=ot_link_url]").val().indexOf("https://") == -1) {
+				
+				$("input[name=ot_link_url]").val("http://" + $("input[name=ot_link_url]").val());
+			}
+		}
+		
+		var _link_method_cd = $(':radio[name="link_method_cd"]:checked').val();
+		if(_link_method_cd == "APPLIST") {
+			if($('select[name=noticbd_divn_cd_temp]').val() == "CPZINE" && $('select[name=zine_ord_seq]').val() == '' || $('select[name=link_noticbd_id]').val() == '') {
+				alert("페이지경로를 모두 선택해 주세요.");
+				return;
+			}
+			
+		} 
+		
+		// ---------------- 조건부 벨리데이션 검사 영역 종료 ---------------- //
+		
+		var _divn_cd = $('#noticbd_divn_cd_temp option:selected').val();
+		var _divn_detail_cd = $('#link_noticbd_id option:selected').val();
+		var ot_link_url = "";
+		var link_nm = "";
+		
+		if($('input[name="ntce_tgt_cd"]:checked').val() == "ALL") {
+			$('input[name=url_type]').val("");
+		}
+		
+		if($("input[name=link_method_cd]:checked").val() == 'URL') {
+			ot_link_url = $("input[name=ot_link_url]").val();
+			link_nm = $("input[name=ot_link_url]").val();
+		}else {
+			// 쿠폰북 타입 : 일반, 스마트콤보
+			var data_cpbook_type_cd = $("select[name=link_noticbd_id]").triggerHandler('getData', 'cpbook_type_cd');
+			// 쿠폰북 mapp_digit
+			var cpbook_mapp_digit = $("select[name=link_noticbd_id]").triggerHandler('getData', 'cpbook_mapp_digit');
+			// 쿠폰진 : mlife, cpzine
+			var data_cpbook_cd = $("select[name=link_noticbd_id]").triggerHandler('getData', 'ctype');
+			// 쿠폰북 쿠폰 금액형만 있는지
+			var _cpbook_cp_type = $("select[name=link_noticbd_id]").triggerHandler('getData', 'c_type');
+			if(_divn_cd == "CPZINE") {
+				if(data_cpbook_cd == "CPZINE") {
+					var ord_seq = $("select[name=zine_ord_seq] option:selected").val();
+					ord_seq = ord_seq == "" ? "0" : ord_seq; 
+					ot_link_url = $("#detail_cpzine").val(); 
+					ot_link_url = ot_link_url.replace("{EVENT_ID}", $('select[name=link_noticbd_id]').val());
+					ot_link_url = ot_link_url.replace("{ACTIVE}", ord_seq);
+				}else if(data_cpbook_cd == "MLIFE") {
+					var ord_seq = $("select[name=zine_ord_seq] option:selected").val();
+					ord_seq = ord_seq == "" ? "0" : ord_seq; 
+					ot_link_url = $("#detail_mlife").val();
+					ot_link_url = ot_link_url.replace("{EVENT_ID}", $('select[name=link_noticbd_id]').val());
+					ot_link_url = ot_link_url.replace("{ACTIVE}", ord_seq);
+				}
+				link_nm = $("select[name=noticbd_divn_cd_temp] option:selected").text() + " > " +  $("select[name=link_noticbd_id] option:selected").text() + " > " +  $("select[name=zine_ord_seq] option:selected").text();
+				$('input[name=ot_link_url]').val(ot_link_url);
+			}else if(_divn_cd == "CRM") {
+				var ord_seq = $("select[name=zine_ord_seq] option:selected").val();
+				if(ord_seq != "") {
+					cpbook_id = $('select[name=link_noticbd_id]').val();
+					coupon_id = $("select[name=zine_ord_seq] option:selected").val();
+					var issue_mapp_digit = cpbook_mapp_digit + cpbook_id + "__DIGIT__" + coupon_id;
+					ot_link_url = $("#detail_coupon").val();
+					
+					ot_link_url = ot_link_url.replace("{COUPON_ID}",coupon_id);
+					ot_link_url = ot_link_url.replace("{CPBOOK_ID}",cpbook_id);
+					ot_link_url = ot_link_url.replace("{MAPP_DIGIT}",cpbook_mapp_digit);
+					ot_link_url = ot_link_url.replace("{COUPON_MAPP_DIGIT}",issue_mapp_digit);
+					
+					link_nm = $("select[name=noticbd_divn_cd_temp] option:selected").text() + " > " +  $("select[name=link_noticbd_id] option:selected").text() + " > " +  $("select[name=zine_ord_seq] option:selected").text();
+					
+				}else {
+					if(_cpbook_cp_type == "PRICE") {
+						ot_link_url = $("#list_price");
+					}else {
+						if(data_cpbook_type_cd == "A") {
+							ot_link_url = $("#detail_crm").val();
+							ot_link_url = ot_link_url.replace("{EVENT_ID}", $('select[name=link_noticbd_id]').val());
+							ot_link_url = ot_link_url.replace("{MAPP_DIGIT}", cpbook_mapp_digit);
+						}else if(data_cpbook_type_cd == "C") {
+							ot_link_url = $("#detail_smart").val();
+							ot_link_url = ot_link_url.replace("{EVENT_ID}", $('select[name=link_noticbd_id]').val());
+							ot_link_url = ot_link_url.replace("{MAPP_DIGIT}", cpbook_mapp_digit);
+						}
+					}
+					link_nm = $("select[name=noticbd_divn_cd_temp] option:selected").text() + " > " + $("select[name=link_noticbd_id] option:selected").text();
+				}
+			}else if(_divn_cd == "STAMP"){
+				ot_link_url = $("#detail_stamp").val();
+				ot_link_url = ot_link_url.replace("{EVENT_ID}", $('select[name=link_noticbd_id]').val());
+				link_nm = $("select[name=noticbd_divn_cd_temp] option:selected").text() + " > " + $("select[name=link_noticbd_id] option:selected").text();
+			}else if(_divn_cd == "FCFS"){
+				ot_link_url = $("#detail_fcfs").val();
+				ot_link_url = ot_link_url.replace("{EVENT_ID}", $('select[name=link_noticbd_id]').val());
+				link_nm = $("select[name=noticbd_divn_cd_temp] option:selected").text() + " > " + $("select[name=link_noticbd_id] option:selected").text();
+			}else if(_divn_cd == "EVENTCOK"){
+				ot_link_url = $("#detail_event").val();
+				ot_link_url = ot_link_url.replace("{EVENT_ID}", $('select[name=link_noticbd_id]').val());
+				link_nm = $("select[name=noticbd_divn_cd_temp] option:selected").text() + " > " + $("select[name=link_noticbd_id] option:selected").text();
+			}else if(_divn_cd == "CHANNELCOK"){
+				ot_link_url = $("#detail_channel").val();
+				ot_link_url = ot_link_url.replace("{EVENT_ID}", $('select[name=link_noticbd_id]').val());
+				link_nm = $("select[name=noticbd_divn_cd_temp] option:selected").text() + " > " + $("select[name=link_noticbd_id] option:selected").text();
+			}else if (_divn_cd == "LIST"){
+				var _key = $("select[name=link_noticbd_id]").triggerHandler('getData', 'key');
+				
+				if(_divn_detail_cd == "STAMP") {
+					ot_link_url = $("#list_stamp").val();
+				}else if(_divn_detail_cd == "FCFS") {
+					ot_link_url = $("#list_fcfs").val();
+				}else if(_divn_detail_cd == "RECEIPT") {
+					ot_link_url = $("#list_receip").val();
+				}else if(_divn_detail_cd == "POLL") {
+					ot_link_url = $("#list_poll").val();
+				}else if(_divn_detail_cd == "PEVENT") {
+					ot_link_url = $("#list_pedo").val();
+				}else if(_divn_detail_cd == "NOTICE") {
+					ot_link_url = $("#list_notice").val();
+				}else if(_key == "MAIN") {
+					ot_link_url = "/application/main/main.html";
+				}else if(_key == "MCOUPON") {
+					ot_link_url = $("#cat_mcoupon").val();
+				}else if(_key == "MPRICE") {
+					ot_link_url = $("#list_price").val();
+				/* }else if(_key == "MLIFE") {
+					ot_link_url = $("#cat_mlife").val(); */
+				}else if(_key == "LEAFLET") {
+					ot_link_url = $("#list_leaflet").val();
+				}else if(_key == "EVENTCOK") {
+					ot_link_url = $("#cat_event").val();
+				}else if(_key == "CHANNELCOK") {
+					ot_link_url = $("#cat_channel").val();
+				}else if(_key == "LIFECOK") {
+					ot_link_url = $("#cat_lifecok").val();
+				}else if(_key == "MCLUB") {
+					ot_link_url = $("#cat_mclub").val();
+				}
+				$('input[name=url_type]').val(_divn_cd);
+				$('input[name=ot_link_url]').val(ot_link_url);
+				link_nm = $("select[name=noticbd_divn_cd_temp] option:selected").text() + " > " + $("select[name=link_noticbd_id] option:selected").text();
+			}
+			$('input[name=url_type]').val(_divn_cd);
+			$('input[name=ot_link_url]').val(ot_link_url);
+		}
+
+		$('input[name=noticbd_id]').val( $("#frmKeepData").find("input[name=noticbd_id]").val() );
+		
+		var nt_divn_cd = $('input[name="noticbd_divn_cd"]:checked').val();
+		if(nt_divn_cd == "POPUP") {
+			$("#zone_id_list").val("");
+		}else if(nt_divn_cd == "LPOT") {
+			$("#zone_id_list").val("");
+			$("input[name=popup_clos_divn_cd]").val("0");
+		}
+		
+		var data = cf_boardFileObject($('#frmPopup'));
+		
+		data['link_nm'] = link_nm;
+		
+		if(data.noticbd_img_list.length < 1) {
+			var file_data = {};
+			file_data['file_divn_cd'] = 'IMG_MAINPOPUP';
+			file_data['img_file_divn_cd'] = 'POPUP';
+			data['noticbd_img_list'].push(file_data);
+		}
+		
+		$("input[name=noticbd_divn_cd]").val(nt_divn_cd);
+		if(nt_divn_cd == "BEACON") {
+			if($('#beacon_group_tbody').tableRowValid()) {
+			}else {
+				return;				
+			}	
+		}
+		
+		// 실제 데이터 전송
+		$.ajax({
+			url: api_url+"/backoffice/common/board/update",
+		    type: 'POST',
+		    async: true,
+		    cache: false,
+		    datatype: 'json',
+		    contentType: 'application/json;charset=utf-8',
+		    data: JSON.stringify(data),
+		    success: function(obj){
+		    	alert(obj.message);
+		    	f_popupList();
+		    },
+		    error: function(obj) {
+		    	var serverObj = obj.responseJSON;
+		    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+		    	return;
+		    }
+		});
+	} else {
+		return;
+	}
+	
+}
+
+
+/* ============================================================================================
+/* 페이지 정보 설정
+/* --------------------------------------------------------------------------------------------
+/* 초기 설정 및 필요 UI 컴포넌트 셋팅
+/* ============================================================================================ */
+var pagefunction = function() {
+	// 초기데이터 로드 : 게시상태
+	f_ajaxMclubList($("select[name=mclub_id]"));
+	
+	$('select[name=mclub_id]').attr("disabled",true);
+	
+	$('select[name=link_noticbd_id]')
+	.on('change', function() {
+		var issue_cpbook_key = "";
+		issue_cpbook_key = $(this).data().key;
+		if(issue_cpbook_key === "evnt_id") {
+			var cpz_contents_data = $('#searchProduct').serializeFormObject();
+			var ctype = $(this).children(":selected").data("item").ctype;
+			var evnt_id = $(this).children(":selected").data("item").evnt_id;
+			
+			if(ctype == "CPZINE" || ctype == "MLIFE") {
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.custgp_cl_cpbook_id = evnt_id;
+				cpz_contents_data.s_type = "CPZINE";
+				
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						if(obj.url_type=="CPBOOK") {
+							$.each(obj.result_list, function(i, item) {
+								options += "<option value='"+item.order_seq+"'>"+item.cpzine_contents_title+"</option>";
+							});
+						}
+							target.html(options);
+					}	
+				});
+				
+				$("#zine_ord_seq").show();
+				
+			}else if(ctype == "CRM"){
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.cpbook_id = $(this).children(':selected').val();
+				$.ajax({
+					url: api_url+"/backoffice/couponbook/coupon/couponlist",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						
+						$('#zine_ord_seq').show();
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						$.each(obj.coupon_list, function(i, item) {
+							options += "<option value='"+item.coupon_id+"'>"+item.coupon_nm+"</option>";
+						});
+						target.html(options);
+					}	
+				});
+				
+				$('#zine_ord_seq').show();
+			} else {
+				$("#zine_ord_seq").hide();
+			}
+		}
+	})
+	.bind('getData', function(evt, key) {
+	
+		var self = this;
+		var $option = $(self).children(':selected');
+		return ($option.data('item')||{})[key || '_'] || '';
+	})
+	.bind('init', function(evt) {
+		var self = this;
+		var _options = $(self).data();
+		$(self).empty().append( $('<option></option>').data('item', {}).val('').text('선택') );
+		$.each(_options['items'] || [], function() {
+			$('<option></option>').data('item', this).val(this[_options['key']]).text(this[_options['label']]).appendTo( $(self) );
+		});
+
+		if (_options['_select'] && $.isFunction(_options['_select'])) {
+			
+			_options['_select'].apply(self);
+			$(self).val($(self).val() || '');
+
+			delete _options['_select'];
+			
+			$(self).data( _options );
+		}
+		else if (_options['defaultValue']){
+			$(self).val(_options['defaultValue'] || '');
+		}
+		var issue_cpbook_key = "";
+		issue_cpbook_key = $("#link_noticbd_id").data().key;
+		if(issue_cpbook_key === "evnt_id") {
+			var _cpz_ord = $(self).data()._cpz_ord;
+			var ctype = $(this).children(":selected").data("item").ctype;
+			var evnt_id = $(this).children(":selected").data("item").evnt_id;
+			var cpz_contents_data = $('#searchProduct').serializeFormObject();
+
+			if(ctype == "CPZINE" || ctype == "MLIFE") {
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.custgp_cl_cpbook_id = evnt_id;
+				cpz_contents_data.s_type = "CPZINE";
+				
+				$.ajax({
+					url: api_url+"/backoffice/common/board/issue/cpzine/list",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						if(obj.url_type=="CPBOOK") {
+							$.each(obj.result_list, function(i, item) {
+								options += "<option value='"+item.order_seq+"'>"+item.cpzine_contents_title+"</option>";
+							});
+						}
+							target.html(options);
+					}	
+				});
+				
+				$("#zine_ord_seq").show();
+				$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+				
+			}else if(ctype == "CRM"){
+				cpz_contents_data.empno = "${sessionScope.sessionEmpno}";
+				cpz_contents_data.cpbook_id = $(this).children(':selected').data("item").evnt_id;
+				$.ajax({
+					url: api_url+"/backoffice/couponbook/coupon/couponlist",
+					type: 'GET',
+					async: false,
+					cache: true,
+					data: encodeURI('params='+JSON.stringify(cpz_contents_data)),
+					success: function(obj){
+						var obj = obj.data;
+						
+						$('#zine_ord_seq').show();
+						var target = $('select[name=zine_ord_seq]');
+						var options = "<option value=''>선택</option>";
+						$.each(obj.coupon_list, function(i, item) {
+							options += "<option value='"+item.coupon_id+"'>"+item.coupon_nm+"</option>";
+						});
+						target.html(options);
+					}	
+				});
+				if(_cpz_ord != "") {
+					$("select[name=zine_ord_seq] option[value="+_cpz_ord+"]").attr('selected','selected');
+				}
+				
+			}else{
+				$("#zine_ord_seq").hide();
+			}
+		}
+	});
+	
+	
+	
+	$.ajax({
+	 url: api_url+"/backoffice/common/board/show", //this is the submit URL
+	    type: "GET", // GET or POST
+	    async: true,
+	    cache: true,
+	    datatype: 'json',
+	    data: "params="+encodeURI(JSON.stringify($("#frmKeepData").serializeFormObject())),
+	    beforeSend : function() {},
+	    success: function(obj){
+	    	var showData = obj['data'] || {};
+	    	$("input[name=noticbd_id]").val(showData['noticbd_id']);
+	    	
+	    	$("input[name=title]").val(showData['title']);
+	    	$("input[name=ntce_start_dd]").val(cf_cvtDateFormat(showData['ntce_start_dd'],'yyyy-MM-dd'));
+	    	$("input[name=ntce_end_dd]").val(cf_cvtDateFormat(showData['ntce_end_dd'],'yyyy-MM-dd'));
+	    	
+	    	$("input[name=popup_clos_divn_cd][value="+showData['popup_clos_divn_cd']+"]").attr('checked','checked');
+	    	
+	    	var _nt_divn_cd = showData['noticbd_divn_cd'];
+	    	$("input:radio[name=noticbd_divn_cd][value="+_nt_divn_cd+"]").attr('checked','checked');
+	    	
+	    	var _mem_view_gbn = showData['nomem_view_gbn'];
+	    	if(_mem_view_gbn == "N" || _mem_view_gbn == "X") {
+	    		$("input[name=ntce_tgt_cd]:radio[value=ALL]").prop('checked',true);
+	    		$("input[name=ntce_tgt_cd]").attr("disabled", true);
+	    		$("input[name=link_method_cd]:radio[value=APPLIST]").attr("disabled", true);
+	    		$("input[name=noticbd_divn_cd]:radio[value=BEACON]").attr("disabled", true);
+	    	}else {
+	    		$("input[name=ntce_tgt_cd]").attr("disabled", false);
+	    	}
+	    	
+	    	$("input[name=nomem_view_gbn]:radio[value='"+showData['nomem_view_gbn']+"']").prop('checked',true);
+	    	
+	    	$("#lpot_hide").show();
+	    	if(_nt_divn_cd == "BEACON") {
+	    		$('#mclub_list').hide();
+	    		$(".beacon-hide-div").hide();
+	    		$(".main-hide-div").show();
+	    		
+	    		// 행사그룹
+		    	if(showData['noticbd_zone_list']) {
+		    		$.each(showData['noticbd_zone_list'], function(i, item) {
+			    		var tag_td = '';
+			    		tag_td += '<td class="ta-c"><input type="checkbox" value="'+item.zone_id+'"></td>\n';
+			    		tag_td += '<input type="hidden" id="zone_id" name="zone_id_list" data-array-always="true" value="'+item.zone_id+'" />';
+			    		tag_td += '<td class="ta-c">' + item.str_cd + '</td>';
+			    		tag_td += '<td class="ta-c">' + item.str_nm + '</td>\n';
+			    		tag_td += '<td class="ta-c">' + item.zone_id + '</td>';
+			    		tag_td += '<td class="ta-c">' + item.zone_nm + '</td>';
+			    		tag_td += '<td class="ta-c">' + item.link_bcon_cnt + '</td>';
+			    		$('#beacon_group_tbody').append('<tr>' + tag_td + '</tr>');
+			    	});
+		    	}
+	    		
+	    		$("#str_nm").html(showData['str_nm']);
+	    	}else if(_nt_divn_cd == "MCLUB") {
+	    		$('#mclub_list').show();
+	    		$('input[name="ntce_tgt_cd"]').attr("disabled", true);
+	    		$("select[name=mclub_id]").val(showData['mclub_id']).attr("selected", "selected");
+	    	}else {
+	    		$('#mclub_list').hide();
+	    		$(".beacon-hide-div").show();
+	    		$(".main-hide-div").hide();
+	    	}
+	    	
+	    	// 고객대상코드
+            var ntce_tgt_cd = showData['ntce_tgt_cd'];      
+            var custgp_id = "";
+            if (ntce_tgt_cd === 'CRM') {
+            	$("input[name=ntce_tgt_cd][value=CRM]").click();
+            	
+            	var custgpStr = "";
+            	var tag_input = ""; 
+            	// $('#campaign_custgp').show();
+        		$('input[name=campaign_id]').attr('data-valid-use', 'true')
+        									.attr('data-valid-title', 'CRM 선택 시 캠페인/고객군');
+        		$('input[name=campaign_id]').val(showData['campaign_id']);
+        		$('input[name=campaign_start_dy]').val(showData['campaign_start_dy']);
+        		$('input[name=campaign_end_dy]').val(showData['campaign_end_dy']);
+        		
+	    		$("#popup_campaign_id").text(showData['campaign_id']);
+				$("#popup_campaign_term").text(cf_cvtDateFormat(showData['campaign_start_dy'],'yyyy-MM-dd') + ' ~ ' + cf_cvtDateFormat(showData['campaign_end_dy'],'yyyy-MM-dd'));
+				$("#popup_custgp_cnt").text(showData['custgp_list'].length);
+				$("#popup_campaign_nm").text(showData['campaign_nm']);
+				
+	    		$.each(showData['custgp_list'], function(i, items) {
+	    			tag_input += "<input type='hidden' name='lst_custgp_id_list' data-array-always='true' value='"+items.lst_custgp_id+"'>";
+	    			if(i == 0) {
+	    				custgpStr += items.lst_custgp_id + " - " + items.custgp_nm;
+	    				custgp_id = items.lst_custgp_id;
+	    			} else {
+	    				custgpStr += "&nbsp;│&nbsp;" + items.lst_custgp_id + " - " + items.custgp_nm;
+	    			}
+	    		});
+	    		$("#popup_custgp").html(custgpStr);
+	    		$("#campaign_custgp").append(tag_input);
+	    		$('#btn_campaign').text('수정');
+            }
+            
+            if(_nt_divn_cd == "LPOT"){
+	    		$('input[name="ntce_tgt_cd"]').attr("disabled", true);
+	    		$("#lpot_hide").hide();
+	    	}
+            
+            
+	    	// 자세히보기 사용여부 check
+	    	if(showData['detail_show_yn'] == 'Y'){
+	    		
+	    		$("input[name=detail_show_yn]").prop("checked","checked");
+	    		$("input[name=detail_show_yn]").val("Y");
+	    		
+	    		$("#linkUrl").show();
+	    		
+	    		f_applyType(showData['link_method_cd']);
+	    		
+	    		
+	    		if (showData['link_method_cd'] == 'APPLIST'){
+	    			$("select[name=noticbd_divn_cd_temp] option[value="+ showData['url_type']+"]").attr('selected','selected');
+	    			if(showData['url_type'] != "LIST") {
+	    				
+	    				var target = $('select[name=noticbd_divn_cd_temp]');
+		    			var options = "";
+		    			
+		    			options +="<option value=CRM>쿠폰북</option>";
+						options +="<option value=CPZINE>쿠폰진</option>";
+						options +="<option value=FCFS>달려라선착순</option>";
+						options +="<option value=STAMP>M스탬프</option>";
+						options +="<option value=EVENTCOK>이벤트콕</option>";
+						options +="<option value=CHANNELCOK>채널콕</option>";
+						target.append(options);
+						
+						$("select[name=noticbd_divn_cd_temp] option[value="+ showData['url_type']+"]").attr('selected','selected');	    	
+						
+						if(showData['url_type'] == "EVENTCOK") {
+				    		var _cpz_ord = "";
+				    		if(showData['ot_link_url'].indexOf("noticbd_id") > -1) {
+				    			_cpz_ord = showData['ot_link_url'];
+				    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-15);
+				    		}
+				    		var crmData = {
+									empno: '${sessionScope.sessionEmpno}', 
+									emp_str_cd: '${sessionScope.sessionStrCd}',
+									hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+									noticbd_divn_cd_temp : showData['url_type'],
+				    				nomem_view_gbn : showData['nomem_view_gbn']	
+							};
+				    		
+				    		$.ajax({
+								url: api_url+"/backoffice/common/board/issue/event/cok",
+								cache: true,
+								datatype: 'json',
+								data: encodeURI('params='+JSON.stringify(crmData)),
+								success: function(obj) {
+									var detailData = obj['data'] || {};
+									$('select[name=link_noticbd_id]')
+									.data({
+										'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+											var self = this;
+											
+											$(self).children()
+														.filter(function() {
+															return $(this).data('item')['evnt_id'] == showData['link_noticbd_id'];
+														}).prop('selected', 'selected');
+										}
+									})
+									.triggerHandler('init');
+									$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+								}
+				    		});
+				    		
+			    		} else if(showData['url_type'] == "CHANNELCOK") {
+				    		var _cpz_ord = "";
+				    		if(showData['ot_link_url'].indexOf("media_id") > -1) {
+				    			_cpz_ord = showData['ot_link_url'];
+				    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-15);
+				    		}
+				    		var crmData = {
+									empno: '${sessionScope.sessionEmpno}', 
+									emp_str_cd: '${sessionScope.sessionStrCd}',
+									hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+									noticbd_divn_cd_temp : showData['url_type']
+							};
+				    		
+				    		$.ajax({
+								url: api_url+"/backoffice/common/board/issue/channel/cok",
+								cache: true,
+								datatype: 'json',
+								data: encodeURI('params='+JSON.stringify(crmData)),
+								success: function(obj) {
+									var detailData = obj['data'] || {};
+									$('select[name=link_noticbd_id]')
+									.data({
+										'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+											var self = this;
+											
+											$(self).children()
+														.filter(function() {
+															return $(this).data('item')['evnt_id'] == showData['link_noticbd_id'];
+														}).prop('selected', 'selected');
+										}
+									})
+									.triggerHandler('init');
+									$("#ot_title").text($('select[name=link_noticbd_id] option:selected').text());
+								}
+				    		});
+			    		} else {
+				    		var _cpz_ord = "";
+				    		if(showData['ot_link_url'].indexOf("coupon_id") > -1) {
+				    			_cpz_ord = showData['ot_link_url'];
+				    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-5);
+				    			
+				    		}else if(showData['ot_link_url'].indexOf("active") > -1) {
+				    			_cpz_ord = showData['ot_link_url'];
+				    			_cpz_ord = _cpz_ord.substring(_cpz_ord.length-1);
+				    		}else {
+				    			_cpz_ord = "";
+				    		}
+				    		var crmData = {
+									empno: '${sessionScope.sessionEmpno}', 
+									emp_str_cd: '${sessionScope.sessionStrCd}',
+									hq_base_yn: '${sessionScope.sessionHqBaseYn}',
+									noticbd_divn_cd_temp : showData['url_type']
+	
+							};
+				    		$.ajax({
+								url: api_url+"/backoffice/common/board/issue/cpzine/list",
+								cache: true,
+								datatype: 'json',
+								data: encodeURI('params='+JSON.stringify(crmData)),
+								success: function(obj) {
+									var detailData = obj['data'] || {};
+									$('select[name=link_noticbd_id]')
+									.data({
+										'items': detailData['result_list'], 'key': 'evnt_id', 'label': 'evnt_nm', '_cpz_ord': _cpz_ord, '_select': function() {
+											var self = this;
+											
+											$(self).children()
+														.filter(function() {
+															return $(this).data('item')['evnt_id'] == showData['link_noticbd_id'];
+														}).prop('selected', 'selected');
+										}
+									})
+									.triggerHandler('init');
+								}
+				    		});
+			    		}
+			    	}else {
+			    		var _items = [
+										{'key': 'MAIN', 'label': '메인'},
+							  			{'key': 'MCOUPON', 'label': 'M쿠폰 - 상품쿠폰'},
+							  			{'key': 'MPRICE', 'label': 'M쿠폰 -금액쿠폰'},
+			    						/* {'key': 'MLIFE', 'label': 'M-LIFE'}, */
+			    						{'key': 'EVENTCOK', 'label': '이벤트콕'},
+			    						{'key': 'CHANNELCOK', 'label': '채널콕'},
+			    						{'key': 'LIFECOK', 'label': '생활콕'},
+			    						{'key': 'MCLUB', 'label': 'M클럽'},
+			    						{'key': 'LEAFLET', 'label': '행사정보'},
+			    						{'key': 'NOTICE', 'label': '공지사항'},
+			    						{'key': 'FCFS', 'label': '달려라선착순'},
+			    						{'key': 'STAMP', 'label': 'M스탬프'},
+			    						{'key': 'RECEIPT', 'label': '스마트영수증'},
+			    						{'key': 'POLL', 'label': 'POLL'},
+			    						{'key': 'PEVENT', 'label': '걷기'}
+			    			  		];
+			    		var _list_id = showData['link_noticbd_id'];
+	   					$('select[name=link_noticbd_id]').data({'items': _items, 'key': 'key', 'label': 'label', '_select': function() { $(this).val(_list_id); }}).triggerHandler('init');
+	   					
+			    	}
+	    		}else if(showData['link_method_cd'] == 'URL'){
+	    			$("input[name=ot_link_url]").val(showData['ot_link_url']);
+	    		}
+	    		
+	    	} else {
+		    	$(".pageLink").hide();
+	    	}
+	    	
+	    	$("textarea[name=content]").html(showData['content']);
+	        
+	    	if(showData['atch_file_nm'] != '') {
+	    		var preview = $('#preview_uploadfile');
+				preview.find('img').attr('src',showData['noticbd_img_list'][0].prvw_url);
+				
+				var fName = '<p class="alert alert-info bd0">'+showData['noticbd_img_list'][0].img_orgin_file_nm+'</p>';
+				preview.parent().append(fName); 
+				
+				var span = $('<span>').addClass('btn_del_uploadfile');
+				var aTag = $('<a>')
+							.addClass('btn btn-danger btn-sm')
+							.attr('href','javascript:cf_fileDelete(\'uploadfile\')')
+							.text('파일삭제');
+				
+				var input_file_divn_cd = $('<input>')
+					.attr('type', 'hidden')
+					.attr('name', 'file_divn_cd')
+					.val(showData['noticbd_img_list'][0].file_divn_cd);
+				
+				var input_local_file_name = $('<input>')
+							.attr('type', 'hidden')
+							.attr('name', 'img_strge_file_nm')
+							.val(showData['noticbd_img_list'][0].img_strge_file_nm);
+				
+				var input_atch_file_nm = $('<input>')
+							.attr('type', 'hidden')
+							.attr('name', 'img_orgin_file_nm')
+							.val(showData['noticbd_img_list'][0].img_orgin_file_nm);
+
+				span.append(aTag);
+				span.append(input_file_divn_cd);
+				span.append(input_local_file_name);
+				span.append(input_atch_file_nm);
+				
+				if(typeof showData['noticbd_img_list'][0].file_divn_cd != 'undefined') {
+					var img_file_divn_cd = $('<input>')
+						.attr('type', 'hidden')
+						.attr('name', 'img_file_divn_cd')
+						.val(showData['noticbd_img_list'][0].img_file_divn_cd);
+					span.append(img_file_divn_cd);
+				}
+				
+				var btn_div = $("#uploadfile").parent().parent();
+				btn_div.find("a").attr("disabled", true);
+				btn_div.find("span").attr("disabled", true);
+				btn_div.append(span);
+	    	}
+	    	
+	    },
+	    error: function(obj) {
+	    	var serverObj = obj.responseJSON;
+	    	alert('code:'+serverObj.code+'\n'+'message:'+cf_msg(serverObj.message)+'\n');
+	    	return;
+	    }
+	});
+	
+	$(".checkbox-inline").parent().css({"z-index":"0"});
+
+};
+
+/* ============================================================================================
+/* 페이지 셋업 (Don't remove!!!)
+/* --------------------------------------------------------------------------------------------
+/* 기본 페이지 사용 컴포넌트 호출 및 초기화 작업 진행 
+/* ============================================================================================ */
+pageSetUp();
+
+
+/* ============================================================================================
+/* 페이지 정보 설정 로드
+/* --------------------------------------------------------------------------------------------
+/* 컴포넌트 SCRIPT 파일 로드 및 페이지 정보 설정 SCRIPT 로드
+/* ============================================================================================ */
+pagefunction();
+
+</script>
